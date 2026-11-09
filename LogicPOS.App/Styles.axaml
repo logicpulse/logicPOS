@@ -212,44 +212,86 @@
         <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
 
+    <!-- Glass buttons (time.track / access.track KMP: PrimaryGlassBox + SoftGlass). -->
+    <Style Selector="Button.btn_glass, Button.btn_glass_soft, Button.login_pin_key">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="0 2 6 0 #1A000000"
+                        ClipToBounds="False">
+                    <Panel>
+                        <Border x:Name="GlassFill"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+                        <Border IsHitTestVisible="False"
+                                CornerRadius="{TemplateBinding CornerRadius}">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                    <GradientStop Color="#8CFFFFFF" Offset="0" />
+                                    <GradientStop Color="#1FFFFFFF" Offset="0.4" />
+                                    <GradientStop Color="#00FFFFFF" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          TextBlock.FontSize="{TemplateBinding FontSize}"
+                                          TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                                          TextBlock.Foreground="{TemplateBinding Foreground}" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
     <Style Selector="Button.login_pin_key">
-        <Setter Property="Background" Value="#AAAAAA" />
-        <Setter Property="Foreground" Value="#FFFFFF" />
         <Setter Property="FontSize" Value="16" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Height" Value="52" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="Margin" Value="2" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="CornerRadius" Value="12" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
+        <!-- SoftGlass (KMP SecondaryGlassBox): milky white -->
+        <Setter Property="Foreground" Value="#5C5A5E" />
+        <Setter Property="BorderBrush" Value="#D9FFFFFF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#EBFFFFFF" Offset="0" />
+                <GradientStop Color="#E0F4F5F7" Offset="0.45" />
+                <GradientStop Color="#D1E8EAED" Offset="1" />
+            </LinearGradientBrush>
         </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_key:pointerover">
-        <Setter Property="Background" Value="#C4C4C4" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#F5FFFFFF" Offset="0" />
+                <GradientStop Color="#EBF7F8FA" Offset="0.45" />
+                <GradientStop Color="#DEEEF0F3" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_key:pressed">
-        <Setter Property="Background" Value="#999999" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#D9F0F1F3" Offset="0" />
+                <GradientStop Color="#D0E6E8EB" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_key:disabled">
@@ -261,44 +303,181 @@
     </Style>
 
     <Style Selector="Button.login_pin_ce">
-        <Setter Property="Background" Value="#C25E4F" />
         <Setter Property="Width" Value="99" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#D17A6C" Offset="0" />
+                <GradientStop Color="#C25E4F" Offset="0.55" />
+                <GradientStop Color="#A84E42" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_ce:pointerover">
-        <Setter Property="Background" Value="#D17A6C" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#DB9084" Offset="0" />
+                <GradientStop Color="#D17A6C" Offset="0.55" />
+                <GradientStop Color="#C25E4F" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_ce:pressed">
-        <Setter Property="Background" Value="#A84E42" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#C25E4F" Offset="0" />
+                <GradientStop Color="#A84E42" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_quit">
-        <Setter Property="Background" Value="#485460" />
         <Setter Property="Width" Value="99" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#5C6B78" Offset="0" />
+                <GradientStop Color="#485460" Offset="0.55" />
+                <GradientStop Color="#323A42" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_quit:pointerover">
-        <Setter Property="Background" Value="#5C6B78" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#6E7E8C" Offset="0" />
+                <GradientStop Color="#5C6B78" Offset="0.55" />
+                <GradientStop Color="#485460" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_quit:pressed">
-        <Setter Property="Background" Value="#323A42" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#485460" Offset="0" />
+                <GradientStop Color="#323A42" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_ok">
-        <Setter Property="Background" Value="#8BA844" />
         <Setter Property="Margin" Value="3" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Width" Value="309" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#A4C45A" Offset="0" />
+                <GradientStop Color="#8BA844" Offset="0.55" />
+                <GradientStop Color="#6F8736" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_ok:pointerover">
-        <Setter Property="Background" Value="#A4C45A" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#B5D46C" Offset="0" />
+                <GradientStop Color="#A4C45A" Offset="0.55" />
+                <GradientStop Color="#8BA844" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_ok:pressed">
-        <Setter Property="Background" Value="#738C38" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#8BA844" Offset="0" />
+                <GradientStop Color="#738C38" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <!-- Reusable CTAs (KMP AppButton Primary / SoftGlass). -->
+    <Style Selector="Button.btn_glass">
+        <Setter Property="Height" Value="48" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#3F4348" Offset="0" />
+                <GradientStop Color="#323537" Offset="0.55" />
+                <GradientStop Color="#242729" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.btn_glass:pointerover">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#4C5156" Offset="0" />
+                <GradientStop Color="#3F4348" Offset="0.55" />
+                <GradientStop Color="#323537" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.btn_glass:pressed">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#323537" Offset="0" />
+                <GradientStop Color="#242729" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.btn_glass_soft">
+        <Setter Property="Height" Value="48" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="#5C5A5E" />
+        <Setter Property="BorderBrush" Value="#D9FFFFFF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#EBFFFFFF" Offset="0" />
+                <GradientStop Color="#E0F4F5F7" Offset="0.45" />
+                <GradientStop Color="#D1E8EAED" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.btn_glass_soft:pointerover">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#F5FFFFFF" Offset="0" />
+                <GradientStop Color="#EBF7F8FA" Offset="0.45" />
+                <GradientStop Color="#DEEEF0F3" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.btn_glass_soft:pressed">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#D9F0F1F3" Offset="0" />
+                <GradientStop Color="#D0E6E8EB" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="TextBox.login_pin_entry">
@@ -641,8 +820,6 @@
     </Style>
 
     <Style Selector="Button.login_portrait_key">
-        <Setter Property="Background" Value="#AAAAAA" />
-        <Setter Property="Foreground" Value="#FFFFFF" />
         <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
         <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="Bold" />
@@ -651,33 +828,70 @@
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="Margin" Value="4" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="CornerRadius" Value="12" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="#5C5A5E" />
+        <Setter Property="BorderBrush" Value="#D9FFFFFF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#EBFFFFFF" Offset="0" />
+                <GradientStop Color="#E0F4F5F7" Offset="0.45" />
+                <GradientStop Color="#D1E8EAED" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                <Border CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="0 2 6 0 #1A000000"
+                        ClipToBounds="False">
+                    <Panel>
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+                        <Border IsHitTestVisible="False"
+                                CornerRadius="{TemplateBinding CornerRadius}">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                    <GradientStop Color="#8CFFFFFF" Offset="0" />
+                                    <GradientStop Color="#1FFFFFFF" Offset="0.4" />
+                                    <GradientStop Color="#00FFFFFF" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          TextBlock.FontSize="{TemplateBinding FontSize}"
+                                          TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                                          TextBlock.Foreground="{TemplateBinding Foreground}" />
+                    </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_key:pointerover">
-        <Setter Property="Background" Value="#C4C4C4" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#F5FFFFFF" Offset="0" />
+                <GradientStop Color="#EBF7F8FA" Offset="0.45" />
+                <GradientStop Color="#DEEEF0F3" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_key:pressed">
-        <Setter Property="Background" Value="#999999" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#D9F0F1F3" Offset="0" />
+                <GradientStop Color="#D0E6E8EB" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_key:disabled">
@@ -685,27 +899,65 @@
     </Style>
 
     <Style Selector="Button.login_portrait_ce">
-        <Setter Property="Background" Value="#C25E4F" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#D17A6C" Offset="0" />
+                <GradientStop Color="#C25E4F" Offset="0.55" />
+                <GradientStop Color="#A84E42" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_ce:pointerover">
-        <Setter Property="Background" Value="#D17A6C" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#DB9084" Offset="0" />
+                <GradientStop Color="#D17A6C" Offset="0.55" />
+                <GradientStop Color="#C25E4F" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_ce:pressed">
-        <Setter Property="Background" Value="#A84E42" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#C25E4F" Offset="0" />
+                <GradientStop Color="#A84E42" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_quit">
-        <Setter Property="Background" Value="#485460" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#5C6B78" Offset="0" />
+                <GradientStop Color="#485460" Offset="0.55" />
+                <GradientStop Color="#323A42" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_quit:pointerover">
-        <Setter Property="Background" Value="#5C6B78" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#6E7E8C" Offset="0" />
+                <GradientStop Color="#5C6B78" Offset="0.55" />
+                <GradientStop Color="#485460" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_quit:pressed">
-        <Setter Property="Background" Value="#323A42" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#485460" Offset="0" />
+                <GradientStop Color="#323A42" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
     </Style>
 
     <Style Selector="TextBlock.login_portrait_status">
