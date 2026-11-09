@@ -80,26 +80,47 @@ public static class BarcodeLabelPdf
                 container.Page(page =>
                 {
                     page.Size(big ? new PageSize(100, 50, Unit.Millimetre) : new PageSize(40, 30, Unit.Millimetre));
-                    page.Margin(4, Unit.Millimetre);
+                    page.Margin(big ? 2 : 1.5f, Unit.Millimetre);
+                    page.DefaultTextStyle(style => style.LineHeight(1f));
                     page.Content().Column(column =>
                     {
-                        column.Item().AlignCenter().Height(big ? 18 : 12, Unit.Millimetre).Image(bytes);
-                        column.Item().AlignCenter().Text("SN: " + label.Serial).FontSize(big ? 9 : 7).Bold();
+                        column.Spacing(big ? 0.6f : 0.3f, Unit.Millimetre);
+                        column.Item()
+                            .AlignCenter()
+                            .Height(big ? 16 : 9, Unit.Millimetre)
+                            .Image(bytes)
+                            .FitArea();
+                        column.Item().AlignCenter().Text(Clip("SN: " + label.Serial, big ? 42 : 28))
+                            .FontSize(big ? 8 : 5.5f).Bold();
                         if (string.IsNullOrWhiteSpace(label.Designation) == false)
                         {
-                            column.Item().AlignCenter().Text(label.Designation).FontSize(big ? 8 : 6);
+                            column.Item().AlignCenter().Text(Clip(label.Designation, big ? 48 : 30))
+                                .FontSize(big ? 7 : 5);
                         }
 
                         if (string.IsNullOrWhiteSpace(label.Code) == false)
                         {
-                            column.Item().AlignCenter().Text("ref. " + label.Code).FontSize(big ? 8 : 6);
+                            column.Item().AlignCenter().Text(Clip("ref. " + label.Code, big ? 42 : 28))
+                                .FontSize(big ? 7 : 5);
                         }
 
-                        column.Item().AlignCenter().Text(website).FontSize(big ? 7 : 5);
+                        column.Item().AlignCenter().Text(Clip(website, big ? 42 : 28))
+                            .FontSize(big ? 6 : 4.5f);
                     });
                 });
             }
         }).GeneratePdf(path);
         return path;
+    }
+
+    private static string Clip(string? value, int maxChars)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var text = value.Trim();
+        return text.Length <= maxChars ? text : text[..Math.Max(1, maxChars - 1)].TrimEnd() + "…";
     }
 }
