@@ -87,6 +87,14 @@
               <TextBox x:Name="TxtClientId" PlaceholderText="Client ID (opcional)" IsVisible="False" />
             </StackPanel>
           </Border>
+          <Border x:Name="PanelCloudClient" IsVisible="False" Background="#F4F7F8" CornerRadius="8" Padding="12">
+            <StackPanel Spacing="8">
+              <TextBlock FontWeight="SemiBold" Foreground="#263238" Text="Conta Cloud LogicPulse" />
+              <TextBlock FontSize="12" Foreground="#64748B" TextWrapping="Wrap"
+                         Text="Indique o Client ID da sua conta Cloud. É obrigatório para ligar à API LogicPulse." />
+              <TextBox x:Name="TxtCloudClientId" PlaceholderText="Client ID" MinWidth="280" />
+            </StackPanel>
+          </Border>
         </StackPanel>
       </DockPanel>
     </Border>

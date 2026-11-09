@@ -47,7 +47,7 @@ public partial class EditionSetupWindow : Window
         => SelectEdition(ProductEdition.Business, closeImmediately: false);
 
     private void OnCloudClick(object? sender, RoutedEventArgs e)
-        => SelectEdition(ProductEdition.Cloud, closeImmediately: true);
+        => SelectEdition(ProductEdition.Cloud, closeImmediately: false);
 
     private void SelectEdition(ProductEdition edition, bool closeImmediately)
     {
@@ -59,8 +59,12 @@ public partial class EditionSetupWindow : Window
         CardCloud.Classes.Set("selected-cloud", edition == ProductEdition.Cloud);
 
         PanelBusinessHosting.IsVisible = edition == ProductEdition.Business;
+        PanelCloudClient.IsVisible = edition == ProductEdition.Cloud;
         RefreshApiFields();
         RefreshContinueButton(edition);
+
+        if (edition == ProductEdition.Cloud)
+            TxtCloudClientId.Focus();
 
         if (closeImmediately)
             TryCompleteAndClose();
@@ -103,9 +107,18 @@ public partial class EditionSetupWindow : Window
     {
         if (SelectedEdition == ProductEdition.Cloud)
         {
+            var cloudClientId = TxtCloudClientId.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(cloudClientId))
+            {
+                LblStatus.Text = "Indique o Client ID da conta Cloud.";
+                PanelCloudClient.IsVisible = true;
+                TxtCloudClientId.Focus();
+                return;
+            }
+
             SelectedHosting = ProductHosting.Cloud;
             ApiAddress = "https://api.logic-pos.com/";
-            ClientId = null;
+            ClientId = cloudClientId;
         }
         else if (SelectedEdition == ProductEdition.Business)
         {
