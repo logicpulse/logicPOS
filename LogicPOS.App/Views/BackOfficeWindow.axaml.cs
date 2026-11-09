@@ -82,7 +82,28 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         EntityHost.ArticleSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.FinalConsumerSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.TableSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
-        EntityHost.EntitySaved += (_, _) => _ = RefreshHomeAfterSetupAsync();
+        // Do not navigate away on ordinary entity save — only refresh setup alerts while onboarding.
+        EntityHost.EntitySaved += (_, _) =>
+        {
+            if (_onboardingIncomplete)
+            {
+                _ = RefreshSetupAlertsAsync();
+            }
+
+            if (_entityEditReturnToStock)
+            {
+                _entityEditReturnToStock = false;
+                ReturnToStockAfterEntityEdit();
+            }
+        };
+        EntityHost.OverlayDismissed += (_, _) =>
+        {
+            if (_entityEditReturnToStock)
+            {
+                _entityEditReturnToStock = false;
+                ReturnToStockAfterEntityEdit();
+            }
+        };
         EntityHost.OverlayDismissed += (_, _) => RestoreOnboardingAfterOverlay();
         OnboardingHost.StepRequested += OnOnboardingStepRequested;
         AttachedToVisualTree += (_, _) =>
@@ -295,11 +316,37 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         ReportsOverlay.IsVisible = reportsOpen;
     }
 
+    private bool _entityEditReturnToStock;
+
     /// <summary>Shows a BackOffice entity page and opens the editor for <paramref name="id"/>.</summary>
-    public async Task EditEntityAsync(string title, Guid id)
+    public async Task EditEntityAsync(string title, Guid id, bool returnToStock = false)
     {
         if (id == Guid.Empty)
         {
+            return;
+        }
+
+        _entityEditReturnToStock = returnToStock;
+        if (returnToStock)
+        {
+            EnsureStockView();
+            _articleDashboardRequest++;
+            ReportsOverlay.IsVisible = false;
+            OnboardingHost.IsVisible = false;
+            DashboardHost.IsVisible = false;
+            ArticleDashboardHost.IsVisible = false;
+            DocumentsHost.IsVisible = false;
+            ReceiptHost.IsVisible = false;
+            SettingsHost.IsVisible = false;
+            PlaceholderHost.IsVisible = false;
+            PageHost.IsVisible = true;
+            StockHost.IsVisible = true;
+            PageTitle.Text = "Gestão de Stocks";
+            SyncPortraitChrome("Gestão de Stocks");
+            EntityHost.SetOverlayOnly(true);
+            EntityHost.IsVisible = true;
+            await EntityHost.ShowAsync(title);
+            await EntityHost.OpenEditEntityAsync(id);
             return;
         }
 
@@ -311,6 +358,21 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
         await EntityHost.ShowAsync(title);
         await EntityHost.OpenEditEntityAsync(id);
+    }
+
+    private void ReturnToStockAfterEntityEdit()
+    {
+        EntityHost.SetOverlayOnly(false);
+        EntityHost.IsVisible = false;
+        EnsureStockView();
+        PageHost.IsVisible = true;
+        StockHost.IsVisible = true;
+        PageTitle.Text = "Gestão de Stocks";
+        SyncPortraitChrome("Gestão de Stocks");
+        if (_stockView is not null)
+        {
+            _ = _stockView.ReloadAsync();
+        }
     }
 
     public void SetSessionLabel(string sessionLabel)

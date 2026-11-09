@@ -1455,8 +1455,17 @@ public partial class EntityListing : UserControl
         {
             ClearCatalogImageCacheIfNeeded();
             EditorOverlay.IsVisible = false;
-            await ReloadAsync();
+            if (_overlayOnly == false)
+            {
+                await ReloadAsync();
+            }
+
             EntitySaved?.Invoke(this, EventArgs.Empty);
+            if (_overlayOnly)
+            {
+                OverlayDismissed?.Invoke(this, EventArgs.Empty);
+            }
+
             if (_title == "Permissões" && this.FindAncestorOfType<BackOfficeWindow>() is BackOfficeWindow office)
             {
                 await office.ApplyMenuAccessAsync();

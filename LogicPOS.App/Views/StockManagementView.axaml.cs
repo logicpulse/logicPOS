@@ -1066,7 +1066,7 @@ public partial class StockManagementView : UserControl
 
         try
         {
-            await office.EditEntityAsync("Artigos", article.Id);
+            await office.EditEntityAsync("Artigos", article.Id, returnToStock: true);
         }
         catch (Exception exception)
         {
