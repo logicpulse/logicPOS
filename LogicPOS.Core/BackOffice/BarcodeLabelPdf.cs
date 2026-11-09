@@ -47,6 +47,11 @@ public static class BarcodeLabelPdf
                 Height = 90,
                 Margin = 2,
                 PureBarcode = true
+            },
+            Renderer = new SKBitmapRenderer
+            {
+                Background = SKColors.White,
+                Foreground = SKColors.Black
             }
         };
 
