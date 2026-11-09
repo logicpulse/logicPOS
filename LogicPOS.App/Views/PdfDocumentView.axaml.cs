@@ -57,12 +57,56 @@ public partial class PdfDocumentView : UserControl
         PreviousButton.IsEnabled = false;
         NextButton.IsEnabled = false;
         UpdateFitButtons();
+        LoadPrinterChoices(_preferredPrinter);
         _zoomMode = ZoomMode.Page;
         _pageIndex = 0;
         ClearPages();
         _closed = new TaskCompletionSource<bool>();
         _ = LoadAsync(path);
         return _closed.Task;
+    }
+
+    private void LoadPrinterChoices(string? preferred)
+    {
+        IReadOnlyList<string> printers;
+        try
+        {
+            printers = WindowsPrinters.Installed();
+        }
+        catch
+        {
+            printers = [];
+        }
+
+        var items = printers.ToList();
+        if (string.IsNullOrWhiteSpace(preferred) == false
+            && items.Any(item => string.Equals(item, preferred, StringComparison.OrdinalIgnoreCase)) == false)
+        {
+            items.Insert(0, preferred);
+        }
+
+        PrinterBox.ItemsSource = items;
+        PrinterBox.IsVisible = items.Count > 0;
+        if (items.Count == 0)
+        {
+            PrinterBox.SelectedItem = null;
+            return;
+        }
+
+        var match = string.IsNullOrWhiteSpace(preferred)
+            ? null
+            : items.FirstOrDefault(item => string.Equals(item, preferred, StringComparison.OrdinalIgnoreCase));
+        PrinterBox.SelectedItem = match ?? items[0];
+    }
+
+    private string? SelectedPrinter()
+    {
+        if (PrinterBox.SelectedItem is string selected && string.IsNullOrWhiteSpace(selected) == false)
+        {
+            return selected.Trim();
+        }
+
+        return _preferredPrinter;
     }
 
     private void OnPdfLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
@@ -255,11 +299,12 @@ public partial class PdfDocumentView : UserControl
             }
         }
 
+        var printer = SelectedPrinter();
         await PrintUi.RunAsync(this, Busy, async () =>
         {
             await Task.Run(() =>
             {
-                if (PdfWindowsPrint.PrintOrOpen(_pdfPath, _preferredPrinter) == false)
+                if (PdfWindowsPrint.PrintOrOpen(_pdfPath, printer) == false)
                 {
                     throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
                 }

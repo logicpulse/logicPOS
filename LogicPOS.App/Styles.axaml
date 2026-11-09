@@ -5182,6 +5182,15 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <Style Selector="ComboBox.bo_pdf_printer">
+        <Setter Property="MinWidth" Value="180" />
+        <Setter Property="MaxWidth" Value="280" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Margin" Value="6,0,4,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
     <Style Selector="Border.bo_pdf_split">
         <Setter Property="Width" Value="1" />
         <Setter Property="Height" Value="18" />
