@@ -426,7 +426,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         var service = AppComposition.Services?.GetService<IOnboardingService>();
         if (service is null)
         {
-            // Cloud/Host: onboarding local não está registado — ainda assim carregar o Painel.
+            // Cloud mode (or DI not ready): no local onboarding checklist — show Painel.
             _onboardingIncomplete = false;
             ApplyFrontOfficeGate();
             ShowDashboardHome();
@@ -523,6 +523,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        if (step.Key == "first-user"
+            || string.Equals(step.ActionPage, "Utilizadores", StringComparison.OrdinalIgnoreCase))
+        {
+            await OpenFirstUserSetupFromOnboardingAsync();
+            return;
+        }
+
         if (step.Key == "fiscal-year"
             || string.Equals(step.ActionPage, "Abertura de ano fiscal", StringComparison.OrdinalIgnoreCase))
         {
@@ -566,6 +573,20 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private static bool IsOnboardingCreateStep(OnboardingStep step)
         => step.Key is "payment-method"
             || step.ActionPage is "Métodos de pagamento";
+
+    private async Task OpenFirstUserSetupFromOnboardingAsync()
+    {
+        var wizard = AppComposition.Services?.GetService(typeof(IFirstUserSetupWizard)) as IFirstUserSetupWizard;
+        var owner = HostWindow;
+        if (wizard is null || owner is null)
+        {
+            await OpenEntityCreateFromOnboardingAsync("Utilizadores");
+            return;
+        }
+
+        await new FirstUserSetupWindow(wizard).ShowDialog(owner);
+        await RefreshHomeAfterSetupAsync();
+    }
 
     private async Task OpenFiscalYearWizardFromOnboardingAsync()
     {

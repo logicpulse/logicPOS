@@ -1,0 +1,64 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="LogicPOS.App.Views.FirstUserSetupWindow"
+        Title="Primeiro utilizador"
+        Width="560"
+        Height="520"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        Background="#EEF3F6"
+        FontFamily="avares://LogicPOS.App/Assets/Fonts#Montserrat">
+  <DockPanel>
+    <Border DockPanel.Dock="Top" Background="#263238" Padding="20,14">
+      <TextBlock Text="Criar o primeiro utilizador"
+                 Foreground="White"
+                 FontSize="18"
+                 FontWeight="SemiBold"
+                 HorizontalAlignment="Center" />
+    </Border>
+
+    <Border DockPanel.Dock="Bottom" Background="White" Padding="20,14" BorderBrush="#D5DEE3" BorderThickness="0,1,0,0">
+      <DockPanel>
+        <Button x:Name="BtnCreate"
+                DockPanel.Dock="Right"
+                MinWidth="160"
+                Height="40"
+                Content="Criar e continuar"
+                FontWeight="SemiBold"
+                Background="#CDBF96"
+                Foreground="#263238"
+                BorderThickness="0"
+                CornerRadius="6"
+                Click="OnCreateClick" />
+        <TextBlock x:Name="LblStatus"
+                   TextWrapping="Wrap"
+                   Foreground="#B54300"
+                   FontSize="12.5"
+                   VerticalAlignment="Center"
+                   Margin="0,0,16,0" />
+      </DockPanel>
+    </Border>
+
+    <ScrollViewer Padding="28,20">
+      <StackPanel Spacing="12" MaxWidth="480">
+        <TextBlock TextWrapping="Wrap" Foreground="#546E7A" FontSize="13"
+                   Text="Defina o administrador do posto. Este utilizador não vem nos seeds — cria-o agora para poder entrar." />
+
+        <TextBlock Text="Perfil" FontWeight="SemiBold" Foreground="#263238" />
+        <ComboBox x:Name="CmbProfile" MinHeight="36" HorizontalAlignment="Stretch" />
+
+        <TextBlock Text="Nome" FontWeight="SemiBold" Foreground="#263238" />
+        <TextBox x:Name="TxtName" PlaceholderText="Ex.: Administrador" />
+
+        <TextBlock Text="Login" FontWeight="SemiBold" Foreground="#263238" />
+        <TextBox x:Name="TxtLogin" PlaceholderText="Ex.: admin" />
+
+        <TextBlock Text="PIN de acesso (mín. 4 dígitos)" FontWeight="SemiBold" Foreground="#263238" />
+        <TextBox x:Name="TxtPin" PasswordChar="•" PlaceholderText="PIN" />
+
+        <TextBlock Text="Confirmar PIN" FontWeight="SemiBold" Foreground="#263238" />
+        <TextBox x:Name="TxtPinConfirm" PasswordChar="•" PlaceholderText="Repetir PIN" />
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</Window>

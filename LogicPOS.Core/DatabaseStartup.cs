@@ -313,7 +313,9 @@ public static class DatabaseStartup
         using var scope = services.CreateScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var settings = scope.ServiceProvider.GetRequiredService<DatabaseSettings>();
-        if (database.Users.Any(user => user.IsDeleted == false))
+        // Users are created at first run; seed is considered applied when core lookups exist.
+        if (database.PreferenceParameters.Any(item => item.IsDeleted == false)
+            && database.UserProfiles.Any(item => item.IsDeleted == false))
         {
             return;
         }

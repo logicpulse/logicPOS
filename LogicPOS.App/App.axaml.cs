@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using LogicPOS.App.Views;
 using LogicPOS.Core;
+using LogicPOS.Core.BackOffice;
 
 namespace LogicPOS.App;
 
@@ -158,6 +159,27 @@ public partial class App : global::Avalonia.Application
             }).ConfigureAwait(true);
         }
 
+        if (await NeedsFirstUserAsync().ConfigureAwait(true))
+        {
+            var firstUser = await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var window = new FirstUserSetupWindow();
+                desktop.MainWindow = window;
+                window.Show();
+                return window;
+            });
+
+            var closed = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            firstUser.Closed += (_, _) => closed.TrySetResult(true);
+            await closed.Task.ConfigureAwait(true);
+
+            if (firstUser.Completed == false)
+            {
+                desktop.Shutdown();
+                return;
+            }
+        }
+
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             var login = new LoginShellWindow();
@@ -165,6 +187,23 @@ public partial class App : global::Avalonia.Application
             login.Show();
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
         });
+    }
+
+    private static async Task<bool> NeedsFirstUserAsync()
+    {
+        var wizard = AppComposition.Services?.GetService(typeof(IFirstUserSetupWizard)) as IFirstUserSetupWizard;
+        if (wizard is null)
+            return false;
+
+        try
+        {
+            return await wizard.NeedsSetupAsync().ConfigureAwait(false);
+        }
+        catch (Exception exception)
+        {
+            WriteCrash("NeedsFirstUserAsync", exception);
+            return false;
+        }
     }
 
     internal static void WriteCrash(string source, Exception? exception)

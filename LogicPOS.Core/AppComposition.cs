@@ -119,6 +119,8 @@ public static class AppComposition
             services.AddSingleton<ITableSetupWizard>(provider => provider.GetRequiredService<LocalTableSetupWizard>());
             services.AddSingleton<LocalCompanySetupService>();
             services.AddSingleton<ICompanySetupService>(provider => provider.GetRequiredService<LocalCompanySetupService>());
+            services.AddSingleton<LocalFirstUserSetupWizard>();
+            services.AddSingleton<IFirstUserSetupWizard>(provider => provider.GetRequiredService<LocalFirstUserSetupWizard>());
             services.AddSingleton<StartupReadinessService>();
             services.AddSingleton<IStartupReadinessService>(provider => provider.GetRequiredService<StartupReadinessService>());
             services.AddSingleton<OnboardingService>();

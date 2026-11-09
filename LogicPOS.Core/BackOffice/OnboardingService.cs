@@ -118,6 +118,8 @@ public sealed class OnboardingService : IOnboardingService
         var year = DateTime.Now.Year;
 
         var companyNeedsSetup = await _companySetup.NeedsSetupAsync(cancellationToken);
+        var hasUser = await database.Users.AsNoTracking()
+            .AnyAsync(item => item.IsDeleted == false, cancellationToken);
         var hasCurrentFiscalYear = await database.FiscalYears.AsNoTracking()
             .AnyAsync(item => item.IsDeleted == false && item.Year == year, cancellationToken);
         var hasSeries = await database.DocumentSeries.AsNoTracking()
@@ -135,6 +137,12 @@ public sealed class OnboardingService : IOnboardingService
 
         var steps = new List<OnboardingStep>
         {
+            new(
+                "first-user",
+                "Primeiro utilizador",
+                "Crie o utilizador administrador e o PIN de acesso ao posto.",
+                "Utilizadores",
+                hasUser),
             new(
                 "company",
                 "Dados da empresa",

@@ -21,6 +21,7 @@ public sealed class OnboardingServiceTests
             var status = await onboarding.GetStatusAsync();
 
             Assert.False(status.IsComplete);
+            Assert.Contains(status.Steps, step => step.Key == "first-user" && step.IsComplete == false);
             Assert.Contains(status.Steps, step => step.Key == "company" && step.IsComplete == false);
             Assert.Contains(status.Steps, step => step.Key == "fiscal-year" && step.IsComplete == false);
             Assert.Contains(status.Steps, step => step.Key == "table");
@@ -90,6 +91,19 @@ public sealed class OnboardingServiceTests
         {
             ConfigureApp(root, module: "restaurant");
             var services = AppComposition.Services!;
+
+            var firstUser = services.GetRequiredService<IFirstUserSetupWizard>();
+            var firstUserDraft = await firstUser.LoadAsync();
+            Assert.Null(firstUserDraft.BlockedReason);
+            var firstUserCreated = await firstUser.CreateAsync(new FirstUserSetupRequest
+            {
+                ProfileId = firstUserDraft.PreferredProfileId ?? firstUserDraft.Profiles[0].Id,
+                Name = "Administrador",
+                Login = "admin",
+                AccessPin = "1234",
+                AccessPinConfirm = "1234"
+            });
+            Assert.True(firstUserCreated.Ok, firstUserCreated.Message);
 
             var company = services.GetRequiredService<ICompanySetupService>();
             var companyDraft = await company.LoadAsync();
