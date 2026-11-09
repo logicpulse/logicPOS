@@ -20,7 +20,7 @@ public partial class App : global::Avalonia.Application
     /// <summary>
     /// Host applies first-run edition (writes appsettings, may ADDLOCAL API/portal, re-composes DI).
     /// </summary>
-    public static Func<ProductEdition, ProductHosting, string?, string?, Task<string?>>? ApplyProductEditionAsync { get; set; }
+    public static Func<ProductEdition, ProductHosting, string?, string?, string?, Task<string?>>? ApplyProductEditionAsync { get; set; }
 
     /// <summary>
     /// Android: MainActivity define esta acção para chamar FinishAffinity + kill.
@@ -144,7 +144,8 @@ public partial class App : global::Avalonia.Application
                 wizard.SelectedEdition,
                 wizard.SelectedHosting,
                 wizard.ApiAddress,
-                wizard.ClientId).ConfigureAwait(true);
+                wizard.ClientId,
+                wizard.SoftwareKey).ConfigureAwait(true);
             if (string.IsNullOrWhiteSpace(error) == false)
             {
                 // Still continue — Business server without licence works as local until activated.

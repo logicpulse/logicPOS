@@ -1,12 +1,16 @@
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using LogicPOS.Core;
 
 namespace LogicPOS.App.Views;
 
 public partial class EditionSetupWindow : Window
 {
+    public const string PaymentUrl = "https://logic-pos.com/";
+
     public bool Completed { get; private set; }
 
     public ProductEdition SelectedEdition { get; private set; } = ProductEdition.Community;
@@ -16,6 +20,10 @@ public partial class EditionSetupWindow : Window
     public string? ApiAddress { get; private set; }
 
     public string? ClientId { get; private set; }
+
+    public string? SoftwareKey { get; private set; }
+
+    private bool _busy;
 
     public EditionSetupWindow()
     {
@@ -49,6 +57,24 @@ public partial class EditionSetupWindow : Window
     private void OnCloudClick(object? sender, RoutedEventArgs e)
         => SelectEdition(ProductEdition.Cloud, closeImmediately: false);
 
+    private void OnPayBusinessClick(object? sender, RoutedEventArgs e)
+        => OpenPaymentPage();
+
+    private void OnPayCloudClick(object? sender, RoutedEventArgs e)
+        => OpenPaymentPage();
+
+    private static void OpenPaymentPage()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(PaymentUrl) { UseShellExecute = true });
+        }
+        catch
+        {
+            // Browser may be unavailable; status text covers the URL.
+        }
+    }
+
     private void SelectEdition(ProductEdition edition, bool closeImmediately)
     {
         SelectedEdition = edition;
@@ -63,11 +89,13 @@ public partial class EditionSetupWindow : Window
         RefreshApiFields();
         RefreshContinueButton(edition);
 
-        if (edition == ProductEdition.Cloud)
+        if (edition == ProductEdition.Business)
+            TxtSoftwareKey.Focus();
+        else if (edition == ProductEdition.Cloud)
             TxtCloudClientId.Focus();
 
         if (closeImmediately)
-            TryCompleteAndClose();
+            _ = TryCompleteAndCloseAsync();
     }
 
     private void RefreshContinueButton(ProductEdition edition)
@@ -75,22 +103,24 @@ public partial class EditionSetupWindow : Window
         BtnContinue.Content = edition switch
         {
             ProductEdition.Community => "Começar a usar",
-            ProductEdition.Business => "Continuar com Business",
+            ProductEdition.Business => "Activar Business",
             ProductEdition.Cloud => "Continuar com Cloud",
-            _ => throw new System.ComponentModel.InvalidEnumArgumentException(nameof(edition), (int)edition, typeof(ProductEdition)),
+            _ => throw new System.ComponentModel.InvalidEnumArgumentException(
+                nameof(edition), (int)edition, typeof(ProductEdition)),
         };
 
         BtnContinue.Background = edition switch
         {
-            ProductEdition.Community => Avalonia.Media.Brush.Parse("#CBDF96"),
-            ProductEdition.Business => Avalonia.Media.Brush.Parse("#3D7EA6"),
-            ProductEdition.Cloud => Avalonia.Media.Brush.Parse("#5B7C99"),
-            _ => throw new System.ComponentModel.InvalidEnumArgumentException(nameof(edition), (int)edition, typeof(ProductEdition)),
+            ProductEdition.Community => Brush.Parse("#CBDF96"),
+            ProductEdition.Business => Brush.Parse("#3D7EA6"),
+            ProductEdition.Cloud => Brush.Parse("#5B7C99"),
+            _ => throw new System.ComponentModel.InvalidEnumArgumentException(
+                nameof(edition), (int)edition, typeof(ProductEdition)),
         };
 
         BtnContinue.Foreground = edition == ProductEdition.Community
-            ? Avalonia.Media.Brush.Parse("#263238")
-            : Avalonia.Media.Brushes.White;
+            ? Brush.Parse("#263238")
+            : Brushes.White;
     }
 
     private void RefreshApiFields()
@@ -101,58 +131,96 @@ public partial class EditionSetupWindow : Window
     }
 
     private void OnContinueClick(object? sender, RoutedEventArgs e)
-        => TryCompleteAndClose();
+        => _ = TryCompleteAndCloseAsync();
 
-    private void TryCompleteAndClose()
+    private async Task TryCompleteAndCloseAsync()
     {
-        if (SelectedEdition == ProductEdition.Cloud)
-        {
-            var cloudClientId = TxtCloudClientId.Text?.Trim();
-            if (string.IsNullOrWhiteSpace(cloudClientId))
-            {
-                LblStatus.Text = "Indique o Client ID da conta Cloud.";
-                PanelCloudClient.IsVisible = true;
-                TxtCloudClientId.Focus();
-                return;
-            }
+        if (_busy)
+            return;
 
-            SelectedHosting = ProductHosting.Cloud;
-            ApiAddress = "https://api.logic-pos.com/";
-            ClientId = cloudClientId;
-        }
-        else if (SelectedEdition == ProductEdition.Business)
+        _busy = true;
+        BtnContinue.IsEnabled = false;
+        LblStatus.Text = string.Empty;
+
+        try
         {
-            if (RbRemoteApi.IsChecked == true)
+            if (SelectedEdition == ProductEdition.Cloud)
             {
-                SelectedHosting = ProductHosting.RemoteApi;
-                ApiAddress = string.IsNullOrWhiteSpace(TxtApiAddress.Text)
-                    ? null
-                    : TxtApiAddress.Text.Trim();
-                if (string.IsNullOrWhiteSpace(ApiAddress))
+                var cloudClientId = TxtCloudClientId.Text?.Trim();
+                if (string.IsNullOrWhiteSpace(cloudClientId))
                 {
-                    LblStatus.Text = "Indique o endereço da API.";
-                    PanelBusinessHosting.IsVisible = true;
+                    LblStatus.Text = "Indique o Client ID da conta Cloud.";
+                    PanelCloudClient.IsVisible = true;
+                    TxtCloudClientId.Focus();
                     return;
                 }
 
-                ClientId = TxtClientId.Text?.Trim();
+                LblStatus.Text = "A validar a conta Cloud…";
+                var (ok, error) = await CloudClientIdProbe.ValidateAsync(cloudClientId).ConfigureAwait(true);
+                if (ok == false)
+                {
+                    LblStatus.Text = error ?? "Conta Cloud inválida.";
+                    PanelCloudClient.IsVisible = true;
+                    TxtCloudClientId.Focus();
+                    return;
+                }
+
+                SelectedHosting = ProductHosting.Cloud;
+                ApiAddress = CloudClientIdProbe.ProductionApiBase;
+                ClientId = cloudClientId;
+                SoftwareKey = null;
+            }
+            else if (SelectedEdition == ProductEdition.Business)
+            {
+                var key = TxtSoftwareKey.Text?.Trim();
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    LblStatus.Text = "Introduza a chave de software para activar o Business.";
+                    PanelBusinessHosting.IsVisible = true;
+                    TxtSoftwareKey.Focus();
+                    return;
+                }
+
+                SoftwareKey = key;
+
+                if (RbRemoteApi.IsChecked == true)
+                {
+                    SelectedHosting = ProductHosting.RemoteApi;
+                    ApiAddress = string.IsNullOrWhiteSpace(TxtApiAddress.Text)
+                        ? null
+                        : TxtApiAddress.Text.Trim();
+                    if (string.IsNullOrWhiteSpace(ApiAddress))
+                    {
+                        LblStatus.Text = "Indique o endereço da API.";
+                        PanelBusinessHosting.IsVisible = true;
+                        return;
+                    }
+
+                    ClientId = TxtClientId.Text?.Trim();
+                }
+                else
+                {
+                    SelectedHosting = ProductHosting.LocalServer;
+                    ApiAddress = null;
+                    ClientId = null;
+                }
             }
             else
             {
-                SelectedHosting = ProductHosting.LocalServer;
+                SelectedEdition = ProductEdition.Community;
+                SelectedHosting = ProductHosting.Local;
                 ApiAddress = null;
                 ClientId = null;
+                SoftwareKey = null;
             }
-        }
-        else
-        {
-            SelectedEdition = ProductEdition.Community;
-            SelectedHosting = ProductHosting.Local;
-            ApiAddress = null;
-            ClientId = null;
-        }
 
-        Completed = true;
-        Close();
+            Completed = true;
+            Close();
+        }
+        finally
+        {
+            _busy = false;
+            BtnContinue.IsEnabled = true;
+        }
     }
 }

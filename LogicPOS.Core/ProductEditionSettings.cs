@@ -9,6 +9,7 @@ public static class ProductEditionSettings
 {
     public const string EditionKey = "LogicPOS:Edition";
     public const string HostingKey = "LogicPOS:Hosting";
+    public const string SoftwareKeyConfig = "LogicPOS:SoftwareKey";
 
     public static bool HasEdition(IConfiguration configuration)
         => string.IsNullOrWhiteSpace(configuration[EditionKey]) == false;
@@ -67,7 +68,8 @@ public static class ProductEditionSettings
         ProductHosting hosting,
         bool useCloud,
         string? apiBaseAddress = null,
-        string? clientId = null)
+        string? clientId = null,
+        string? softwareKey = null)
     {
         var path = Path.Combine(baseDirectory, "appsettings.json");
         JsonNode root = File.Exists(path)
@@ -78,6 +80,11 @@ public static class ProductEditionSettings
         root["LogicPOS"] = logicPos;
         logicPos["Edition"] = ProductEditionNames.ToConfig(edition);
         logicPos["Hosting"] = ProductHostingNames.ToConfig(hosting);
+
+        if (string.IsNullOrWhiteSpace(softwareKey) == false)
+            logicPos["SoftwareKey"] = softwareKey.Trim();
+        else if (edition != ProductEdition.Business)
+            logicPos.Remove("SoftwareKey");
 
         var database = root["DatabaseSettings"] as JsonObject ?? new JsonObject();
         root["DatabaseSettings"] = database;

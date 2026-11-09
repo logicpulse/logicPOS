@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using LogicPOS.App.Branding;
 using LogicPOS.Core;
 using LogicPOS.Core.Licensing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
@@ -22,10 +23,14 @@ public partial class RegistrationWindow : Window
     public RegistrationWindow(ILicenseModule license, bool requireRegistration = true)
     {
         _license = license;
+        var pendingKey = AppComposition.Services?
+            .GetService<IConfiguration>()?[ProductEditionSettings.SoftwareKeyConfig]
+            ?.Trim();
         _form = new RegistrationForm
         {
             HardwareId = license.HardwareId,
             Notice = string.Empty,
+            SoftwareKey = pendingKey ?? string.Empty,
             // Soft-lock "Continue" only when registration is optional.
             ShowContinue = requireRegistration == false
         };
