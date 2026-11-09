@@ -276,7 +276,12 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         }
     }
 
-    public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null, string? preferredPrinter = null)
+    public async Task ShowPdfAsync(
+        string path,
+        string? title,
+        Guid? documentId = null,
+        string? preferredPrinter = null,
+        LogicPOS.Core.BackOffice.BarcodeLabelPrintResult? barcode = null)
     {
         var reportsOpen = ReportsOverlay.IsVisible;
         var newDocOpen = NewDocumentOverlay.IsVisible;
@@ -284,7 +289,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         // PDF por cima do Novo documento (senão o preview fica tapado).
         NewDocumentOverlay.IsVisible = false;
         PdfOverlay.IsVisible = true;
-        await PdfHost.ShowAsync(path, title, documentId, preferredPrinter);
+        await PdfHost.ShowAsync(path, title, documentId, preferredPrinter, barcode);
         PdfOverlay.IsVisible = false;
         NewDocumentOverlay.IsVisible = newDocOpen;
         ReportsOverlay.IsVisible = reportsOpen;

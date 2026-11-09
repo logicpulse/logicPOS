@@ -6,10 +6,6 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
-using SkiaSharp;
 
 namespace LogicPOS.Core.BackOffice;
 
@@ -527,10 +523,13 @@ public sealed class LocalStockService : IStockManagementService
             item.Designation ?? string.Empty,
             item.PrintModel)).ToList();
         var printer = await ResolveLabelPrinterAsync(database, rows.Select(item => item.ArticleId).Distinct().ToList(), cancellationToken);
+        var template = BarcodeLabelPdf.NormalizeModel(labels.FirstOrDefault()?.PrintModel);
         return new BarcodeLabelPrintResult
         {
-            Path = WriteBarcodePdf(labels),
-            PreferredPrinter = printer
+            Path = BarcodeLabelPdf.Write(labels, template),
+            PreferredPrinter = printer,
+            PreferredTemplate = template,
+            Labels = labels
         };
     }
 
@@ -561,17 +560,24 @@ public sealed class LocalStockService : IStockManagementService
         {
             if (bySerial.TryGetValue(serial, out var row))
             {
-                return new BarcodeLabelLine(row.Serial, row.Code ?? string.Empty, row.Designation ?? string.Empty, row.PrintModel);
+                return new BarcodeLabelLine(
+                    row.Serial,
+                    row.Code ?? string.Empty,
+                    row.Designation ?? string.Empty,
+                    row.PrintModel);
             }
 
-            return new BarcodeLabelLine(serial, string.Empty, string.Empty, null);
+            return new BarcodeLabelLine(serial);
         }).ToList();
         var articleIds = rows.Select(item => item.ArticleId).Distinct().ToList();
         var printer = await ResolveLabelPrinterAsync(database, articleIds, cancellationToken);
+        var template = BarcodeLabelPdf.NormalizeModel(labels.FirstOrDefault()?.PrintModel);
         return new BarcodeLabelPrintResult
         {
-            Path = WriteBarcodePdf(labels),
-            PreferredPrinter = printer
+            Path = BarcodeLabelPdf.Write(labels, template),
+            PreferredPrinter = printer,
+            PreferredTemplate = template,
+            Labels = labels
         };
     }
 
@@ -600,8 +606,6 @@ public sealed class LocalStockService : IStockManagementService
             ? preferred.Network!.Trim()
             : (string.IsNullOrWhiteSpace(preferred.Name) ? null : preferred.Name!.Trim());
     }
-
-    private sealed record BarcodeLabelLine(string Serial, string Code, string Designation, string? PrintModel);
 
     public async Task<StockDashboardSnapshot> LoadDashboardAsync(int year, CancellationToken cancellationToken = default)
     {
@@ -1225,63 +1229,4 @@ public sealed class LocalStockService : IStockManagementService
         _ => "Nenhum"
     };
 
-    private static string WriteBarcodePdf(IReadOnlyList<BarcodeLabelLine> labels)
-    {
-        QuestPDF.Settings.License = LicenseType.Community;
-        var writer = new ZXing.BarcodeWriter<SKBitmap>
-        {
-            Format = ZXing.BarcodeFormat.CODE_128,
-            Options = new ZXing.Common.EncodingOptions
-            {
-                Width = 320,
-                Height = 90,
-                Margin = 2,
-                PureBarcode = true
-            }
-        };
-
-        var website = (LogicPOS.Shared.Features.Software.SoftwareInfo.Portugal.CompanyWeb ?? "http://www.logicpulse.com")
-            .Replace("http://", string.Empty, StringComparison.OrdinalIgnoreCase)
-            .Replace("https://", string.Empty, StringComparison.OrdinalIgnoreCase)
-            .TrimEnd('/');
-
-        var images = labels.Select(label =>
-        {
-            using var bitmap = writer.Write(label.Serial);
-            using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
-            return (label, bytes: data.ToArray());
-        }).ToList();
-
-        var path = Path.Combine(Path.GetTempPath(), "logicpos-labels-" + Guid.NewGuid().ToString("N") + ".pdf");
-        QuestPDF.Fluent.Document.Create(container =>
-        {
-            foreach (var (label, bytes) in images)
-            {
-                var big = string.Equals(label.PrintModel, "100x50", StringComparison.OrdinalIgnoreCase)
-                    || string.IsNullOrWhiteSpace(label.PrintModel);
-                container.Page(page =>
-                {
-                    page.Size(big ? new PageSize(100, 50, Unit.Millimetre) : new PageSize(40, 30, Unit.Millimetre));
-                    page.Margin(4, Unit.Millimetre);
-                    page.Content().Column(column =>
-                    {
-                        column.Item().AlignCenter().Height(big ? 18 : 12, Unit.Millimetre).Image(bytes);
-                        column.Item().AlignCenter().Text("SN: " + label.Serial).FontSize(big ? 9 : 7).Bold();
-                        if (string.IsNullOrWhiteSpace(label.Designation) == false)
-                        {
-                            column.Item().AlignCenter().Text(label.Designation).FontSize(big ? 8 : 6);
-                        }
-
-                        if (string.IsNullOrWhiteSpace(label.Code) == false)
-                        {
-                            column.Item().AlignCenter().Text("ref. " + label.Code).FontSize(big ? 8 : 6);
-                        }
-
-                        column.Item().AlignCenter().Text(website).FontSize(big ? 7 : 5);
-                    });
-                });
-            }
-        }).GeneratePdf(path);
-        return path;
-    }
 }

@@ -1009,14 +1009,18 @@ public partial class DocumentsListing : UserControl
         var printers = InstalledPrinters();
         if (printers.Count == 0)
         {
-            ActionNotice.Text = "N�o h� impressoras instaladas.";
+            ActionNotice.Text = "Não há impressoras instaladas.";
             return;
         }
 
         _pendingPrintIds.Clear();
         _pendingPrintIds.AddRange(rows.Select(row => row.Id));
         PrinterBox.ItemsSource = printers;
-        PrinterBox.SelectedIndex = 0;
+        var remembered = PdfPrinterMemory.LastA4Printer();
+        var match = string.IsNullOrWhiteSpace(remembered)
+            ? -1
+            : printers.FindIndex(item => string.Equals(item, remembered, StringComparison.OrdinalIgnoreCase));
+        PrinterBox.SelectedIndex = match >= 0 ? match : 0;
         OpenPrompt("print", "Imprimir como", "Impressora");
     }
 
@@ -1075,6 +1079,11 @@ public partial class DocumentsListing : UserControl
                 {
                     printError ??= exception.Message;
                 }
+            }
+
+            if (string.IsNullOrWhiteSpace(printer) == false && (useThermal == false || thermal != sent))
+            {
+                PdfPrinterMemory.RememberA4(printer);
             }
 
             var destination = useThermal && thermal == sent

@@ -60,11 +60,21 @@ public sealed class StockArticleRow
     public DateTime? UpdatedAt { get; init; }
 }
 
+public sealed record BarcodeLabelLine(
+    string Serial,
+    string Code = "",
+    string Designation = "",
+    string? PrintModel = null);
+
 public sealed class BarcodeLabelPrintResult
 {
     public string Path { get; init; } = string.Empty;
 
     public string? PreferredPrinter { get; init; }
+
+    public string? PreferredTemplate { get; init; }
+
+    public IReadOnlyList<BarcodeLabelLine> Labels { get; init; } = [];
 }
 
 public sealed class StockMovementRow

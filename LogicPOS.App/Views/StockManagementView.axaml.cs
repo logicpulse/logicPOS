@@ -834,7 +834,7 @@ public partial class StockManagementView : UserControl
 
             if (result.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
             {
-                await ShowPdfAsync(result.Path, "Etiqueta", result.PreferredPrinter);
+                await ShowPdfAsync(result.Path, "Etiqueta", result.PreferredPrinter, result);
             }
             else
             {
@@ -1834,7 +1834,7 @@ public partial class StockManagementView : UserControl
                 && string.IsNullOrWhiteSpace(result.Path) == false
                 && result.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
             {
-                await ShowPdfAsync(result.Path, "Etiquetas", result.PreferredPrinter);
+                await ShowPdfAsync(result.Path, "Etiquetas", result.PreferredPrinter, result);
             }
         }
         catch (Exception exception)
@@ -1849,11 +1849,15 @@ public partial class StockManagementView : UserControl
         Toast.Error(this, message);
     }
 
-    private async Task ShowPdfAsync(string path, string title, string? preferredPrinter = null)
+    private async Task ShowPdfAsync(
+        string path,
+        string title,
+        string? preferredPrinter = null,
+        LogicPOS.Core.BackOffice.BarcodeLabelPrintResult? barcode = null)
     {
         if (OfficeSurface.Find(this) is { } office)
         {
-            await office.ShowPdfAsync(path, title, preferredPrinter: preferredPrinter);
+            await office.ShowPdfAsync(path, title, preferredPrinter: preferredPrinter, barcode: barcode);
             return;
         }
 

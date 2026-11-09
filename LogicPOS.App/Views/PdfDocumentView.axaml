@@ -43,6 +43,12 @@
                                 <Button Classes="bo_listing_icon_button" Click="OnPrintClick" ToolTip.Tip="Imprimir">
                                     <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Pdf/pdf_print.svg" />
                                 </Button>
+                                <ComboBox x:Name="TemplateBox"
+                                          Classes="bo_pdf_printer"
+                                          ToolTip.Tip="Modelo etiqueta"
+                                          PlaceholderText="Modelo"
+                                          IsVisible="False"
+                                          SelectionChanged="OnTemplateChanged" />
                                 <ComboBox x:Name="PrinterBox"
                                           Classes="bo_pdf_printer"
                                           ToolTip.Tip="Impressora"

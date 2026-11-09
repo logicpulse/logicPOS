@@ -5,6 +5,7 @@ using Avalonia.Platform.Storage;
 using LogicPOS.App;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
+using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
 using Microsoft.Extensions.DependencyInjection;
 using SkiaSharp;
@@ -26,6 +27,10 @@ public partial class PdfDocumentView : UserControl
     private string? _documentTitle;
     private string? _preferredPrinter;
     private Guid? _documentId;
+    private bool _barcodeMode;
+    private string? _barcodeTemplate;
+    private IReadOnlyList<BarcodeLabelLine> _barcodeLabels = [];
+    private bool _suppressTemplateChange;
     private int _pageIndex;
     private double _zoom = 1;
     private ZoomMode _zoomMode = ZoomMode.Page;
@@ -43,12 +48,22 @@ public partial class PdfDocumentView : UserControl
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnPdfLayoutUpdated;
     }
 
-    public Task ShowAsync(string path, string? title, Guid? documentId = null, string? preferredPrinter = null)
+    public Task ShowAsync(
+        string path,
+        string? title,
+        Guid? documentId = null,
+        string? preferredPrinter = null,
+        BarcodeLabelPrintResult? barcode = null)
     {
         RelayoutForViewport();
         _pdfPath = path;
         _documentId = documentId;
         _preferredPrinter = string.IsNullOrWhiteSpace(preferredPrinter) ? null : preferredPrinter.Trim();
+        _barcodeMode = barcode is not null && barcode.Labels.Count > 0;
+        _barcodeLabels = _barcodeMode ? barcode!.Labels : [];
+        _barcodeTemplate = _barcodeMode
+            ? BarcodeLabelPdf.NormalizeModel(barcode!.PreferredTemplate ?? barcode.Labels[0].PrintModel)
+            : null;
         _documentTitle = string.IsNullOrWhiteSpace(title) ? "Documento" : title;
         TitleText.Text = _documentTitle;
         SetStatus("A carregar...");
@@ -57,13 +72,50 @@ public partial class PdfDocumentView : UserControl
         PreviousButton.IsEnabled = false;
         NextButton.IsEnabled = false;
         UpdateFitButtons();
-        LoadPrinterChoices(_preferredPrinter);
+        LoadTemplateChoices();
+        LoadPrinterChoices(ResolvePreferredPrinter());
         _zoomMode = ZoomMode.Page;
         _pageIndex = 0;
         ClearPages();
         _closed = new TaskCompletionSource<bool>();
         _ = LoadAsync(path);
         return _closed.Task;
+    }
+
+    private void LoadTemplateChoices()
+    {
+        _suppressTemplateChange = true;
+        try
+        {
+            if (_barcodeMode == false)
+            {
+                TemplateBox.IsVisible = false;
+                TemplateBox.ItemsSource = null;
+                TemplateBox.SelectedItem = null;
+                return;
+            }
+
+            var options = BarcodeLabelPdf.Models.Select(item => item.Label).ToList();
+            TemplateBox.ItemsSource = options;
+            TemplateBox.IsVisible = true;
+            TemplateBox.SelectedItem = BarcodeLabelPdf.LabelOf(_barcodeTemplate);
+        }
+        finally
+        {
+            _suppressTemplateChange = false;
+        }
+    }
+
+    private string? ResolvePreferredPrinter()
+    {
+        if (_barcodeMode)
+        {
+            return PdfPrinterMemory.PrinterForTemplate(_barcodeTemplate)
+                ?? _preferredPrinter
+                ?? PdfPrinterMemory.LastA4Printer();
+        }
+
+        return PdfPrinterMemory.LastA4Printer() ?? _preferredPrinter;
     }
 
     private void LoadPrinterChoices(string? preferred)
@@ -107,6 +159,46 @@ public partial class PdfDocumentView : UserControl
         }
 
         return _preferredPrinter;
+    }
+
+    private string? SelectedTemplate()
+    {
+        if (TemplateBox.SelectedItem is string label)
+        {
+            return BarcodeLabelPdf.NormalizeModel(label);
+        }
+
+        return _barcodeTemplate;
+    }
+
+    private async void OnTemplateChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_suppressTemplateChange || _barcodeMode == false || _barcodeLabels.Count == 0)
+        {
+            return;
+        }
+
+        var template = SelectedTemplate();
+        if (string.IsNullOrWhiteSpace(template)
+            || string.Equals(template, _barcodeTemplate, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        _barcodeTemplate = template;
+        LoadPrinterChoices(ResolvePreferredPrinter());
+        try
+        {
+            SetStatus("A regenerar etiqueta...");
+            var path = await Task.Run(() => BarcodeLabelPdf.Write(_barcodeLabels, template));
+            _pdfPath = path;
+            ClearPages();
+            await LoadAsync(path);
+        }
+        catch (Exception exception)
+        {
+            SetStatus(exception.Message);
+        }
     }
 
     private void OnPdfLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
@@ -309,6 +401,15 @@ public partial class PdfDocumentView : UserControl
                     throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
                 }
             });
+            if (_barcodeMode)
+            {
+                PdfPrinterMemory.RememberTemplate(SelectedTemplate(), printer);
+            }
+            else
+            {
+                PdfPrinterMemory.RememberA4(printer);
+            }
+
             SetStatus(string.Empty);
         });
     }
