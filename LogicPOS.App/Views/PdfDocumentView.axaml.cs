@@ -219,7 +219,8 @@ public partial class PdfDocumentView : UserControl
         try
         {
             var bytes = await File.ReadAllBytesAsync(path);
-            var pngPages = await Task.Run(() => RenderPages(bytes));
+            var dpi = _barcodeMode ? 220 : 130;
+            var pngPages = await Task.Run(() => RenderPages(bytes, dpi));
             ClearPages();
             foreach (var png in pngPages)
             {
@@ -248,10 +249,10 @@ public partial class PdfDocumentView : UserControl
         }
     }
 
-    private static List<byte[]> RenderPages(byte[] pdf)
+    private static List<byte[]> RenderPages(byte[] pdf, int dpi = 130)
     {
         var pages = new List<byte[]>();
-        var options = new PDFtoImage.RenderOptions { Dpi = 130 };
+        var options = new PDFtoImage.RenderOptions { Dpi = Math.Clamp(dpi, 96, 300) };
         foreach (var image in PDFtoImage.Conversion.ToImages(pdf, password: null, options: options))
         {
             using (image)
@@ -291,7 +292,7 @@ public partial class PdfDocumentView : UserControl
     private void OnZoomInClick(object? sender, RoutedEventArgs e)
     {
         _zoomMode = ZoomMode.Manual;
-        _zoom = Math.Min(3, _zoom + 0.1);
+        _zoom = Math.Min(_barcodeMode ? 10 : 3, _zoom + 0.1);
         UpdateFitButtons();
         ApplyZoom();
     }
@@ -579,9 +580,11 @@ public partial class PdfDocumentView : UserControl
         var page = _pages[0].Bitmap.Size;
         var fitWidth = availableWidth / page.Width;
         var fitHeight = availableHeight / page.Height;
+        // Label pages are small (40x30 / 100x50 mm); allow higher zoom so they fill the preview.
+        var maxZoom = _barcodeMode ? 10.0 : 3.0;
         _zoom = _zoomMode == ZoomMode.Width
-            ? Math.Clamp(fitWidth, 0.2, 3)
-            : Math.Clamp(Math.Min(fitWidth, fitHeight), 0.2, 3);
+            ? Math.Clamp(fitWidth, 0.2, maxZoom)
+            : Math.Clamp(Math.Min(fitWidth, fitHeight), 0.2, maxZoom);
         UpdateFitButtons();
         ApplyZoom();
     }
