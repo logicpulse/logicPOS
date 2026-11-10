@@ -468,14 +468,11 @@
                             </StackPanel>
                             <DockPanel Classes="bo_touch_row">
                                 <Button x:Name="EditorVies"
-                                        Classes="bo_ship_action"
+                                        Classes="bo_line_icon"
                                         DockPanel.Dock="Right"
                                         Click="OnCustomerViesClick"
                                         ToolTip.Tip="Consultar VIES">
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_b.svg" />
-                                        <TextBlock Classes="bo_doc_action_text" Text="VIES" />
-                                    </StackPanel>
+                                    <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
                                 </Button>
                                 <TextBox x:Name="EditorFiscal"
                                          Classes="bo_line_editor_input bo_numeric"
