@@ -159,10 +159,12 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _scanner = ScannerInputReader.FromConfiguration(configuration);
         _scanner.Captured += OnScannerCaptured;
         InitializeComponent();
-        // FO dialog titlebars already show the page name; hide inner BO page titles.
-        MarkFoDialogHost(DocumentsHost);
-        MarkFoDialogHost(ReceiptHost);
-        MarkFoDialogHost(EntityHost);
+        // FO dialog titlebars already show the page name; hide inner BO page titles in code.
+        FoDialogChrome.ApplyHosted(DocumentsHost);
+        FoDialogChrome.ApplyHosted(ReceiptHost);
+        FoDialogChrome.ApplyHosted(EntityHost);
+        ApplyFoListingTitleIcon(ReceiptTitleIcon, "Emissão Recibos");
+        ApplyFoListingTitleIcon(StockTitleIcon, "Gestão de Stocks");
         ListingNotice.BindToast(VoltaNotice, this);
         ListingNotice.BindToast(SessionNotice, this);
         DevEditionBanner.Apply(DevBanner);
@@ -2205,6 +2207,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private async Task ShowDocumentsListingAsync()
     {
         HideListingOverlays();
+        FoDialogChrome.ApplyHosted(DocumentsHost);
         DocumentsOverlay.IsVisible = true;
         FitHostedOverlays();
         await DocumentsHost.ReloadAsync();
@@ -2213,6 +2216,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private async Task ShowReceiptEmissionAsync()
     {
         HideListingOverlays();
+        FoDialogChrome.ApplyHosted(ReceiptHost);
+        ApplyFoListingTitleIcon(ReceiptTitleIcon, "Emissão Recibos");
         ReceiptOverlay.IsVisible = true;
         FitHostedOverlays();
         await ReceiptHost.ReloadAsync();
@@ -2223,6 +2228,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         HideListingOverlays();
         EntityTitle.Text = title;
         ApplyFoEntityTitleIcon(title);
+        FoDialogChrome.ApplyHosted(EntityHost);
         EntityOverlay.IsVisible = true;
         FitHostedOverlays();
         await EntityHost.ShowAsync(title);
@@ -2234,6 +2240,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         StockOverlay.IsVisible = true;
         FitHostedOverlays();
         EnsureStockView();
+        FoDialogChrome.ApplyHosted(_stockView);
+        ApplyFoListingTitleIcon(StockTitleIcon, "Gestão de Stocks");
         if (_stockView is not null)
         {
             await _stockView.ReloadAsync();
@@ -2250,7 +2258,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         try
         {
             _stockView = new StockManagementView();
-            MarkFoDialogHost(_stockView);
+            FoDialogChrome.ApplyHosted(_stockView);
             StockHost.Children.Clear();
             StockHost.Children.Add(_stockView);
         }
@@ -2266,29 +2274,22 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
     }
 
-    private static void MarkFoDialogHost(Control? host)
-    {
-        host?.Classes.Set("fo_dialog_host", true);
-    }
-
     private void ApplyFoEntityTitleIcon(string title)
+        => ApplyFoListingTitleIcon(EntityTitleIcon, title);
+
+    private static void ApplyFoListingTitleIcon(Image? icon, string title)
     {
-        var path = title switch
-        {
-            "Recibos" => "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_finance_document.png",
-            "Conta.Corr." => "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_reports.png",
-            "Sessões de Trab." => "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png",
-            _ => BackOfficePageIcons.UriFor(title)
-                 ?? "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_finance_document.png"
-        };
+        // Prefer the same BO menu SVG used for that page; FO toolbar PNGs only as fallback.
+        var path = BackOfficePageIcons.UriFor(title)
+                   ?? title switch
+                   {
+                       "Sessões de Trab." => "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png",
+                       "Gestão de Stocks" => "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_merchandise_entry.png",
+                       "Documentos" => "avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png",
+                       _ => "avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png"
+                   };
 
-        // Prefer the same toolbar PNGs used in the Documents menu when available.
-        if (path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
-        {
-            path = "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_finance_document.png";
-        }
-
-        DialogTitleIcons.Apply(EntityTitleIcon, path);
+        DialogTitleIcons.Apply(icon, path);
     }
 
     private void OnCloseNamedOverlayClick(object? sender, RoutedEventArgs e)

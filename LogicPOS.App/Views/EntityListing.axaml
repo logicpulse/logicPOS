@@ -14,7 +14,7 @@
                                 <StackPanel x:Name="ActionBar" Classes="bo_page_actions" />
                                 <StackPanel x:Name="CreateBar" Classes="bo_page_actions" />
                             </StackPanel>
-                            <StackPanel Classes="bo_page_title_row">
+                            <StackPanel x:Name="PageTitleRow" Classes="bo_page_title_row">
                                 <svg:Svg x:Name="TitleIcon" Classes="bo_page_title_icon" IsVisible="False" />
                                 <TextBlock x:Name="TitleText" Classes="bo_page_title" />
                             </StackPanel>

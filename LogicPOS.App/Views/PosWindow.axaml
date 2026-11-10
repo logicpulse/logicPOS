@@ -405,8 +405,8 @@
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Classes="login_alert_title_row">
-                                <Image Classes="login_alert_title_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_finance_document.png" />
+                                <Image x:Name="ReceiptTitleIcon" Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                                 <TextBlock Classes="login_alert_title" Text="Emissão Recibos" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Classes="bo_window_buttons">
@@ -434,7 +434,7 @@
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Classes="login_alert_title_row">
                                 <Image x:Name="EntityTitleIcon" Classes="login_alert_title_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_finance_document.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                                 <TextBlock x:Name="EntityTitle" Classes="login_alert_title" Text="Listagem" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Classes="bo_window_buttons">
@@ -461,7 +461,7 @@
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Classes="login_alert_title_row">
-                                <Image Classes="login_alert_title_icon"
+                                <Image x:Name="StockTitleIcon" Classes="login_alert_title_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_merchandise_entry.png" />
                                 <TextBlock Classes="login_alert_title" Text="Gestão de Stocks" />
                             </StackPanel>

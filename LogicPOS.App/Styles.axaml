@@ -5909,11 +5909,12 @@
     </Style>
 
     <!-- FO dialog shell already shows the page title; keep action buttons only.
-         Match via pos_window overlays (reliable) and fo_dialog_host marker (explicit hosts). -->
-    <Style Selector="UserControl.pos_window Panel.login_alert_overlay StackPanel.bo_page_title_row">
+         Host matched by class only (StyleKey is the concrete type, so UserControl.foo
+         never matches PosWindow / ReceiptEmissionView). Target stays typed StackPanel. -->
+    <Style Selector=".pos_window .login_alert_overlay StackPanel.bo_page_title_row">
         <Setter Property="IsVisible" Value="False" />
     </Style>
-    <Style Selector="UserControl.fo_dialog_host StackPanel.bo_page_title_row">
+    <Style Selector=".fo_dialog_host StackPanel.bo_page_title_row">
         <Setter Property="IsVisible" Value="False" />
     </Style>
 
