@@ -579,9 +579,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
             {
                 Classes = { "pos_logo" },
                 Source = logoSource,
-                Stretch = Avalonia.Media.Stretch.Uniform,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Center
+                Stretch = Avalonia.Media.Stretch.Fill,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
             };
             RenderOptions.SetBitmapInterpolationMode(logoImage, BitmapInterpolationMode.HighQuality);
             var logo = new Border { Classes = { "pos_logo_box" } };

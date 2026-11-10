@@ -174,12 +174,10 @@ public sealed class PosLayout
         ArticleRows = FamilyRows;
 
         var logoSpan = ticketColumn + (Margin * 2);
-        // Compact brand band (logicpos_logo_frontoffice.png): keep ~status-bar height so the
-        // ticket list keeps useful vertical space; width follows the wordmark aspect.
-        const double frontOfficeAspect = 1024.0 / 350.0;
+        // Compact brand band: full ticket-column width, status-bar height (list keeps vertical space).
+        LogoWidth = Math.Max(120, logoSpan);
         LogoHeight = StatusBarHeight + 8;
-        LogoWidth = Math.Min(logoSpan, Math.Max(120, (int)Math.Round(LogoHeight * frontOfficeAspect)));
-        LogoX = columnRight + Math.Max(0, logoSpan - LogoWidth);
+        LogoX = columnRight;
         LogoY = 4;
 
         StatusBar1X = Margin;

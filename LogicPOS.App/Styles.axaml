@@ -1455,9 +1455,9 @@
     </Style>
 
     <Style Selector="Image.pos_logo">
-        <Setter Property="Stretch" Value="Uniform" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Stretch" Value="Fill" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="Border.pos_status_bar_1">
