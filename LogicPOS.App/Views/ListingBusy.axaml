@@ -6,10 +6,11 @@
              IsVisible="False"
              IsHitTestVisible="False">
     <Panel x:Name="Scrim" Classes="bo_listing_busy">
-        <Border Classes="glass_card glass_compact">
+        <Border x:Name="Card" Classes="glass_card glass_compact">
             <StackPanel Classes="bo_listing_busy_box">
-                <views:LogoLoader Width="74" Height="74" HorizontalAlignment="Center" />
+                <views:LogoLoader x:Name="Logo" Width="74" Height="74" HorizontalAlignment="Center" />
                 <TextBlock x:Name="Label" Classes="startup_status" Text="A carregar..." />
+                <ProgressBar x:Name="Bar" Classes="startup_progress" IsIndeterminate="True" IsVisible="False" />
             </StackPanel>
         </Border>
     </Panel>

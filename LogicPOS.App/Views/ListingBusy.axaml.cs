@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 
@@ -34,6 +35,14 @@ public partial class ListingBusy : UserControl
     public void UseLoginBusy()
     {
         Scrim.Background = Brushes.Transparent;
+        // Mesmo cartão do arranque: no ecrã de login cabe.
+        Card.Width = 240;
+        Card.Height = 270;
+        Card.Padding = new Thickness(22, 18);
+        Card.CornerRadius = new CornerRadius(16);
+        Logo.Width = 172;
+        Logo.Height = 172;
+        Bar.IsVisible = true;
     }
 
     public void Show(string? message = null)
