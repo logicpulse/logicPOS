@@ -13,7 +13,7 @@
                ZIndex="100"
                IsVisible="True"
                IsHitTestVisible="True">
-            <Border Classes="glass_card glass_compact" Padding="22,18" MinWidth="220">
+            <Border Classes="glass_card glass_compact">
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Spacing="14">

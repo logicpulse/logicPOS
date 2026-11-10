@@ -4,6 +4,7 @@
              x:Class="LogicPOS.App.Views.DashboardView"
              Classes="dash_root">
     <Border Classes="bo_doc_page">
+    <Panel>
     <ScrollViewer Classes="dash_scroll">
         <StackPanel Classes="dash_page">
             <Grid ColumnDefinitions="*,Auto">
@@ -29,10 +30,7 @@
                 </StackPanel>
             </Grid>
 
-            <StackPanel Classes="dash_status_row">
-                <views:LogoLoader x:Name="StatusLoader" Classes="logo_loader_inline" Width="22" Height="22" IsVisible="False" />
-                <TextBlock x:Name="StatusText" Classes="dash_status" IsVisible="False" />
-            </StackPanel>
+            <TextBlock x:Name="StatusText" Classes="dash_status" IsVisible="False" />
 
             <Grid Classes="dash_kpis" ColumnDefinitions="*,*,*,*">
                 <Border Classes="dash_kpi dash_kpi_today">
@@ -104,5 +102,7 @@
             </Grid>
         </StackPanel>
     </ScrollViewer>
+    <views:ListingBusy x:Name="Busy" />
+    </Panel>
     </Border>
 </UserControl>

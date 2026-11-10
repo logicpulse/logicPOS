@@ -106,7 +106,7 @@ public partial class DashboardView : UserControl
                 _year = snapshot.Year;
                 FillYears(snapshot.Years, snapshot.Year);
                 StatusText.IsVisible = false;
-                StatusLoader.IsVisible = false;
+                Busy.Hide();
                 ApplySnapshot();
             });
         }
@@ -194,9 +194,16 @@ public partial class DashboardView : UserControl
 
     private void ShowStatus(string message, bool loading)
     {
+        if (loading)
+        {
+            StatusText.IsVisible = false;
+            Busy.Show(message);
+            return;
+        }
+
+        Busy.Hide();
         StatusText.Text = message;
         StatusText.IsVisible = true;
-        StatusLoader.IsVisible = loading;
     }
 
     private static string Money(decimal value) => MoneyFormat.Format(value);

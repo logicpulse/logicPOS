@@ -4,8 +4,8 @@
         x:Class="LogicPOS.App.Views.StartupLoadingWindow"
         Title="logicpos"
         Icon="avares://LogicPOS.App/Assets/application.ico"
-        Width="220"
-        Height="180"
+        Width="240"
+        Height="270"
         CanResize="False"
         ShowInTaskbar="True"
         WindowDecorations="None"
@@ -16,10 +16,12 @@
     <!-- Só o cartão é visível. O branco é sólido; os cantos da janela não pintam um fundo preto. -->
     <Border Classes="glass_card">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
-            <views:LogoLoader Width="64" Height="64" HorizontalAlignment="Center" />
+            <views:LogoLoader Width="110" Height="110" HorizontalAlignment="Center" />
             <TextBlock x:Name="StatusText"
                        Classes="startup_status"
                        Text="A carregar POS..." />
+            <ProgressBar Classes="startup_progress"
+                         IsIndeterminate="True" />
         </StackPanel>
     </Border>
 </Window>

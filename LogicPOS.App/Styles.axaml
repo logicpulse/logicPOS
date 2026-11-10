@@ -1179,8 +1179,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="CornerRadius" Value="14" />
-        <Setter Property="Padding" Value="16,12" />
-        <Setter Property="MinWidth" Value="160" />
+        <Setter Property="Padding" Value="18,14" />
         <Setter Property="BoxShadow" Value="0 8 18 0 #1A000000" />
     </Style>
 
@@ -3666,22 +3665,6 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Margin" Value="0,8,0,0" />
     </Style>
-
-    <Style Selector="StackPanel.dash_status_row">
-        <Setter Property="Orientation" Value="Horizontal" />
-        <Setter Property="Spacing" Value="8" />
-    </Style>
-
-    <Style Selector="StackPanel.dash_status_row TextBlock.dash_status">
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-    </Style>
-
-    <Style Selector="StackPanel.dash_status_row UserControl.logo_loader_inline">
-        <Setter Property="Margin" Value="0,8,0,0" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-    </Style>
-
     <Style Selector="Grid.dash_kpis">
         <Setter Property="Margin" Value="0,8,0,0" />
     </Style>
