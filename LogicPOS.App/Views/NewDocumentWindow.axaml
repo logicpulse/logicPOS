@@ -40,12 +40,16 @@
                         <Button x:Name="TransportButton" Classes="bo_line_icon bo_transport_icon" IsVisible="False" Click="OnOpenTransportClick" ToolTip.Tip="Dados de transporte">
                             <Image Classes="bo_line_icon_image bo_transport_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/menu_listagem_de_veiculos.png" />
                         </Button>
+                        <Button Classes="bo_line_icon" Click="OnPreviewClick" ToolTip.Tip="Imprimir / pré-visualizar">
+                            <svg:Svg Classes="bo_line_icon_image"
+                                     Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_b.svg" />
+                        </Button>
                     </StackPanel>
                 <StackPanel x:Name="DocumentActions" Classes="login_alert_action_buttons">
                     <Button Classes="login_alert_action bo_new_doc_preview" Click="OnPreviewClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_preview.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_b.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Pré-visualizar" />
                         </StackPanel>
                     </Button>
@@ -196,16 +200,23 @@
                                 <StackPanel Classes="bo_new_doc_article_tools" DockPanel.Dock="Right">
                                     <Button Classes="bo_new_doc_tool" Click="OnNewArticleClick" ToolTip.Tip="Novo artigo">
                                         <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <TextBlock Text="+" FontWeight="Bold" VerticalAlignment="Center" />
+                                            <svg:Svg Classes="bo_line_icon_image"
+                                                     Path="avares://LogicPOS.App/Assets/Images/Listing/botao_novo_b.svg" />
                                             <TextBlock Text="Novo" VerticalAlignment="Center" />
                                         </StackPanel>
                                     </Button>
-                                    <Button x:Name="SerialButton" Classes="bo_new_doc_tool" IsVisible="False" Click="OnSerialClick" ToolTip.Tip="Artigo único">Série</Button>
+                                    <Button x:Name="SerialButton" Classes="bo_new_doc_tool" IsVisible="False" Click="OnSerialClick" ToolTip.Tip="Artigo único">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <svg:Svg Classes="bo_line_icon_image"
+                                                     Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_artigos_b.svg" />
+                                            <TextBlock Text="Série" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
                                     <Button Classes="bo_line_icon" Click="OnOpenArticlePad" ToolTip.Tip="Escolher">
-                                        <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_selecionar_b.svg" />
+                                        <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg" />
                                     </Button>
                                     <Border Classes="bo_new_doc_total_box">
-                                        <TextBlock x:Name="TotalLabel" Classes="bo_new_doc_total" Text="Total: 0,00 €" />
+                                        <TextBlock x:Name="TotalLabel" Classes="bo_new_doc_total" Text="0,00 €" />
                                     </Border>
                                 </StackPanel>
                                 <TextBox x:Name="ArticleSearch"

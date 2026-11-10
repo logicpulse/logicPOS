@@ -4675,7 +4675,7 @@
     </Style>
 
     <Style Selector="Border.bo_new_doc_articles_header">
-        <Setter Property="Background" Value="#2563EB" />
+        <Setter Property="Background" Value="#9bbe1d" />
         <Setter Property="Padding" Value="12,8" />
     </Style>
 
@@ -4702,8 +4702,8 @@
     </Style>
 
     <Style Selector="Border.bo_new_doc_total_box">
-        <Setter Property="Background" Value="#E8F0FE" />
-        <Setter Property="BorderBrush" Value="#BFDBFE" />
+        <Setter Property="Background" Value="#F4F9E8" />
+        <Setter Property="BorderBrush" Value="#D7E8A8" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="12,6" />
@@ -4722,7 +4722,7 @@
     <Style Selector="svg|Svg.bo_new_doc_empty_icon">
         <Setter Property="Width" Value="56" />
         <Setter Property="Height" Value="56" />
-        <Setter Property="Opacity" Value="0.35" />
+        <Setter Property="Opacity" Value="0.85" />
         <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
 
@@ -4823,7 +4823,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0" />
-        <Setter Property="Foreground" Value="#1D4ED8" />
+        <Setter Property="Foreground" Value="#5A7A12" />
     </Style>
 
     <Style Selector="Border.bo_line_editor">
