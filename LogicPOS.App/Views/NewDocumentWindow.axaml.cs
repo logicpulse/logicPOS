@@ -47,6 +47,8 @@ public partial class NewDocumentWindow : UserControl
     private readonly List<NewDocumentLine> _lines = new();
     private readonly List<CatalogChoice> _catalog = new();
     private readonly List<CatalogChoice> _matches = new();
+    private readonly List<StockSerialChoice> _serialMatches = new();
+    private int _articleSearch;
     private readonly List<PosCustomer> _customerMatches = new();
     private int _customerSearch;
     private int _serialSearch;
@@ -437,8 +439,8 @@ public partial class NewDocumentWindow : UserControl
         PortraitChrome.FitOverlay(ArticlePadFrame, host, 980, 680, lockHeight: false, bottomReserve: bottomReserve);
         PortraitChrome.FitToContent(CustomerListFrame, host, 480, minWidth: 360, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(TransportFrame, host, 980, 520, lockHeight: false, bottomReserve: bottomReserve);
-        PortraitChrome.FitToContent(NewArticleFrame, host, 520, minWidth: 360, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(SerialFrame, host, 640, 560, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitToContent(NewArticleFrame, host, 480, minWidth: 420, bottomReserve: bottomReserve, lockWidth: true);
+        PortraitChrome.FitOverlay(SerialFrame, host, 560, 480, lockHeight: false, bottomReserve: bottomReserve);
 
         // Portrait: keep header compact so the lines grid still has room.
         HeaderScroll.MaxHeight = _portrait ? Math.Max(160, _viewport.Height * 0.32) : double.PositiveInfinity;
@@ -541,7 +543,7 @@ public partial class NewDocumentWindow : UserControl
             _posCatalog = catalog;
             _catalog.Clear();
             _catalog.AddRange(_posCatalog.Articles.Select(article => new CatalogChoice(article, FamilyName(_posCatalog, article))));
-            ApplyFilter();
+            _ = ApplyFilterAsync();
         }
 
         if (companyAddress is not null)
@@ -1443,14 +1445,26 @@ public partial class NewDocumentWindow : UserControl
 
     private void OnSearchChanged(object? sender, TextChangedEventArgs e)
     {
-        ApplyFilter();
+        _ = ApplyFilterAsync();
     }
 
     private void OnSearchKeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter && _matches.Count > 0)
+        if (e.Key != Key.Enter)
+        {
+            return;
+        }
+
+        if (_matches.Count > 0)
         {
             AddChoice(_matches[0]);
+            return;
+        }
+
+        if (_serialMatches.Count > 0)
+        {
+            AddSerial(_serialMatches[0]);
+            ArticleSearch.Text = string.Empty;
         }
     }
 
@@ -1701,24 +1715,37 @@ public partial class NewDocumentWindow : UserControl
         }
     }
 
+    private void ShowSerialNotice(string message)
+    {
+        if (SerialOverlay.IsVisible)
+        {
+            SerialNotice.Text = message;
+            return;
+        }
+
+        ErrorLabel.Text = message;
+    }
+
     private void AddSerial(StockSerialChoice serial)
     {
         if (_lines.Any(line => string.Equals(line.SerialNumber, serial.SerialNumber, StringComparison.OrdinalIgnoreCase)))
         {
-            SerialNotice.Text = "Esse número de série já está no documento.";
+            ShowSerialNotice("Esse número de série já está no documento.");
             return;
         }
 
         var choice = _catalog.FirstOrDefault(item => item.Article.Id == serial.ArticleId);
         if (choice is null)
         {
-            SerialNotice.Text = "O artigo deste número de série não está no catálogo.";
+            ShowSerialNotice("O artigo deste número de série não está no catálogo.");
             return;
         }
 
         _lines.Add(new NewDocumentLine(choice.Article, choice.Family, serial.SerialNumber));
         ErrorLabel.Text = string.Empty;
         SerialNotice.Text = string.Empty;
+        SerialOverlay.IsVisible = false;
+        ArticleSearch.Text = string.Empty;
         RefreshLines();
     }
 
@@ -2100,9 +2127,11 @@ public partial class NewDocumentWindow : UserControl
         return _catalog.FirstOrDefault(item => item.Article.Id == article.Id)?.Family ?? string.Empty;
     }
 
-    private void ApplyFilter()
+    private async Task ApplyFilterAsync()
     {
+        var ticket = ++_articleSearch;
         _matches.Clear();
+        _serialMatches.Clear();
         ArticleSuggestList.Children.Clear();
         var term = ArticleSearch.Text?.Trim();
         if (string.IsNullOrEmpty(term))
@@ -2115,17 +2144,60 @@ public partial class NewDocumentWindow : UserControl
         foreach (var choice in _matches)
         {
             var match = choice;
-            var button = new Button
-            {
-                Classes = { "bo_report_row" },
-                Content = $"{match.Code}  {match.Designation}",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
-            };
-            button.Click += (_, _) => AddChoice(match);
-            ArticleSuggestList.Children.Add(button);
+            ArticleSuggestList.Children.Add(SuggestButton($"{match.Code}  {match.Designation}", () => AddChoice(match)));
         }
 
         ArticleSuggest.IsVisible = _matches.Count > 0;
+        await Task.Delay(250);
+        if (ticket != _articleSearch || string.Equals(ArticleSearch.Text?.Trim(), term, StringComparison.Ordinal) == false)
+        {
+            return;
+        }
+
+        var stock = AppComposition.Services?.GetService<IStockManagementService>();
+        if (stock is null)
+        {
+            return;
+        }
+
+        IReadOnlyList<StockSerialChoice> rows;
+        try
+        {
+            rows = await stock.SearchAvailableSerialsAsync(term);
+        }
+        catch (Exception exception)
+        {
+            ErrorLabel.Text = exception.Message;
+            return;
+        }
+
+        if (ticket != _articleSearch)
+        {
+            return;
+        }
+
+        foreach (var row in rows.Take(8))
+        {
+            var serial = row;
+            _serialMatches.Add(serial);
+            ArticleSuggestList.Children.Add(SuggestButton(
+                $"{serial.SerialNumber}   {serial.Code}  {serial.Designation}",
+                () => AddSerial(serial)));
+        }
+
+        ArticleSuggest.IsVisible = ArticleSuggestList.Children.Count > 0;
+    }
+
+    private static Button SuggestButton(string label, Action click)
+    {
+        var button = new Button
+        {
+            Classes = { "bo_report_row" },
+            Content = label,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
+        };
+        button.Click += (_, _) => click();
+        return button;
     }
 
     private static string FamilyName(PosCatalog catalog, PosArticle article)

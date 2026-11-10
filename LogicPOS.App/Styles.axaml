@@ -4788,6 +4788,15 @@
         <Setter Property="Margin" Value="0,8,0,3" />
     </Style>
 
+    <Style Selector="StackPanel.bo_quick_dialog_body">
+        <Setter Property="Margin" Value="16,12,16,12" />
+        <Setter Property="Spacing" Value="4" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_serial_list">
+        <Setter Property="Spacing" Value="6" />
+    </Style>
+
     <Style Selector="StackPanel.bo_new_doc_label">
         <Setter Property="Orientation" Value="Horizontal" />
         <Setter Property="Spacing" Value="4" />

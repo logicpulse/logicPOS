@@ -247,7 +247,7 @@
                                 </StackPanel>
                                 <TextBox x:Name="ArticleSearch"
                                          Classes="bo_new_doc_search_box"
-                                         PlaceholderText="Referência, descrição ou família..."
+                                         PlaceholderText="Referência, descrição, família ou nº de série..."
                                          TextChanged="OnSearchChanged"
                                          KeyDown="OnSearchKeyDown" />
                             </DockPanel>
@@ -694,20 +694,34 @@
         <Border x:Name="NewArticleFrame" Classes="login_alert_frame">
             <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                    <TextBlock Classes="login_alert_title" Text="Novo artigo" />
+                    <DockPanel>
+                        <Button Classes="bo_window_button" DockPanel.Dock="Right" Click="OnNewArticleCloseClick" ToolTip.Tip="Fechar">
+                            <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                        </Button>
+                        <StackPanel Classes="login_alert_title_row">
+                            <svg:Svg Classes="login_alert_title_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_novo_w.svg" />
+                            <TextBlock Classes="login_alert_title" Text="Novo artigo" />
+                        </StackPanel>
+                    </DockPanel>
                 </Border>
                 <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                     <StackPanel Classes="login_alert_action_buttons">
                         <Button Classes="login_alert_action" Click="OnNewArticleSaveClick">
-                            <TextBlock Classes="login_alert_action_text" Text="Criar" />
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Criar" />
+                            </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action" Click="OnNewArticleCloseClick">
-                            <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                            </StackPanel>
                         </Button>
                     </StackPanel>
                 </Border>
                 <ScrollViewer>
-                    <StackPanel Classes="bo_stock_editor_body">
+                    <StackPanel Classes="bo_quick_dialog_body">
                         <TextBlock Classes="bo_new_doc_caption" Text="Código" />
                         <TextBox x:Name="NewArticleCode" Classes="bo_entity_input" PlaceholderText="Gerado se ficar vazio" />
                         <TextBlock Classes="bo_new_doc_caption" Text="Designação" />
@@ -729,22 +743,37 @@
         <Border x:Name="SerialFrame" Classes="login_alert_frame">
             <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                    <TextBlock Classes="login_alert_title" Text="Artigo único" />
+                    <DockPanel>
+                        <Button Classes="bo_window_button" DockPanel.Dock="Right" Click="OnSerialCloseClick" ToolTip.Tip="Fechar">
+                            <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                        </Button>
+                        <StackPanel Classes="login_alert_title_row">
+                            <svg:Svg Classes="login_alert_title_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_artigos.svg" />
+                            <TextBlock Classes="login_alert_title" Text="Artigo único" />
+                        </StackPanel>
+                    </DockPanel>
                 </Border>
                 <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                    <Button Classes="login_alert_action" Click="OnSerialCloseClick">
-                        <TextBlock Classes="login_alert_action_text" Text="Fechar" />
-                    </Button>
+                    <StackPanel Classes="login_alert_action_buttons">
+                        <Button Classes="login_alert_action" Click="OnSerialCloseClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
                 </Border>
-                <DockPanel>
-                    <TextBox x:Name="SerialSearch"
-                             Classes="bo_new_doc_search_box"
-                             DockPanel.Dock="Top"
-                             PlaceholderText="Número de série"
-                             TextChanged="OnSerialSearchChanged" />
-                    <TextBlock x:Name="SerialNotice" Classes="bo_new_doc_error" DockPanel.Dock="Top" />
+                <DockPanel Classes="bo_quick_dialog_body">
+                    <StackPanel DockPanel.Dock="Top">
+                        <TextBlock Classes="bo_new_doc_caption" Text="Número de série" />
+                        <TextBox x:Name="SerialSearch"
+                                 Classes="bo_entity_input"
+                                 PlaceholderText="Número de série, código ou artigo"
+                                 TextChanged="OnSerialSearchChanged" />
+                        <TextBlock x:Name="SerialNotice" Classes="bo_new_doc_error" />
+                    </StackPanel>
                     <ScrollViewer>
-                        <StackPanel x:Name="SerialList" />
+                        <StackPanel x:Name="SerialList" Classes="bo_serial_list" />
                     </ScrollViewer>
                 </DockPanel>
             </DockPanel>
