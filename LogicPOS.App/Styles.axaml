@@ -5878,7 +5878,7 @@
     <Style Selector="StackPanel.bo_stock_editor_body">
         <Setter Property="Margin" Value="16" />
         <Setter Property="Spacing" Value="8" />
-        <Setter Property="Background" Value="#EEF1F5" />
+        <Setter Property="Background" Value="#FFFFFF" />
     </Style>
 
     <Style Selector="StackPanel.bo_stock_lines">
