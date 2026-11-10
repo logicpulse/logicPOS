@@ -4892,7 +4892,7 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="svg|Svg.bo_new_doc_label_icon">
+    <Style Selector="svg|Svg.bo_new_doc_label_icon, Image.bo_new_doc_label_icon">
         <Setter Property="Width" Value="14" />
         <Setter Property="Height" Value="14" />
         <Setter Property="VerticalAlignment" Value="Center" />
