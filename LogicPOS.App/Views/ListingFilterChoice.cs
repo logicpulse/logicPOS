@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -228,31 +229,7 @@ public static class ListingFilters
         box.IsTextCompletionEnabled = false;
         box.PlaceholderText = "Nº, cliente ou NIF...";
         box.MaxDropDownHeight = 360;
-        box.ItemTemplate = new FuncDataTemplate<PosLookupItem>((item, _) =>
-        {
-            var panel = new StackPanel { Spacing = 0 };
-            // Empty Guid is the "none" row; Label may be blank so the field shows the watermark.
-            var label = item is null
-                ? string.Empty
-                : item.Id == Guid.Empty && string.IsNullOrWhiteSpace(item.Label)
-                    ? "—"
-                    : item.Label;
-            panel.Children.Add(new TextBlock
-            {
-                Classes = { "bo_doc_filter_search_name" },
-                Text = label
-            });
-            if (string.IsNullOrWhiteSpace(item?.Detail) == false)
-            {
-                panel.Children.Add(new TextBlock
-                {
-                    Classes = { "bo_doc_filter_search_meta" },
-                    Text = item.Detail
-                });
-            }
-
-            return panel;
-        });
+        box.ItemTemplate = new FuncDataTemplate<PosLookupItem>((item, _) => BuildDocumentLookupItem(item));
         box.GotFocus += (_, _) =>
         {
             var text = box.Text ?? string.Empty;
@@ -398,6 +375,97 @@ public static class ListingFilters
         {
             editor.Text = label;
         }
+    }
+
+    private static Control BuildDocumentLookupItem(PosLookupItem? item)
+    {
+        // Empty Guid is the "none" row; Label may be blank so the field shows the watermark.
+        if (item is null || (item.Id == Guid.Empty && string.IsNullOrWhiteSpace(item.Label)))
+        {
+            return new Border
+            {
+                Classes = { "bo_doc_lookup_item" },
+                Child = new TextBlock
+                {
+                    Classes = { "bo_doc_lookup_empty" },
+                    Text = "—"
+                }
+            };
+        }
+
+        var text = new StackPanel { Classes = { "bo_doc_lookup_text" } };
+        text.Children.Add(new TextBlock
+        {
+            Classes = { "bo_doc_lookup_title" },
+            Text = DocumentLookupTitle(item)
+        });
+
+        if (string.IsNullOrWhiteSpace(item.Detail) == false)
+        {
+            var meta = new WrapPanel { Classes = { "bo_doc_lookup_meta_row" } };
+            var parts = item.Detail.Split(
+                " · ",
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            for (var i = 0; i < parts.Length; i++)
+            {
+                if (i > 0)
+                {
+                    meta.Children.Add(new TextBlock
+                    {
+                        Classes = { "bo_doc_lookup_meta_sep" },
+                        Text = "·"
+                    });
+                }
+
+                meta.Children.Add(new TextBlock
+                {
+                    Classes = { i == 0 ? "bo_doc_lookup_meta_primary" : "bo_doc_lookup_meta" },
+                    Text = parts[i]
+                });
+            }
+
+            text.Children.Add(meta);
+        }
+
+        var row = new DockPanel { Classes = { "bo_doc_lookup_row" } };
+        if (string.IsNullOrWhiteSpace(item.Code) == false && item.Id != Guid.Empty)
+        {
+            var badge = new Border
+            {
+                Classes = { "bo_doc_lookup_type" },
+                Child = new TextBlock
+                {
+                    Classes = { "bo_doc_lookup_type_text" },
+                    Text = item.Code.Trim().ToUpperInvariant()
+                }
+            };
+            DockPanel.SetDock(badge, Dock.Left);
+            row.Children.Add(badge);
+        }
+
+        row.Children.Add(text);
+        return new Border
+        {
+            Classes = { "bo_doc_lookup_item" },
+            Child = row
+        };
+    }
+
+    private static string DocumentLookupTitle(PosLookupItem item)
+    {
+        var label = (item.Label ?? string.Empty).Trim();
+        var code = (item.Code ?? string.Empty).Trim();
+        if (code.Length == 0 || label.Length == 0)
+        {
+            return string.IsNullOrWhiteSpace(label) ? "—" : label;
+        }
+
+        if (label.StartsWith(code + " ", StringComparison.OrdinalIgnoreCase))
+        {
+            return label[(code.Length + 1)..].TrimStart();
+        }
+
+        return label;
     }
 
     private static bool MatchDocument(string? search, object? item)

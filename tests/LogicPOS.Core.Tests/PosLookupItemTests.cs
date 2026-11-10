@@ -9,6 +9,7 @@ public class PosLookupItemTests
     [InlineData("PF", "PF 2026A864/1", "PF 2026A864/1")]
     [InlineData("ft", "FT 2026A864/1008", "FT 2026A864/1008")]
     [InlineData("FS", "2026A864/12", "FS 2026A864/12")]
+    [InlineData("FS", "FS2026/1", "FS2026/1")]
     [InlineData("", "FT 2026A864/1008", "FT 2026A864/1008")]
     [InlineData("FT", "", "FT")]
     public void DocumentLabel_does_not_double_prefix_type(string type, string number, string expected)

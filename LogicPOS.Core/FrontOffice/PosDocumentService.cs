@@ -146,8 +146,11 @@ public sealed class PosLookupItem
         }
 
         if (string.IsNullOrWhiteSpace(typeToken)
+            || numberToken.Equals(typeToken, StringComparison.OrdinalIgnoreCase)
             || numberToken.StartsWith(typeToken + " ", StringComparison.OrdinalIgnoreCase)
-            || numberToken.Equals(typeToken, StringComparison.OrdinalIgnoreCase))
+            || (numberToken.StartsWith(typeToken, StringComparison.OrdinalIgnoreCase)
+                && numberToken.Length > typeToken.Length
+                && char.IsLetter(numberToken[typeToken.Length]) == false))
         {
             return numberToken;
         }
