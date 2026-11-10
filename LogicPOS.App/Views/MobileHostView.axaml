@@ -18,8 +18,8 @@
                         VerticalAlignment="Center"
                         Spacing="14">
                 <views:LogoLoader x:Name="LoadingLogo"
-                                  Width="64"
-                                  Height="64"
+                                  Width="74"
+                                  Height="74"
                                   HorizontalAlignment="Center" />
                 <TextBlock x:Name="Status"
                            Classes="startup_status"

@@ -15,8 +15,8 @@
         Topmost="True">
     <!-- Só o cartão é visível. O branco é sólido; os cantos da janela não pintam um fundo preto. -->
     <Border Classes="glass_card">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-            <views:LogoLoader Width="150" Height="150" HorizontalAlignment="Center" />
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+            <views:LogoLoader Width="172" Height="172" HorizontalAlignment="Center" />
             <TextBlock x:Name="StatusText"
                        Classes="startup_status"
                        Text="A carregar POS..." />

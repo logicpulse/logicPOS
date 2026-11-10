@@ -8,7 +8,7 @@
     <Panel x:Name="Scrim" Classes="bo_listing_busy">
         <Border Classes="glass_card glass_compact">
             <StackPanel Classes="bo_listing_busy_box">
-                <views:LogoLoader Width="64" Height="64" HorizontalAlignment="Center" />
+                <views:LogoLoader Width="74" Height="74" HorizontalAlignment="Center" />
                 <TextBlock x:Name="Label" Classes="startup_status" Text="A carregar..." />
             </StackPanel>
         </Border>

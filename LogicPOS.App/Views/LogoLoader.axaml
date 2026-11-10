@@ -2,9 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="LogicPOS.App.Views.LogoLoader"
              Classes="logo_loader"
+             ClipToBounds="False"
              Width="56"
              Height="56">
-    <Grid x:Name="Tiles" ColumnDefinitions="*,*" RowDefinitions="*,*">
+    <Grid x:Name="Tiles" ColumnDefinitions="*,*" RowDefinitions="*,*" ClipToBounds="False">
         <Panel x:Name="Tile0">
             <Border Classes="logo_tile" />
             <Border Classes="logo_tile_on" />

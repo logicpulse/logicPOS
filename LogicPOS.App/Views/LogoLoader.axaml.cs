@@ -18,6 +18,9 @@ public partial class LogoLoader : UserControl
     private static readonly TimeSpan Cycle = TimeSpan.FromMilliseconds(420 * 4);
     private const float Fade = 0.04f;
 
+    /// <summary>Maior escala do salto. A margem de cada quadrado reserva este crescimento para não ser cortado.</summary>
+    private const double PeakScale = 1.16;
+
     private readonly Panel[] _tiles;
     private bool _started;
 
@@ -43,22 +46,30 @@ public partial class LogoLoader : UserControl
     {
         base.OnSizeChanged(e);
         var side = Math.Min(e.NewSize.Width, e.NewSize.Height);
-        Tiles.RowSpacing = Tiles.ColumnSpacing = Math.Max(2, side * 0.08);
-        var radius = new CornerRadius(Math.Max(3, side * 0.11));
+        if (side <= 0 || double.IsNaN(side))
+        {
+            return;
+        }
+
+        var gap = Math.Max(2, side * 0.08);
+        Tiles.RowSpacing = Tiles.ColumnSpacing = gap;
+        var cell = (side - gap) / 2;
+        var margin = cell * (PeakScale - 1) / (2 * PeakScale);
+        var tileSide = Math.Max(1, cell - margin * 2);
+        var radius = new CornerRadius(Math.Max(3, tileSide * 0.24));
         foreach (var tile in _tiles)
         {
+            tile.Margin = new Thickness(margin);
+            tile.ClipToBounds = false;
             foreach (var child in tile.Children)
             {
                 if (child is Border border)
                 {
                     border.CornerRadius = radius;
+                    border.ClipToBounds = false;
                 }
             }
-        }
 
-        var tileSide = (side - Tiles.RowSpacing) / 2;
-        foreach (var tile in _tiles)
-        {
             if (ElementComposition.GetElementVisual(tile) is { } visual)
             {
                 visual.CenterPoint = new Vector3D(tileSide / 2, tileSide / 2, 0);
@@ -83,7 +94,10 @@ public partial class LogoLoader : UserControl
                 return;
             }
 
-            tileVisual.CenterPoint = new Vector3D(tile.Bounds.Width / 2, tile.Bounds.Height / 2, 0);
+            if (tile.Bounds.Width > 0 && tile.Bounds.Height > 0)
+            {
+                tileVisual.CenterPoint = new Vector3D(tile.Bounds.Width / 2, tile.Bounds.Height / 2, 0);
+            }
             var start = slot / (float)HopOrder.Length;
             var end = (slot + 1) / (float)HopOrder.Length;
             greenVisual.StartAnimation("Opacity", CreateGreenAnimation(greenVisual.Compositor, start, end));
