@@ -12,7 +12,11 @@
                         <DockPanel>
                             <StackPanel Classes="bo_page_actions" DockPanel.Dock="Right">
                                 <Button Classes="bo_page_action" Click="OnPayClick" ToolTip.Tip="Liquidar">
-                                    <TextBlock Classes="bo_doc_action_text" Text="Liquidar" />
+                                    <StackPanel Classes="bo_doc_action_content">
+                                        <svg:Svg Classes="bo_doc_action_icon"
+                                                 Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_dashboard_emissao_recibos.svg" />
+                                        <TextBlock Classes="bo_doc_action_text" Text="Liquidar" />
+                                    </StackPanel>
                                 </Button>
                                 <Button Classes="bo_page_action" Click="OnOpenClick" ToolTip.Tip="Abrir">
                                     <StackPanel Classes="bo_doc_action_content">

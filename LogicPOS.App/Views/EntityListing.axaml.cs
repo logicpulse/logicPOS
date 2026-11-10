@@ -497,11 +497,71 @@ public partial class EntityListing : UserControl
         foreach (var action in snapshot.Actions)
         {
             var key = action.Key;
-            var button = new Button { Classes = { "bo_page_action" }, Content = action.Label };
+            var button = new Button
+            {
+                Classes = { "bo_page_action" },
+                Content = ActionButtonContent(action.Label, IconForAction(key))
+            };
+            ToolTip.SetTip(button, action.Label);
             button.Click += async (_, _) => await RunActionAsync(key);
             ActionBar.Children.Add(button);
         }
     }
+
+    private static Control ActionButtonContent(string label, string? iconPath)
+    {
+        var content = new StackPanel { Classes = { "bo_doc_action_content" } };
+        if (string.IsNullOrWhiteSpace(iconPath) == false)
+        {
+            if (iconPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+            {
+                content.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+                {
+                    Classes = { "bo_doc_action_icon" },
+                    Path = iconPath
+                });
+            }
+            else
+            {
+                content.Children.Add(new Image
+                {
+                    Classes = { "bo_doc_action_icon" },
+                    Source = new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri(iconPath)))
+                });
+            }
+        }
+
+        content.Children.Add(new TextBlock { Classes = { "bo_doc_action_text" }, Text = label });
+        return content;
+    }
+
+    private static string? IconForAction(string key)
+        => key switch
+        {
+            "export-saft" or "saft-year" or "saft-month" or "saft-period"
+                => "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_exportacao_saft_anual.svg",
+            "register-at"
+                => "avares://LogicPOS.App/Assets/Images/Documents/icon_doc_email_w.png",
+            "request-agt" or "request-series"
+                => "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_series_documentos.svg",
+            "undo-receipt"
+                => "avares://LogicPOS.App/Assets/Images/Documents/icon_doc_void_w.png",
+            "backup" or "restore"
+                => "avares://LogicPOS.App/Assets/Images/Documents/icon_doc_open_w.png",
+            "import-articles" or "import-customers"
+                => "avares://LogicPOS.App/Assets/Images/Listing/botao_novo_w.svg",
+            "export-articles" or "export-customers"
+                => "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_exportacao.svg",
+            "open-session" or "close-session" or "cash-in" or "cash-out"
+                => "avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png",
+            "stock-in" or "stock-out"
+                => "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_gestao_stocks.svg",
+            "emit-receipt"
+                => "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_dashboard_emissao_recibos.svg",
+            "agt-consult"
+                => "avares://LogicPOS.App/Assets/Images/Documents/icon_doc_open_w.png",
+            _ => null
+        };
 
     private void BindColumns(ListingSnapshot snapshot)
     {
