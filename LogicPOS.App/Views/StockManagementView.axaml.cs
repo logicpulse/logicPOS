@@ -982,7 +982,7 @@ public partial class StockManagementView : UserControl
         _editId = warehouseArticleId;
         EditorTitle.Text = "Alterar localização do artigo";
         DialogTitleIcons.ApplyEdit(EditorTitleIcon);
-        EditorHost.Children.Clear();
+        ResetEditorShell();
         if (_tab == StockTab.History && SelectedHistory() is { } historyRow)
         {
             EditorHost.Children.Add(ReadOnly("Artigo", historyRow.Article));
@@ -1036,7 +1036,7 @@ public partial class StockManagementView : UserControl
         _editId = history.WarehouseArticleId;
         EditorTitle.Text = "Trocar artigo único";
         DialogTitleIcons.ApplyEdit(EditorTitleIcon);
-        EditorHost.Children.Clear();
+        ResetEditorShell();
         _exchangeBox = new AutoCompleteBox { ItemsSource = available, Classes = { "bo_entity_input" } };
         ListingFilters.EnableLookupSearch(_exchangeBox);
         _exchangeBox.PlaceholderText = "Número de série";
@@ -1073,7 +1073,7 @@ public partial class StockManagementView : UserControl
         _attachedPdf = null;
         EditorTitle.Text = "Inserir movimento de stock";
         DialogTitleIcons.ApplyCreate(EditorTitleIcon);
-        EditorHost.Children.Clear();
+        ResetEditorShell(split: true);
         _lineControls.Clear();
 
         _supplierBox = SupplierSearch(suppliers, null);
@@ -1087,19 +1087,32 @@ public partial class StockManagementView : UserControl
         var addLine = new Button { Content = "Adicionar linha", Classes = { "bo_listing_columns" } };
         addLine.Click += (_, _) => AddMovementLine(articles, locations);
 
-        EditorHost.Children.Add(Label("Fornecedor"));
-        EditorHost.Children.Add(_supplierBox);
-        EditorHost.Children.Add(Label("Data"));
-        EditorHost.Children.Add(_dateBox);
         _dateBox.SelectedDate = DateTime.Today;
         EditorNotice.Text = string.Empty;
-        EditorHost.Children.Add(documentField);
-        EditorHost.Children.Add(notesField);
-        EditorHost.Children.Add(attachButton);
-        EditorHost.Children.Add(_attachLabel);
-        EditorHost.Children.Add(addLine);
+
+        var left = new StackPanel { Classes = { "bo_stock_editor_col" } };
+        left.Children.Add(Label("Fornecedor"));
+        left.Children.Add(_supplierBox);
+        left.Children.Add(Label("Data"));
+        left.Children.Add(_dateBox);
+        left.Children.Add(documentField);
+        left.Children.Add(notesField);
+        left.Children.Add(attachButton);
+        left.Children.Add(_attachLabel);
+
         _linesHost = new StackPanel { Spacing = 8, Classes = { "bo_stock_lines" } };
-        EditorHost.Children.Add(_linesHost);
+        var right = new StackPanel { Classes = { "bo_stock_editor_col" } };
+        right.Children.Add(addLine);
+        right.Children.Add(_linesHost);
+
+        var split = new Avalonia.Controls.Grid { Classes = { "bo_stock_editor_split_grid" } };
+        split.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        split.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        Avalonia.Controls.Grid.SetColumn(left, 0);
+        Avalonia.Controls.Grid.SetColumn(right, 1);
+        split.Children.Add(left);
+        split.Children.Add(right);
+        EditorHost.Children.Add(split);
         AddMovementLine(articles, locations);
         EditorOverlay.IsVisible = true;
     }
@@ -1118,7 +1131,7 @@ public partial class StockManagementView : UserControl
         _attachedPdf = null;
         EditorTitle.Text = "Editar movimento";
         DialogTitleIcons.ApplyEdit(EditorTitleIcon);
-        EditorHost.Children.Clear();
+        ResetEditorShell();
         _supplierBox = SupplierSearch(suppliers, suppliers.FirstOrDefault(item => item.Id == movement.CustomerId));
         _dateBox = new CalendarDatePicker { SelectedDate = movement.Date };
         _dateBox.Classes.Add("bo_doc_date");
@@ -1169,7 +1182,7 @@ public partial class StockManagementView : UserControl
         _editId = article.Id;
         EditorTitle.Text = $"Stock - {article.Designation}";
         DialogTitleIcons.ApplyEdit(EditorTitleIcon);
-        EditorHost.Children.Clear();
+        ResetEditorShell();
         _totalBox = Field("Total stock", FormDecimal.Format(article.TotalStock), out var totalField, FormDecimal.QuantityRule);
         _minimumBox = Field("Stock mínimo", FormDecimal.Format(article.MinimumStock), out var minimumField, FormDecimal.QuantityRule);
         EditorHost.Children.Add(totalField);
@@ -1207,7 +1220,7 @@ public partial class StockManagementView : UserControl
         _childBoxes.Clear();
         EditorTitle.Text = "Editar Artigo Único";
         DialogTitleIcons.ApplyEdit(EditorTitleIcon);
-        EditorHost.Children.Clear();
+        ResetEditorShell();
         EditorHost.Children.Add(ReadOnly("Artigo", history.Article));
         EditorHost.Children.Add(ReadOnly("Estado", history.Status));
         EditorHost.Children.Add(ReadOnly("Armazém", history.Warehouse));
@@ -1310,7 +1323,7 @@ public partial class StockManagementView : UserControl
         _attachedPdf = null;
         EditorTitle.Text = "Gestão de Armazéns";
         DialogTitleIcons.ApplyCreate(EditorTitleIcon);
-        EditorHost.Children.Clear();
+        ResetEditorShell();
         _articleBox = new AutoCompleteBox { ItemsSource = articles, Classes = { "bo_entity_input" } };
         ListingFilters.EnableLookupSearch(_articleBox);
         _serialBox = Field("Número de série", string.Empty, out var serialField);
@@ -1809,14 +1822,22 @@ public partial class StockManagementView : UserControl
         EditorNotice.Text = string.Empty;
 
         Toast.Success(this, result.Message ?? "Guardado com sucesso.");
-        EditorOverlay.IsVisible = false;
-        _editor = EditorMode.None;
+        CloseEditorShell();
         await LoadAsync(resetPage: false);
     }
 
-    private void OnEditorCancelClick(object? sender, RoutedEventArgs e)
+    private void OnEditorCancelClick(object? sender, RoutedEventArgs e) => CloseEditorShell();
+
+    private void ResetEditorShell(bool split = false)
+    {
+        EditorFrame.Classes.Set("bo_stock_editor_split", split);
+        EditorHost.Children.Clear();
+    }
+
+    private void CloseEditorShell()
     {
         EditorOverlay.IsVisible = false;
+        EditorFrame.Classes.Set("bo_stock_editor_split", false);
         _editor = EditorMode.None;
     }
 
@@ -1949,8 +1970,7 @@ public partial class StockManagementView : UserControl
         }
 
         Toast.Success(this, result.Message ?? "Saída registada.");
-        EditorOverlay.IsVisible = false;
-        _editor = EditorMode.None;
+        CloseEditorShell();
         await LoadAsync(resetPage: false);
     }
 
@@ -2149,7 +2169,8 @@ public partial class StockManagementView : UserControl
         Grid.IsVisible = _portrait == false;
         CardList.IsVisible = _portrait;
         ActionBar.Classes.Set("bo_page_actions_compact", _portrait);
-        PortraitChrome.FitToContent(EditorFrame, this, 760, minWidth: 420);
+        var editorMax = EditorFrame.Classes.Contains("bo_stock_editor_split") ? 980 : 760;
+        PortraitChrome.FitToContent(EditorFrame, this, editorMax, minWidth: 420);
         if (_portrait == false)
         {
             FilterSheet.IsVisible = false;
