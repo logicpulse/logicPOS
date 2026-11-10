@@ -1499,7 +1499,7 @@ public partial class StockManagementView : UserControl
                 new TextBlock { Text = "Adicionar", VerticalAlignment = VerticalAlignment.Center }
             }
         };
-        add.Click += (_, _) => CommitDraftLine();
+        add.Click += (_, _) => _ = TryCommitDraftLine();
         body.Children.Add(add);
         TouchFields.Attach(body);
 
@@ -1550,32 +1550,53 @@ public partial class StockManagementView : UserControl
         }
     }
 
-    private void CommitDraftLine()
+    private bool DraftHasArticleInput()
     {
         if (_lineControls.Count == 0)
         {
-            return;
+            return false;
+        }
+
+        var line = _lineControls[0];
+        return ChosenOption(line.Article) is not null
+            || string.IsNullOrWhiteSpace(line.Article.Text) == false;
+    }
+
+    /// <summary>
+    /// Commits the composer draft into the movement lines list.
+    /// When <paramref name="quietIfEmpty"/> is true, an empty draft is ignored (used by Guardar).
+    /// </summary>
+    private bool TryCommitDraftLine(bool quietIfEmpty = false)
+    {
+        if (_lineControls.Count == 0)
+        {
+            return false;
         }
 
         var line = _lineControls[0];
         var article = ChosenOption(line.Article);
         if (article is null)
         {
+            if (quietIfEmpty && string.IsNullOrWhiteSpace(line.Article.Text))
+            {
+                return false;
+            }
+
             EditorError("Selecione o artigo na lista.");
-            return;
+            return false;
         }
 
         if (ReadDecimal(line.Quantity.Text, "Quantidade inválida.", out var quantity, FormDecimalKind.Quantity) == false || quantity == 0)
         {
             EditorError("Quantidade inválida.");
-            return;
+            return false;
         }
 
         var price = 0m;
         if (string.IsNullOrWhiteSpace(line.Price.Text) == false
             && ReadDecimal(line.Price.Text, "Preço inválido.", out price, FormDecimalKind.Money) == false)
         {
-            return;
+            return false;
         }
 
         CaptureSerialValues(line);
@@ -1588,13 +1609,13 @@ public partial class StockManagementView : UserControl
         if (serials.Count > 0 && serials.Count != expected)
         {
             EditorError($"Indique {expected} número(s) de série para o artigo.");
-            return;
+            return false;
         }
 
         if (serials.Count != serials.Distinct(StringComparer.OrdinalIgnoreCase).Count())
         {
             EditorError("Há números de série duplicados na linha.");
-            return;
+            return false;
         }
 
         var location = line.Location.SelectedItem as StockLocationOption;
@@ -1612,6 +1633,7 @@ public partial class StockManagementView : UserControl
         EditorNotice.Text = string.Empty;
         ResetDraftComposer();
         RefreshCommittedLinesUi();
+        return true;
     }
 
     private void ResetDraftComposer()
@@ -1948,6 +1970,12 @@ public partial class StockManagementView : UserControl
                 if (supplier is null || date is null)
                 {
                     EditorError("Preencha fornecedor e data.");
+                    return;
+                }
+
+                // Guardar: se o composer já tem artigo, assume a linha sem clicar em + Adicionar.
+                if (DraftHasArticleInput() && TryCommitDraftLine() == false)
+                {
                     return;
                 }
 
