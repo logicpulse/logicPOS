@@ -49,39 +49,43 @@
                         </StackPanel>
                         <TextBlock x:Name="Notice" Classes="bo_doc_count_inline" DockPanel.Dock="Left" />
                         <ComboBox x:Name="ModeBox" Classes="bo_entity_mode" DockPanel.Dock="Left" IsVisible="False" SelectionChanged="OnModeChanged" />
-                        <StackPanel Classes="bo_listing_tools">
-                            <Button Classes="bo_listing_icon_button" Click="OnClearFilterClick" ToolTip.Tip="Limpar filtro">
-                                <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_filtro_b.svg" />
+                        <DockPanel Classes="bo_listing_tools">
+                            <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnExportPdfClick" ToolTip.Tip="Exportar para PDF">
+                                <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pdf.svg" />
                             </Button>
-                            <Button Classes="bo_listing_icon_button" Click="OnResetClick" ToolTip.Tip="Repor">
-                                <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_repor_b.svg" />
+                            <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnExportExcelClick" ToolTip.Tip="Exportar para Excel">
+                                <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_xlsx.svg" />
                             </Button>
-                            <Button Classes="bo_listing_columns" Content="Colunas ▾" Click="OnChooseColumnsClick" ToolTip.Tip="Colunas" />
-                            <Border Classes="bo_listing_search">
-                                <DockPanel>
-                                    <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
-                                        <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
-                                    </Button>
-                                    <TextBox x:Name="SearchBox"
-                                             Classes="bo_listing_search_box"
-                                             PlaceholderText="Procurar"
-                                             TextChanged="OnSearchChanged" />
-                                </DockPanel>
-                            </Border>
                             <Button x:Name="CatalogImportButton"
                                     Classes="bo_listing_icon_button"
+                                    DockPanel.Dock="Right"
                                     IsVisible="False"
                                     Click="OnCatalogImportClick"
                                     ToolTip.Tip="Importar">
                                 <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_importar_b.svg" />
                             </Button>
-                            <Button Classes="bo_listing_icon_button" Click="OnExportExcelClick" ToolTip.Tip="Exportar para Excel">
-                                <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_xlsx.svg" />
-                            </Button>
-                            <Button Classes="bo_listing_icon_button" Click="OnExportPdfClick" ToolTip.Tip="Exportar para PDF">
-                                <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pdf.svg" />
-                            </Button>
-                        </StackPanel>
+                            <!-- Right-packed group; search is fill so it can shrink under FO width. -->
+                            <DockPanel HorizontalAlignment="Right">
+                                <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Click="OnClearFilterClick" ToolTip.Tip="Limpar filtro">
+                                    <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_filtro_b.svg" />
+                                </Button>
+                                <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Click="OnResetClick" ToolTip.Tip="Repor">
+                                    <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_repor_b.svg" />
+                                </Button>
+                                <Button Classes="bo_listing_columns" DockPanel.Dock="Left" Content="Colunas ▾" Click="OnChooseColumnsClick" ToolTip.Tip="Colunas" />
+                                <Border Classes="bo_listing_search">
+                                    <DockPanel>
+                                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
+                                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                                        </Button>
+                                        <TextBox x:Name="SearchBox"
+                                                 Classes="bo_listing_search_box"
+                                                 PlaceholderText="Procurar"
+                                                 TextChanged="OnSearchChanged" />
+                                    </DockPanel>
+                                </Border>
+                            </DockPanel>
+                        </DockPanel>
                     </DockPanel>
                 </StackPanel>
                 <Panel>

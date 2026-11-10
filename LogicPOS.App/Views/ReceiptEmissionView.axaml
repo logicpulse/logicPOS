@@ -59,7 +59,7 @@
                             </Button>
                             <TextBlock x:Name="SelectionLabel" Classes="bo_doc_count_inline" Text="(0) = 0,00" />
                         </StackPanel>
-                        <StackPanel Classes="bo_listing_tools">
+                        <DockPanel Classes="bo_listing_tools">
                             <Border Classes="bo_listing_search">
                                 <DockPanel>
                                     <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
@@ -72,7 +72,7 @@
                                              KeyUp="OnSearchKeyUp" />
                                 </DockPanel>
                             </Border>
-                        </StackPanel>
+                        </DockPanel>
                     </DockPanel>
                     <TextBlock x:Name="Notice" Classes="bo_entity_error" IsVisible="False" Text="" />
                 </StackPanel>

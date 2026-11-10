@@ -105,33 +105,35 @@
                     </Button>
                     <TextBlock x:Name="SelectionLabel" Classes="bo_doc_count_inline" Text="0 documento(s) selecionado(s)" />
                 </StackPanel>
-                <StackPanel Classes="bo_listing_tools">
-                    <Button Classes="bo_listing_icon_button" Click="OnClearFilterClick" ToolTip.Tip="Limpar filtro">
-                        <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_filtro_b.svg" />
-                    </Button>
-                    <Button Classes="bo_listing_icon_button" Click="OnResetClick" ToolTip.Tip="Repor">
-                        <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_repor_b.svg" />
-                    </Button>
-                    <Button Classes="bo_listing_columns" Content="Colunas ▾" Click="OnChooseColumnsClick" ToolTip.Tip="Colunas" />
-                    <Border Classes="bo_listing_search">
-                        <DockPanel>
-                            <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
-                                <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
-                            </Button>
-                            <TextBox x:Name="SearchBox"
-                                     Classes="bo_listing_search_box"
-                                     PlaceholderText="Procurar"
-                                     TextChanged="OnSearchChanged"
-                                     KeyUp="OnSearchKeyUp" />
-                        </DockPanel>
-                    </Border>
-                    <Button Classes="bo_listing_icon_button" Click="OnExportExcelClick" ToolTip.Tip="Exportar para Excel">
-                        <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_xlsx.svg" />
-                    </Button>
-                    <Button Classes="bo_listing_icon_button" Click="OnExportPdfClick" ToolTip.Tip="Exportar para PDF">
+                <DockPanel Classes="bo_listing_tools">
+                    <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnExportPdfClick" ToolTip.Tip="Exportar para PDF">
                         <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pdf.svg" />
                     </Button>
-                </StackPanel>
+                    <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnExportExcelClick" ToolTip.Tip="Exportar para Excel">
+                        <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_xlsx.svg" />
+                    </Button>
+                    <DockPanel HorizontalAlignment="Right">
+                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Click="OnClearFilterClick" ToolTip.Tip="Limpar filtro">
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_filtro_b.svg" />
+                        </Button>
+                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Click="OnResetClick" ToolTip.Tip="Repor">
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_repor_b.svg" />
+                        </Button>
+                        <Button Classes="bo_listing_columns" DockPanel.Dock="Left" Content="Colunas ▾" Click="OnChooseColumnsClick" ToolTip.Tip="Colunas" />
+                        <Border Classes="bo_listing_search">
+                            <DockPanel>
+                                <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
+                                    <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                                </Button>
+                                <TextBox x:Name="SearchBox"
+                                         Classes="bo_listing_search_box"
+                                         PlaceholderText="Procurar"
+                                         TextChanged="OnSearchChanged"
+                                         KeyUp="OnSearchKeyUp" />
+                            </DockPanel>
+                        </Border>
+                    </DockPanel>
+                </DockPanel>
             </DockPanel>
             <TextBlock x:Name="ActionNotice" Classes="bo_doc_count" IsVisible="False" Text="" />
         </StackPanel>
