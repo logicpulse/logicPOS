@@ -21,7 +21,7 @@
                         <Button Classes="dash_stock_open" Click="OnOpenStockClick" ToolTip.Tip="Abrir gestão de stocks">
                             <StackPanel Classes="dash_stock_open_content">
                                 <svg:Svg Classes="dash_stock_open_icon"
-                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_gestao_stocks.svg" />
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_gestao_stocks_b.svg" />
                                 <TextBlock Classes="dash_stock_open_text" Text="Abrir gestão de stocks" />
                             </StackPanel>
                         </Button>
