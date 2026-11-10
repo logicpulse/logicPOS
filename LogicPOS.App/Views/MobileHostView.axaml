@@ -8,10 +8,12 @@
 
         <!-- Loading sempre acima do Host — visível no bootstrap e durante Entrar → sessão. -->
         <Panel x:Name="LoadingOverlay"
-               Background="#111111"
+               Background="#59000000"
                ZIndex="100"
                IsVisible="True"
                IsHitTestVisible="True">
+            <Border Classes="glass_card_frame">
+            <ExperimentalAcrylicBorder Classes="glass_card">
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Spacing="14">
@@ -26,15 +28,14 @@
                 <TextBlock x:Name="Status"
                            Classes="startup_status"
                            Text="A carregar logicPOS..."
-                           Foreground="White"
                            HorizontalAlignment="Center"
                            TextAlignment="Center" />
                 <ProgressBar x:Name="LoadingBar"
                              Classes="startup_progress"
-                             IsIndeterminate="True"
-                             Foreground="#9bbe1d"
-                             Background="#333333" />
+                             IsIndeterminate="True" />
             </StackPanel>
+            </ExperimentalAcrylicBorder>
+            </Border>
         </Panel>
 
         <Border x:Name="DevBanner"

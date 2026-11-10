@@ -37,8 +37,8 @@
                     <StackPanel DockPanel.Dock="Left" Classes="bo_new_doc_options">
                         <CheckBox x:Name="DraftBox" Classes="bo_new_doc_draft" Content="Guardar como rascunho" IsCheckedChanged="OnDraftChanged" />
                         <CheckBox x:Name="TransportBox" Classes="bo_new_doc_draft" Content="Dados de transporte" IsVisible="False" IsCheckedChanged="OnTransportChanged" />
-                        <Button x:Name="TransportButton" Classes="bo_line_icon bo_transport_icon" IsVisible="False" Click="OnOpenTransportClick" ToolTip.Tip="Dados de transporte">
-                            <Image Classes="bo_line_icon_image bo_transport_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/menu_listagem_de_veiculos.png" />
+                        <Button x:Name="TransportButton" Classes="bo_line_icon bo_transport_icon" IsVisible="False" Click="OnOpenTransportClick" ToolTip.Tip="Editar dados de transporte">
+                            <svg:Svg Classes="bo_line_icon_image bo_transport_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
                         </Button>
                     </StackPanel>
                 <StackPanel x:Name="DocumentActions" Classes="login_alert_action_buttons">

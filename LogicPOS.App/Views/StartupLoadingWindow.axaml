@@ -3,20 +3,17 @@
         x:Class="LogicPOS.App.Views.StartupLoadingWindow"
         Title="logicpos"
         Icon="avares://LogicPOS.App/Assets/application.ico"
-        Width="220"
-        Height="250"
+        Width="300"
+        Height="340"
         CanResize="False"
         ShowInTaskbar="True"
         WindowDecorations="None"
         WindowStartupLocation="CenterScreen"
-        TransparencyLevelHint="Transparent"
+        TransparencyLevelHint="AcrylicBlur, Blur, Transparent"
         Background="Transparent"
         Topmost="True">
-    <!-- Transparent chrome + Border CornerRadius so the splash panel is rounded (Win32). -->
-    <Border Padding="16"
-            Background="#F5F5F5"
-            CornerRadius="12"
-            ClipToBounds="True">
+    <Border Classes="glass_card_frame">
+        <ExperimentalAcrylicBorder Classes="glass_card">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
             <Image Width="120"
                    Height="120"
@@ -30,5 +27,6 @@
             <ProgressBar Classes="startup_progress"
                          IsIndeterminate="True" />
         </StackPanel>
+        </ExperimentalAcrylicBorder>
     </Border>
 </Window>

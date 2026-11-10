@@ -1165,6 +1165,41 @@
         <Setter Property="Foreground" Value="#9bbe1d" />
     </Style>
 
+    <!-- Cartão de vidro: splash de arranque e qualquer loading, grande ou pequeno. -->
+    <Style Selector="Border.glass_card_frame">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="18" />
+        <Setter Property="BorderBrush" Value="#BFFFFFFF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BoxShadow" Value="0 12 32 0 #33000000" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+
+    <Style Selector="Border.glass_card_frame.glass_compact">
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="BoxShadow" Value="0 8 20 0 #2A000000" />
+    </Style>
+
+    <Style Selector="ExperimentalAcrylicBorder.glass_card">
+        <Setter Property="CornerRadius" Value="18" />
+        <Setter Property="Padding" Value="22,18" />
+        <Setter Property="Material">
+            <ExperimentalAcrylicMaterial BackgroundSource="Digger"
+                                         TintColor="#F7F8FA"
+                                         TintOpacity="0.55"
+                                         MaterialOpacity="0.8"
+                                         FallbackColor="#F4F6F8" />
+        </Setter>
+    </Style>
+
+    <Style Selector="ExperimentalAcrylicBorder.glass_card.glass_compact">
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="MinWidth" Value="160" />
+    </Style>
+
     <Style Selector="ProgressBar.startup_progress">
         <Setter Property="Height" Value="4" />
         <Setter Property="Width" Value="160" />
@@ -4321,16 +4356,16 @@
     </Style>
 
     <Style Selector="Button.bo_line_icon.bo_transport_icon">
-        <Setter Property="Width" Value="40" />
-        <Setter Property="Height" Value="40" />
-        <Setter Property="MinWidth" Value="40" />
-        <Setter Property="MinHeight" Value="40" />
-        <Setter Property="Padding" Value="2" />
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="MinWidth" Value="36" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Padding" Value="4" />
     </Style>
 
-    <Style Selector="Image.bo_line_icon_image.bo_transport_icon">
-        <Setter Property="Width" Value="32" />
-        <Setter Property="Height" Value="32" />
+    <Style Selector="svg|Svg.bo_line_icon_image.bo_transport_icon, Image.bo_line_icon_image.bo_transport_icon">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
     </Style>
 
     <Style Selector="Button.bo_doc_action">
@@ -6527,7 +6562,7 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
     <Style Selector="UserControl.bo_listing_busy_host.login_busy TextBlock.bo_listing_busy_label">
-        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#15202B" />
     </Style>
 
     <Style Selector="StackPanel.bo_listing_busy_box">
