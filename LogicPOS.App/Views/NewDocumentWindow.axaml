@@ -244,11 +244,23 @@
                                         <TextBlock x:Name="TotalLabel" Classes="bo_new_doc_total" Text="0,00 €" />
                                     </Border>
                                 </StackPanel>
-                                <TextBox x:Name="ArticleSearch"
-                                         Classes="bo_new_doc_search_box"
-                                         PlaceholderText="Referência, descrição, família ou nº de série..."
-                                         TextChanged="OnSearchChanged"
-                                         KeyDown="OnSearchKeyDown" />
+                                <Border Classes="bo_new_doc_search_field">
+                                    <DockPanel>
+                                        <Button x:Name="ArticleSearchClear"
+                                                Classes="bo_listing_search_clear"
+                                                DockPanel.Dock="Right"
+                                                Click="OnArticleSearchClearClick"
+                                                IsVisible="False"
+                                                ToolTip.Tip="Limpar">
+                                            <TextBlock Classes="bo_listing_search_clear_mark" Text="&#x00D7;" />
+                                        </Button>
+                                        <TextBox x:Name="ArticleSearch"
+                                                 Classes="bo_new_doc_search_box"
+                                                 PlaceholderText="Referência, descrição, família ou nº de série..."
+                                                 TextChanged="OnSearchChanged"
+                                                 KeyDown="OnSearchKeyDown" />
+                                    </DockPanel>
+                                </Border>
                             </DockPanel>
                             <Border x:Name="ArticleSuggest" Classes="bo_new_doc_suggest" IsVisible="False">
                                 <ScrollViewer>

@@ -6265,19 +6265,28 @@
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
-    <Style Selector="TextBox.bo_new_doc_search_box">
+    <Style Selector="Border.bo_new_doc_search_field">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
         <Setter Property="MinHeight" Value="32" />
         <Setter Property="MinWidth" Value="240" />
         <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="TextBox.bo_new_doc_search_box">
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Foreground" Value="#15202B" />
         <Setter Property="PlaceholderForeground" Value="#9AA3AD" />
-        <Setter Property="Background" Value="#FFFFFF" />
-        <Setter Property="BorderBrush" Value="#C5CED6" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="8,4" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>

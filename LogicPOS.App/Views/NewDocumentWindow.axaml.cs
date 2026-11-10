@@ -128,6 +128,7 @@ public partial class NewDocumentWindow : UserControl
         _lines.Clear();
         LinesGrid.ItemsSource = null;
         ArticleSearch.Text = string.Empty;
+        RefreshArticleSearchClear();
         NotesBox.Text = string.Empty;
         ErrorLabel.Text = string.Empty;
         LineEditor.IsVisible = false;
@@ -157,6 +158,7 @@ public partial class NewDocumentWindow : UserControl
         CreatedPdfTitle = null;
         _closed = new TaskCompletionSource<bool>();
         _ = LoadAsync();
+        FocusArticleSearch();
         return _closed.Task;
     }
 
@@ -474,6 +476,7 @@ public partial class NewDocumentWindow : UserControl
         finally
         {
             Busy.Hide();
+            FocusArticleSearch();
         }
     }
 
@@ -1455,7 +1458,35 @@ public partial class NewDocumentWindow : UserControl
 
     private void OnSearchChanged(object? sender, TextChangedEventArgs e)
     {
+        RefreshArticleSearchClear();
         _ = ApplyFilterAsync();
+    }
+
+    private void OnArticleSearchClearClick(object? sender, RoutedEventArgs e)
+    {
+        ArticleSearch.Text = string.Empty;
+        RefreshArticleSearchClear();
+        FocusArticleSearch();
+    }
+
+    private void RefreshArticleSearchClear()
+        => ArticleSearchClear.IsVisible = string.IsNullOrEmpty(ArticleSearch.Text) == false;
+
+    private void FocusArticleSearch()
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (IsEffectivelyVisible == false || LineEditor.IsVisible || ArticlePad.IsVisible
+                || NewArticleOverlay.IsVisible || SerialOverlay.IsVisible
+                || CustomerOverlay.IsVisible || CustomerEditor.IsVisible
+                || TransportOverlay.IsVisible)
+            {
+                return;
+            }
+
+            ArticleSearch.Focus();
+            ArticleSearch.CaretIndex = ArticleSearch.Text?.Length ?? 0;
+        }, DispatcherPriority.Input);
     }
 
     private void OnSearchKeyDown(object? sender, KeyEventArgs e)
@@ -1475,6 +1506,8 @@ public partial class NewDocumentWindow : UserControl
         {
             AddSerial(_serialMatches[0]);
             ArticleSearch.Text = string.Empty;
+            RefreshArticleSearchClear();
+            FocusArticleSearch();
         }
     }
 
@@ -1524,7 +1557,9 @@ public partial class NewDocumentWindow : UserControl
 
         ErrorLabel.Text = string.Empty;
         ArticleSearch.Text = string.Empty;
+        RefreshArticleSearchClear();
         RefreshLines();
+        FocusArticleSearch();
     }
 
     private async void OnNewArticleClick(object? sender, RoutedEventArgs e)
@@ -1749,7 +1784,9 @@ public partial class NewDocumentWindow : UserControl
         SerialNotice.Text = string.Empty;
         SerialOverlay.IsVisible = false;
         ArticleSearch.Text = string.Empty;
+        RefreshArticleSearchClear();
         RefreshLines();
+        FocusArticleSearch();
     }
 
     private void OnOpenArticlePad(object? sender, RoutedEventArgs e)
