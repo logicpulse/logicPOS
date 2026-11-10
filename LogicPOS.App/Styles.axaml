@@ -1145,6 +1145,13 @@
         <Setter Property="MinHeight" Value="200" />
     </Style>
 
+    <!-- POS Preço: reuse Payments cash-pad footprint inside the ticket dialog. -->
+    <Style Selector="Border.login_alert_message_box.pos_ticket_money">
+        <Setter Property="MinWidth" Value="620" />
+        <Setter Property="MaxWidth" Value="720" />
+        <Setter Property="MinHeight" Value="520" />
+    </Style>
+
     <Style Selector="StackPanel.bo_update_progress_panel">
         <Setter Property="Margin" Value="132,140,18,8" />
         <Setter Property="Spacing" Value="8" />
@@ -1743,14 +1750,6 @@
 
     <Style Selector="Button.pos_price_digit:pointerover">
         <Setter Property="Background" Value="#5C738C" />
-    </Style>
-
-    <Style Selector="Button.pos_price_money.pos_qty_shortcut">
-        <Setter Property="Background" Value="#3B6EA5" />
-    </Style>
-
-    <Style Selector="Button.pos_price_money.pos_qty_shortcut:pointerover">
-        <Setter Property="Background" Value="#4C82B8" />
     </Style>
 
     <Style Selector="Button.pos_price_money.pos_qty_clear">
@@ -6314,34 +6313,40 @@
         <Setter Property="Padding" Value="4" />
     </Style>
 
-    <Style Selector="Border.pos_cash_dialog Grid.pos_price_pad">
+    <Style Selector="Border.pos_cash_dialog Grid.pos_price_pad,
+                     Border.pos_ticket_money Grid.pos_price_pad">
         <Setter Property="Margin" Value="14,12,14,10" />
         <Setter Property="MinHeight" Value="380" />
     </Style>
 
-    <Style Selector="Border.pos_cash_dialog Button.pos_price_digit">
+    <Style Selector="Border.pos_cash_dialog Button.pos_price_digit,
+                     Border.pos_ticket_money Button.pos_price_digit">
         <Setter Property="Background" Value="#585858" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="FontSize" Value="22" />
         <Setter Property="Margin" Value="4" />
     </Style>
 
-    <Style Selector="Border.pos_cash_dialog Button.pos_price_digit:pointerover">
+    <Style Selector="Border.pos_cash_dialog Button.pos_price_digit:pointerover,
+                     Border.pos_ticket_money Button.pos_price_digit:pointerover">
         <Setter Property="Background" Value="#6A6A6A" />
     </Style>
 
-    <Style Selector="Border.pos_cash_dialog Button.pos_price_money">
+    <Style Selector="Border.pos_cash_dialog Button.pos_price_money,
+                     Border.pos_ticket_money Button.pos_price_money">
         <Setter Property="Background" Value="#8FBF2F" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="Margin" Value="4" />
     </Style>
 
-    <Style Selector="Border.pos_cash_dialog Button.pos_price_money:pointerover">
+    <Style Selector="Border.pos_cash_dialog Button.pos_price_money:pointerover,
+                     Border.pos_ticket_money Button.pos_price_money:pointerover">
         <Setter Property="Background" Value="#9FCD3A" />
     </Style>
 
-    <Style Selector="Border.pos_cash_dialog TextBox.pos_price_entry">
+    <Style Selector="Border.pos_cash_dialog TextBox.pos_price_entry,
+                     Border.pos_ticket_money TextBox.pos_price_entry">
         <Setter Property="Height" Value="52" />
         <Setter Property="FontSize" Value="26" />
         <Setter Property="Margin" Value="2,0,2,12" />

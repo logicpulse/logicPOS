@@ -488,12 +488,21 @@ public partial class PosWindow : UserControl, IOfficeSurface
         PortraitChrome.FitOverlay(DocumentsMenuFrame, this, 581, 286, lockHeight: false, bottomReserve: bottomReserve);
         if (PricePad.IsVisible)
         {
-            // Content-sized: entry + 5 money rows + actions — avoid a tall empty band.
-            PortraitChrome.FitOverlay(TicketFrame, this, 480, 390, lockHeight: false, bottomReserve: bottomReserve);
+            // Same footprint as Payments "Dinheiro requisitado" cash pad.
+            PortraitChrome.FitOverlay(TicketFrame, this, 680, 600, lockHeight: false, bottomReserve: bottomReserve);
+        }
+        else if (_splitHost?.IsVisible == true)
+        {
+            PortraitChrome.FitOverlay(TicketFrame, this, 420, 390, lockHeight: false, bottomReserve: bottomReserve);
+        }
+        else if (_pinPad?.IsVisible == true)
+        {
+            PortraitChrome.FitOverlay(TicketFrame, this, 340, 420, lockHeight: false, bottomReserve: bottomReserve);
         }
         else if (TicketKeypad.IsVisible)
         {
-            PortraitChrome.FitOverlay(TicketFrame, this, 420, 390, lockHeight: false, bottomReserve: bottomReserve);
+            // Digit-only quantity/weight pad (no side presets).
+            PortraitChrome.FitOverlay(TicketFrame, this, 320, 360, lockHeight: false, bottomReserve: bottomReserve);
         }
         else
         {
@@ -2616,7 +2625,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         if (article.RequiresPriceEntry)
         {
             _pendingPriceArticle = article;
-            ShowKeypad(TicketPrompt.Price, "Preço do Produto", 0m);
+            ShowKeypad(TicketPrompt.Price, "Preço", 0m);
             return;
         }
 
@@ -4182,7 +4191,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             return;
         }
 
-        ShowKeypad(TicketPrompt.Price, "Preço do Produto", line.DisplayUnitPrice);
+        ShowKeypad(TicketPrompt.Price, "Preço", line.DisplayUnitPrice);
     }
 
     private void RequestCard()
@@ -4804,6 +4813,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         TicketKeypad.IsVisible = false;
         SplitPeopleButtons.IsVisible = false;
         PricePad.IsVisible = false;
+        TicketFrame.Classes.Set("pos_ticket_money", false);
         TicketBarcode.IsVisible = false;
     }
 
@@ -4825,6 +4835,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             PriceEntry.Text = value > 0 ? value.ToString("0.00", CultureInfo.CurrentCulture) : string.Empty;
             TicketKeypad.IsVisible = false;
             PricePad.IsVisible = true;
+            TicketFrame.Classes.Set("pos_ticket_money", true);
             TicketDialogCancelText.Text = "Cancelar";
             TicketDialogIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png");
             // ShowDialogChrome fitted before PricePad was visible — re-fit to the price layout.
@@ -4833,6 +4844,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         PricePad.IsVisible = false;
+        TicketFrame.Classes.Set("pos_ticket_money", false);
         TicketKeypad.IsVisible = true;
         if (prompt == TicketPrompt.ChangeUser)
         {
@@ -4985,35 +4997,25 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
         _quantityPad = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("*,*,*,*,*"),
-            RowDefinitions = new RowDefinitions("*,*,*,*,*"),
-            Width = 400,
-            Height = 250
+            ColumnDefinitions = new ColumnDefinitions("*,*,*"),
+            RowDefinitions = new RowDefinitions("*,*,*,*"),
+            Width = 260,
+            Height = 220,
+            HorizontalAlignment = HorizontalAlignment.Center
         };
         var pad = _quantityPad;
 
-        AddQuantityShortcut(pad, "1", 0, 0);
-        AddQuantityShortcut(pad, "2", 1, 0);
-        AddQuantityShortcut(pad, "3", 2, 0);
-        AddQuantityShortcut(pad, "4", 3, 0);
-        AddQuantityShortcut(pad, "5", 4, 0);
-        AddQuantityShortcut(pad, "6", 0, 4);
-        AddQuantityShortcut(pad, "7", 1, 4);
-        AddQuantityShortcut(pad, "8", 2, 4);
-        AddQuantityShortcut(pad, "9", 3, 4);
-        AddQuantityShortcut(pad, "10", 4, 4);
-
-        AddQuantityDigit(pad, "7", 0, 1);
-        AddQuantityDigit(pad, "8", 0, 2);
-        AddQuantityDigit(pad, "9", 0, 3);
-        AddQuantityDigit(pad, "4", 1, 1);
-        AddQuantityDigit(pad, "5", 1, 2);
-        AddQuantityDigit(pad, "6", 1, 3);
-        AddQuantityDigit(pad, "1", 2, 1);
-        AddQuantityDigit(pad, "2", 2, 2);
-        AddQuantityDigit(pad, "3", 2, 3);
-        AddQuantityDigit(pad, "0", 3, 1);
-        AddQuantityDigit(pad, ",", 3, 2);
+        AddQuantityDigit(pad, "7", 0, 0);
+        AddQuantityDigit(pad, "8", 0, 1);
+        AddQuantityDigit(pad, "9", 0, 2);
+        AddQuantityDigit(pad, "4", 1, 0);
+        AddQuantityDigit(pad, "5", 1, 1);
+        AddQuantityDigit(pad, "6", 1, 2);
+        AddQuantityDigit(pad, "1", 2, 0);
+        AddQuantityDigit(pad, "2", 2, 1);
+        AddQuantityDigit(pad, "3", 2, 2);
+        AddQuantityDigit(pad, "0", 3, 0);
+        AddQuantityDigit(pad, ",", 3, 1);
 
         var clear = new Button
         {
@@ -5030,7 +5032,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             _replaceKeypad = true;
         };
         Grid.SetRow(clear, 3);
-        Grid.SetColumn(clear, 3);
+        Grid.SetColumn(clear, 2);
         pad.Children.Add(clear);
         TicketKeypad.Children.Add(pad);
         BuildPinPad();
@@ -5106,29 +5108,6 @@ public partial class PosWindow : UserControl, IOfficeSurface
             }
 
             _pinEntry.Text = (_pinEntry.Text ?? string.Empty) + caption;
-        };
-        Grid.SetRow(button, row);
-        Grid.SetColumn(button, column);
-        pad.Children.Add(button);
-    }
-
-    private void AddQuantityShortcut(Grid pad, string caption, int row, int column)
-    {
-        var button = new Button
-        {
-            Classes = { "pos_price_money", "pos_qty_shortcut" },
-            Content = caption
-        };
-        button.Click += (_, _) =>
-        {
-            if (decimal.TryParse(caption, NumberStyles.Number, CultureInfo.InvariantCulture, out var quantity) == false)
-            {
-                return;
-            }
-
-            _ticket.SetSelectedQuantity(quantity);
-            RefreshTicket();
-            CloseTicketDialog();
         };
         Grid.SetRow(button, row);
         Grid.SetColumn(button, column);
@@ -5295,6 +5274,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         ClearSplitSeats();
         _splitPeople = 0;
         PricePad.IsVisible = false;
+        TicketFrame.Classes.Set("pos_ticket_money", false);
         TicketBarcode.IsVisible = false;
         TicketQuestionBody.IsVisible = true;
         TicketDialogCancelText.Text = "Não";
@@ -5352,6 +5332,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         var current = PriceEntry.Text ?? string.Empty;
         PriceEntry.Text = current.Length <= 1 ? string.Empty : current[..^1];
         _priceTyping = true;
+        _priceMoney = 0;
     }
 
     private bool TryReadKeypad(out decimal value)
