@@ -213,13 +213,9 @@ public partial class SettingsPage : UserControl
             return CreateLogoField(value);
         }
 
-        if (kind.Contains("Check", StringComparison.OrdinalIgnoreCase))
+        if (kind.Contains("Check", StringComparison.OrdinalIgnoreCase) || LooksBoolean(value))
         {
-            return new CheckBox
-            {
-                Classes = { "bo_entity_input" },
-                IsChecked = value is "1" or "true" or "True" or "Sim"
-            };
+            return CreateBooleanField(value);
         }
 
         if (AgtFePrivateKeyBox.IsToken(token))
@@ -389,6 +385,30 @@ public partial class SettingsPage : UserControl
         }
 
         return input is TextBox box ? box.Text ?? string.Empty : string.Empty;
+    }
+
+    private static bool LooksBoolean(string? value)
+        => value is "True" or "False" or "true" or "false" or "TRUE" or "FALSE";
+
+    private static bool IsTruthy(string? value)
+        => value is "1" or "true" or "True" or "TRUE"
+            or "Sim" or "Yes" or "Oui" or "Sí" or "Si";
+
+    private static Control CreateBooleanField(string value)
+    {
+        var yesLabel = AppText.Get("Sim");
+        var noLabel = AppText.Get("Não");
+        var box = new ComboBox
+        {
+            Classes = { "bo_entity_input" },
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+        };
+        var yes = new ComboBoxItem { Content = yesLabel, Tag = "True" };
+        var no = new ComboBoxItem { Content = noLabel, Tag = "False" };
+        box.Items.Add(yes);
+        box.Items.Add(no);
+        box.SelectedItem = IsTruthy(value) ? yes : no;
+        return box;
     }
 
     private static Control CreateGlossField(string value)

@@ -81,7 +81,9 @@ internal static class AppText
             ["Backup DB"] = "Backup",
             ["Restaurar DB"] = "Restore",
             ["Atualizar"] = "Update",
-            ["Sair da Sessão"] = "Sign out"
+            ["Sair da Sessão"] = "Sign out",
+            ["Sim"] = "Yes",
+            ["Não"] = "No"
         },
         ["fr"] = new(StringComparer.Ordinal)
         {
@@ -95,7 +97,9 @@ internal static class AppText
             ["Sistema"] = "Système",
             ["Sair da Aplicação"] = "Quitter",
             ["Acerca"] = "À propos",
-            ["FrontOffice"] = "Caisse"
+            ["FrontOffice"] = "Caisse",
+            ["Sim"] = "Oui",
+            ["Não"] = "Non"
         },
         ["es"] = new(StringComparer.Ordinal)
         {
@@ -109,7 +113,9 @@ internal static class AppText
             ["Sistema"] = "Sistema",
             ["Sair da Aplicação"] = "Salir",
             ["Acerca"] = "Acerca de",
-            ["FrontOffice"] = "Punto de venta"
+            ["FrontOffice"] = "Punto de venta",
+            ["Sim"] = "Sí",
+            ["Não"] = "No"
         }
     };
 
