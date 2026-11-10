@@ -1184,6 +1184,44 @@
         <Setter Property="BoxShadow" Value="0 8 18 0 #1A000000" />
     </Style>
 
+    <Style Selector="Border.logo_tile">
+        <Setter Property="Background" Value="#B4B4B3" />
+        <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.18" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.logo_tile.on">
+        <Setter Property="Background" Value="#9bbe1d" />
+        <Style.Animations>
+            <Animation Duration="0:0:0.42" FillMode="Forward">
+                <KeyFrame Cue="0%">
+                    <Setter Property="ScaleTransform.ScaleX" Value="0.82" />
+                    <Setter Property="ScaleTransform.ScaleY" Value="0.82" />
+                </KeyFrame>
+                <KeyFrame Cue="35%">
+                    <Setter Property="ScaleTransform.ScaleX" Value="0.92" />
+                    <Setter Property="ScaleTransform.ScaleY" Value="1.16" />
+                </KeyFrame>
+                <KeyFrame Cue="60%">
+                    <Setter Property="ScaleTransform.ScaleX" Value="1.12" />
+                    <Setter Property="ScaleTransform.ScaleY" Value="0.9" />
+                </KeyFrame>
+                <KeyFrame Cue="80%">
+                    <Setter Property="ScaleTransform.ScaleX" Value="0.97" />
+                    <Setter Property="ScaleTransform.ScaleY" Value="1.04" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="ScaleTransform.ScaleX" Value="1" />
+                    <Setter Property="ScaleTransform.ScaleY" Value="1" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
     <Style Selector="ProgressBar.startup_progress">
         <Setter Property="Height" Value="4" />
         <Setter Property="Width" Value="160" />

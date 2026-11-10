@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:LogicPOS.App.Views"
         x:Class="LogicPOS.App.Views.StartupLoadingWindow"
         Title="logicpos"
         Icon="avares://LogicPOS.App/Assets/application.ico"
@@ -15,12 +16,7 @@
     <!-- Só o cartão é visível. O branco é sólido; os cantos da janela não pintam um fundo preto. -->
     <Border Classes="glass_card">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
-            <Image Width="120"
-                   Height="120"
-                   Stretch="Uniform"
-                   HorizontalAlignment="Center"
-                   Source="avares://LogicPOS.App/Assets/Images/Other/working.gif"
-                   RenderOptions.BitmapInterpolationMode="HighQuality" />
+            <views:LogoLoader HorizontalAlignment="Center" />
             <TextBlock x:Name="StatusText"
                        Classes="startup_status"
                        Text="A carregar POS..." />

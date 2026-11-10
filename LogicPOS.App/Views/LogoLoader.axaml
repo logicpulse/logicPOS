@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="LogicPOS.App.Views.LogoLoader"
+             Classes="logo_loader"
+             Width="110"
+             Height="110">
+    <Grid x:Name="Tiles" ColumnDefinitions="*,*" RowDefinitions="*,*">
+        <Border x:Name="Tile0" Classes="logo_tile">
+            <Border.RenderTransform>
+                <ScaleTransform />
+            </Border.RenderTransform>
+        </Border>
+        <Border x:Name="Tile1" Classes="logo_tile" Grid.Column="1">
+            <Border.RenderTransform>
+                <ScaleTransform />
+            </Border.RenderTransform>
+        </Border>
+        <Border x:Name="Tile2" Classes="logo_tile" Grid.Row="1">
+            <Border.RenderTransform>
+                <ScaleTransform />
+            </Border.RenderTransform>
+        </Border>
+        <Border x:Name="Tile3" Classes="logo_tile" Grid.Row="1" Grid.Column="1">
+            <Border.RenderTransform>
+                <ScaleTransform />
+            </Border.RenderTransform>
+        </Border>
+    </Grid>
+</UserControl>

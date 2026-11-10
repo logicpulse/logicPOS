@@ -1,5 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:LogicPOS.App.Views"
              x:Class="LogicPOS.App.Views.MobileHostView"
              Background="#111111">
     <Panel>
@@ -16,14 +17,9 @@
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Spacing="14">
-                <Image x:Name="LoadingLogo"
-                       Width="120"
-                       Height="120"
-                       Stretch="Uniform"
-                       HorizontalAlignment="Center"
-                       Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png"
-                       RenderOptions.BitmapInterpolationMode="HighQuality"
-                       Margin="0,0,0,8" />
+                <views:LogoLoader x:Name="LoadingLogo"
+                                  HorizontalAlignment="Center"
+                                  Margin="0,0,0,8" />
                 <TextBlock x:Name="Status"
                            Classes="startup_status"
                            Text="A carregar logicPOS..."

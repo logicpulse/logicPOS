@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:LogicPOS.App.Views"
              x:Class="LogicPOS.App.Views.ListingBusy"
              Classes="bo_listing_busy_host"
              IsVisible="False"
@@ -7,14 +8,7 @@
     <Panel x:Name="Scrim" Classes="bo_listing_busy">
         <Border Classes="glass_card glass_compact">
         <StackPanel Classes="bo_listing_busy_box">
-            <Panel Classes="bo_listing_spinner_host">
-                <Ellipse Classes="bo_listing_spinner_track" />
-                <Path Classes="bo_listing_spinner" Data="M18,3 A15,15 0 1 1 3,18">
-                    <Path.RenderTransform>
-                        <RotateTransform />
-                    </Path.RenderTransform>
-                </Path>
-            </Panel>
+            <views:LogoLoader Width="40" Height="40" HorizontalAlignment="Center" />
             <TextBlock x:Name="Label" Classes="bo_listing_busy_label" Text="A carregar..." />
         </StackPanel>
         </Border>
