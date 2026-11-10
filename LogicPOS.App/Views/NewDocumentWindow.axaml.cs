@@ -1367,6 +1367,16 @@ public partial class NewDocumentWindow : UserControl
         TransportOverlay.IsVisible = true;
     }
 
+    private void OnOpenFromDate(object? sender, RoutedEventArgs e)
+    {
+        FromDate.IsDropDownOpen = true;
+    }
+
+    private void OnOpenToDate(object? sender, RoutedEventArgs e)
+    {
+        ToDate.IsDropDownOpen = true;
+    }
+
     private void OnCloseTransportClick(object? sender, RoutedEventArgs e)
     {
         TransportOverlay.IsVisible = false;

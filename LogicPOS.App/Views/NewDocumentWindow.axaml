@@ -599,41 +599,73 @@
                         <StackPanel Grid.Column="2" Classes="bo_new_doc_ship">
                             <DockPanel>
                                 <StackPanel DockPanel.Dock="Right" Classes="bo_new_doc_ship_actions">
-                                    <Button Classes="bo_doc_action" Click="OnUseCustomerAddress">
-                                        <TextBlock Classes="bo_doc_action_text" Text="Cliente" />
+                                    <Button Classes="bo_ship_action" Click="OnUseCustomerAddress">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_clientes_b.svg" />
+                                            <TextBlock Classes="bo_doc_action_text" Text="Cliente" />
+                                        </StackPanel>
                                     </Button>
                                 </StackPanel>
-                                <TextBlock Classes="bo_new_doc_ship_title" Text="Destino" />
+                                <StackPanel Classes="bo_new_doc_label">
+                                    <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/menu_listagem_de_veiculos.svg" />
+                                    <TextBlock Classes="bo_new_doc_ship_title" Text="Destino" />
+                                </StackPanel>
                             </DockPanel>
-                            <TextBlock Classes="bo_new_doc_caption" Text="Morada" />
+                            <StackPanel Classes="bo_new_doc_label">
+                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_origem_b.svg" />
+                                <TextBlock Classes="bo_new_doc_caption" Text="Morada" />
+                            </StackPanel>
                             <TextBox x:Name="ToAddress" Classes="bo_line_editor_input" />
                             <Grid ColumnDefinitions="*,8,*">
                                 <StackPanel>
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Distrito" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_menu_dispositivos_paises_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Distrito" />
+                                    </StackPanel>
                                     <TextBox x:Name="ToRegion" Classes="bo_line_editor_input" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Código postal" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Código postal" />
+                                    </StackPanel>
                                     <TextBox x:Name="ToPostal" Classes="bo_line_editor_input bo_numeric" />
                                 </StackPanel>
                             </Grid>
                             <Grid ColumnDefinitions="*,8,*">
                                 <StackPanel>
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Cidade" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_menu_dispositivos_paises_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Cidade" />
+                                    </StackPanel>
                                     <TextBox x:Name="ToCity" Classes="bo_line_editor_input" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="País" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_menu_dispositivos_paises_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="País" />
+                                    </StackPanel>
                                     <TextBox x:Name="ToCountry" Classes="bo_line_editor_input" />
                                 </StackPanel>
                             </Grid>
                             <Grid ColumnDefinitions="*,8,*">
                                 <StackPanel>
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Data de entrega" />
-                                    <CalendarDatePicker x:Name="ToDate" Classes="bo_new_doc_date" SelectedDateChanged="OnTransportDateChanged" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Data de entrega" />
+                                    </StackPanel>
+                                    <DockPanel Classes="bo_touch_row">
+                                        <Button Classes="bo_line_icon" DockPanel.Dock="Right" Click="OnOpenToDate" ToolTip.Tip="Calendário">
+                                            <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />
+                                        </Button>
+                                        <CalendarDatePicker x:Name="ToDate" Classes="bo_new_doc_date" SelectedDateChanged="OnTransportDateChanged" />
+                                    </DockPanel>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Hora" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Hora" />
+                                    </StackPanel>
                                     <TimePicker x:Name="ToTime" Classes="bo_new_doc_time" ClockIdentifier="24HourClock" SelectedTimeChanged="OnTransportTimeChanged" />
                                 </StackPanel>
                             </Grid>
@@ -641,47 +673,82 @@
                         <StackPanel Classes="bo_new_doc_ship">
                             <DockPanel>
                                 <StackPanel DockPanel.Dock="Right" Classes="bo_new_doc_ship_actions">
-                                    <Button Classes="bo_doc_action" Click="OnCopyDestinationToOrigin">
-                                        <TextBlock Classes="bo_doc_action_text" Text="Igual ao destino" />
+                                    <Button Classes="bo_ship_action" Click="OnCopyDestinationToOrigin">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_b.svg" />
+                                            <TextBlock Classes="bo_doc_action_text" Text="Igual ao destino" />
+                                        </StackPanel>
                                     </Button>
-                                    <Button Classes="bo_doc_action" Click="OnUseCompanyAddress">
-                                        <TextBlock Classes="bo_doc_action_text" Text="Empresa" />
+                                    <Button Classes="bo_ship_action" Click="OnUseCompanyAddress">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_configuracoes_preferencias_empresa_b.svg" />
+                                            <TextBlock Classes="bo_doc_action_text" Text="Empresa" />
+                                        </StackPanel>
                                     </Button>
                                 </StackPanel>
-                                <TextBlock Classes="bo_new_doc_ship_title" Text="Origem" />
+                                <StackPanel Classes="bo_new_doc_label">
+                                    <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_origem_b.svg" />
+                                    <TextBlock Classes="bo_new_doc_ship_title" Text="Origem" />
+                                </StackPanel>
                             </DockPanel>
-                            <TextBlock Classes="bo_new_doc_caption" Text="Morada" />
+                            <StackPanel Classes="bo_new_doc_label">
+                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_origem_b.svg" />
+                                <TextBlock Classes="bo_new_doc_caption" Text="Morada" />
+                            </StackPanel>
                             <TextBox x:Name="FromAddress" Classes="bo_line_editor_input" />
                             <Grid ColumnDefinitions="*,8,*">
                                 <StackPanel>
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Distrito" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_menu_dispositivos_paises_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Distrito" />
+                                    </StackPanel>
                                     <TextBox x:Name="FromRegion" Classes="bo_line_editor_input" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Código postal" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Código postal" />
+                                    </StackPanel>
                                     <TextBox x:Name="FromPostal" Classes="bo_line_editor_input bo_numeric" />
                                 </StackPanel>
                             </Grid>
                             <Grid ColumnDefinitions="*,8,*">
                                 <StackPanel>
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Cidade" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_menu_dispositivos_paises_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Cidade" />
+                                    </StackPanel>
                                     <TextBox x:Name="FromCity" Classes="bo_line_editor_input" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="País" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_menu_dispositivos_paises_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="País" />
+                                    </StackPanel>
                                     <TextBox x:Name="FromCountry" Classes="bo_line_editor_input" />
                                 </StackPanel>
                             </Grid>
                             <Grid ColumnDefinitions="*,8,*">
                                 <StackPanel>
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Data de expedição" />
-                                    <CalendarDatePicker x:Name="FromDate" Classes="bo_new_doc_date" SelectedDateChanged="OnTransportDateChanged" />
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Data de expedição" />
+                                    </StackPanel>
+                                    <DockPanel Classes="bo_touch_row">
+                                        <Button Classes="bo_line_icon" DockPanel.Dock="Right" Click="OnOpenFromDate" ToolTip.Tip="Calendário">
+                                            <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />
+                                        </Button>
+                                        <CalendarDatePicker x:Name="FromDate" Classes="bo_new_doc_date" SelectedDateChanged="OnTransportDateChanged" />
+                                    </DockPanel>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Hora" />
-                                <TimePicker x:Name="FromTime" Classes="bo_new_doc_time" ClockIdentifier="24HourClock" SelectedTimeChanged="OnTransportTimeChanged" />
-                            </StackPanel>
-                        </Grid>
+                                    <StackPanel Classes="bo_new_doc_label">
+                                        <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />
+                                        <TextBlock Classes="bo_new_doc_caption" Text="Hora" />
+                                    </StackPanel>
+                                    <TimePicker x:Name="FromTime" Classes="bo_new_doc_time" ClockIdentifier="24HourClock" SelectedTimeChanged="OnTransportTimeChanged" />
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
                     </Grid>
                     <TextBlock x:Name="TransportDateError" Classes="bo_new_doc_error" IsVisible="False" />
