@@ -5010,6 +5010,10 @@
         <Setter Property="Spacing" Value="4" />
     </Style>
 
+    <Style Selector="DockPanel.bo_quick_dialog_body">
+        <Setter Property="Margin" Value="16,12,16,12" />
+    </Style>
+
     <Style Selector="StackPanel.bo_serial_list">
         <Setter Property="Spacing" Value="6" />
     </Style>
