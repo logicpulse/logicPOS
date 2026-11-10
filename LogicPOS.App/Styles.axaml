@@ -4478,6 +4478,29 @@
         <Setter Property="FontSize" Value="13" />
     </Style>
 
+    <!-- Subtle LogicPOS green (#9bbe1d) for selected / hover rows in listing grids. -->
+    <Style Selector="DataGrid.bo_doc_grid DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+        <Setter Property="Fill" Value="#F3F8DE" />
+    </Style>
+    <Style Selector="DataGrid.bo_doc_grid DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+        <Setter Property="Fill" Value="#E4F0B8" />
+    </Style>
+    <Style Selector="DataGrid.bo_doc_grid DataGridRow:selected:pointerover /template/ Rectangle#BackgroundRectangle">
+        <Setter Property="Fill" Value="#D5E89A" />
+    </Style>
+    <Style Selector="DataGrid.bo_doc_grid DataGridRow:selected DataGridCell">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="DataGrid.bo_line_grid DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+        <Setter Property="Fill" Value="#F3F8DE" />
+    </Style>
+    <Style Selector="DataGrid.bo_line_grid DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+        <Setter Property="Fill" Value="#E4F0B8" />
+    </Style>
+    <Style Selector="DataGrid.bo_line_grid DataGridRow:selected:pointerover /template/ Rectangle#BackgroundRectangle">
+        <Setter Property="Fill" Value="#D5E89A" />
+    </Style>
+
     <Style Selector="DataGrid.bo_doc_grid DataGridColumnHeader">
         <Setter Property="Background" Value="#F7F7F7" />
         <Setter Property="Foreground" Value="#222222" />
