@@ -1441,6 +1441,7 @@ public partial class NewDocumentWindow : UserControl
         if (active == false)
         {
             TransportOverlay.IsVisible = false;
+            ClearTransportDateFeedback();
             return;
         }
 
@@ -1462,17 +1463,26 @@ public partial class NewDocumentWindow : UserControl
         RefreshTransportDates();
     }
 
-    private void RefreshTransportDates()
+    private void RefreshTransportDates(bool notify = true)
     {
+        // Carga de rascunho / checkbox desligado: não validar nem toastar datas de transporte.
+        if (_filling || RequiresTransport() == false)
+        {
+            ClearTransportDateFeedback();
+            return;
+        }
+
         var check = PosDocumentRules.CheckTransportDates(CombineWhen(FromDate, FromTime), CombineWhen(ToDate, ToTime));
         SetDateState(FromDate, check.DispatchValid);
         SetDateState(ToDate, check.ArrivalValid);
+        TransportDateError.Text = notify ? check.Message ?? string.Empty : string.Empty;
+    }
+
+    private void ClearTransportDateFeedback()
+    {
+        SetDateState(FromDate, valid: true);
+        SetDateState(ToDate, valid: true);
         TransportDateError.Text = string.Empty;
-        TransportDateError.IsVisible = false;
-        if (check.Message is not null)
-        {
-            Toast.Error(this, check.Message);
-        }
     }
 
     private static DateTime? CombineWhen(CalendarDatePicker date, TimePicker time)
@@ -2933,7 +2943,7 @@ public partial class NewDocumentWindow : UserControl
             {
                 ShowDocumentError(transportError);
                 TransportOverlay.IsVisible = true;
-                RefreshTransportDates();
+                RefreshTransportDates(notify: false);
                 return;
             }
         }
