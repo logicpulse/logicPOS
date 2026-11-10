@@ -319,13 +319,18 @@
     </Panel>
     <Border x:Name="LineEditor" Classes="bo_line_editor">
         <Border x:Name="LineEditorFrame" Classes="login_alert_frame bo_line_editor_frame">
-            <DockPanel>
+            <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                    <StackPanel Classes="login_alert_title_row">
-                        <Image Classes="login_alert_title_icon"
-                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
-                        <TextBlock Classes="login_alert_title" Text="Editar artigo" />
-                    </StackPanel>
+                    <DockPanel>
+                        <Button Classes="bo_window_button" DockPanel.Dock="Right" Click="OnLineCancel" ToolTip.Tip="Fechar">
+                            <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                        </Button>
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_edit_w.png" />
+                            <TextBlock Classes="login_alert_title" Text="Editar artigo" />
+                        </StackPanel>
+                    </DockPanel>
                 </Border>
                 <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                     <StackPanel x:Name="LineEditorActions" Classes="login_alert_action_buttons">
@@ -345,72 +350,106 @@
                         </Button>
                         <Button Classes="login_alert_action" Click="OnLineRemove">
                             <StackPanel Classes="login_alert_action_content">
-                                <Image Classes="login_alert_action_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <svg:Svg Classes="login_alert_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_w.svg" />
                                 <TextBlock Classes="login_alert_action_text" Text="Remover" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action" Click="OnLineClear">
                             <StackPanel Classes="login_alert_action_content">
-                                <Image Classes="login_alert_action_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <svg:Svg Classes="login_alert_action_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_limpar_w.svg" />
                                 <TextBlock Classes="login_alert_action_text" Text="Limpar" />
                             </StackPanel>
                         </Button>
                     </StackPanel>
                 </Border>
-                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer Classes="bo_new_doc_transport" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <Grid x:Name="LineEditorFields" Classes="bo_line_editor_fields" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
                     <StackPanel>
-                        <TextBlock Classes="bo_new_doc_caption" Text="Código" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_tipos_artigo_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Código" />
+                        </StackPanel>
                         <TextBox x:Name="EditCode" Classes="bo_line_editor_input" IsReadOnly="True" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Grid.ColumnSpan="2">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Artigo" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_artigos_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Artigo" />
+                        </StackPanel>
                         <TextBox x:Name="EditDesignation" Classes="bo_line_editor_input" />
                     </StackPanel>
                     <StackPanel Grid.Column="3">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Número de série" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_artigos.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Número de série" />
+                        </StackPanel>
                         <TextBox x:Name="EditSerial" Classes="bo_line_editor_input" TextChanged="OnEditSerialChanged" />
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Família" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_familas_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Família" />
+                        </StackPanel>
                         <TextBox x:Name="EditFamily" Classes="bo_line_editor_input" IsReadOnly="True" />
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="2">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Preço" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_tipos_preco_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Preço" />
+                        </StackPanel>
                         <TextBox x:Name="EditPrice" Classes="bo_line_editor_input bo_numeric" TextChanged="OnEditValuesChanged" />
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="3">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Quantidade" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_gestao_stocks_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Quantidade" />
+                        </StackPanel>
                         <TextBox x:Name="EditQuantity" Classes="bo_line_editor_input bo_numeric" TextChanged="OnEditValuesChanged" />
                     </StackPanel>
                     <StackPanel Grid.Row="2">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Desconto" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_clientes_grupo_desconto_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Desconto" />
+                        </StackPanel>
                         <TextBox x:Name="EditDiscount" Classes="bo_line_editor_input bo_numeric" TextChanged="OnEditValuesChanged" />
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="1">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Total" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_tipos_preco_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Total" />
+                        </StackPanel>
                         <Border Classes="bo_new_doc_value_box">
                             <TextBlock x:Name="EditTotal" Classes="bo_new_doc_value" />
                         </Border>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Total c/ IVA" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_taxas_iva_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Total c/ IVA" />
+                        </StackPanel>
                         <Border Classes="bo_new_doc_value_box">
                             <TextBlock x:Name="EditTotalVat" Classes="bo_new_doc_value" />
                         </Border>
                     </StackPanel>
                     <StackPanel Grid.Row="3" Grid.ColumnSpan="2">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Taxa (%)" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_taxas_iva_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Taxa (%)" />
+                        </StackPanel>
                         <ComboBox x:Name="EditVat" Classes="bo_new_doc_combo" SelectionChanged="OnEditVatChanged" />
                     </StackPanel>
                     <StackPanel x:Name="EditExemptionPanel" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Motivo de isenção de IVA" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_movimentos_isencao_iva_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Motivo de isenção de IVA" />
+                        </StackPanel>
                         <ComboBox x:Name="EditExemption" Classes="bo_new_doc_combo" />
                     </StackPanel>
                     <StackPanel Grid.Row="4" Grid.ColumnSpan="4">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
+                        </StackPanel>
                         <TextBox x:Name="EditNotes" Classes="bo_line_editor_notes" />
                     </StackPanel>
                     <TextBlock x:Name="EditError" Grid.Row="5" Grid.ColumnSpan="4" Classes="bo_new_doc_error" />
