@@ -40,16 +40,12 @@
                         <Button x:Name="TransportButton" Classes="bo_line_icon bo_transport_icon" IsVisible="False" Click="OnOpenTransportClick" ToolTip.Tip="Dados de transporte">
                             <Image Classes="bo_line_icon_image bo_transport_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/menu_listagem_de_veiculos.png" />
                         </Button>
-                        <Button Classes="bo_line_icon" Click="OnPreviewClick" ToolTip.Tip="Imprimir / pré-visualizar">
-                            <svg:Svg Classes="bo_line_icon_image"
-                                     Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_b.svg" />
-                        </Button>
                     </StackPanel>
                 <StackPanel x:Name="DocumentActions" Classes="login_alert_action_buttons">
                     <Button Classes="login_alert_action bo_new_doc_preview" Click="OnPreviewClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_b.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_w.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Pré-visualizar" />
                         </StackPanel>
                     </Button>
@@ -78,31 +74,49 @@
                               VerticalScrollBarVisibility="Auto">
                 <Grid x:Name="HeaderFields" Classes="bo_new_doc_fields" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto">
                     <StackPanel>
-                        <TextBlock Classes="bo_new_doc_caption" Text="Tipo de documento" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_tipos_documentos_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Tipo de documento" />
+                        </StackPanel>
                         <ComboBox x:Name="TypeBox" Classes="bo_new_doc_combo" SelectionChanged="OnTypeChanged" />
                     </StackPanel>
                     <StackPanel Grid.Column="1">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Série" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_series_documentos_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Série" />
+                        </StackPanel>
                         <Border Classes="bo_new_doc_value_box">
                             <TextBlock x:Name="SeriesLabel" Classes="bo_new_doc_value" />
                         </Border>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Data" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Data" />
+                        </StackPanel>
                         <Border Classes="bo_new_doc_value_box">
                             <TextBlock x:Name="DateLabel" Classes="bo_new_doc_value" />
                         </Border>
                     </StackPanel>
                     <StackPanel Grid.Column="3">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Condições de pagamento" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_condicoes_pagamento_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Condições de pagamento" />
+                        </StackPanel>
                         <ComboBox x:Name="PaymentBox" Classes="bo_new_doc_combo" />
                     </StackPanel>
                     <StackPanel Grid.Row="1">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Moeda" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_moedas_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Moeda" />
+                        </StackPanel>
                         <ComboBox x:Name="CurrencyBox" Classes="bo_new_doc_combo" />
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Documento de origem" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_origem_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Documento de origem" />
+                        </StackPanel>
                         <DockPanel Classes="bo_touch_row">
                             <Button x:Name="OriginClearButton"
                                     Classes="bo_lookup_clear"
@@ -119,7 +133,10 @@
                         </DockPanel>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Copiar outro documento" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Copiar outro documento" />
+                        </StackPanel>
                         <DockPanel Classes="bo_touch_row">
                             <Button x:Name="CopyClearButton"
                                     Classes="bo_lookup_clear"
@@ -138,7 +155,10 @@
                     <Border Grid.Row="2" Grid.ColumnSpan="4" Classes="bo_new_doc_customer_card">
                         <Grid ColumnDefinitions="*,180,Auto">
                             <StackPanel>
-                                <TextBlock Classes="bo_new_doc_caption" Text="Cliente" />
+                                <StackPanel Classes="bo_new_doc_label">
+                                    <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_clientes_b.svg" />
+                                    <TextBlock Classes="bo_new_doc_caption" Text="Cliente" />
+                                </StackPanel>
                                 <TextBox x:Name="CustomerName"
                                          Classes="bo_line_editor_input"
                                          PlaceholderText="Consumidor Final"
@@ -155,7 +175,10 @@
                                 </Popup>
                             </StackPanel>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Classes="bo_new_doc_caption" Text="NIF" />
+                                <StackPanel Classes="bo_new_doc_label">
+                                    <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_b.svg" />
+                                    <TextBlock Classes="bo_new_doc_caption" Text="NIF" />
+                                </StackPanel>
                                 <TextBox x:Name="CustomerFiscal"
                                          Classes="bo_line_editor_input bo_numeric"
                                          KeyDown="OnCustomerSearchKey"
@@ -178,7 +201,10 @@
                         </Grid>
                     </Border>
                     <StackPanel Grid.Row="3" Grid.ColumnSpan="4">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
+                        </StackPanel>
                         <TextBox x:Name="NotesBox"
                                  Classes="bo_new_doc_notes"
                                  PlaceholderText="Introduza notas sobre o documento..." />
