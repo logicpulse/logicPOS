@@ -17,6 +17,7 @@ public partial class TableSetupWizard : UserControl
     public TableSetupWizard()
     {
         InitializeComponent();
+        ListingNotice.BindToast(Notice, this);
     }
 
     public event EventHandler<string?>? Finished;

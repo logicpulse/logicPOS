@@ -14,6 +14,7 @@ public partial class FinalConsumerSetupWizard : UserControl
     public FinalConsumerSetupWizard()
     {
         InitializeComponent();
+        ListingNotice.BindToast(Notice, this);
     }
 
     public event EventHandler<string?>? Finished;

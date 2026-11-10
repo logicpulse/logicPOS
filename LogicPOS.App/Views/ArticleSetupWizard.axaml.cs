@@ -17,6 +17,7 @@ public partial class ArticleSetupWizard : UserControl
     public ArticleSetupWizard()
     {
         InitializeComponent();
+        ListingNotice.BindToast(Notice, this);
     }
 
     public event EventHandler<string?>? Finished;

@@ -1643,6 +1643,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             // Any failure before the apply script is running must return to the confirmation
             // buttons. Once the script is scheduled, that reset would start the download again.
             UpdateStatus.Text = exception.Message;
+            Toast.Error(this, exception.Message);
             UpdateProgress.IsVisible = false;
             UpdateConfirm.IsEnabled = true;
             UpdateDismiss.IsEnabled = true;

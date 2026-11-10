@@ -21,6 +21,7 @@ public partial class FirstUserSetupWindow : Window
     {
         _wizard = wizard;
         InitializeComponent();
+        ListingNotice.BindToast(LblStatus, this);
         Opened += async (_, _) => await LoadAsync();
     }
 

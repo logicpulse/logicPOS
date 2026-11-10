@@ -65,6 +65,7 @@ public partial class PaymentWindow : Window
         _orderTotal = lines.Sum(line => line.Total);
         InitializeComponent();
         CustomerSuggest.PlacementTarget = CustomerName;
+        ListingNotice.BindToast(CustomerSearchNotice, this);
         ApplySaleDocumentType();
         BuildMethods();
         TouchFields.Attach(this);
@@ -480,7 +481,6 @@ public partial class PaymentWindow : Window
             if (_customerMatches.Count == 0)
             {
                 CustomerSearchNotice.Text = "Não foi encontrado nenhum cliente.";
-                CustomerSearchNotice.IsVisible = true;
             }
         }
         catch (Exception)
@@ -492,7 +492,6 @@ public partial class PaymentWindow : Window
 
             HideCustomerSuggest();
             CustomerSearchNotice.Text = "Não foi possível pesquisar os clientes.";
-            CustomerSearchNotice.IsVisible = true;
         }
     }
 

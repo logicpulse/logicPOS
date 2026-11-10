@@ -39,6 +39,7 @@ public partial class PdfDocumentView : UserControl
     public PdfDocumentView()
     {
         InitializeComponent();
+        ListingNotice.BindToast(StatusText, this, skipProgress: true);
         PageScroll.SizeChanged += (_, _) => ApplyFit();
         AttachedToVisualTree += (_, _) =>
         {
@@ -610,11 +611,7 @@ public partial class PdfDocumentView : UserControl
         return name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) ? name : name + ".pdf";
     }
 
-    private void SetStatus(string text)
-    {
-        StatusText.Text = text;
-        StatusText.IsVisible = string.IsNullOrEmpty(text) == false;
-    }
+    private void SetStatus(string text) => StatusText.Text = text;
 
     private void UpdateFitButtons()
     {

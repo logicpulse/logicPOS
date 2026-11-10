@@ -20,6 +20,7 @@ public partial class FrontOfficeStartupWizard : UserControl
     public FrontOfficeStartupWizard()
     {
         InitializeComponent();
+        ListingNotice.BindToast(Notice, this);
     }
 
     public event EventHandler<FrontOfficeStartupResult>? Finished;

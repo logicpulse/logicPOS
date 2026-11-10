@@ -31,6 +31,7 @@ public partial class LoginWindow : UserControl
         InitializeComponent();
         // Spinner only on dark wallpaper — no full-area scrim.
         LoginBusy.UseLoginBusy();
+        ListingNotice.BindToast(TerminalNotice, this);
         TouchFields.Attach(this);
 
         var loginService = AppComposition.Services?.GetService<ILoginService>();

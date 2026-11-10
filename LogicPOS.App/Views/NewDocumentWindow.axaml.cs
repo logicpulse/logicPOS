@@ -101,6 +101,10 @@ public partial class NewDocumentWindow : UserControl
         TouchFields.Attach(this);
         Busy.UseTransparentScrim();
         _load = new ListingLoad(Busy);
+        ListingNotice.BindToast(SerialNotice, this);
+        ListingNotice.BindToast(EditorError, this);
+        ListingNotice.BindToast(NewArticleError, this);
+        ListingNotice.BindToast(TransportDateError, this);
         AttachedToVisualTree += (_, _) =>
         {
             RelayoutForViewport();

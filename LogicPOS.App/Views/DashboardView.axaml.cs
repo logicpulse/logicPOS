@@ -25,6 +25,7 @@ public partial class DashboardView : UserControl
     public DashboardView()
     {
         InitializeComponent();
+        ListingNotice.BindToast(StatusText, this);
     }
 
     public Task ReloadAsync() => LoadAsync(_year);
@@ -196,14 +197,13 @@ public partial class DashboardView : UserControl
     {
         if (loading)
         {
-            StatusText.IsVisible = false;
+            StatusText.Text = string.Empty;
             Busy.Show(message);
             return;
         }
 
         Busy.Hide();
         StatusText.Text = message;
-        StatusText.IsVisible = true;
     }
 
     private static string Money(decimal value) => MoneyFormat.Format(value);

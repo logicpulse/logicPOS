@@ -46,7 +46,8 @@ public partial class ReceiptEmissionView : UserControl
         InitializeComponent();
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
-        ListingNotice.HideWhenEmpty(Notice);
+        ListingNotice.BindToast(Notice, this);
+        ListingNotice.BindToast(PayError, this);
         DocumentGrid.ItemsSource = _visible;
         TouchFields.Attach(this);
         CardList.ItemsSource = _visible;

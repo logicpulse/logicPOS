@@ -24,6 +24,7 @@ public partial class ArticleDashboardView : UserControl
     public ArticleDashboardView()
     {
         InitializeComponent();
+        ListingNotice.BindToast(StockStatus, this);
         FillYears(_year);
     }
 
@@ -61,7 +62,6 @@ public partial class ArticleDashboardView : UserControl
         if (stock is null)
         {
             StockStatus.Text = "Não foi possível ler os stocks.";
-            StockStatus.IsVisible = true;
             return;
         }
 
@@ -98,7 +98,6 @@ public partial class ArticleDashboardView : UserControl
             {
                 Busy.Hide();
                 StockStatus.Text = "Não foi possível ler os stocks.";
-                StockStatus.IsVisible = true;
             });
         }
     }

@@ -159,6 +159,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _scanner = ScannerInputReader.FromConfiguration(configuration);
         _scanner.Captured += OnScannerCaptured;
         InitializeComponent();
+        ListingNotice.BindToast(VoltaNotice, this);
+        ListingNotice.BindToast(SessionNotice, this);
         DevEditionBanner.Apply(DevBanner);
         NewDocumentHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
@@ -4926,6 +4928,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             HorizontalAlignment = HorizontalAlignment.Center,
             Margin = new Avalonia.Thickness(8, 0, 8, 2)
         };
+        ListingNotice.BindToast(_splitNotice, this);
         _splitList = new StackPanel();
         _splitScroll = new ScrollViewer
         {

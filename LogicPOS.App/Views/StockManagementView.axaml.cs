@@ -113,7 +113,8 @@ public partial class StockManagementView : UserControl
         InitializeComponent();
         Grid.SelectionChanged += OnGridSelectionChanged;
         _load = new ListingLoad(Busy);
-        ListingNotice.HideWhenEmpty(Notice);
+        ListingNotice.BindToast(Notice, this, skipProgress: true);
+        ListingNotice.BindToast(EditorNotice, this);
         Period.SetRange(
             DateTime.Today.AddMonths(-1),
             DateTime.Today.AddDays(1).AddSeconds(-1));
@@ -2386,7 +2387,6 @@ public partial class StockManagementView : UserControl
     private void Fail(string message)
     {
         Notice.Text = message;
-        Toast.Error(this, message);
     }
 
     private async Task ShowPdfAsync(
@@ -2463,7 +2463,6 @@ public partial class StockManagementView : UserControl
     {
         EditorNotice.Text = message;
         Notice.Text = message;
-        Toast.Error(this, message);
     }
 
     private DateTime? ReadEditorDate()

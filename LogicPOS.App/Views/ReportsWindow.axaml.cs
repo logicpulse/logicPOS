@@ -33,6 +33,13 @@ public partial class ReportsWindow : UserControl
             DateTime.Today.AddDays(1).AddSeconds(-1));
         TouchFields.Attach(Filters);
         ApplyFilterVisibility(null);
+        ListingNotice.BindToast(
+            Notice,
+            this,
+            skipProgress: true,
+            keepInline: text => _selected is not null
+                && string.Equals(text, _selected.Name, StringComparison.Ordinal));
+        ListingNotice.BindToast(FiltersNotice, this, skipProgress: true);
         AttachedToVisualTree += (_, _) =>
         {
             RelayoutForViewport();

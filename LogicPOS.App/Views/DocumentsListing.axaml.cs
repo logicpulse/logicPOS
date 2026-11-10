@@ -44,7 +44,8 @@ public partial class DocumentsListing : UserControl
         InitializeComponent();
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
-        ListingNotice.HideWhenEmpty(ActionNotice);
+        ListingNotice.BindToast(ActionNotice, this, skipProgress: true);
+        ListingNotice.BindToast(EmailNotice, this);
         TouchFields.Attach(this);
         // No recycling: cards bake title/Tag from the row; recycled cells would show the wrong item.
         CardList.ItemTemplate = new FuncDataTemplate<CheckedDocument>((item, _) =>
@@ -497,7 +498,6 @@ public partial class DocumentsListing : UserControl
             if (error is not null)
             {
                 EmailNotice.Text = error;
-                Toast.Error(this, error);
                 return;
             }
 

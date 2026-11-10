@@ -32,6 +32,7 @@ public partial class SettingsPage : UserControl
     public SettingsPage()
     {
         InitializeComponent();
+        ListingNotice.BindToast(Notice, this);
     }
 
     public async Task ShowAsync(string title)
@@ -672,7 +673,6 @@ public partial class SettingsPage : UserControl
             if (result.Succeeded == false)
             {
                 Notice.Text = result.Error ?? "Não foi possível gravar.";
-                Toast.Error(this, Notice.Text);
                 return;
             }
         }

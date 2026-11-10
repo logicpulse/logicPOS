@@ -28,6 +28,7 @@ public partial class EditionSetupWindow : Window
     public EditionSetupWindow()
     {
         InitializeComponent();
+        ListingNotice.BindToast(LblStatus, this, skipProgress: true);
         RbRemoteApi.IsCheckedChanged += (_, _) => RefreshApiFields();
         RbLocalServer.IsCheckedChanged += (_, _) => RefreshApiFields();
         SelectEdition(ProductEdition.Community, closeImmediately: false);

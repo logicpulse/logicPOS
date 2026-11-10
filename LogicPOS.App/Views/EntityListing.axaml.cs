@@ -64,7 +64,12 @@ public partial class EntityListing : UserControl
         InitializeComponent();
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
-        ListingNotice.HideWhenEmpty(Notice);
+        ListingNotice.BindToast(Notice, this, keepCountsInline: true, skipProgress: true);
+        ListingNotice.BindToast(EditorNotice, this);
+        ListingNotice.BindToast(
+            ImportNotice,
+            this,
+            keepInline: text => text.Contains("Selecione as que não quer importar", StringComparison.Ordinal));
         FiscalYearHost.Finished += OnFiscalYearFinished;
         ArticleSetupHost.Finished += OnArticleSetupFinished;
         FinalConsumerSetupHost.Finished += OnFinalConsumerSetupFinished;
@@ -1566,7 +1571,6 @@ public partial class EntityListing : UserControl
 
         var result = await service.SaveAsync(_title, _editingId, fields);
         EditorNotice.Text = result.Error ?? string.Empty;
-        Notice.Text = result.Error ?? string.Empty;
         ShowResultToast(result.Succeeded, result.Error, result.Message ?? "Registo gravado com sucesso.");
         if (result.Succeeded)
         {
@@ -2271,10 +2275,8 @@ public partial class EntityListing : UserControl
         if (succeeded)
         {
             Toast.Success(this, success);
-            return;
         }
-
-        Toast.Error(this, error ?? "Não foi possível concluir a operação.");
+        // Erros já passam pelo BindToast de Notice / EditorNotice.
     }
 
     private async Task RunActionAsync(string action)
