@@ -693,7 +693,13 @@
                 </Border>
                 <ScrollViewer Classes="bo_new_doc_transport">
                     <StackPanel>
-                    <Grid ColumnDefinitions="*,16,*" Classes="bo_new_doc_editor">
+                    <Grid ColumnDefinitions="*,Auto,*" Classes="bo_new_doc_editor">
+                        <Panel Grid.Column="1" Classes="bo_new_doc_ship_divider">
+                            <Border Classes="bo_new_doc_ship_sep" />
+                            <Border Classes="bo_new_doc_ship_arrow" ToolTip.Tip="Origem → Destino">
+                                <TextBlock Classes="bo_new_doc_ship_arrow_mark" Text="→" />
+                            </Border>
+                        </Panel>
                         <StackPanel Grid.Column="2" Classes="bo_new_doc_ship">
                             <DockPanel>
                                 <StackPanel DockPanel.Dock="Right" Classes="bo_new_doc_ship_actions">
@@ -768,7 +774,7 @@
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
-                        <StackPanel Classes="bo_new_doc_ship">
+                        <StackPanel Grid.Column="0" Classes="bo_new_doc_ship">
                             <DockPanel>
                                 <StackPanel DockPanel.Dock="Right" Classes="bo_new_doc_ship_actions">
                                     <Button Classes="bo_ship_action" Click="OnCopyDestinationToOrigin">

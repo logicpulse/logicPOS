@@ -4955,6 +4955,42 @@
         <Setter Property="Spacing" Value="0" />
     </Style>
 
+    <Style Selector="Panel.bo_new_doc_ship_divider">
+        <Setter Property="Width" Value="44" />
+        <Setter Property="Margin" Value="10,8" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Border.bo_new_doc_ship_sep">
+        <Setter Property="Width" Value="1" />
+        <Setter Property="Background" Value="#D5DCE3" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="0,4" />
+    </Style>
+
+    <Style Selector="Border.bo_new_doc_ship_arrow">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="BoxShadow" Value="0 2 6 0 #14000000" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_ship_arrow_mark">
+        <Setter Property="Text" Value="→" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#9bbe1d" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="TextBlock.bo_new_doc_ship_title">
         <Setter Property="FontSize" Value="15" />
         <Setter Property="FontWeight" Value="Bold" />
