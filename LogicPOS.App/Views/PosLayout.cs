@@ -174,9 +174,9 @@ public sealed class PosLayout
         ArticleRows = FamilyRows;
 
         var logoSpan = ticketColumn + (Margin * 2);
-        // Full ticket-column width, original frontoffice wordmark aspect (1024×350).
+        // Full ticket-column width, original frontoffice wordmark aspect (434×136).
         LogoWidth = Math.Max(120, logoSpan);
-        LogoHeight = Math.Max(40, (int)Math.Round(LogoWidth * (350.0 / 1024.0)));
+        LogoHeight = Math.Max(40, (int)Math.Round(LogoWidth * (136.0 / 434.0)));
         LogoX = columnRight;
         LogoY = 4;
 
