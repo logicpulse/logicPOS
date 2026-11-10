@@ -19,50 +19,49 @@
                         </Button>
                         <Button Classes="bo_page_action" Click="OnCopyClick" ToolTip.Tip="Copiar">
                             <StackPanel Classes="bo_doc_action_content">
-                                <Image Classes="bo_doc_action_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Documents/icon_pos_dialog_action_clone_document.png" />
+                                <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_w.svg" />
                                 <TextBlock Classes="bo_doc_action_text" Text="Copiar" />
                             </StackPanel>
                         </Button>
                         <Button Classes="bo_page_action" Click="OnEditDraftClick" ToolTip.Tip="Editar rascunho">
                             <StackPanel Classes="bo_doc_action_content">
-                                <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_edit_w.png" />
+                                <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_w.svg" />
                                 <TextBlock Classes="bo_doc_action_text" Text="Editar" />
                             </StackPanel>
                         </Button>
                         <Button Classes="bo_page_action" Click="OnCancelClick" ToolTip.Tip="Anular">
                             <StackPanel Classes="bo_doc_action_content">
-                                <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_void_w.png" />
+                                <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_anular_w.svg" />
                                 <TextBlock Classes="bo_doc_action_text" Text="Anular" />
                             </StackPanel>
                         </Button>
                         <Button Classes="bo_page_action" Click="OnPrintClick" ToolTip.Tip="Imprimir">
                             <StackPanel Classes="bo_doc_action_content">
-                                <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_w.png" />
+                                <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_w.svg" />
                                 <TextBlock Classes="bo_doc_action_text" Text="Imprimir" />
                             </StackPanel>
                         </Button>
                         <Button Classes="bo_page_action" Click="OnPrintAsClick" ToolTip.Tip="Imp.Como">
                             <StackPanel Classes="bo_doc_action_content">
-                                <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_as_w.png" />
+                                <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_como_w.svg" />
                                 <TextBlock Classes="bo_doc_action_text" Text="Imp.Como" />
                             </StackPanel>
                         </Button>
                         <Button Classes="bo_page_action" Click="OnSendToAtClick" ToolTip.Tip="Comunicar a guia à AT">
                             <StackPanel Classes="bo_doc_action_content">
-                                <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_email_w.png" />
+                                <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_email_w.svg" />
                                 <TextBlock Classes="bo_doc_action_text" Text="AT" />
                             </StackPanel>
                         </Button>
                         <Button Classes="bo_page_action" Click="OnOpenA4Click" ToolTip.Tip="Abrir">
                             <StackPanel Classes="bo_doc_action_content">
-                                <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_open_w.png" />
+                                <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_w.svg" />
                                 <TextBlock Classes="bo_doc_action_text" Text="Abrir" />
                             </StackPanel>
                         </Button>
                         <Button Classes="bo_page_action" Click="OnEmailClick" ToolTip.Tip="Enviar Email">
                             <StackPanel Classes="bo_doc_action_content">
-                                <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_email_w.png" />
+                                <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_email_w.svg" />
                                 <TextBlock Classes="bo_doc_action_text" Text="Email" />
                             </StackPanel>
                         </Button>

@@ -44,8 +44,7 @@
                 <StackPanel x:Name="DocumentActions" Classes="login_alert_action_buttons">
                     <Button Classes="login_alert_action bo_new_doc_preview" Click="OnPreviewClick">
                         <StackPanel Classes="login_alert_action_content">
-                            <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_w.png" />
+                            <svg:Svg Classes="login_alert_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_w.svg" />
                             <TextBlock Classes="login_alert_action_text" Text="Pré-visualizar" />
                         </StackPanel>
                     </Button>
@@ -326,8 +325,7 @@
                             <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                         </Button>
                         <StackPanel Classes="login_alert_title_row">
-                            <Image Classes="login_alert_title_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_edit_w.png" />
+                            <svg:Svg Classes="login_alert_title_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_w.svg" />
                             <TextBlock Classes="login_alert_title" Text="Editar artigo" />
                         </StackPanel>
                     </DockPanel>

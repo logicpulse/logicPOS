@@ -541,13 +541,13 @@ public partial class EntityListing : UserControl
             "export-saft" or "saft-year" or "saft-month" or "saft-period"
                 => "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_exportacao_saft_anual.svg",
             "register-at"
-                => "avares://LogicPOS.App/Assets/Images/Documents/icon_doc_email_w.png",
+                => "avares://LogicPOS.App/Assets/Images/Documents/botao_email_w.svg",
             "request-agt" or "request-series"
                 => "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_series_documentos.svg",
             "undo-receipt"
-                => "avares://LogicPOS.App/Assets/Images/Documents/icon_doc_void_w.png",
+                => "avares://LogicPOS.App/Assets/Images/Documents/botao_anular_w.svg",
             "backup" or "restore"
-                => "avares://LogicPOS.App/Assets/Images/Documents/icon_doc_open_w.png",
+                => "avares://LogicPOS.App/Assets/Images/Documents/botao_ver_w.svg",
             "import-articles" or "import-customers"
                 => "avares://LogicPOS.App/Assets/Images/Listing/botao_novo_w.svg",
             "export-articles" or "export-customers"
@@ -559,7 +559,7 @@ public partial class EntityListing : UserControl
             "emit-receipt"
                 => "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_dashboard_emissao_recibos.svg",
             "agt-consult"
-                => "avares://LogicPOS.App/Assets/Images/Documents/icon_doc_open_w.png",
+                => "avares://LogicPOS.App/Assets/Images/Documents/botao_ver_w.svg",
             _ => null
         };
 

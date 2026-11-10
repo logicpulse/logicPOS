@@ -20,7 +20,7 @@
                                 </Button>
                                 <Button Classes="bo_page_action" Click="OnOpenClick" ToolTip.Tip="Abrir">
                                     <StackPanel Classes="bo_doc_action_content">
-                                        <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_open_w.png" />
+                                        <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_w.svg" />
                                         <TextBlock Classes="bo_doc_action_text" Text="Abrir" />
                                     </StackPanel>
                                 </Button>

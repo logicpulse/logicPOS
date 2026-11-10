@@ -11,7 +11,7 @@ namespace LogicPOS.App.Views;
 internal static class DialogTitleIcons
 {
     public const string Create = "avares://LogicPOS.App/Assets/Images/Listing/botao_novo_w.svg";
-    public const string Edit = "avares://LogicPOS.App/Assets/Images/Documents/icon_doc_edit_w.png";
+    public const string Edit = "avares://LogicPOS.App/Assets/Images/Documents/botao_editar_w.svg";
     public const string Info = "avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png";
     public const string Question = "avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question_window.png";
     public const string Warning = "avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_warning_window.png";

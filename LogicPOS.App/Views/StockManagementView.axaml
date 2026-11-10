@@ -19,7 +19,7 @@
                                 </Button>
                                 <Button x:Name="BtnEdit" Classes="bo_page_action" Click="OnEditClick" ToolTip.Tip="Editar">
                                     <StackPanel Classes="bo_doc_action_content">
-                                        <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_edit_w.png" />
+                                        <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_w.svg" />
                                         <TextBlock Classes="bo_doc_action_text" Text="Editar" />
                                     </StackPanel>
                                 </Button>
@@ -31,19 +31,19 @@
                                 </Button>
                                 <Button x:Name="BtnOrigin" Classes="bo_page_action" Click="OnOriginClick" ToolTip.Tip="Doc. origem">
                                     <StackPanel Classes="bo_doc_action_content">
-                                        <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_open_w.png" />
+                                        <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_origem_w.svg" />
                                         <TextBlock Classes="bo_doc_action_text" Text="Doc. origem" />
                                     </StackPanel>
                                 </Button>
                                 <Button x:Name="BtnSale" Classes="bo_page_action" Click="OnSaleClick" ToolTip.Tip="Doc. venda">
                                     <StackPanel Classes="bo_doc_action_content">
-                                        <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_open_w.png" />
+                                        <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_w.svg" />
                                         <TextBlock Classes="bo_doc_action_text" Text="Doc. venda" />
                                     </StackPanel>
                                 </Button>
                                 <Button x:Name="BtnBarcode" Classes="bo_page_action" Click="OnBarcodeClick" ToolTip.Tip="Cod. barras">
                                     <StackPanel Classes="bo_doc_action_content">
-                                        <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_w.png" />
+                                        <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_w.svg" />
                                         <TextBlock Classes="bo_doc_action_text" Text="Cod. barras" />
                                     </StackPanel>
                                 </Button>
