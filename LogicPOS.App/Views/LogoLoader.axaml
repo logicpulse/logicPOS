@@ -5,25 +5,21 @@
              Width="56"
              Height="56">
     <Grid x:Name="Tiles" ColumnDefinitions="*,*" RowDefinitions="*,*">
-        <Border x:Name="Tile0" Classes="logo_tile">
-            <Border.RenderTransform>
-                <ScaleTransform />
-            </Border.RenderTransform>
-        </Border>
-        <Border x:Name="Tile1" Classes="logo_tile" Grid.Column="1">
-            <Border.RenderTransform>
-                <ScaleTransform />
-            </Border.RenderTransform>
-        </Border>
-        <Border x:Name="Tile2" Classes="logo_tile" Grid.Row="1">
-            <Border.RenderTransform>
-                <ScaleTransform />
-            </Border.RenderTransform>
-        </Border>
-        <Border x:Name="Tile3" Classes="logo_tile" Grid.Row="1" Grid.Column="1">
-            <Border.RenderTransform>
-                <ScaleTransform />
-            </Border.RenderTransform>
-        </Border>
+        <Panel x:Name="Tile0">
+            <Border Classes="logo_tile" />
+            <Border Classes="logo_tile_on" />
+        </Panel>
+        <Panel x:Name="Tile1" Grid.Column="1">
+            <Border Classes="logo_tile" />
+            <Border Classes="logo_tile_on" />
+        </Panel>
+        <Panel x:Name="Tile2" Grid.Row="1">
+            <Border Classes="logo_tile" />
+            <Border Classes="logo_tile_on" />
+        </Panel>
+        <Panel x:Name="Tile3" Grid.Row="1" Grid.Column="1">
+            <Border Classes="logo_tile" />
+            <Border Classes="logo_tile_on" />
+        </Panel>
     </Grid>
 </UserControl>
