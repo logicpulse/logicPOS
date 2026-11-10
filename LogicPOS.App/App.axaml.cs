@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using LogicPOS.App.Themes;
 using LogicPOS.App.Views;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
@@ -181,6 +182,8 @@ public partial class App : global::Avalonia.Application
             }
         }
 
+        await ApplyButtonGlossAsync().ConfigureAwait(true);
+
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             var login = new LoginShellWindow();
@@ -188,6 +191,26 @@ public partial class App : global::Avalonia.Application
             login.Show();
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
         });
+    }
+
+    private static async Task ApplyButtonGlossAsync()
+    {
+        try
+        {
+            var listing = AppComposition.Services?.GetService(typeof(IBackOfficeListingService)) as IBackOfficeListingService;
+            string? value = null;
+            if (listing is not null)
+            {
+                value = await listing.GetPreferenceValueAsync(GlassButtonTheme.PreferenceToken).ConfigureAwait(false);
+            }
+
+            await Dispatcher.UIThread.InvokeAsync(() => GlassButtonTheme.ApplyFromPreference(value));
+        }
+        catch (Exception exception)
+        {
+            WriteCrash("ApplyButtonGlossAsync", exception);
+            await Dispatcher.UIThread.InvokeAsync(() => GlassButtonTheme.Apply(GlassButtonTheme.DefaultLevel));
+        }
     }
 
     private static async Task<bool> NeedsFirstUserAsync()

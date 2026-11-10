@@ -5065,6 +5065,9 @@ Um fortzufahren, müssen Sie das alte Passwort ändern!</value>
   <data name="pos_ticketlist_label_vat1" xml:space="preserve">
     <value>MwSt</value>
   </data>
+  <data name="prefparam_app_button_gloss" xml:space="preserve">
+    <value>Erscheinungsbild :: Button-Glanzstufe</value>
+  </data>
   <data name="prefparam_app_screen_size" xml:space="preserve">
     <value>Anwendung :: Bildschirmauflösung</value>
   </data>
@@ -5252,16 +5255,16 @@ Um fortzufahren, müssen Sie das alte Passwort ändern!</value>
     <value>Fahrkarte :: QRcode-Druckmethode</value>
   </data>
   <data name="prefparam_track_api_url" xml:space="preserve">
-    <value>track.API :: track.API-URL</value>
+    <value>access.track API :: access.track API-URL</value>
   </data>
   <data name="prefparam_track_api_username" xml:space="preserve">
-    <value>track.API :: track.API-Benutzername</value>
+    <value>access.track API :: access.track API-Benutzername</value>
   </data>
   <data name="prefparam_track_api_password" xml:space="preserve">
-    <value>track.API :: track.API-Passwort</value>
+    <value>access.track API :: access.track API-Passwort</value>
   </data>
   <data name="prefparam_track_api_client_id" xml:space="preserve">
-    <value>track.API :: track.API-Client-ID</value>
+    <value>access.track API :: access.track API-Client-ID</value>
   </data>
   <data name="prefparam_report_filename_logo" xml:space="preserve">
     <value>Dateiname des Meldelogos</value>

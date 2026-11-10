@@ -2879,6 +2879,9 @@ To proceed you must change the old password!</value>
   <data name="pos_ticketlist_label_vat" xml:space="preserve">
     <value>VAT</value>
   </data>
+  <data name="prefparam_app_button_gloss" xml:space="preserve">
+    <value>Appearance :: Button gloss level</value>
+  </data>
   <data name="prefparam_app_screen_size" xml:space="preserve">
     <value>Application :: Screen Resolution</value>
   </data>
@@ -3067,16 +3070,16 @@ To proceed you must change the old password!</value>
     <value>Ticket :: QRCode printing method</value>
   </data>
   <data name="prefparam_track_api_url" xml:space="preserve">
-    <value>track.API :: track.API URL</value>
+    <value>access.track API :: access.track API URL</value>
   </data>
   <data name="prefparam_track_api_username" xml:space="preserve">
-    <value>track.API :: track.API Username</value>
+    <value>access.track API :: access.track API Username</value>
   </data>
   <data name="prefparam_track_api_password" xml:space="preserve">
-    <value>track.API :: track.API Password</value>
+    <value>access.track API :: access.track API Password</value>
   </data>
   <data name="prefparam_track_api_client_id" xml:space="preserve">
-    <value>track.API :: track.API Client ID</value>
+    <value>access.track API :: access.track API Client ID</value>
   </data>
   <data name="prefparam_use_cached_images" xml:space="preserve">
     <value>Application :: Use Cached Images</value>

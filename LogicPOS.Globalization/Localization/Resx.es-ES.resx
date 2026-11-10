@@ -2890,6 +2890,9 @@ Para proceder debes cambiar la contraseña anterior!</value>
   <data name="pos_ticketlist_label_vat" xml:space="preserve">
     <value>IVA</value>
   </data>
+  <data name="prefparam_app_button_gloss" xml:space="preserve">
+    <value>Apariencia :: Nivel de brillo de botones</value>
+  </data>
   <data name="prefparam_app_screen_size" xml:space="preserve">
     <value>Aplicación :: Resolución de pantalla</value>
   </data>
@@ -3075,16 +3078,16 @@ Para proceder debes cambiar la contraseña anterior!</value>
     <value>Ticket :: Método de impresión QRCode</value>
   </data>
   <data name="prefparam_track_api_url" xml:space="preserve">
-    <value>track.API :: URL de track.API</value>
+    <value>access.track API :: URL de access.track API</value>
   </data>
   <data name="prefparam_track_api_username" xml:space="preserve">
-    <value>track.API :: Usuario de track.API</value>
+    <value>access.track API :: Usuario de access.track API</value>
   </data>
   <data name="prefparam_track_api_password" xml:space="preserve">
-    <value>track.API :: Contraseña de track.API</value>
+    <value>access.track API :: Contraseña de access.track API</value>
   </data>
   <data name="prefparam_track_api_client_id" xml:space="preserve">
-    <value>track.API :: ID de cliente de track.API</value>
+    <value>access.track API :: ID de cliente de access.track API</value>
   </data>
   <data name="prefparam_print_qrcode" xml:space="preserve">
     <value>Documentos :: Imprimir QRCode</value>

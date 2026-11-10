@@ -187,7 +187,7 @@
     </Style>
 
     <!-- Glass buttons (time.track / access.track KMP: PrimaryGlassBox + SoftGlass). -->
-    <!-- Subtle glass chrome for all Buttons. Tokens: Themes/GlassButton.axaml -->
+    <!-- Subtle glass chrome for action Buttons. Tokens: Themes/GlassButton.axaml -->
     <Style Selector="Button">
         <Setter Property="Template">
             <ControlTemplate>
@@ -211,6 +211,28 @@
                                           TextBlock.FontWeight="{TemplateBinding FontWeight}"
                                           TextBlock.Foreground="{TemplateBinding Foreground}" />
                     </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- Back-office sidebar / chrome: no glass (flat fill only). -->
+    <Style Selector="Button.bo_nav, Button.bo_nav_exit, Button.bo_menu_parent, Button.bo_menu_child, Button.bo_sidebar_brand, Button.bo_sidebar_about, Button.bo_sidebar_toggle, Button.bo_window_button, Button.bo_drawer_toggle, Button.bo_mobile_bar_button, Button.bo_mobile_sheet_button, Button.bo_shortcut">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        ClipToBounds="True"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                 </Border>
             </ControlTemplate>
         </Setter>

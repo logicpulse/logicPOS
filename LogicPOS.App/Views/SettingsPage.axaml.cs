@@ -7,6 +7,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using LogicPOS.App.Themes;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,7 @@ public partial class SettingsPage : UserControl
 {
     private static readonly string[] CategoryOrder =
     [
-        "Empresa", "Geral", "SAFT", "Email", "Impressão", "Backup", "Stock", "Relatórios", "Pastas", "Notificações", "Outros"
+        "Empresa", "Geral", "Aparência", "SAFT", "Email", "Impressão", "Backup", "Stock", "Relatórios", "Pastas", "Notificações", "Outros"
     ];
 
     private readonly List<(Guid Id, string Token, string Order, string Code, string Notes, Func<string> Read)> _fields = new();
@@ -196,6 +197,16 @@ public partial class SettingsPage : UserControl
             return CreateCountryField(value);
         }
 
+        if (token.Equals(GlassButtonTheme.PreferenceToken, StringComparison.OrdinalIgnoreCase))
+        {
+            return CreateGlossField(value);
+        }
+
+        if (token.Equals("APP_SCREEN_SIZE", StringComparison.OrdinalIgnoreCase))
+        {
+            return CreateScreenSizeField(value);
+        }
+
         var kind = row["InputType"];
         if (kind.Contains("FilePicker", StringComparison.OrdinalIgnoreCase))
         {
@@ -367,7 +378,101 @@ public partial class SettingsPage : UserControl
             return pem;
         }
 
+        if (input is ComboBox combo)
+        {
+            if (combo.SelectedItem is ComboBoxItem item && item.Tag is string tagged)
+            {
+                return tagged;
+            }
+
+            return combo.SelectedItem?.ToString()?.Trim() ?? string.Empty;
+        }
+
         return input is TextBox box ? box.Text ?? string.Empty : string.Empty;
+    }
+
+    private static Control CreateGlossField(string value)
+    {
+        var level = GlassButtonTheme.ParseLevel(value);
+        var options = new (string Value, string Label)[]
+        {
+            ("0", "Desligado (0)"),
+            ("25", "Suave (25)"),
+            ("50", "Padrão (50)"),
+            ("75", "Alto (75)"),
+            ("100", "Máximo (100)"),
+        };
+
+        var box = new ComboBox
+        {
+            Classes = { "bo_entity_input" },
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+        };
+        ComboBoxItem? selected = null;
+        foreach (var (optionValue, label) in options)
+        {
+            var item = new ComboBoxItem { Content = label, Tag = optionValue };
+            box.Items.Add(item);
+            if (optionValue == level.ToString())
+            {
+                selected = item;
+            }
+        }
+
+        if (selected is null)
+        {
+            selected = new ComboBoxItem { Content = $"Personalizado ({level})", Tag = level.ToString() };
+            box.Items.Insert(0, selected);
+        }
+
+        box.SelectedItem = selected;
+        box.SelectionChanged += (_, _) =>
+        {
+            if (box.SelectedItem is ComboBoxItem item && item.Tag is string raw)
+            {
+                GlassButtonTheme.ApplyFromPreference(raw);
+            }
+        };
+        return box;
+    }
+
+    private static Control CreateScreenSizeField(string value)
+    {
+        var current = string.IsNullOrWhiteSpace(value) ? "0,0" : value.Trim();
+        var options = new (string Value, string Label)[]
+        {
+            ("0,0", "Automático"),
+            ("1024,768", "1024 × 768"),
+            ("1280,800", "1280 × 800"),
+            ("1366,768", "1366 × 768"),
+            ("1600,900", "1600 × 900"),
+            ("1920,1080", "1920 × 1080"),
+        };
+
+        var box = new ComboBox
+        {
+            Classes = { "bo_entity_input" },
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+        };
+        ComboBoxItem? selected = null;
+        foreach (var (optionValue, label) in options)
+        {
+            var item = new ComboBoxItem { Content = label, Tag = optionValue };
+            box.Items.Add(item);
+            if (string.Equals(optionValue, current, StringComparison.OrdinalIgnoreCase))
+            {
+                selected = item;
+            }
+        }
+
+        if (selected is null)
+        {
+            selected = new ComboBoxItem { Content = current, Tag = current };
+            box.Items.Insert(0, selected);
+        }
+
+        box.SelectedItem = selected;
+        return box;
     }
 
     private Control CreateLogoField(string value)
@@ -552,6 +657,11 @@ public partial class SettingsPage : UserControl
             }
         }
 
+        if (_byToken.TryGetValue(GlassButtonTheme.PreferenceToken, out var glossInput))
+        {
+            GlassButtonTheme.ApplyFromPreference(ReadInput(glossInput));
+        }
+
         Notice.Text = string.Empty;
         Toast.Success(this, "Parâmetros gravados com sucesso.");
     }
@@ -624,6 +734,11 @@ public partial class SettingsPage : UserControl
         if (key.StartsWith("NOTIFICATION"))
         {
             return "Notificações";
+        }
+
+        if (key is "APP_SCREEN_SIZE" or "APP_BUTTON_GLOSS")
+        {
+            return "Aparência";
         }
 
         if (key.StartsWith("APP") || key == "CULTURE" || key.StartsWith("USE_") || key.StartsWith("SPLIT_"))

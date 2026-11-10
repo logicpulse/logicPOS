@@ -720,6 +720,31 @@
     "DeletedAt": "0001-01-01T00:00:00"
   },
   {
+    "Token": "APP_BUTTON_GLOSS",
+    "Value": "50",
+    "ValueTip": "0-100",
+    "Required": false,
+    "RegEx": "RegexInteger",
+    "ResourceString": "prefparam_app_button_gloss",
+    "ResourceStringInfo": null,
+    "FormType": 2,
+    "FormPageNo": 1,
+    "InputType": 4,
+    "Order": 305,
+    "Code": "305",
+    "Id": "639b34e0-b0fe-4e88-a79e-b34349aab05c",
+    "Notes": null,
+    "CreatedAt": "2025-08-18T18:35:27.4312755+01:00",
+    "CreatedBy": "00000000-0000-0000-0000-000000000000",
+    "CreatedWhere": "00000000-0000-0000-0000-000000000000",
+    "UpdatedAt": "2025-08-18T18:35:27.4312755+01:00",
+    "UpdatedBy": "00000000-0000-0000-0000-000000000000",
+    "UpdatedWhere": "00000000-0000-0000-0000-000000000000",
+    "IsDeleted": false,
+    "DeletedAt": "0001-01-01T00:00:00"
+  },
+
+  {
     "Token": "CULTURE",
     "Value": "pt-PT",
     "ValueTip": null,
