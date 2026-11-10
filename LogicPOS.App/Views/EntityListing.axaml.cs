@@ -938,7 +938,8 @@ public partial class EntityListing : UserControl
             _articlePages = pages;
             foreach (var group in groups)
             {
-                var groupFields = fields.Where(item => item.Group == group && item.Kind != "image").ToList();
+                var groupFields = OrderEditorFields(
+                    fields.Where(item => item.Group == group && item.Kind != "image"));
                 if (groupFields.Count == 0)
                 {
                     continue;
@@ -993,7 +994,7 @@ public partial class EntityListing : UserControl
         }
         else
         {
-            foreach (var field in fields)
+            foreach (var field in OrderEditorFields(fields))
             {
                 await AddFieldAsync(service, EditorFields, field);
             }
@@ -1857,6 +1858,28 @@ public partial class EntityListing : UserControl
         {
             OverlayDismissed?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    /// <summary>
+    /// Designação, Código e Ordem ficam sempre no topo quando existem; o resto mantém a ordem original.
+    /// </summary>
+    private static List<ListingField> OrderEditorFields(IEnumerable<ListingField> fields)
+    {
+        var ranked = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Designation"] = 0,
+            ["Name"] = 0,
+            ["Code"] = 1,
+            ["Ord"] = 2,
+            ["Order"] = 2
+        };
+
+        return fields
+            .Select((field, index) => (field, index))
+            .OrderBy(item => ranked.TryGetValue(item.field.Key, out var rank) ? rank : 100)
+            .ThenBy(item => item.index)
+            .Select(item => item.field)
+            .ToList();
     }
 
     private static List<string> OrderEditorGroups(IReadOnlyList<ListingField> fields)
