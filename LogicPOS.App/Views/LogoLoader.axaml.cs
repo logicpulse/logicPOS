@@ -83,6 +83,7 @@ public partial class LogoLoader : UserControl
                 return;
             }
 
+            tileVisual.CenterPoint = new Vector3D(tile.Bounds.Width / 2, tile.Bounds.Height / 2, 0);
             var start = slot / (float)HopOrder.Length;
             var end = (slot + 1) / (float)HopOrder.Length;
             greenVisual.StartAnimation("Opacity", CreateGreenAnimation(greenVisual.Compositor, start, end));
