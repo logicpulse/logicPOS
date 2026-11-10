@@ -110,12 +110,19 @@ public partial class SettingsPage : UserControl
 
     private Grid BuildPage(IReadOnlyList<ListingRow> rows)
     {
+        // OID interno: sincronizado pelo País; não mostrar GUID na ficha.
+        foreach (var hidden in rows.Where(IsHiddenCompanyField))
+        {
+            RegisterHiddenField(hidden);
+        }
+
         // Capital Social (left) + Chave Privada AGT-FE (right) on the same row.
         var pem = rows.FirstOrDefault(row => AgtFePrivateKeyBox.IsToken(row["Token"]));
         var capital = rows.FirstOrDefault(row =>
             row["Token"].Equals("COMPANY_STOCK_CAPITAL", StringComparison.OrdinalIgnoreCase));
         var regular = rows
             .Where(row => AgtFePrivateKeyBox.IsToken(row["Token"]) == false
+                && IsHiddenCompanyField(row) == false
                 && row["Token"].Equals("COMPANY_STOCK_CAPITAL", StringComparison.OrdinalIgnoreCase) == false)
             .OrderBy(row => ParseOrder(row["Order"]))
             .ThenBy(row => row["Code"], StringComparer.OrdinalIgnoreCase)
@@ -170,6 +177,16 @@ public partial class SettingsPage : UserControl
         => int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var order)
             ? order
             : int.MaxValue;
+
+    private static bool IsHiddenCompanyField(ListingRow row)
+        => row["Token"].Equals("COMPANY_COUNTRY_OID", StringComparison.OrdinalIgnoreCase);
+
+    private void RegisterHiddenField(ListingRow row)
+    {
+        var input = CreateInput(row);
+        _byToken[row["Token"]] = input;
+        _fields.Add((row.Id, row["Token"], row["Order"], row["Code"], row["Notes"], () => ReadInput(input)));
+    }
 
     private void AddField(Grid grid, ListingRow row, int rowIndex, int column, int columnSpan)
     {
