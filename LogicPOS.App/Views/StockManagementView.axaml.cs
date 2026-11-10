@@ -41,7 +41,7 @@ public partial class StockManagementView : UserControl
 
     private readonly List<object> _rows = [];
     private ListingLoad _load = null!;
-    private StockTab _tab = StockTab.Articles;
+    private StockTab _tab = StockTab.History;
     private EditorMode _editor = EditorMode.None;
     private int _page = 1;
     private const int PageSize = 50;
@@ -249,7 +249,7 @@ public partial class StockManagementView : UserControl
                 AddText("Warehouse", "Armazém", 130);
                 AddText("Location", "Localização", 130);
                 AddText("UpdatedAt", "Atualizado em", 150);
-                AddEditAction();
+                AddEditArticleAction();
                 AddDeleteAction();
                 break;
             case StockTab.Warehouse:
@@ -326,6 +326,46 @@ public partial class StockManagementView : UserControl
                 OnEditClick(null, new RoutedEventArgs());
             },
             row => row is StockMovementRow movement ? movement.CanEdit : true));
+    }
+
+    private void AddEditArticleAction()
+    {
+        Grid.Columns.Add(ActionColumn(
+            "avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg",
+            "Editar artigo",
+            row =>
+            {
+                SelectRowWithoutLabelSync(row);
+                if (row is StockHistoryRow history)
+                {
+                    _ = OpenHistoryArticleAsync(history);
+                }
+            },
+            row => row is StockHistoryRow history && history.ArticleId != Guid.Empty));
+    }
+
+    private async Task OpenHistoryArticleAsync(StockHistoryRow history)
+    {
+        if (history.ArticleId == Guid.Empty)
+        {
+            Notice.Text = "Esta linha não tem artigo associado.";
+            return;
+        }
+
+        if (this.FindAncestorOfType<BackOfficeWindow>() is not BackOfficeWindow office)
+        {
+            Notice.Text = "Não foi possível abrir o artigo.";
+            return;
+        }
+
+        try
+        {
+            await office.EditEntityAsync("Artigos", history.ArticleId, returnToStock: true);
+        }
+        catch (Exception exception)
+        {
+            Fail(exception.Message);
+        }
     }
 
     private void AddDeleteAction()
@@ -553,7 +593,7 @@ public partial class StockManagementView : UserControl
             return;
         }
 
-        BtnInsert.IsVisible = _tab is StockTab.Movements or StockTab.Warehouse;
+        BtnInsert.IsVisible = _tab is StockTab.History or StockTab.Movements or StockTab.Warehouse;
         BtnEdit.IsVisible = _tab is StockTab.Articles or StockTab.Movements or StockTab.History;
         BtnDelete.IsVisible = _tab is StockTab.Movements or StockTab.History;
         BtnOrigin.IsVisible = _tab is StockTab.Movements or StockTab.History;
@@ -621,7 +661,7 @@ public partial class StockManagementView : UserControl
 
     private async void OnInsertClick(object? sender, RoutedEventArgs e)
     {
-        if (_tab == StockTab.Movements)
+        if (_tab is StockTab.History or StockTab.Movements)
         {
             await OpenCreateMovementAsync();
             return;

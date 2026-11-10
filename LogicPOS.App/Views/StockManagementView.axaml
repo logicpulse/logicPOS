@@ -69,9 +69,9 @@
                     </Border>
 
                     <StackPanel x:Name="TabHeaders" Classes="bo_entity_tab_headers">
-                        <Button x:Name="TabArticles" Classes="bo_entity_tab bo_entity_tab_on" Click="OnTabClick" Tag="articles" Content="Artigos" />
+                        <Button x:Name="TabHistory" Classes="bo_entity_tab bo_entity_tab_on" Click="OnTabClick" Tag="history" Content="Histórico" />
                         <Button x:Name="TabMovements" Classes="bo_entity_tab" Click="OnTabClick" Tag="movements" Content="Movimentos" />
-                        <Button x:Name="TabHistory" Classes="bo_entity_tab" Click="OnTabClick" Tag="history" Content="Histórico" />
+                        <Button x:Name="TabArticles" Classes="bo_entity_tab" Click="OnTabClick" Tag="articles" Content="Artigos" />
                         <Button x:Name="TabWarehouse" Classes="bo_entity_tab" Click="OnTabClick" Tag="warehouse" Content="Armazéns" />
                     </StackPanel>
 
