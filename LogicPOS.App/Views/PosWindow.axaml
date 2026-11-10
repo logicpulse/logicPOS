@@ -404,7 +404,11 @@
                 <DockPanel>
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Classes="login_alert_title" Text="Emissão Recibos" />
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_finance_document.png" />
+                                <TextBlock Classes="login_alert_title" Text="Emissão Recibos" />
+                            </StackPanel>
                             <StackPanel Grid.Column="1" Classes="bo_window_buttons">
                                 <Button Classes="bo_window_button" Click="OnTogglePopupSizeClick" Tag="ReceiptFrame" ToolTip.Tip="Redimensionar">
                                     <Panel>
@@ -428,7 +432,11 @@
                 <DockPanel>
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock x:Name="EntityTitle" Classes="login_alert_title" Text="Listagem" />
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image x:Name="EntityTitleIcon" Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_finance_document.png" />
+                                <TextBlock x:Name="EntityTitle" Classes="login_alert_title" Text="Listagem" />
+                            </StackPanel>
                             <StackPanel Grid.Column="1" Classes="bo_window_buttons">
                                 <Button Classes="bo_window_button" Click="OnTogglePopupSizeClick" Tag="EntityFrame" ToolTip.Tip="Redimensionar">
                                     <Panel>
@@ -452,7 +460,11 @@
                 <DockPanel>
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Classes="login_alert_title" Text="Gestão de Stocks" />
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_merchandise_entry.png" />
+                                <TextBlock Classes="login_alert_title" Text="Gestão de Stocks" />
+                            </StackPanel>
                             <StackPanel Grid.Column="1" Classes="bo_window_buttons">
                                 <Button Classes="bo_window_button" Click="OnTogglePopupSizeClick" Tag="StockFrame" ToolTip.Tip="Redimensionar">
                                     <Panel>
