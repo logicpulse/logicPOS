@@ -28,9 +28,9 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var from = start;
         var to = end < start ? start : end;
+        // Document.Customer is a complex/owned type (not a navigation) — do not Include it.
         var query = database.Documents.AsNoTracking()
             .Include(document => document.Currency)
-            .Include(document => document.Customer)
             .Where(document => document.IsDeleted == false
                 && document.IsDraft == false
                 && document.Paid == false

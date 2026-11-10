@@ -513,67 +513,74 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 }
             }
 
-            await using var transaction = await database.Database.BeginTransactionAsync(cancellationToken);
-            if (creating)
+            // Npgsql/SQL Server retry strategies forbid user transactions unless wrapped.
+            var strategy = database.Database.CreateExecutionStrategy();
+            var saveResult = await strategy.ExecuteAsync(async () =>
             {
-                database.Add(entity);
-            }
-
-            if (entity is WarehouseArticle stock)
-            {
-                var delta = stock.Quantity - previousQuantity;
-                if (delta != 0)
+                await using var transaction = await database.Database.BeginTransactionAsync(cancellationToken);
+                if (creating)
                 {
-                    database.StockMovements.Add(new StockMovement
+                    database.Add(entity);
+                }
+
+                if (entity is WarehouseArticle stock)
+                {
+                    var delta = stock.Quantity - previousQuantity;
+                    if (delta != 0)
                     {
-                        ArticleId = stock.ArticleId,
-                        WarehouseLocationId = stock.WarehouseLocationId,
-                        Quantity = delta,
-                        Date = DateTime.Now,
-                        DocumentNumber = "STOCK",
-                        Notes = delta > 0 ? "Entrada" : "Saída"
-                    });
-                }
-            }
-
-            await database.SaveChangesAsync(cancellationToken);
-            if (entity is Article savedArticle)
-            {
-                var childError = await SaveArticleChildrenAsync(database, savedArticle.Id, fields, cancellationToken);
-                if (childError is not null)
-                {
-                    return ListingSaveResult.Fail(childError);
-                }
-
-                var printerError = await SaveArticlePrinterAsync(database, savedArticle.Id, fields, cancellationToken);
-                if (printerError is not null)
-                {
-                    return ListingSaveResult.Fail(printerError);
+                        database.StockMovements.Add(new StockMovement
+                        {
+                            ArticleId = stock.ArticleId,
+                            WarehouseLocationId = stock.WarehouseLocationId,
+                            Quantity = delta,
+                            Date = DateTime.Now,
+                            DocumentNumber = "STOCK",
+                            Notes = delta > 0 ? "Entrada" : "Saída"
+                        });
+                    }
                 }
 
                 await database.SaveChangesAsync(cancellationToken);
-            }
+                if (entity is Article savedArticle)
+                {
+                    var childError = await SaveArticleChildrenAsync(database, savedArticle.Id, fields, cancellationToken);
+                    if (childError is not null)
+                    {
+                        return ListingSaveResult.Fail(childError);
+                    }
 
-            if (entity is UserProfile profile)
-            {
-                await SaveProfilePermissionsAsync(database, profile.Id, fields, cancellationToken);
-                await database.SaveChangesAsync(cancellationToken);
-            }
+                    var printerError = await SaveArticlePrinterAsync(database, savedArticle.Id, fields, cancellationToken);
+                    if (printerError is not null)
+                    {
+                        return ListingSaveResult.Fail(printerError);
+                    }
 
-            await transaction.CommitAsync(cancellationToken);
+                    await database.SaveChangesAsync(cancellationToken);
+                }
 
-            if ((entity is PreferenceParameter preference && preference.Token is "SYSTEM_CURRENCY" or "SYSTEM_CURRENCY_OID")
-                || entity is Currency)
+                if (entity is UserProfile profile)
+                {
+                    await SaveProfilePermissionsAsync(database, profile.Id, fields, cancellationToken);
+                    await database.SaveChangesAsync(cancellationToken);
+                }
+
+                await transaction.CommitAsync(cancellationToken);
+                return ListingSaveResult.Ok(ReadGuid(entity, "Id"), "Registo gravado.");
+            });
+
+            if (saveResult.Succeeded
+                && ((entity is PreferenceParameter preference && preference.Token is "SYSTEM_CURRENCY" or "SYSTEM_CURRENCY_OID")
+                    || entity is Currency))
             {
                 AppComposition.Services?.GetRequiredService<CompanyCurrency>().Reload(database);
             }
 
-            if (entity is Customer)
+            if (saveResult.Succeeded && entity is Customer)
             {
                 AppComposition.Services?.GetService<PosCustomerService>()?.InvalidateSearch();
             }
 
-            return ListingSaveResult.Ok(ReadGuid(entity, "Id"), "Registo gravado.");
+            return saveResult;
         }
         catch (Exception exception)
         {
