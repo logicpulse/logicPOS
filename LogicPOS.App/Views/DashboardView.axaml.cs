@@ -81,7 +81,7 @@ public partial class DashboardView : UserControl
             return;
         }
 
-        await ShowStatusOnUiAsync("A carregar faturação...");
+        await ShowStatusOnUiAsync("A carregar faturação...", loading: true);
         try
         {
             // Queries SQLite fora do UI thread — evita ANR no Android.
@@ -106,6 +106,7 @@ public partial class DashboardView : UserControl
                 _year = snapshot.Year;
                 FillYears(snapshot.Years, snapshot.Year);
                 StatusText.IsVisible = false;
+                StatusLoader.IsVisible = false;
                 ApplySnapshot();
             });
         }
@@ -125,9 +126,9 @@ public partial class DashboardView : UserControl
         }
     }
 
-    private async Task ShowStatusOnUiAsync(string message)
+    private async Task ShowStatusOnUiAsync(string message, bool loading = false)
     {
-        await Dispatcher.UIThread.InvokeAsync(() => ShowStatus(message));
+        await Dispatcher.UIThread.InvokeAsync(() => ShowStatus(message, loading));
     }
 
     private void FillYears(IReadOnlyList<int> years, int selected)
@@ -191,10 +192,11 @@ public partial class DashboardView : UserControl
         }
     }
 
-    private void ShowStatus(string message)
+    private void ShowStatus(string message, bool loading)
     {
         StatusText.Text = message;
         StatusText.IsVisible = true;
+        StatusLoader.IsVisible = loading;
     }
 
     private static string Money(decimal value) => MoneyFormat.Format(value);

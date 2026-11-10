@@ -69,6 +69,7 @@ public partial class ArticleDashboardView : UserControl
         {
             StockStatus.Text = "A carregar stocks...";
             StockStatus.IsVisible = true;
+            StockLoader.IsVisible = true;
             // Queries fora do UI thread — mesmo padrão anti-ANR do dashboard de faturação.
             var snapshot = await Task.Run(async () => await stock.LoadDashboardAsync(year)).ConfigureAwait(false);
             if (generation != _generation)
@@ -85,6 +86,7 @@ public partial class ArticleDashboardView : UserControl
 
                 ApplyStock(snapshot);
                 StockStatus.IsVisible = false;
+                StockLoader.IsVisible = false;
             });
         }
         catch
@@ -98,6 +100,7 @@ public partial class ArticleDashboardView : UserControl
             {
                 StockStatus.Text = "Não foi possível ler os stocks.";
                 StockStatus.IsVisible = true;
+                StockLoader.IsVisible = false;
             });
         }
     }

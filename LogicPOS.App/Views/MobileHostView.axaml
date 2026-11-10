@@ -18,8 +18,9 @@
                         VerticalAlignment="Center"
                         Spacing="14">
                 <views:LogoLoader x:Name="LoadingLogo"
-                                  HorizontalAlignment="Center"
-                                  Margin="0,0,0,8" />
+                                  Width="64"
+                                  Height="64"
+                                  HorizontalAlignment="Center" />
                 <TextBlock x:Name="Status"
                            Classes="startup_status"
                            Text="A carregar logicPOS..."
@@ -27,6 +28,7 @@
                            TextAlignment="Center" />
                 <ProgressBar x:Name="LoadingBar"
                              Classes="startup_progress"
+                             IsVisible="False"
                              IsIndeterminate="True" />
             </StackPanel>
             </Border>

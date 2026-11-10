@@ -100,8 +100,6 @@ public partial class MobileHostView : UserControl
 
             host.Status.Text = message;
             host.LoadingLogo.IsVisible = true;
-            host.LoadingBar.IsVisible = true;
-            host.LoadingBar.IsIndeterminate = true;
             host.LoadingOverlay.IsVisible = true;
             host.LoadingOverlay.IsHitTestVisible = true;
         });
@@ -259,8 +257,6 @@ public partial class MobileHostView : UserControl
     {
         host.Status.Text = message;
         host.LoadingLogo.IsVisible = true;
-        host.LoadingBar.IsVisible = true;
-        host.LoadingBar.IsIndeterminate = true;
         host.LoadingOverlay.IsVisible = true;
         host.LoadingOverlay.IsHitTestVisible = true;
     }

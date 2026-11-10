@@ -27,7 +27,10 @@
                         </Button>
                     </StackPanel>
                 </Grid>
-                <TextBlock x:Name="StockStatus" Classes="dash_status" IsVisible="False" />
+                <StackPanel Classes="dash_status_row">
+                    <views:LogoLoader x:Name="StockLoader" Classes="logo_loader_inline" Width="22" Height="22" IsVisible="False" />
+                    <TextBlock x:Name="StockStatus" Classes="dash_status" IsVisible="False" />
+                </StackPanel>
                 <Grid Classes="dash_kpis" ColumnDefinitions="*,*,*,*">
                     <Border Classes="dash_kpi dash_kpi_today">
                         <StackPanel>
