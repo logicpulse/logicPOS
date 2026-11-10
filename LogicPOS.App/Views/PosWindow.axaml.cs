@@ -159,6 +159,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _scanner = ScannerInputReader.FromConfiguration(configuration);
         _scanner.Captured += OnScannerCaptured;
         InitializeComponent();
+        // Dialog titlebar already has Documentos + icon; hide the inner BO page title.
+        DocumentsHost.Classes.Set("fo_dialog_host", true);
         ListingNotice.BindToast(VoltaNotice, this);
         ListingNotice.BindToast(SessionNotice, this);
         DevEditionBanner.Apply(DevBanner);

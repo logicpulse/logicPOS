@@ -376,7 +376,11 @@
                 <DockPanel>
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Classes="login_alert_title" Text="Documentos" />
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
+                                <TextBlock Classes="login_alert_title" Text="Documentos" />
+                            </StackPanel>
                             <StackPanel Grid.Column="1" Classes="bo_window_buttons">
                                 <Button Classes="bo_window_button" Click="OnTogglePopupSizeClick" Tag="DocumentsFrame" ToolTip.Tip="Redimensionar">
                                     <Panel>

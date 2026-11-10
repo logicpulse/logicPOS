@@ -5908,6 +5908,11 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
+    <!-- FO dialog shell already shows the page title; keep action buttons only. -->
+    <Style Selector="UserControl.fo_dialog_host StackPanel.bo_page_title_row">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
     <Style Selector="Border.bo_fiscal_wizard">
         <Setter Property="Width" Value="720" />
         <Setter Property="Height" Value="560" />

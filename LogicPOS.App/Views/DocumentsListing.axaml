@@ -66,7 +66,7 @@
                             </StackPanel>
                         </Button>
                     </StackPanel>
-                    <StackPanel Classes="bo_page_title_row">
+                    <StackPanel x:Name="PageTitleRow" Classes="bo_page_title_row">
                         <svg:Svg Classes="bo_page_title_icon"
                                  Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_dashboard_documentos_b.svg" />
                         <TextBlock Classes="bo_page_title" Text="Documentos" />
