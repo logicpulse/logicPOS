@@ -1704,14 +1704,7 @@ public partial class NewDocumentWindow : UserControl
         foreach (var row in rows)
         {
             var serial = row;
-            var button = new Button
-            {
-                Classes = { "bo_report_row" },
-                Content = $"{serial.SerialNumber}   {serial.Code}  {serial.Designation}",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
-            };
-            button.Click += (_, _) => AddSerial(serial);
-            SerialList.Children.Add(button);
+            SerialList.Children.Add(SuggestSerial(serial));
         }
     }
 
@@ -2144,7 +2137,7 @@ public partial class NewDocumentWindow : UserControl
         foreach (var choice in _matches)
         {
             var match = choice;
-            ArticleSuggestList.Children.Add(SuggestButton($"{match.Code}  {match.Designation}", () => AddChoice(match)));
+            ArticleSuggestList.Children.Add(SuggestArticle(match));
         }
 
         ArticleSuggest.IsVisible = _matches.Count > 0;
@@ -2180,20 +2173,61 @@ public partial class NewDocumentWindow : UserControl
         {
             var serial = row;
             _serialMatches.Add(serial);
-            ArticleSuggestList.Children.Add(SuggestButton(
-                $"{serial.SerialNumber}   {serial.Code}  {serial.Designation}",
-                () => AddSerial(serial)));
+            ArticleSuggestList.Children.Add(SuggestSerial(serial));
         }
 
         ArticleSuggest.IsVisible = ArticleSuggestList.Children.Count > 0;
     }
 
-    private static Button SuggestButton(string label, Action click)
+    private Button SuggestArticle(CatalogChoice match)
     {
+        return SuggestRow(
+            "Artigo",
+            "bo_suggest_kind_article",
+            match.Code,
+            serial: false,
+            match.Designation,
+            () => AddChoice(match));
+    }
+
+    private Button SuggestSerial(StockSerialChoice serial)
+    {
+        return SuggestRow(
+            "Série",
+            "bo_suggest_kind_serial",
+            serial.SerialNumber,
+            serial: true,
+            $"{serial.Code}  ·  {serial.Designation}",
+            () => AddSerial(serial));
+    }
+
+    private static Button SuggestRow(string kind, string kindClass, string title, bool serial, string detail, Action click)
+    {
+        var text = new StackPanel { Spacing = 0, VerticalAlignment = VerticalAlignment.Center };
+        text.Children.Add(new TextBlock
+        {
+            Classes = { serial ? "bo_suggest_serial" : "bo_suggest_code" },
+            Text = title
+        });
+        text.Children.Add(new TextBlock { Classes = { "bo_suggest_meta" }, Text = detail });
+        var body = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Spacing = 10,
+            Children =
+            {
+                new Border
+                {
+                    Classes = { "bo_suggest_badge", kindClass },
+                    Child = new TextBlock { Classes = { "bo_suggest_badge_text" }, Text = kind }
+                },
+                text
+            }
+        };
         var button = new Button
         {
-            Classes = { "bo_report_row" },
-            Content = label,
+            Classes = { "bo_suggest_row" },
+            Content = body,
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
         };
         button.Click += (_, _) => click();
