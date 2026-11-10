@@ -910,7 +910,6 @@ public partial class EntityListing : UserControl
         _articleTabs.Clear();
         _articleFieldBlocks.Clear();
         _articlePages = null;
-        EditorTabNav.IsVisible = false;
         IReadOnlyList<ListingField> fields;
         try
         {
@@ -982,17 +981,14 @@ public partial class EntityListing : UserControl
             shell.Children.Add(bar);
             shell.Children.Add(pages);
             EditorFields.Children.Add(shell);
-            EditorTabNav.IsVisible = true;
             WireArticleRules();
             ApplyArticleTabs();
             ApplyArticleFieldVisibility();
-            SyncEditorTabNav();
             // Re-evaluate after AutoCompleteBox binds SelectedItem (TypeHasPrice / VatDutyFree).
             Avalonia.Threading.Dispatcher.UIThread.Post(() =>
             {
                 ApplyArticleTabs();
                 ApplyArticleFieldVisibility();
-                SyncEditorTabNav();
             });
         }
         else
@@ -1959,45 +1955,6 @@ public partial class EntityListing : UserControl
         {
             _articlePages.Content = tab.Page;
         }
-
-        SyncEditorTabNav();
-    }
-
-    private void OnEditorPrevTabClick(object? sender, RoutedEventArgs e)
-        => StepEditorTab(-1);
-
-    private void OnEditorNextTabClick(object? sender, RoutedEventArgs e)
-        => StepEditorTab(1);
-
-    private void StepEditorTab(int delta)
-    {
-        var visible = _articleTabs.Where(tab => tab.Header.IsVisible).ToList();
-        if (visible.Count == 0)
-        {
-            return;
-        }
-
-        var index = visible.FindIndex(tab => ReferenceEquals(_articlePages?.Content, tab.Page));
-        if (index < 0)
-        {
-            index = 0;
-        }
-
-        var next = Math.Clamp(index + delta, 0, visible.Count - 1);
-        SelectArticleTab(visible[next]);
-    }
-
-    private void SyncEditorTabNav()
-    {
-        if (EditorTabNav.IsVisible == false)
-        {
-            return;
-        }
-
-        var visible = _articleTabs.Where(tab => tab.Header.IsVisible).ToList();
-        var index = visible.FindIndex(tab => ReferenceEquals(_articlePages?.Content, tab.Page));
-        EditorPrevTab.IsEnabled = index > 0;
-        EditorNextTab.IsEnabled = index >= 0 && index < visible.Count - 1;
     }
 
     private static TextBlock FieldCaption(ListingField field)
@@ -2029,11 +1986,8 @@ public partial class EntityListing : UserControl
             if (next.Header is not null)
             {
                 SelectArticleTab(next);
-                return;
             }
         }
-
-        SyncEditorTabNav();
     }
 
     private void ApplyArticleFieldVisibility()
