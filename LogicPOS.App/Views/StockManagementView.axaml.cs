@@ -86,6 +86,8 @@ public partial class StockManagementView : UserControl
         public required TextBox Price { get; init; }
         public required StackPanel SerialHost { get; init; }
         public List<TextBox> Serials { get; } = new();
+        /// <summary>Survives quantity edits so typed serials are not wiped while rebuilding boxes.</summary>
+        public List<string> SerialValues { get; } = new();
         public required ComboBox Location { get; init; }
     }
 
@@ -1326,15 +1328,54 @@ public partial class StockManagementView : UserControl
             SerialHost = serialHost,
             Location = location
         };
-        quantity.TextChanged += (_, _) => SyncSerialBoxes(line);
+        // LostFocus (not TextChanged): typing "10" goes through "1" and must not wipe serials.
+        quantity.LostFocus += (_, _) => SyncSerialBoxes(line);
+        quantity.KeyUp += (_, args) =>
+        {
+            if (args.Key == Key.Enter)
+            {
+                SyncSerialBoxes(line);
+            }
+        };
         SyncSerialBoxes(line);
         _lineControls.Add(line);
     }
 
+    private static void CaptureSerialValues(MovementLineControls line)
+    {
+        for (var index = 0; index < line.Serials.Count; index++)
+        {
+            var text = line.Serials[index].Text ?? string.Empty;
+            if (index < line.SerialValues.Count)
+            {
+                line.SerialValues[index] = text;
+            }
+            else
+            {
+                line.SerialValues.Add(text);
+            }
+        }
+    }
+
     private static void SyncSerialBoxes(MovementLineControls line)
     {
+        CaptureSerialValues(line);
         var count = ParseSerialCount(line.Quantity.Text);
-        var existing = line.Serials.Select(box => box.Text ?? string.Empty).ToList();
+        while (line.SerialValues.Count < count)
+        {
+            line.SerialValues.Add(string.Empty);
+        }
+
+        if (line.Serials.Count == count)
+        {
+            for (var index = 0; index < count; index++)
+            {
+                line.Serials[index].PlaceholderText = count == 1 ? "Nº série" : $"Nº série {index + 1}";
+            }
+
+            return;
+        }
+
         line.SerialHost.Children.Clear();
         line.Serials.Clear();
         for (var index = 0; index < count; index++)
@@ -1343,9 +1384,16 @@ public partial class StockManagementView : UserControl
             {
                 Classes = { "bo_entity_input", "bo_no_touch" },
                 PlaceholderText = count == 1 ? "Nº série" : $"Nº série {index + 1}",
-                Text = index < existing.Count ? existing[index] : string.Empty
+                Text = line.SerialValues[index]
             };
             var captured = index;
+            box.TextChanged += (_, _) =>
+            {
+                if (captured < line.SerialValues.Count)
+                {
+                    line.SerialValues[captured] = box.Text ?? string.Empty;
+                }
+            };
             box.KeyUp += (_, args) =>
             {
                 if (args.Key != Key.Enter)
@@ -1474,10 +1522,12 @@ public partial class StockManagementView : UserControl
                     }
 
                     var locationId = (line.Location.SelectedItem as StockLocationOption)?.Id;
-                    var serials = line.Serials
-                        .Select(box => box.Text?.Trim())
+                    CaptureSerialValues(line);
+                    var serialCount = ParseSerialCount(line.Quantity.Text);
+                    var serials = line.SerialValues
+                        .Take(serialCount)
+                        .Select(value => value.Trim())
                         .Where(value => string.IsNullOrWhiteSpace(value) == false)
-                        .Cast<string>()
                         .ToList();
                     if (serials.Count == 0)
                     {
