@@ -1,3 +1,4 @@
+using LogicPOS.Core.Fiscal;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -88,9 +89,14 @@ public sealed class StartupReadinessService : IStartupReadinessService
                 .CountAsync(cancellationToken);
             if (withoutAt > 0)
             {
+                var fiscal = scope.ServiceProvider.GetService<IFiscalModule>();
+                var atModuleMissing = fiscal is null || fiscal.IsAvailable == false;
+                var message = atModuleMissing
+                    ? $"{withoutAt} série(s) criadas localmente ainda sem comunicação à AT. Em Séries, use «Comunicar série fiscal». O módulo de certificação fiscal não está instalado neste posto."
+                    : $"{withoutAt} série(s) criadas localmente ainda sem comunicação à AT. Em Séries, use «Comunicar série fiscal».";
                 issues.Add(new StartupReadinessIssue(
                     "series-at",
-                    $"{withoutAt} série(s) ainda sem comunicação à AT. Registe as séries em Séries.",
+                    message,
                     "Séries",
                     "Abrir"));
             }
