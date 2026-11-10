@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using LogicPOS.App;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
@@ -130,7 +131,7 @@ public partial class NewDocumentWindow : UserControl
         ArticleSearch.Text = string.Empty;
         RefreshArticleSearchClear();
         NotesBox.Text = string.Empty;
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
         LineEditor.IsVisible = false;
         _editorOpen = false;
         _editing = null;
@@ -163,6 +164,41 @@ public partial class NewDocumentWindow : UserControl
     }
 
     private void OnNewDocLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
+
+    /// <summary>Erros do documento: toast estilo sweet-alert (sem texto vermelho em baixo).</summary>
+    private void ShowDocumentError(string? message)
+    {
+        var text = message?.Trim() ?? string.Empty;
+        ErrorLabel.Text = text;
+        ErrorLabel.IsVisible = false;
+        if (text.Length > 0)
+        {
+            Toast.Error(this, text);
+        }
+    }
+
+    private void ClearDocumentError()
+    {
+        ErrorLabel.Text = string.Empty;
+        ErrorLabel.IsVisible = false;
+    }
+
+    private void ShowEditError(string? message)
+    {
+        EditError.Text = string.Empty;
+        EditError.IsVisible = false;
+        var text = message?.Trim() ?? string.Empty;
+        if (text.Length > 0)
+        {
+            Toast.Error(this, text);
+        }
+    }
+
+    private void ClearEditError()
+    {
+        EditError.Text = string.Empty;
+        EditError.IsVisible = false;
+    }
 
     private void OnDocumentTitlePointerPressed(object? sender, PointerPressedEventArgs e)
     {
@@ -632,7 +668,7 @@ public partial class NewDocumentWindow : UserControl
         if (errors.IsEmpty == false)
         {
             lookupErrors = string.Join("; ", errors);
-            ErrorLabel.Text = lookupErrors;
+            ShowDocumentError(lookupErrors);
         }
 
         await FillPreservingErrors(lookupErrors, async () => await SeedDraftAsync(documents, customers));
@@ -724,7 +760,7 @@ public partial class NewDocumentWindow : UserControl
 
         if (PosDocumentRules.CanUseAsSourceDocument(source.Type, statusCode: "N", isDraft: false) == false)
         {
-            ErrorLabel.Text = "Este documento não pode ser usado como documento de origem.";
+            ShowDocumentError("Este documento não pode ser usado como documento de origem.");
             return;
         }
 
@@ -738,7 +774,7 @@ public partial class NewDocumentWindow : UserControl
         }
         else if (PosDocumentRules.IsValidSourceForTarget(source.Type, SelectedType()?.Acronym) == false)
         {
-            ErrorLabel.Text = "Não existe um tipo de documento compatível com este documento de origem.";
+            ShowDocumentError("Não existe um tipo de documento compatível com este documento de origem.");
             return;
         }
 
@@ -831,7 +867,7 @@ public partial class NewDocumentWindow : UserControl
         var target = SelectedType()?.Acronym;
         if (PosDocumentRules.IsValidSourceForTarget(source.Type, target) == false)
         {
-            ErrorLabel.Text = "O documento de origem não é compatível com o tipo selecionado.";
+            ShowDocumentError("O documento de origem não é compatível com o tipo selecionado.");
             return;
         }
 
@@ -987,7 +1023,7 @@ public partial class NewDocumentWindow : UserControl
         }
         catch (Exception exception)
         {
-            ErrorLabel.Text = exception.Message;
+            ShowDocumentError(exception.Message);
         }
     }
 
@@ -999,15 +1035,15 @@ public partial class NewDocumentWindow : UserControl
         }
         catch (Exception exception)
         {
-            ErrorLabel.Text = string.IsNullOrEmpty(lookupErrors)
+            ShowDocumentError(string.IsNullOrEmpty(lookupErrors)
                 ? exception.Message
-                : $"{lookupErrors}; {exception.Message}";
+                : $"{lookupErrors}; {exception.Message}");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(ErrorLabel.Text) && lookupErrors is not null)
         {
-            ErrorLabel.Text = lookupErrors;
+            ShowDocumentError(lookupErrors);
         }
     }
 
@@ -1060,7 +1096,7 @@ public partial class NewDocumentWindow : UserControl
         if (string.IsNullOrWhiteSpace(sourceType) == false
             && PosDocumentRules.IsValidSourceForTarget(sourceType, SelectedType()?.Acronym) == false)
         {
-            ErrorLabel.Text = "O documento de origem não é compatível com o tipo selecionado.";
+            ShowDocumentError("O documento de origem não é compatível com o tipo selecionado.");
             _filling = true;
             try
             {
@@ -1293,7 +1329,7 @@ public partial class NewDocumentWindow : UserControl
         if (_filling == false && PosDocumentRules.RequiresNamedCustomer(type.Acronym) && ShowsFinalConsumer())
         {
             ClearCustomer();
-            ErrorLabel.Text = "Escolha um cliente para este documento.";
+            ShowDocumentError("Escolha um cliente para este documento.");
         }
     }
 
@@ -1427,8 +1463,12 @@ public partial class NewDocumentWindow : UserControl
         var check = PosDocumentRules.CheckTransportDates(CombineWhen(FromDate, FromTime), CombineWhen(ToDate, ToTime));
         SetDateState(FromDate, check.DispatchValid);
         SetDateState(ToDate, check.ArrivalValid);
-        TransportDateError.Text = check.Message ?? string.Empty;
-        TransportDateError.IsVisible = check.Message is not null;
+        TransportDateError.Text = string.Empty;
+        TransportDateError.IsVisible = false;
+        if (check.Message is not null)
+        {
+            Toast.Error(this, check.Message);
+        }
     }
 
     private static DateTime? CombineWhen(CalendarDatePicker date, TimePicker time)
@@ -1530,7 +1570,7 @@ public partial class NewDocumentWindow : UserControl
     private void RemoveLine(NewDocumentLine line)
     {
         _lines.Remove(line);
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
         RefreshLines();
     }
 
@@ -1555,7 +1595,7 @@ public partial class NewDocumentWindow : UserControl
             _lines.Add(new NewDocumentLine(article, choice.Family));
         }
 
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
         ArticleSearch.Text = string.Empty;
         RefreshArticleSearchClear();
         RefreshLines();
@@ -1761,7 +1801,7 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        ErrorLabel.Text = message;
+        ShowDocumentError(message);
     }
 
     private void AddSerial(StockSerialChoice serial)
@@ -1780,7 +1820,7 @@ public partial class NewDocumentWindow : UserControl
         }
 
         _lines.Add(new NewDocumentLine(choice.Article, choice.Family, serial.SerialNumber));
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
         SerialNotice.Text = string.Empty;
         SerialOverlay.IsVisible = false;
         ArticleSearch.Text = string.Empty;
@@ -1935,7 +1975,7 @@ public partial class NewDocumentWindow : UserControl
         EditNotes.Text = notes ?? string.Empty;
         EditSerial.Text = serialNumber ?? string.Empty;
         EditQuantity.IsReadOnly = string.IsNullOrWhiteSpace(serialNumber) == false;
-        EditError.Text = string.Empty;
+        ClearEditError();
         var vatIndex = _vatRates.FindIndex(item => item.Id == vatRateId);
         EditVat.SelectedIndex = vatIndex >= 0 ? vatIndex : 0;
         SelectExemption(vatExemptionId);
@@ -2029,19 +2069,19 @@ public partial class NewDocumentWindow : UserControl
         var serial = EditSerial.Text?.Trim();
         if (string.IsNullOrWhiteSpace(serial) == false && quantity != 1)
         {
-            EditError.Text = "Artigos com número de série têm de ter quantidade 1.";
+            ShowEditError("Artigos com número de série têm de ter quantidade 1.");
             return;
         }
 
         if (quantity <= 0)
         {
-            EditError.Text = "A quantidade tem de ser maior que zero.";
+            ShowEditError("A quantidade tem de ser maior que zero.");
             return;
         }
 
         if (discount < 0 || discount > 100)
         {
-            EditError.Text = "O desconto tem de estar entre 0 e 100.";
+            ShowEditError("O desconto tem de estar entre 0 e 100.");
             return;
         }
 
@@ -2053,7 +2093,7 @@ public partial class NewDocumentWindow : UserControl
             exemptionId = SelectedExemptionId();
             if (exemptionId is null || exemptionId == Guid.Empty)
             {
-                EditError.Text = "Indique o motivo de isenção de IVA.";
+                ShowEditError("Indique o motivo de isenção de IVA.");
                 return;
             }
         }
@@ -2207,7 +2247,7 @@ public partial class NewDocumentWindow : UserControl
         }
         catch (Exception exception)
         {
-            ErrorLabel.Text = exception.Message;
+            ShowDocumentError(exception.Message);
             return;
         }
 
@@ -2301,7 +2341,7 @@ public partial class NewDocumentWindow : UserControl
         }
         catch (Exception exception)
         {
-            ErrorLabel.Text = exception.Message;
+            ShowDocumentError(exception.Message);
         }
     }
 
@@ -2413,7 +2453,7 @@ public partial class NewDocumentWindow : UserControl
             }
 
             CustomerSuggest.IsOpen = _customerMatches.Count > 0;
-            ErrorLabel.Text = _customerMatches.Count == 0 ? "Não foi encontrado nenhum cliente." : string.Empty;
+            ShowDocumentError(_customerMatches.Count == 0 ? "Não foi encontrado nenhum cliente." : string.Empty);
         }
         catch (Exception)
         {
@@ -2423,7 +2463,7 @@ public partial class NewDocumentWindow : UserControl
             }
 
             HideCustomerSuggest();
-            ErrorLabel.Text = "Não foi possível pesquisar os clientes.";
+            ShowDocumentError("Não foi possível pesquisar os clientes.");
         }
     }
 
@@ -2450,7 +2490,7 @@ public partial class NewDocumentWindow : UserControl
         var services = AppComposition.Services;
         if (services is null || string.IsNullOrWhiteSpace(text))
         {
-            ErrorLabel.Text = "Indique o nome, o NIF ou o cartão do cliente.";
+            ShowDocumentError("Indique o nome, o NIF ou o cartão do cliente.");
             return;
         }
 
@@ -2462,26 +2502,26 @@ public partial class NewDocumentWindow : UserControl
         catch (Exception)
         {
             CustomerOverlay.IsVisible = false;
-            ErrorLabel.Text = "Não foi possível pesquisar os clientes.";
+            ShowDocumentError("Não foi possível pesquisar os clientes.");
             return;
         }
 
         if (matches.Count == 0)
         {
             CustomerOverlay.IsVisible = false;
-            ErrorLabel.Text = "Não foi encontrado nenhum cliente.";
+            ShowDocumentError("Não foi encontrado nenhum cliente.");
             return;
         }
 
         if (selectUnique && matches.Count == 1)
         {
-            ErrorLabel.Text = string.Empty;
+            ClearDocumentError();
             CustomerOverlay.IsVisible = false;
             ShowCustomer(matches[0]);
             return;
         }
 
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
         CustomerList.Children.Clear();
         foreach (var match in matches)
         {
@@ -2519,12 +2559,12 @@ public partial class NewDocumentWindow : UserControl
             _customer = null;
             CustomerName.Text = string.Empty;
             CustomerFiscal.Text = string.Empty;
-            ErrorLabel.Text = "Cliente consumidor final não encontrado.";
+            ShowDocumentError("Cliente consumidor final não encontrado.");
             return;
         }
 
         ShowCustomer(customer);
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
     }
 
     private async void OnNewCustomerClick(object? sender, RoutedEventArgs e)
@@ -2557,7 +2597,7 @@ public partial class NewDocumentWindow : UserControl
             customer = await services.GetRequiredService<IPosCustomerService>().FindAsync(id);
             if (customer is null)
             {
-                ErrorLabel.Text = "Não foi possível abrir o cliente.";
+                ShowDocumentError("Não foi possível abrir o cliente.");
                 return;
             }
         }
@@ -2589,7 +2629,7 @@ public partial class NewDocumentWindow : UserControl
         SelectLookup(EditorCountry, _countries, customer?.CountryId, customer?.Country ?? "Portugal");
         EditorError.Text = string.Empty;
         _filling = false;
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
         CustomerEditor.IsVisible = true;
     }
 
@@ -2853,7 +2893,7 @@ public partial class NewDocumentWindow : UserControl
         }
         catch (Exception exception)
         {
-            ErrorLabel.Text = exception.Message;
+            ShowDocumentError(exception.Message);
         }
     }
 
@@ -2868,7 +2908,7 @@ public partial class NewDocumentWindow : UserControl
 
         if (_lines.Count == 0)
         {
-            ErrorLabel.Text = "Adicione artigos ao documento.";
+            ShowDocumentError("Adicione artigos ao documento.");
             return;
         }
 
@@ -2876,7 +2916,7 @@ public partial class NewDocumentWindow : UserControl
             && _lines.Any(line => line.VatPercentage == 0m
                 && (line.VatExemptionId is null || line.VatExemptionId == Guid.Empty)))
         {
-            ErrorLabel.Text = "Há linhas com IVA a 0% sem motivo de isenção. Edite a linha e indique o motivo.";
+            ShowDocumentError("Há linhas com IVA a 0% sem motivo de isenção. Edite a linha e indique o motivo.");
             return;
         }
 
@@ -2887,7 +2927,7 @@ public partial class NewDocumentWindow : UserControl
             var transportError = PosDocumentRules.ValidateTransport(ReadDestination(), ReadOrigin(), countries);
             if (transportError is not null)
             {
-                ErrorLabel.Text = transportError;
+                ShowDocumentError(transportError);
                 TransportOverlay.IsVisible = true;
                 RefreshTransportDates();
                 return;
@@ -2896,7 +2936,7 @@ public partial class NewDocumentWindow : UserControl
 
         if (_customerId is not Guid customerId)
         {
-            ErrorLabel.Text = "Escolha ou crie um cliente.";
+            ShowDocumentError("Escolha ou crie um cliente.");
             return;
         }
 
@@ -2904,7 +2944,7 @@ public partial class NewDocumentWindow : UserControl
             && PosDocumentRules.RequiresNamedCustomer(type.Acronym)
             && (_customerIsFinal || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(CustomerFiscal.Text)))
         {
-            ErrorLabel.Text = "Não pode criar faturas com o cliente consumidor final ou com um cliente sem nome/NIF. Use um cliente válido e tente novamente.";
+            ShowDocumentError("Não pode criar faturas com o cliente consumidor final ou com um cliente sem nome/NIF. Use um cliente válido e tente novamente.");
             return;
         }
 
@@ -2912,7 +2952,7 @@ public partial class NewDocumentWindow : UserControl
             && PosDocumentRules.RequiresPaymentCondition(type.Acronym)
             && SelectedId(PaymentBox) is null)
         {
-            ErrorLabel.Text = "Indique as condições de pagamento.";
+            ShowDocumentError("Indique as condições de pagamento.");
             PaymentBox.IsEnabled = true;
             PaymentBox.Focus();
             return;
@@ -2922,7 +2962,7 @@ public partial class NewDocumentWindow : UserControl
             && PosDocumentRules.RequiresSourceDocument(type.Acronym)
             && ListingFilters.SelectedDocumentId(OriginBox) is null)
         {
-            ErrorLabel.Text = "Indique o documento de origem.";
+            ShowDocumentError("Indique o documento de origem.");
             OriginBox.Focus();
             return;
         }
@@ -2963,7 +3003,7 @@ public partial class NewDocumentWindow : UserControl
                 // Cloud: drafts must live on the API — never fall back to local-drafts.json.
                 if (IsCloudMode())
                 {
-                    ErrorLabel.Text = issued.Error ?? "Não foi possível gravar o rascunho na API.";
+                    ShowDocumentError(issued.Error ?? "Não foi possível gravar o rascunho na API.");
                     return;
                 }
 
@@ -2974,14 +3014,14 @@ public partial class NewDocumentWindow : UserControl
                     var preview = await WriteLocalPreviewAsync(documents);
                     if (preview is not null && PreviewRequested is not null)
                     {
-                        ErrorLabel.Text = string.Empty;
+                        ClearDocumentError();
                         await PreviewRequested(preview, "Pré-visualização");
                     }
 
                     return;
                 }
 
-                ErrorLabel.Text = string.Empty;
+                ClearDocumentError();
                 _closed?.TrySetResult(true);
                 return;
             }
@@ -2991,13 +3031,13 @@ public partial class NewDocumentWindow : UserControl
                 var preview = await WriteLocalPreviewAsync(documents);
                 if (preview is not null && PreviewRequested is not null)
                 {
-                    ErrorLabel.Text = string.Empty;
+                    ClearDocumentError();
                     await PreviewRequested(preview, "Pré-visualização");
                     return;
                 }
             }
 
-            ErrorLabel.Text = issued.Error ?? "Não foi possível emitir o documento.";
+            ShowDocumentError(issued.Error ?? "Não foi possível emitir o documento.");
             return;
         }
 
@@ -3031,7 +3071,7 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
         if (path is not null && PreviewRequested is not null)
         {
             await PreviewRequested(path, "Pré-visualização");
@@ -3216,12 +3256,12 @@ public partial class NewDocumentWindow : UserControl
     {
         if (_customer is null || _customer.IsFinalConsumer || string.IsNullOrWhiteSpace(_customer.Address))
         {
-            ErrorLabel.Text = "O cliente seleccionado não tem morada.";
+            ShowDocumentError("O cliente seleccionado não tem morada.");
             return;
         }
 
         ApplyCustomerAddress();
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
     }
 
     private void OnUseCompanyAddress(object? sender, RoutedEventArgs e)
@@ -3237,7 +3277,7 @@ public partial class NewDocumentWindow : UserControl
             string.IsNullOrWhiteSpace(_company.PostalCode) ? "0000-000" : _company.PostalCode,
             string.IsNullOrWhiteSpace(_company.City) ? PosDocumentRules.Unknown : _company.City,
             string.IsNullOrWhiteSpace(_company.Country) ? "Portugal" : _company.Country);
-        ErrorLabel.Text = string.Empty;
+        ClearDocumentError();
     }
 
     private void OnCopyDestinationToOrigin(object? sender, RoutedEventArgs e)

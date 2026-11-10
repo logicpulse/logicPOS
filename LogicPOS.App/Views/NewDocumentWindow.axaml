@@ -210,7 +210,7 @@
                     </StackPanel>
                 </Grid>
                 </ScrollViewer>
-                <TextBlock x:Name="ErrorLabel" Classes="bo_new_doc_error" DockPanel.Dock="Bottom" />
+                <TextBlock x:Name="ErrorLabel" Classes="bo_new_doc_error" DockPanel.Dock="Bottom" IsVisible="False" />
                 <Border Classes="bo_new_doc_articles">
                     <DockPanel>
                         <Border Classes="bo_new_doc_articles_header" DockPanel.Dock="Top">
@@ -462,7 +462,7 @@
                         </StackPanel>
                         <TextBox x:Name="EditNotes" Classes="bo_line_editor_notes" />
                     </StackPanel>
-                    <TextBlock x:Name="EditError" Grid.Row="5" Grid.ColumnSpan="4" Classes="bo_new_doc_error" />
+                    <TextBlock x:Name="EditError" Grid.Row="5" Grid.ColumnSpan="4" Classes="bo_new_doc_error" IsVisible="False" />
                 </Grid>
                 </ScrollViewer>
             </DockPanel>
