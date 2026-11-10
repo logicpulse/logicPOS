@@ -480,7 +480,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         PortraitChrome.FitOverlay(DocumentsMenuFrame, this, 581, 286, lockHeight: false, bottomReserve: bottomReserve);
         if (PricePad.IsVisible)
         {
-            PortraitChrome.FitOverlay(TicketFrame, this, 540, 530, lockHeight: false, bottomReserve: bottomReserve);
+            // Content-sized: entry + 5 money rows + actions — avoid a tall empty band.
+            PortraitChrome.FitOverlay(TicketFrame, this, 480, 390, lockHeight: false, bottomReserve: bottomReserve);
         }
         else if (TicketKeypad.IsVisible)
         {
@@ -579,9 +580,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
             {
                 Classes = { "pos_logo" },
                 Source = logoSource,
-                Stretch = Avalonia.Media.Stretch.Fill,
+                Stretch = Avalonia.Media.Stretch.Uniform,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch
+                VerticalAlignment = VerticalAlignment.Center
             };
             RenderOptions.SetBitmapInterpolationMode(logoImage, BitmapInterpolationMode.HighQuality);
             var logo = new Border { Classes = { "pos_logo_box" } };
@@ -4792,6 +4793,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
             PricePad.IsVisible = true;
             TicketDialogCancelText.Text = "Cancelar";
             TicketDialogIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png");
+            // ShowDialogChrome fitted before PricePad was visible — re-fit to the price layout.
+            FitHostedOverlays();
             return;
         }
 
@@ -4800,6 +4803,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         if (prompt == TicketPrompt.ChangeUser)
         {
             ShowPinPad();
+            FitHostedOverlays();
             return;
         }
 
@@ -4816,6 +4820,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             }
 
             SetSplitPeople(2);
+            FitHostedOverlays();
             return;
         }
 
@@ -4834,6 +4839,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         {
             _splitHost.IsVisible = false;
         }
+
+        FitHostedOverlays();
     }
 
     private void ShowPinPad()

@@ -518,16 +518,16 @@
                             <TextBlock x:Name="TicketDialogMessage" Classes="login_alert_message" />
                         </Grid>
                         <StackPanel x:Name="TicketKeypad" Classes="pos_ticket_keypad" IsVisible="False" />
-                        <Grid x:Name="PricePad" Classes="pos_price_pad" IsVisible="False" RowDefinitions="Auto,*" ColumnDefinitions="108,*,108">
+                        <Grid x:Name="PricePad" Classes="pos_price_pad" IsVisible="False" RowDefinitions="Auto,Auto" ColumnDefinitions="108,*,108">
                             <TextBox x:Name="PriceEntry" Grid.ColumnSpan="3" Classes="pos_price_entry" IsReadOnly="True" />
-                            <Grid Grid.Row="1" RowDefinitions="*,*,*,*,*">
+                            <Grid Grid.Row="1" Height="230" RowDefinitions="*,*,*,*,*">
                                 <Button Classes="pos_price_money" Content="0,05 €" Tag="0.05" Click="OnPriceMoneyClick" />
                                 <Button Classes="pos_price_money" Grid.Row="1" Content="0,10 €" Tag="0.10" Click="OnPriceMoneyClick" />
                                 <Button Classes="pos_price_money" Grid.Row="2" Content="0,20 €" Tag="0.20" Click="OnPriceMoneyClick" />
                                 <Button Classes="pos_price_money" Grid.Row="3" Content="0,50 €" Tag="0.50" Click="OnPriceMoneyClick" />
                                 <Button Classes="pos_price_money" Grid.Row="4" Content="1,00 €" Tag="1.00" Click="OnPriceMoneyClick" />
                             </Grid>
-                            <Grid Grid.Row="1" Grid.Column="1" Margin="6,0" ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*">
+                            <Grid Grid.Row="1" Grid.Column="1" Height="230" Margin="6,0" ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*">
                                 <Button Classes="pos_price_digit" Content="7" Tag="7" Click="OnPriceDigitClick" />
                                 <Button Classes="pos_price_digit" Grid.Column="1" Content="8" Tag="8" Click="OnPriceDigitClick" />
                                 <Button Classes="pos_price_digit" Grid.Column="2" Content="9" Tag="9" Click="OnPriceDigitClick" />
@@ -541,7 +541,7 @@
                                 <Button Classes="pos_price_digit" Grid.Row="3" Grid.Column="1" Content="," Tag="," Click="OnPriceDigitClick" />
                                 <Button Classes="pos_price_digit" Grid.Row="3" Grid.Column="2" Content="CE" Click="OnPriceClearClick" />
                             </Grid>
-                            <Grid Grid.Row="1" Grid.Column="2" RowDefinitions="*,*,*,*,*">
+                            <Grid Grid.Row="1" Grid.Column="2" Height="230" RowDefinitions="*,*,*,*,*">
                                 <Button Classes="pos_price_money" Content="5,00 €" Tag="5.00" Click="OnPriceMoneyClick" />
                                 <Button Classes="pos_price_money" Grid.Row="1" Content="10,00 €" Tag="10.00" Click="OnPriceMoneyClick" />
                                 <Button Classes="pos_price_money" Grid.Row="2" Content="20,00 €" Tag="20.00" Click="OnPriceMoneyClick" />

@@ -174,9 +174,9 @@ public sealed class PosLayout
         ArticleRows = FamilyRows;
 
         var logoSpan = ticketColumn + (Margin * 2);
-        // Compact brand band: full ticket-column width, status-bar height (list keeps vertical space).
+        // Full ticket-column width, original frontoffice wordmark aspect (1024×350).
         LogoWidth = Math.Max(120, logoSpan);
-        LogoHeight = StatusBarHeight + 8;
+        LogoHeight = Math.Max(40, (int)Math.Round(LogoWidth * (350.0 / 1024.0)));
         LogoX = columnRight;
         LogoY = 4;
 
