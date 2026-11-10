@@ -241,11 +241,18 @@
             <Border x:Name="EditorFrame" Classes="login_alert_frame bo_entity_editor bo_stock_editor bo_entity_editor_fit">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                        <StackPanel Classes="login_alert_title_row">
-                            <Image x:Name="EditorTitleIcon" Classes="login_alert_title_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
-                            <TextBlock x:Name="EditorTitle" Classes="login_alert_title" Text="Movimento de stock" />
-                        </StackPanel>
+                        <DockPanel>
+                            <Button Classes="pos_dialog_close" DockPanel.Dock="Right" Click="OnEditorCancelClick"
+                                    ToolTip.Tip="Fechar">
+                                <Image Classes="pos_dialog_close_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_window_close.png" />
+                            </Button>
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image x:Name="EditorTitleIcon" Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                                <TextBlock x:Name="EditorTitle" Classes="login_alert_title" Text="Movimento de stock" />
+                            </StackPanel>
+                        </DockPanel>
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                         <StackPanel Classes="login_alert_action_buttons">

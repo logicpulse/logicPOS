@@ -8,6 +8,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
 using LogicPOS.App;
@@ -52,7 +53,12 @@ public partial class StockManagementView : UserControl
     private TextBox? _documentBox;
     private TextBox? _notesBox;
     private TextBlock? _attachLabel;
+    private TextBlock? _attachHint;
     private StackPanel? _linesHost;
+    private TextBlock? _linesCountBadge;
+    private StackPanel? _linesEmpty;
+    private readonly List<CommittedMovementLine> _committedLines = [];
+    private IReadOnlyList<StockLocationOption> _draftLocations = [];
     private TextBox? _quantityBox;
     private TextBox? _priceBox;
     private TextBox? _minimumBox;
@@ -89,6 +95,17 @@ public partial class StockManagementView : UserControl
         /// <summary>Survives quantity edits so typed serials are not wiped while rebuilding boxes.</summary>
         public List<string> SerialValues { get; } = new();
         public required ComboBox Location { get; init; }
+    }
+
+    private sealed class CommittedMovementLine
+    {
+        public required Guid ArticleId { get; init; }
+        public required string ArticleLabel { get; init; }
+        public required decimal Quantity { get; init; }
+        public required decimal Price { get; init; }
+        public required IReadOnlyList<string> Serials { get; init; }
+        public Guid? WarehouseLocationId { get; init; }
+        public required string LocationLabel { get; init; }
     }
 
     public StockManagementView()
@@ -1075,45 +1092,79 @@ public partial class StockManagementView : UserControl
         DialogTitleIcons.ApplyCreate(EditorTitleIcon);
         ResetEditorShell(split: true);
         _lineControls.Clear();
+        _committedLines.Clear();
+        _draftLocations = locations;
 
         _supplierBox = SupplierSearch(suppliers, null);
+        _supplierBox.PlaceholderText = "Selecione o fornecedor...";
         _dateBox = new CalendarDatePicker { SelectedDate = DateTime.Today };
         _dateBox.Classes.Add("bo_doc_date");
         _documentBox = Field("Documento", string.Empty, out var documentField);
-        _documentBox.PlaceholderText = "Número do documento do fornecedor";
+        _documentBox.PlaceholderText = "Número do documento do fornecedor...";
         _notesBox = Field("Notas", string.Empty, out var notesField);
-        _attachLabel = new TextBlock { Text = "Sem anexo", Classes = { "bo_entity_notice" } };
-        var attachButton = UploadButton();
-        var addLine = new Button { Content = "Adicionar linha", Classes = { "bo_listing_columns" } };
-        addLine.Click += (_, _) => AddMovementLine(articles, locations);
-
+        _notesBox.PlaceholderText = "Observações do movimento...";
+        _notesBox.AcceptsReturn = true;
+        _notesBox.MinHeight = 72;
+        _notesBox.TextWrapping = TextWrapping.Wrap;
         _dateBox.SelectedDate = DateTime.Today;
         EditorNotice.Text = string.Empty;
 
+        var dadosBody = new StackPanel { Classes = { "bo_stock_card_body" } };
+        dadosBody.Children.Add(Label("Fornecedor"));
+        dadosBody.Children.Add(_supplierBox);
+        dadosBody.Children.Add(Label("Data"));
+        dadosBody.Children.Add(_dateBox);
+        dadosBody.Children.Add(documentField);
+        dadosBody.Children.Add(notesField);
         var left = new StackPanel { Classes = { "bo_stock_editor_col" } };
-        left.Children.Add(Label("Fornecedor"));
-        left.Children.Add(_supplierBox);
-        left.Children.Add(Label("Data"));
-        left.Children.Add(_dateBox);
-        left.Children.Add(documentField);
-        left.Children.Add(notesField);
-        left.Children.Add(attachButton);
-        left.Children.Add(_attachLabel);
+        left.Children.Add(StockCard(
+            "Dados do movimento",
+            "avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png",
+            dadosBody));
+        left.Children.Add(StockCard(
+            "Anexos",
+            "avares://LogicPOS.App/Assets/Images/Listing/botao_importar_b.svg",
+            BuildAttachmentDropzone()));
 
-        _linesHost = new StackPanel { Spacing = 8, Classes = { "bo_stock_lines" } };
+        var composer = BuildDraftComposer(articles, locations);
+        _linesHost = new StackPanel { Classes = { "bo_stock_lines" } };
+        _linesCountBadge = new TextBlock { Text = "0 itens", Classes = { "bo_stock_card_badge" } };
+        _linesEmpty = new StackPanel { Classes = { "bo_stock_empty" } };
+        _linesEmpty.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+        {
+            Classes = { "bo_stock_card_icon" },
+            Path = "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_gestao_stocks.svg",
+            Width = 40,
+            Height = 40,
+            Opacity = 0.45
+        });
+        _linesEmpty.Children.Add(new TextBlock
+        {
+            Text = "Ainda não adicionou artigos. Selecione um artigo e clique em Adicionar.",
+            Classes = { "bo_stock_empty_text" }
+        });
+        var linesBody = new StackPanel { Classes = { "bo_stock_card_body" } };
+        linesBody.Children.Add(_linesEmpty);
+        linesBody.Children.Add(_linesHost);
+        var linesCard = StockCard(
+            "Linhas do movimento",
+            "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_gestao_stocks.svg",
+            linesBody,
+            _linesCountBadge);
+
         var right = new StackPanel { Classes = { "bo_stock_editor_col" } };
-        right.Children.Add(addLine);
-        right.Children.Add(_linesHost);
+        right.Children.Add(composer);
+        right.Children.Add(linesCard);
 
         var split = new Avalonia.Controls.Grid { Classes = { "bo_stock_editor_split_grid" } };
-        split.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
-        split.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        split.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1.1, GridUnitType.Star)));
+        split.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1.6, GridUnitType.Star)));
         Avalonia.Controls.Grid.SetColumn(left, 0);
         Avalonia.Controls.Grid.SetColumn(right, 1);
         split.Children.Add(left);
         split.Children.Add(right);
         EditorHost.Children.Add(split);
-        AddMovementLine(articles, locations);
+        RefreshCommittedLinesUi();
         EditorOverlay.IsVisible = true;
     }
 
@@ -1358,20 +1409,16 @@ public partial class StockManagementView : UserControl
         EditorOverlay.IsVisible = true;
     }
 
-    private void AddMovementLine(IReadOnlyList<LookupOption> articles, IReadOnlyList<StockLocationOption> locations)
+    private Border BuildDraftComposer(IReadOnlyList<LookupOption> articles, IReadOnlyList<StockLocationOption> locations)
     {
-        if (_linesHost is null)
-        {
-            return;
-        }
-
-        var panel = new StackPanel { Spacing = 4, Classes = { "bo_stock_line" } };
         var article = new AutoCompleteBox { ItemsSource = articles, Classes = { "bo_entity_input" } };
         ListingFilters.EnableLookupSearch(article);
-        var quantity = new TextBox { Text = "1", Classes = { "bo_entity_input", "bo_numeric", "bo_no_touch" } };
+        article.PlaceholderText = "Selecione o artigo...";
+        var quantity = new TextBox { Text = "1", Classes = { "bo_entity_input", "bo_numeric", "bo_no_touch" }, MinWidth = 72 };
         ToolTip.SetTip(quantity, FormDecimal.QuantityRule);
         var price = new TextBox { Text = "0", Classes = { "bo_entity_input", "bo_numeric" } };
         ToolTip.SetTip(price, FormDecimal.MoneyRule);
+        price.PlaceholderText = "0,00";
         var serialHost = new StackPanel { Spacing = 4, Classes = { "bo_stock_serials" } };
         var location = new ComboBox
         {
@@ -1379,18 +1426,43 @@ public partial class StockManagementView : UserControl
             SelectedItem = locations.FirstOrDefault(item => item.IsDefault) ?? locations.FirstOrDefault()
         };
         location.Classes.Add("bo_entity_input");
-        panel.Children.Add(Label("Artigo"));
-        panel.Children.Add(article);
-        panel.Children.Add(Label("Quantidade"));
-        panel.Children.Add(quantity);
-        panel.Children.Add(Label("Preço"));
-        panel.Children.Add(price);
-        panel.Children.Add(Label("Nº série"));
-        panel.Children.Add(serialHost);
-        panel.Children.Add(Label("Localização"));
-        panel.Children.Add(location);
-        _linesHost.Children.Add(panel);
-        TouchFields.Attach(panel);
+
+        var qtyRow = new StackPanel { Classes = { "bo_stock_qty_row" } };
+        var minus = new Button { Content = "−", Classes = { "bo_stock_qty_step" } };
+        var plus = new Button { Content = "+", Classes = { "bo_stock_qty_step" } };
+        minus.Click += (_, _) => StepQuantity(quantity, -1);
+        plus.Click += (_, _) => StepQuantity(quantity, 1);
+        qtyRow.Children.Add(minus);
+        qtyRow.Children.Add(quantity);
+        qtyRow.Children.Add(plus);
+
+        var body = new StackPanel { Classes = { "bo_stock_card_body" } };
+        body.Children.Add(Label("Artigo"));
+        body.Children.Add(article);
+        body.Children.Add(Label("Quantidade"));
+        body.Children.Add(qtyRow);
+        body.Children.Add(Label("Preço"));
+        body.Children.Add(price);
+        body.Children.Add(Label("Nº série"));
+        body.Children.Add(serialHost);
+        body.Children.Add(Label("Localização"));
+        body.Children.Add(location);
+
+        var add = new Button { Classes = { "bo_stock_add_btn" } };
+        add.Content = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Spacing = 6,
+            Children =
+            {
+                new TextBlock { Text = "+", FontWeight = FontWeight.Bold, VerticalAlignment = VerticalAlignment.Center },
+                new TextBlock { Text = "Adicionar", VerticalAlignment = VerticalAlignment.Center }
+            }
+        };
+        add.Click += (_, _) => CommitDraftLine();
+        body.Children.Add(add);
+        TouchFields.Attach(body);
+
         var line = new MovementLineControls
         {
             Article = article,
@@ -1399,7 +1471,6 @@ public partial class StockManagementView : UserControl
             SerialHost = serialHost,
             Location = location
         };
-        // LostFocus (not TextChanged): typing "10" goes through "1" and must not wipe serials.
         quantity.LostFocus += (_, _) => SyncSerialBoxes(line);
         quantity.KeyUp += (_, args) =>
         {
@@ -1409,7 +1480,262 @@ public partial class StockManagementView : UserControl
             }
         };
         SyncSerialBoxes(line);
+        _lineControls.Clear();
         _lineControls.Add(line);
+
+        var header = new StackPanel { Classes = { "bo_stock_card_header" } };
+        header.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+        {
+            Classes = { "bo_stock_card_icon" },
+            Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_novo_w.svg"
+        });
+        header.Children.Add(new TextBlock { Text = "Adicionar linha", Classes = { "bo_stock_card_title" } });
+
+        var card = new Border { Classes = { "bo_stock_composer" } };
+        var stack = new StackPanel { Classes = { "bo_stock_card_body" } };
+        stack.Children.Add(header);
+        stack.Children.Add(body);
+        card.Child = stack;
+        return card;
+    }
+
+    private void StepQuantity(TextBox quantity, int delta)
+    {
+        var current = ParseSerialCount(quantity.Text);
+        var next = Math.Max(1, current + delta);
+        quantity.Text = next.ToString(CultureInfo.CurrentCulture);
+        if (_lineControls.Count > 0)
+        {
+            SyncSerialBoxes(_lineControls[0]);
+        }
+    }
+
+    private void CommitDraftLine()
+    {
+        if (_lineControls.Count == 0)
+        {
+            return;
+        }
+
+        var line = _lineControls[0];
+        var article = ChosenOption(line.Article);
+        if (article is null)
+        {
+            EditorError("Selecione o artigo na lista.");
+            return;
+        }
+
+        if (ReadDecimal(line.Quantity.Text, "Quantidade inválida.", out var quantity, FormDecimalKind.Quantity) == false || quantity == 0)
+        {
+            EditorError("Quantidade inválida.");
+            return;
+        }
+
+        var price = 0m;
+        if (string.IsNullOrWhiteSpace(line.Price.Text) == false
+            && ReadDecimal(line.Price.Text, "Preço inválido.", out price, FormDecimalKind.Money) == false)
+        {
+            return;
+        }
+
+        CaptureSerialValues(line);
+        var expected = ParseSerialCount(line.Quantity.Text);
+        var serials = line.SerialValues
+            .Take(expected)
+            .Select(value => value.Trim())
+            .Where(value => string.IsNullOrWhiteSpace(value) == false)
+            .ToList();
+        if (serials.Count > 0 && serials.Count != expected)
+        {
+            EditorError($"Indique {expected} número(s) de série para o artigo.");
+            return;
+        }
+
+        if (serials.Count != serials.Distinct(StringComparer.OrdinalIgnoreCase).Count())
+        {
+            EditorError("Há números de série duplicados na linha.");
+            return;
+        }
+
+        var location = line.Location.SelectedItem as StockLocationOption;
+        _committedLines.Add(new CommittedMovementLine
+        {
+            ArticleId = article.Id,
+            ArticleLabel = article.Label,
+            Quantity = quantity,
+            Price = price,
+            Serials = serials,
+            WarehouseLocationId = location?.Id,
+            LocationLabel = location?.Label ?? string.Empty
+        });
+
+        EditorNotice.Text = string.Empty;
+        ResetDraftComposer();
+        RefreshCommittedLinesUi();
+    }
+
+    private void ResetDraftComposer()
+    {
+        if (_lineControls.Count == 0)
+        {
+            return;
+        }
+
+        var line = _lineControls[0];
+        line.Article.SelectedItem = null;
+        line.Article.Text = string.Empty;
+        line.Quantity.Text = "1";
+        line.Price.Text = "0";
+        line.SerialValues.Clear();
+        line.Location.SelectedItem = _draftLocations.FirstOrDefault(item => item.IsDefault) ?? _draftLocations.FirstOrDefault();
+        SyncSerialBoxes(line);
+    }
+
+    private void RefreshCommittedLinesUi()
+    {
+        if (_linesHost is null)
+        {
+            return;
+        }
+
+        _linesHost.Children.Clear();
+        if (_linesCountBadge is not null)
+        {
+            var count = _committedLines.Count;
+            _linesCountBadge.Text = count == 1 ? "1 item" : $"{count} itens";
+        }
+
+        if (_linesEmpty is not null)
+        {
+            _linesEmpty.IsVisible = _committedLines.Count == 0;
+        }
+
+        foreach (var committed in _committedLines)
+        {
+            var title = committed.ArticleLabel;
+            var detail = $"{FormDecimal.Format(committed.Quantity)} × {FormDecimal.Format(committed.Price, FormDecimalKind.Money)}";
+            if (string.IsNullOrWhiteSpace(committed.LocationLabel) == false)
+            {
+                detail = $"{detail} · {committed.LocationLabel}";
+            }
+
+            if (committed.Serials.Count > 0)
+            {
+                detail = $"{detail} · SN: {string.Join(", ", committed.Serials)}";
+            }
+
+            var texts = new StackPanel { Spacing = 2 };
+            texts.Children.Add(new TextBlock { Text = title, FontWeight = FontWeight.SemiBold });
+            texts.Children.Add(new TextBlock { Text = detail, Classes = { "bo_entity_notice" }, TextWrapping = TextWrapping.Wrap });
+
+            var remove = new Button { Content = "Remover", Classes = { "bo_stock_line_remove" } };
+            remove.Click += (_, _) =>
+            {
+                _committedLines.Remove(committed);
+                RefreshCommittedLinesUi();
+            };
+
+            var row = new Border { Classes = { "bo_stock_line_row" } };
+            var dock = new DockPanel();
+            DockPanel.SetDock(remove, Dock.Right);
+            dock.Children.Add(remove);
+            dock.Children.Add(texts);
+            row.Child = dock;
+            _linesHost.Children.Add(row);
+        }
+    }
+
+    private Border BuildAttachmentDropzone()
+    {
+        _attachLabel = new TextBlock { Text = "Sem anexo", Classes = { "bo_stock_dropzone_title" } };
+        _attachHint = new TextBlock
+        {
+            Text = "Arraste um ficheiro PDF para aqui ou clique para selecionar",
+            Classes = { "bo_stock_dropzone_hint" }
+        };
+        var content = new StackPanel { Classes = { "bo_stock_dropzone_content" } };
+        content.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+        {
+            Classes = { "bo_stock_card_icon" },
+            Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_importar_b.svg",
+            Width = 28,
+            Height = 28
+        });
+        content.Children.Add(_attachLabel);
+        content.Children.Add(_attachHint);
+
+        var zone = new Border { Classes = { "bo_stock_dropzone" }, Child = content };
+        zone.PointerPressed += async (_, _) => await PickAttachmentAsync();
+        DragDrop.SetAllowDrop(zone, true);
+        zone.AddHandler(DragDrop.DropEvent, async (_, args) =>
+        {
+            var file = args.DataTransfer.TryGetFiles()?.OfType<IStorageFile>().FirstOrDefault();
+            if (file is null)
+            {
+                return;
+            }
+
+            await using var stream = await file.OpenReadAsync();
+            using var memory = new MemoryStream();
+            await stream.CopyToAsync(memory);
+            _attachedPdf = memory.ToArray();
+            if (_attachLabel is not null)
+            {
+                _attachLabel.Text = file.Name;
+            }
+
+            if (_attachHint is not null)
+            {
+                _attachHint.Text = "Clique para substituir o anexo";
+            }
+        });
+        return zone;
+    }
+
+    private static Border StockCard(string title, string iconPath, Control body, Control? trailing = null)
+    {
+        Control icon = iconPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
+            ? new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+            {
+                Classes = { "bo_stock_card_icon" },
+                Path = iconPath
+            }
+            : new Image
+            {
+                Classes = { "bo_stock_card_icon" },
+                Source = new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri(iconPath)))
+            };
+
+        var titleText = new TextBlock { Text = title, Classes = { "bo_stock_card_title" } };
+        Control header;
+        if (trailing is null)
+        {
+            var row = new StackPanel { Classes = { "bo_stock_card_header" } };
+            row.Children.Add(icon);
+            row.Children.Add(titleText);
+            header = row;
+        }
+        else
+        {
+            var row = new DockPanel { Margin = new Thickness(0, 0, 0, 10) };
+            DockPanel.SetDock(trailing, Dock.Right);
+            row.Children.Add(trailing);
+            var left = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 8,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            left.Children.Add(icon);
+            left.Children.Add(titleText);
+            row.Children.Add(left);
+            header = row;
+        }
+
+        var stack = new StackPanel { Classes = { "bo_stock_card_body" } };
+        stack.Children.Add(header);
+        stack.Children.Add(body);
+        return new Border { Classes = { "bo_stock_card" }, Child = stack };
     }
 
     private static void CaptureSerialValues(MovementLineControls line)
@@ -1533,6 +1859,11 @@ public partial class StockManagementView : UserControl
         {
             _attachLabel.Text = file.Name;
         }
+
+        if (_attachHint is not null)
+        {
+            _attachHint.Text = "Clique para substituir o anexo";
+        }
     }
 
     private async void OnEditorSaveClick(object? sender, RoutedEventArgs e)
@@ -1560,82 +1891,38 @@ public partial class StockManagementView : UserControl
                     return;
                 }
 
-                var lines = new List<StockMovementLineInput>();
-                foreach (var line in _lineControls)
+                if (_committedLines.Count == 0)
                 {
-                    var article = ChosenOption(line.Article);
-                    if (article is null)
-                    {
-                        if (string.IsNullOrWhiteSpace(line.Article.Text))
-                        {
-                            continue;
-                        }
+                    EditorError("Adicione pelo menos uma linha de artigo.");
+                    return;
+                }
 
-                        EditorError("Selecione o artigo na lista.");
-                        return;
-                    }
-
-                    if (ReadDecimal(line.Quantity.Text, "Quantidade inválida numa das linhas.", out var quantity, FormDecimalKind.Quantity) == false || quantity == 0)
-                    {
-                        if (string.IsNullOrWhiteSpace(EditorNotice.Text))
-                        {
-                            EditorError("Quantidade inválida numa das linhas.");
-                        }
-
-                        return;
-                    }
-
-                    var price = 0m;
-                    if (string.IsNullOrWhiteSpace(line.Price.Text) == false
-                        && ReadDecimal(line.Price.Text, "Preço inválido.", out price, FormDecimalKind.Money) == false)
-                    {
-                        return;
-                    }
-
-                    var locationId = (line.Location.SelectedItem as StockLocationOption)?.Id;
-                    CaptureSerialValues(line);
-                    var serialCount = ParseSerialCount(line.Quantity.Text);
-                    var serials = line.SerialValues
-                        .Take(serialCount)
-                        .Select(value => value.Trim())
-                        .Where(value => string.IsNullOrWhiteSpace(value) == false)
-                        .ToList();
-                    if (serials.Count == 0)
+                var lines = new List<StockMovementLineInput>();
+                foreach (var line in _committedLines)
+                {
+                    if (line.Serials.Count == 0)
                     {
                         lines.Add(new StockMovementLineInput
                         {
-                            ArticleId = article.Id,
-                            Quantity = quantity,
-                            Price = price,
+                            ArticleId = line.ArticleId,
+                            Quantity = line.Quantity,
+                            Price = line.Price,
                             SerialNumber = null,
-                            WarehouseLocationId = locationId
+                            WarehouseLocationId = line.WarehouseLocationId
                         });
                         continue;
                     }
 
-                    var expected = ParseSerialCount(line.Quantity.Text);
-                    if (serials.Count != expected)
-                    {
-                        EditorError($"Indique {expected} número(s) de série para o artigo.");
-                        return;
-                    }
-
-                    if (serials.Count != serials.Distinct(StringComparer.OrdinalIgnoreCase).Count())
-                    {
-                        EditorError("Há números de série duplicados na linha.");
-                        return;
-                    }
-
                     // Unique SN articles: one stock unit per serial (quantity 1 each).
-                    foreach (var serial in serials)
+                    foreach (var serial in line.Serials)
                     {
                         lines.Add(new StockMovementLineInput
                         {
-                            ArticleId = article.Id,
+                            ArticleId = line.ArticleId,
                             Quantity = 1,
-                            Price = price,
+                            Price = line.Price,
                             SerialNumber = serial,
-                            WarehouseLocationId = locationId
+                            WarehouseLocationId = line.WarehouseLocationId
                         });
                     }
                 }
@@ -1832,6 +2119,11 @@ public partial class StockManagementView : UserControl
     {
         EditorFrame.Classes.Set("bo_stock_editor_split", split);
         EditorHost.Children.Clear();
+        _committedLines.Clear();
+        _linesHost = null;
+        _linesCountBadge = null;
+        _linesEmpty = null;
+        _attachHint = null;
     }
 
     private void CloseEditorShell()
@@ -2169,7 +2461,7 @@ public partial class StockManagementView : UserControl
         Grid.IsVisible = _portrait == false;
         CardList.IsVisible = _portrait;
         ActionBar.Classes.Set("bo_page_actions_compact", _portrait);
-        var editorMax = EditorFrame.Classes.Contains("bo_stock_editor_split") ? 980 : 760;
+        var editorMax = EditorFrame.Classes.Contains("bo_stock_editor_split") ? 1040 : 760;
         PortraitChrome.FitToContent(EditorFrame, this, editorMax, minWidth: 420);
         if (_portrait == false)
         {
