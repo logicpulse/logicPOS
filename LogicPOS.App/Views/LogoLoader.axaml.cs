@@ -18,7 +18,7 @@ public partial class LogoLoader : UserControl
     private static readonly TimeSpan Cycle = TimeSpan.FromMilliseconds(420 * 4);
     private const float Fade = 0.04f;
 
-    /// <summary>Maior escala do salto. A margem de cada quadrado reserva este crescimento para não ser cortado.</summary>
+    /// <summary>Maior escala do salto. A folga fica só por fora do conjunto, para o intervalo entre quadrados continuar curto.</summary>
     private const double PeakScale = 1.16;
 
     private readonly Panel[] _tiles;
@@ -51,15 +51,15 @@ public partial class LogoLoader : UserControl
             return;
         }
 
-        var gap = Math.Max(2, side * 0.08);
+        var pad = Math.Max(2, side * 0.05);
+        var gap = Math.Max(2, side * 0.035);
+        Tiles.Margin = new Thickness(pad);
         Tiles.RowSpacing = Tiles.ColumnSpacing = gap;
-        var cell = (side - gap) / 2;
-        var margin = cell * (PeakScale - 1) / (2 * PeakScale);
-        var tileSide = Math.Max(1, cell - margin * 2);
-        var radius = new CornerRadius(Math.Max(3, tileSide * 0.24));
+        var tileSide = Math.Max(1, (side - (pad * 2) - gap) / 2);
+        var radius = new CornerRadius(Math.Max(3, tileSide * 0.22));
         foreach (var tile in _tiles)
         {
-            tile.Margin = new Thickness(margin);
+            tile.Margin = new Thickness(0);
             tile.ClipToBounds = false;
             foreach (var child in tile.Children)
             {
