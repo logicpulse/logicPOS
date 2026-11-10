@@ -8,12 +8,11 @@
 
         <!-- Loading sempre acima do Host — visível no bootstrap e durante Entrar → sessão. -->
         <Panel x:Name="LoadingOverlay"
-               Background="#59000000"
+               Background="Transparent"
                ZIndex="100"
                IsVisible="True"
                IsHitTestVisible="True">
-            <Border Classes="glass_card_frame">
-            <ExperimentalAcrylicBorder Classes="glass_card">
+            <Border Classes="glass_card glass_compact" Padding="22,18" MinWidth="220">
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Spacing="14">
@@ -34,7 +33,6 @@
                              Classes="startup_progress"
                              IsIndeterminate="True" />
             </StackPanel>
-            </ExperimentalAcrylicBorder>
             </Border>
         </Panel>
 

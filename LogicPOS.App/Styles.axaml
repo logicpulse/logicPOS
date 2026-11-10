@@ -1165,39 +1165,23 @@
         <Setter Property="Foreground" Value="#9bbe1d" />
     </Style>
 
-    <!-- Cartão de vidro: splash de arranque e qualquer loading, grande ou pequeno. -->
-    <Style Selector="Border.glass_card_frame">
+    <!-- Vidro claro: deixa ver o que está atrás. Sem acrílico da janela (isso pintava um rectângulo preto). -->
+    <Style Selector="Border.glass_card">
+        <Setter Property="Background" Value="#C8FFFFFF" />
+        <Setter Property="BorderBrush" Value="#F5FFFFFF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Padding" Value="22,18" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="Border.glass_card.glass_compact">
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="CornerRadius" Value="18" />
-        <Setter Property="BorderBrush" Value="#BFFFFFFF" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BoxShadow" Value="0 12 32 0 #33000000" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="ClipToBounds" Value="False" />
-    </Style>
-
-    <Style Selector="Border.glass_card_frame.glass_compact">
-        <Setter Property="CornerRadius" Value="14" />
-        <Setter Property="BoxShadow" Value="0 8 20 0 #2A000000" />
-    </Style>
-
-    <Style Selector="ExperimentalAcrylicBorder.glass_card">
-        <Setter Property="CornerRadius" Value="18" />
-        <Setter Property="Padding" Value="22,18" />
-        <Setter Property="Material">
-            <ExperimentalAcrylicMaterial BackgroundSource="Digger"
-                                         TintColor="#F7F8FA"
-                                         TintOpacity="0.55"
-                                         MaterialOpacity="0.8"
-                                         FallbackColor="#F4F6F8" />
-        </Setter>
-    </Style>
-
-    <Style Selector="ExperimentalAcrylicBorder.glass_card.glass_compact">
         <Setter Property="CornerRadius" Value="14" />
         <Setter Property="Padding" Value="16,12" />
         <Setter Property="MinWidth" Value="160" />
+        <Setter Property="BoxShadow" Value="0 8 18 0 #1A000000" />
     </Style>
 
     <Style Selector="ProgressBar.startup_progress">

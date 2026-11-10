@@ -3,17 +3,17 @@
         x:Class="LogicPOS.App.Views.StartupLoadingWindow"
         Title="logicpos"
         Icon="avares://LogicPOS.App/Assets/application.ico"
-        Width="300"
-        Height="340"
+        Width="240"
+        Height="270"
         CanResize="False"
         ShowInTaskbar="True"
         WindowDecorations="None"
         WindowStartupLocation="CenterScreen"
-        TransparencyLevelHint="AcrylicBlur, Blur, Transparent"
+        TransparencyLevelHint="Transparent"
         Background="Transparent"
         Topmost="True">
-    <Border Classes="glass_card_frame">
-        <ExperimentalAcrylicBorder Classes="glass_card">
+    <!-- Janela transparente: só o cartão existe. Os cantos fora do raio ficam invisíveis. -->
+    <Border Classes="glass_card">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
             <Image Width="120"
                    Height="120"
@@ -27,6 +27,5 @@
             <ProgressBar Classes="startup_progress"
                          IsIndeterminate="True" />
         </StackPanel>
-        </ExperimentalAcrylicBorder>
     </Border>
 </Window>

@@ -5,8 +5,7 @@
              IsVisible="False"
              IsHitTestVisible="False">
     <Panel x:Name="Scrim" Classes="bo_listing_busy">
-        <Border Classes="glass_card_frame glass_compact">
-        <ExperimentalAcrylicBorder Classes="glass_card glass_compact">
+        <Border Classes="glass_card glass_compact">
         <StackPanel Classes="bo_listing_busy_box">
             <Panel Classes="bo_listing_spinner_host">
                 <Ellipse Classes="bo_listing_spinner_track" />
@@ -18,7 +17,6 @@
             </Panel>
             <TextBlock x:Name="Label" Classes="bo_listing_busy_label" Text="A carregar..." />
         </StackPanel>
-        </ExperimentalAcrylicBorder>
         </Border>
     </Panel>
 </UserControl>
