@@ -52,89 +52,96 @@ public sealed class LocalFiscalYearWizard : IFiscalYearWizard
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var created = new List<Guid>();
-        await using var transaction = await database.Database.BeginTransactionAsync(cancellationToken);
         try
         {
-            if (request.CloseCurrent)
+            // NpgsqlRetryingExecutionStrategy forbids BeginTransaction unless wrapped.
+            var strategy = database.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
             {
-                var active = await database.FiscalYears.FirstOrDefaultAsync(item => item.IsDeleted == false, cancellationToken);
-                if (active is not null)
+                created.Clear();
+                database.ChangeTracker.Clear();
+                await using var transaction = await database.Database.BeginTransactionAsync(cancellationToken);
+                if (request.CloseCurrent)
                 {
-                    var series = await database.DocumentSeries.Where(item => item.FiscalYearId == active.Id && item.IsDeleted == false).ToListAsync(cancellationToken);
-                    foreach (var item in series)
+                    var active = await database.FiscalYears.FirstOrDefaultAsync(item => item.IsDeleted == false, cancellationToken);
+                    if (active is not null)
                     {
-                        item.IsDeleted = true;
-                        item.DeletedAt = DateTime.Now;
-                    }
-
-                    active.IsDeleted = true;
-                    active.DeletedAt = DateTime.Now;
-                }
-            }
-
-            var yearNumbers = await database.FiscalYears.IgnoreQueryFilters().Select(item => new { item.Order, item.Code }).ToListAsync(cancellationToken);
-            var yearNext = Next(yearNumbers.Select(item => (item.Order, item.Code)));
-            var fiscalYear = new FiscalYear
-            {
-                Order = yearNext.Order,
-                Code = yearNext.Code,
-                Designation = request.Designation.Trim(),
-                Acronym = request.Acronym.Trim(),
-                Year = request.Year,
-                SeriesForEachTerminal = request.SeriesForEachTerminal,
-                Notes = request.Notes,
-                IsDeleted = false
-            };
-            database.FiscalYears.Add(fiscalYear);
-
-            if (request.CreateSeries)
-            {
-                var seriesNumbers = await database.DocumentSeries.IgnoreQueryFilters().Select(item => new { item.Order, item.Code }).ToListAsync(cancellationToken);
-                var next = Next(seriesNumbers.Select(item => (item.Order, item.Code)));
-                var types = await database.DocumentTypes.AsNoTracking()
-                    .Where(item => item.IsDeleted == false)
-                    .OrderBy(item => item.Order)
-                    .Select(item => new FiscalYearChoice { Id = item.Id, Label = item.Designation, Acronym = item.Acronym })
-                    .ToListAsync(cancellationToken);
-                var selectedTypes = request.DocumentTypeIds.ToHashSet();
-                types = FiscalYearSeriesPlan.DocumentTypes(types).Where(type => selectedTypes.Contains(type.Id)).ToList();
-                var terminals = request.SeriesForEachTerminal ? request.TerminalIds.ToList() : [Guid.Empty];
-                var terminalIndex = 1;
-                foreach (var terminalId in terminals)
-                {
-                    foreach (var type in types)
-                    {
-                        var suffix = request.SeriesForEachTerminal ? terminalIndex.ToString() : string.Empty;
-                        var acronym = $"{type.Acronym} {request.Acronym.Trim()}{suffix}";
-                        var series = new DocumentSeries
+                        var series = await database.DocumentSeries.Where(item => item.FiscalYearId == active.Id && item.IsDeleted == false).ToListAsync(cancellationToken);
+                        foreach (var item in series)
                         {
-                            Order = next.Order,
-                            Code = next.Code,
-                            Designation = $"{type.Label} {acronym}",
-                            FiscalYearId = fiscalYear.Id,
-                            DocumentTypeId = type.Id,
-                            NextNumber = 1,
-                            NumberRangeBegin = 1,
-                            NumberRangeEnd = int.MaxValue,
-                            Acronym = acronym,
-                            TerminalId = request.SeriesForEachTerminal ? terminalId : null,
-                            IsDeleted = false
-                        };
-                        database.DocumentSeries.Add(series);
-                        created.Add(series.Id);
-                        next = (next.Order + 1, (long.Parse(next.Code) + 1).ToString());
+                            item.IsDeleted = true;
+                            item.DeletedAt = DateTime.Now;
+                        }
+
+                        active.IsDeleted = true;
+                        active.DeletedAt = DateTime.Now;
                     }
-
-                    terminalIndex++;
                 }
-            }
 
-            await database.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
+                var yearNumbers = await database.FiscalYears.IgnoreQueryFilters().Select(item => new { item.Order, item.Code }).ToListAsync(cancellationToken);
+                var yearNext = Next(yearNumbers.Select(item => (item.Order, item.Code)));
+                var fiscalYear = new FiscalYear
+                {
+                    Order = yearNext.Order,
+                    Code = yearNext.Code,
+                    Designation = request.Designation.Trim(),
+                    Acronym = request.Acronym.Trim(),
+                    Year = request.Year,
+                    SeriesForEachTerminal = request.SeriesForEachTerminal,
+                    Notes = request.Notes,
+                    IsDeleted = false
+                };
+                database.FiscalYears.Add(fiscalYear);
+
+                if (request.CreateSeries)
+                {
+                    var seriesNumbers = await database.DocumentSeries.IgnoreQueryFilters().Select(item => new { item.Order, item.Code }).ToListAsync(cancellationToken);
+                    var next = Next(seriesNumbers.Select(item => (item.Order, item.Code)));
+                    var types = await database.DocumentTypes.AsNoTracking()
+                        .Where(item => item.IsDeleted == false)
+                        .OrderBy(item => item.Order)
+                        .Select(item => new FiscalYearChoice { Id = item.Id, Label = item.Designation, Acronym = item.Acronym })
+                        .ToListAsync(cancellationToken);
+                    var selectedTypes = request.DocumentTypeIds.ToHashSet();
+                    types = FiscalYearSeriesPlan.DocumentTypes(types).Where(type => selectedTypes.Contains(type.Id)).ToList();
+                    var terminals = request.SeriesForEachTerminal ? request.TerminalIds.ToList() : [Guid.Empty];
+                    var terminalIndex = 1;
+                    foreach (var terminalId in terminals)
+                    {
+                        foreach (var type in types)
+                        {
+                            var suffix = request.SeriesForEachTerminal ? terminalIndex.ToString() : string.Empty;
+                            var acronym = $"{type.Acronym} {request.Acronym.Trim()}{suffix}";
+                            var series = new DocumentSeries
+                            {
+                                Order = next.Order,
+                                Code = next.Code,
+                                Designation = $"{type.Label} {acronym}",
+                                FiscalYearId = fiscalYear.Id,
+                                DocumentTypeId = type.Id,
+                                NextNumber = 1,
+                                NumberRangeBegin = 1,
+                                NumberRangeEnd = int.MaxValue,
+                                Acronym = acronym,
+                                TerminalId = request.SeriesForEachTerminal ? terminalId : null,
+                                IsDeleted = false
+                            };
+                            database.DocumentSeries.Add(series);
+                            created.Add(series.Id);
+                            next = (next.Order + 1, (long.Parse(next.Code) + 1).ToString());
+                        }
+
+                        terminalIndex++;
+                    }
+                }
+
+                await database.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            });
         }
         catch (Exception exception)
         {
-            await transaction.RollbackAsync(cancellationToken);
+            database.ChangeTracker.Clear();
             return FiscalYearSetupResult.Fail(exception.GetBaseException().Message);
         }
 
