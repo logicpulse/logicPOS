@@ -835,6 +835,15 @@ public partial class EntityListing : UserControl
     {
         _editingId = id;
         EditorTitle.Text = id is null ? "Novo" : "Editar";
+        if (id is null)
+        {
+            DialogTitleIcons.ApplyCreate(EditorTitleIcon);
+        }
+        else
+        {
+            DialogTitleIcons.ApplyEdit(EditorTitleIcon);
+        }
+
         EditorNotice.Text = string.Empty;
         EditorFields.Children.Clear();
         _inputs.Clear();

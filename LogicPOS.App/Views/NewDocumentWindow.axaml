@@ -348,8 +348,8 @@
             <DockPanel>
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
-                        <Image Classes="login_alert_title_icon"
-                               Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_clients.png" />
+                        <Image x:Name="CustomerEditorTitleIcon" Classes="login_alert_title_icon"
+                               Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_new.png" />
                         <TextBlock x:Name="CustomerEditorTitle" Classes="login_alert_title" Text="Novo cliente" />
                     </StackPanel>
                 </Border>

@@ -2411,6 +2411,14 @@ public partial class NewDocumentWindow : UserControl
         _filling = true;
         _editorCustomerId = customer?.Id;
         CustomerEditorTitle.Text = create ? "Novo cliente" : "Editar cliente";
+        if (create)
+        {
+            DialogTitleIcons.ApplyCreate(CustomerEditorTitleIcon);
+        }
+        else
+        {
+            DialogTitleIcons.ApplyEdit(CustomerEditorTitleIcon);
+        }
         EditorName.Text = customer?.Name ?? CustomerName.Text ?? string.Empty;
         EditorFiscal.Text = customer?.FiscalNumber ?? CustomerFiscal.Text ?? string.Empty;
         EditorCard.Text = customer?.CardNumber ?? string.Empty;

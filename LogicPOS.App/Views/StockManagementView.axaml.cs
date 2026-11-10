@@ -981,6 +981,7 @@ public partial class StockManagementView : UserControl
         _editor = EditorMode.ChangeLocation;
         _editId = warehouseArticleId;
         EditorTitle.Text = "Alterar localização do artigo";
+        DialogTitleIcons.ApplyEdit(EditorTitleIcon);
         EditorHost.Children.Clear();
         if (_tab == StockTab.History && SelectedHistory() is { } historyRow)
         {
@@ -1034,6 +1035,7 @@ public partial class StockManagementView : UserControl
         _editor = EditorMode.Exchange;
         _editId = history.WarehouseArticleId;
         EditorTitle.Text = "Trocar artigo único";
+        DialogTitleIcons.ApplyEdit(EditorTitleIcon);
         EditorHost.Children.Clear();
         _exchangeBox = new AutoCompleteBox { ItemsSource = available, Classes = { "bo_entity_input" } };
         ListingFilters.EnableLookupSearch(_exchangeBox);
@@ -1070,6 +1072,7 @@ public partial class StockManagementView : UserControl
         _editId = null;
         _attachedPdf = null;
         EditorTitle.Text = "Inserir movimento de stock";
+        DialogTitleIcons.ApplyCreate(EditorTitleIcon);
         EditorHost.Children.Clear();
         _lineControls.Clear();
 
@@ -1114,6 +1117,7 @@ public partial class StockManagementView : UserControl
         _editId = movement.Id;
         _attachedPdf = null;
         EditorTitle.Text = "Editar movimento";
+        DialogTitleIcons.ApplyEdit(EditorTitleIcon);
         EditorHost.Children.Clear();
         _supplierBox = SupplierSearch(suppliers, suppliers.FirstOrDefault(item => item.Id == movement.CustomerId));
         _dateBox = new CalendarDatePicker { SelectedDate = movement.Date };
@@ -1164,6 +1168,7 @@ public partial class StockManagementView : UserControl
         _editor = EditorMode.AdjustArticle;
         _editId = article.Id;
         EditorTitle.Text = $"Stock - {article.Designation}";
+        DialogTitleIcons.ApplyEdit(EditorTitleIcon);
         EditorHost.Children.Clear();
         _totalBox = Field("Total stock", FormDecimal.Format(article.TotalStock), out var totalField, FormDecimal.QuantityRule);
         _minimumBox = Field("Stock mínimo", FormDecimal.Format(article.MinimumStock), out var minimumField, FormDecimal.QuantityRule);
@@ -1201,6 +1206,7 @@ public partial class StockManagementView : UserControl
         _editLocationId = history.WarehouseLocationId;
         _childBoxes.Clear();
         EditorTitle.Text = "Editar Artigo Único";
+        DialogTitleIcons.ApplyEdit(EditorTitleIcon);
         EditorHost.Children.Clear();
         EditorHost.Children.Add(ReadOnly("Artigo", history.Article));
         EditorHost.Children.Add(ReadOnly("Estado", history.Status));
@@ -1303,6 +1309,7 @@ public partial class StockManagementView : UserControl
         _editId = null;
         _attachedPdf = null;
         EditorTitle.Text = "Gestão de Armazéns";
+        DialogTitleIcons.ApplyCreate(EditorTitleIcon);
         EditorHost.Children.Clear();
         _articleBox = new AutoCompleteBox { ItemsSource = articles, Classes = { "bo_entity_input" } };
         ListingFilters.EnableLookupSearch(_articleBox);

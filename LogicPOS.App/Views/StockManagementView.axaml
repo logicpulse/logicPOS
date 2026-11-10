@@ -242,7 +242,7 @@
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <StackPanel Classes="login_alert_title_row">
-                            <Image Classes="login_alert_title_icon"
+                            <Image x:Name="EditorTitleIcon" Classes="login_alert_title_icon"
                                    Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
                             <TextBlock x:Name="EditorTitle" Classes="login_alert_title" Text="Movimento de stock" />
                         </StackPanel>
