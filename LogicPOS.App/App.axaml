@@ -3,23 +3,37 @@
              x:Class="LogicPOS.App.App"
              RequestedThemeVariant="Light">
     <Application.Resources>
-        <ControlTheme x:Key="BoEntityTabTheme" TargetType="Button">
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <Border Background="Transparent"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Padding="{TemplateBinding Padding}">
-                        <ContentPresenter x:Name="PART_ContentPresenter"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="Center"
-                                          RecognizesAccessKey="True" />
-                    </Border>
-                </ControlTemplate>
-            </Setter>
-        </ControlTheme>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://LogicPOS.App/Themes/GlassButton.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <ControlTheme x:Key="BoEntityTabTheme" TargetType="Button">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Border CornerRadius="{TemplateBinding CornerRadius}"
+                                BoxShadow="{DynamicResource Glass.Button.Shadow}"
+                                ClipToBounds="False">
+                            <Panel>
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="{TemplateBinding CornerRadius}" />
+                                <Border IsHitTestVisible="False"
+                                        CornerRadius="{TemplateBinding CornerRadius}"
+                                        Background="{DynamicResource Glass.Button.Sheen}" />
+                                <ContentPresenter x:Name="PART_ContentPresenter"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  RecognizesAccessKey="True" />
+                            </Panel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+        </ResourceDictionary>
     </Application.Resources>
     <Application.Styles>
         <FluentTheme />

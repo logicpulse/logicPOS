@@ -1,0 +1,14 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+      Single place to tune glass chrome for every Button.
+      Styles.axaml (Selector=Button) and App.axaml BoEntityTabTheme both bind these keys.
+      Login keypad look: soft top sheen + light drop shadow over each button's own Background.
+    -->
+    <BoxShadows x:Key="Glass.Button.Shadow">0 2 6 0 #1A000000</BoxShadows>
+    <LinearGradientBrush x:Key="Glass.Button.Sheen" StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Color="#8CFFFFFF" Offset="0" />
+        <GradientStop Color="#1FFFFFFF" Offset="0.4" />
+        <GradientStop Color="#00FFFFFF" Offset="1" />
+    </LinearGradientBrush>
+</ResourceDictionary>
