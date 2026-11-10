@@ -216,8 +216,8 @@
         </Setter>
     </Style>
 
-    <!-- Back-office sidebar / chrome: no glass (flat fill only). -->
-    <Style Selector="Button.bo_nav, Button.bo_nav_exit, Button.bo_menu_parent, Button.bo_menu_child, Button.bo_sidebar_brand, Button.bo_sidebar_about, Button.bo_sidebar_toggle, Button.bo_window_button, Button.bo_drawer_toggle, Button.bo_mobile_bar_button, Button.bo_mobile_sheet_button, Button.bo_shortcut">
+    <!-- BO chrome + grid row icons: no glass (flat fill only; ignore APP_BUTTON_GLOSS). -->
+    <Style Selector="Button.bo_nav, Button.bo_nav_exit, Button.bo_menu_parent, Button.bo_menu_child, Button.bo_sidebar_brand, Button.bo_sidebar_about, Button.bo_sidebar_toggle, Button.bo_window_button, Button.bo_drawer_toggle, Button.bo_mobile_bar_button, Button.bo_mobile_sheet_button, Button.bo_shortcut, Button.bo_doc_icon_button, Button.bo_listing_icon_button, Button.bo_entity_tab, Button.bo_doc_page_button, Button.bo_doc_filter, Button.bo_lookup_clear">
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Background="{TemplateBinding Background}"
