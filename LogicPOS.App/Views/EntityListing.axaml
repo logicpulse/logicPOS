@@ -171,29 +171,45 @@
             <Border x:Name="EditorFrame" Classes="login_alert_frame bo_entity_editor">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                        <StackPanel Classes="login_alert_title_row">
-                            <Image x:Name="EditorTitleIcon" Classes="login_alert_title_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
-                            <TextBlock x:Name="EditorTitle" Classes="login_alert_title" />
-                        </StackPanel>
+                        <DockPanel>
+                            <Button Classes="bo_window_button" DockPanel.Dock="Right" Click="OnEditorCancelClick"
+                                    ToolTip.Tip="Fechar">
+                                <svg:Svg Classes="bo_window_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                            </Button>
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image x:Name="EditorTitleIcon" Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                                <TextBlock x:Name="EditorTitle" Classes="login_alert_title" />
+                            </StackPanel>
+                        </DockPanel>
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                        <StackPanel Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnSaveClick">
-                                <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon"
-                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
-                                    <TextBlock Classes="login_alert_action_text" Text="Guardar" />
-                                </StackPanel>
-                            </Button>
-                            <Button Classes="login_alert_action" Click="OnEditorCancelClick">
-                                <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon"
-                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
-                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
+                        <DockPanel>
+                            <StackPanel x:Name="EditorTabNav" Classes="bo_entity_tab_nav" DockPanel.Dock="Left"
+                                        Orientation="Horizontal" IsVisible="False">
+                                <Button x:Name="EditorPrevTab" Classes="bo_entity_nav" Click="OnEditorPrevTabClick"
+                                        Content="&lt; Anterior" IsEnabled="False" />
+                                <Button x:Name="EditorNextTab" Classes="bo_entity_nav" Click="OnEditorNextTabClick"
+                                        Content="Seguinte &gt;" />
+                            </StackPanel>
+                            <StackPanel Classes="login_alert_action_buttons" HorizontalAlignment="Right">
+                                <Button Classes="login_alert_action" Click="OnSaveClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Guardar" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="login_alert_action bo_entity_cancel" Click="OnEditorCancelClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </DockPanel>
                     </Border>
                     <TextBlock x:Name="EditorNotice" Classes="bo_entity_error" DockPanel.Dock="Bottom" />
                     <ScrollViewer x:Name="EditorBody">

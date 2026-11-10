@@ -894,7 +894,7 @@ public partial class EntityListing : UserControl
     private async Task EditCoreAsync(IBackOfficeListingService service, Guid? id)
     {
         _editingId = id;
-        EditorTitle.Text = id is null ? "Novo" : "Editar";
+        EditorTitle.Text = EditorDialogTitle(id is null);
         if (id is null)
         {
             DialogTitleIcons.ApplyCreate(EditorTitleIcon);
@@ -910,6 +910,7 @@ public partial class EntityListing : UserControl
         _articleTabs.Clear();
         _articleFieldBlocks.Clear();
         _articlePages = null;
+        EditorTabNav.IsVisible = false;
         IReadOnlyList<ListingField> fields;
         try
         {
@@ -924,8 +925,10 @@ public partial class EntityListing : UserControl
 
         // Tabbed editors keep a stable workspace; simple forms size to content.
         var simpleForm = groups.Count <= 1;
+        var articleForm = IsArticlesListing() && groups.Count > 1;
         EditorFrame.Classes.Set("bo_entity_editor_fit", simpleForm);
         EditorFrame.Classes.Set("bo_entity_editor_narrow", simpleForm);
+        EditorFrame.Classes.Set("bo_entity_editor_article", articleForm);
         EditorBody.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
         EditorBody.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled;
         if (groups.Count > 1)
@@ -979,14 +982,17 @@ public partial class EntityListing : UserControl
             shell.Children.Add(bar);
             shell.Children.Add(pages);
             EditorFields.Children.Add(shell);
+            EditorTabNav.IsVisible = true;
             WireArticleRules();
             ApplyArticleTabs();
             ApplyArticleFieldVisibility();
+            SyncEditorTabNav();
             // Re-evaluate after AutoCompleteBox binds SelectedItem (TypeHasPrice / VatDutyFree).
             Avalonia.Threading.Dispatcher.UIThread.Post(() =>
             {
                 ApplyArticleTabs();
                 ApplyArticleFieldVisibility();
+                SyncEditorTabNav();
             });
         }
         else
@@ -1001,6 +1007,19 @@ public partial class EntityListing : UserControl
 
         EditorOverlay.IsVisible = true;
     }
+
+    private string EditorDialogTitle(bool creating)
+    {
+        if (IsArticlesListing())
+        {
+            return creating ? "Novo artigo" : "Editar artigo";
+        }
+
+        return creating ? "Novo" : "Editar";
+    }
+
+    private bool IsArticlesListing()
+        => _title is "Artigos" or "Articles";
 
     private async Task AddFieldAsync(IBackOfficeListingService service, Panel panel, ListingField field)
     {
@@ -1303,7 +1322,7 @@ public partial class EntityListing : UserControl
         else
         {
             var stack = new StackPanel();
-            stack.Children.Add(new TextBlock { Classes = { "bo_new_doc_caption" }, Text = field.Label });
+            stack.Children.Add(FieldCaption(field));
             stack.Children.Add(input);
             block = stack;
         }
@@ -1940,6 +1959,60 @@ public partial class EntityListing : UserControl
         {
             _articlePages.Content = tab.Page;
         }
+
+        SyncEditorTabNav();
+    }
+
+    private void OnEditorPrevTabClick(object? sender, RoutedEventArgs e)
+        => StepEditorTab(-1);
+
+    private void OnEditorNextTabClick(object? sender, RoutedEventArgs e)
+        => StepEditorTab(1);
+
+    private void StepEditorTab(int delta)
+    {
+        var visible = _articleTabs.Where(tab => tab.Header.IsVisible).ToList();
+        if (visible.Count == 0)
+        {
+            return;
+        }
+
+        var index = visible.FindIndex(tab => ReferenceEquals(_articlePages?.Content, tab.Page));
+        if (index < 0)
+        {
+            index = 0;
+        }
+
+        var next = Math.Clamp(index + delta, 0, visible.Count - 1);
+        SelectArticleTab(visible[next]);
+    }
+
+    private void SyncEditorTabNav()
+    {
+        if (EditorTabNav.IsVisible == false)
+        {
+            return;
+        }
+
+        var visible = _articleTabs.Where(tab => tab.Header.IsVisible).ToList();
+        var index = visible.FindIndex(tab => ReferenceEquals(_articlePages?.Content, tab.Page));
+        EditorPrevTab.IsEnabled = index > 0;
+        EditorNextTab.IsEnabled = index >= 0 && index < visible.Count - 1;
+    }
+
+    private static TextBlock FieldCaption(ListingField field)
+    {
+        var caption = new TextBlock { Classes = { "bo_new_doc_caption" } };
+        caption.Inlines.Add(new Avalonia.Controls.Documents.Run(field.Label ?? string.Empty));
+        if (field.Required)
+        {
+            caption.Inlines.Add(new Avalonia.Controls.Documents.Run(" *")
+            {
+                Foreground = new SolidColorBrush(Color.Parse("#E11D48"))
+            });
+        }
+
+        return caption;
     }
 
     private void ApplyArticleTabs()
@@ -1956,8 +2029,11 @@ public partial class EntityListing : UserControl
             if (next.Header is not null)
             {
                 SelectArticleTab(next);
+                return;
             }
         }
+
+        SyncEditorTabNav();
     }
 
     private void ApplyArticleFieldVisibility()
@@ -2053,11 +2129,25 @@ public partial class EntityListing : UserControl
         var pick = new ImagePick();
         var photo = new Image { Classes = { "bo_image_photo" } };
         var frame = new Border { Classes = { "bo_image_frame" }, ClipToBounds = true, Child = photo };
-        var remove = new Button { Classes = { "bo_image_remove" }, Content = "×", IsVisible = false };
+        var remove = new Button
+        {
+            Classes = { "bo_image_remove" },
+            IsVisible = false,
+            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+            {
+                Classes = { "bo_image_action_icon" },
+                Path = "avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg"
+            }
+        };
+        ToolTip.SetTip(remove, "Remover imagem");
         var wrap = new Grid { Classes = { "bo_image_photo_wrap" }, Tag = pick };
         wrap.Children.Add(frame);
         wrap.Children.Add(remove);
-        var browse = new Button { Classes = { "bo_image_browse" }, Content = "Procurar..." };
+        var browse = new Button
+        {
+            Classes = { "bo_image_browse" },
+            Content = "Procurar..."
+        };
 
         void Show(Bitmap? bitmap)
         {
