@@ -12,7 +12,7 @@
         TransparencyLevelHint="Transparent"
         Background="Transparent"
         Topmost="True">
-    <!-- Janela transparente: só o cartão existe. Os cantos fora do raio ficam invisíveis. -->
+    <!-- Só o cartão é visível. O branco é sólido; os cantos da janela não pintam um fundo preto. -->
     <Border Classes="glass_card">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
             <Image Width="120"
