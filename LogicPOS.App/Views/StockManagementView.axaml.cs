@@ -1101,30 +1101,57 @@ public partial class StockManagementView : UserControl
         _dateBox.Classes.Add("bo_doc_date");
         _documentBox = Field("Documento", string.Empty, out var documentField);
         _documentBox.PlaceholderText = "Número do documento do fornecedor...";
-        _notesBox = Field("Notas", string.Empty, out var notesField);
-        _notesBox.PlaceholderText = "Observações do movimento...";
-        _notesBox.AcceptsReturn = true;
-        _notesBox.MinHeight = 72;
-        _notesBox.TextWrapping = TextWrapping.Wrap;
+        _notesBox = new TextBox
+        {
+            Text = string.Empty,
+            PlaceholderText = "Observações do movimento...",
+            AcceptsReturn = true,
+            MinHeight = 96,
+            TextWrapping = TextWrapping.Wrap,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            Classes = { "bo_entity_input" }
+        };
         _dateBox.SelectedDate = DateTime.Today;
         EditorNotice.Text = string.Empty;
 
-        var dadosBody = new StackPanel { Classes = { "bo_stock_card_body" } };
-        dadosBody.Children.Add(Label("Fornecedor"));
-        dadosBody.Children.Add(_supplierBox);
-        dadosBody.Children.Add(Label("Data"));
-        dadosBody.Children.Add(_dateBox);
-        dadosBody.Children.Add(documentField);
-        dadosBody.Children.Add(notesField);
-        var left = new StackPanel { Classes = { "bo_stock_editor_col" } };
-        left.Children.Add(StockCard(
+        var dadosTop = new StackPanel { Classes = { "bo_stock_card_body" } };
+        dadosTop.Children.Add(Label("Fornecedor"));
+        dadosTop.Children.Add(_supplierBox);
+        dadosTop.Children.Add(Label("Data"));
+        dadosTop.Children.Add(_dateBox);
+        dadosTop.Children.Add(documentField);
+        var notesLabel = Label("Notas");
+        var notesBlock = new DockPanel { Margin = new Thickness(0, 4, 0, 0) };
+        DockPanel.SetDock(notesLabel, Dock.Top);
+        notesBlock.Children.Add(notesLabel);
+        notesBlock.Children.Add(_notesBox);
+        var dadosBody = new DockPanel();
+        DockPanel.SetDock(dadosTop, Dock.Top);
+        dadosBody.Children.Add(dadosTop);
+        dadosBody.Children.Add(notesBlock);
+
+        var dadosCard = StockCard(
             "Dados do movimento",
             "avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png",
-            dadosBody));
-        left.Children.Add(StockCard(
+            dadosBody,
+            stretch: true);
+        var anexosCard = StockCard(
             "Anexos",
             "avares://LogicPOS.App/Assets/Images/Listing/botao_importar_b.svg",
-            BuildAttachmentDropzone()));
+            BuildAttachmentDropzone(stretch: true),
+            stretch: true);
+
+        var left = new Avalonia.Controls.Grid
+        {
+            Classes = { "bo_stock_editor_col" },
+            VerticalAlignment = VerticalAlignment.Stretch
+        };
+        left.RowDefinitions.Add(new RowDefinition(new GridLength(1.35, GridUnitType.Star)));
+        left.RowDefinitions.Add(new RowDefinition(new GridLength(1, GridUnitType.Star)));
+        Avalonia.Controls.Grid.SetRow(dadosCard, 0);
+        Avalonia.Controls.Grid.SetRow(anexosCard, 1);
+        left.Children.Add(dadosCard);
+        left.Children.Add(anexosCard);
 
         var composer = BuildDraftComposer(articles, locations);
         _linesHost = new StackPanel { Classes = { "bo_stock_lines" } };
@@ -1143,20 +1170,33 @@ public partial class StockManagementView : UserControl
             Text = "Ainda não adicionou artigos. Selecione um artigo e clique em Adicionar.",
             Classes = { "bo_stock_empty_text" }
         });
-        var linesBody = new StackPanel { Classes = { "bo_stock_card_body" } };
+        var linesBody = new DockPanel();
         linesBody.Children.Add(_linesEmpty);
         linesBody.Children.Add(_linesHost);
         var linesCard = StockCard(
             "Linhas do movimento",
             "avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_gestao_stocks.svg",
             linesBody,
-            _linesCountBadge);
+            _linesCountBadge,
+            stretch: true);
 
-        var right = new StackPanel { Classes = { "bo_stock_editor_col" } };
+        var right = new Avalonia.Controls.Grid
+        {
+            Classes = { "bo_stock_editor_col" },
+            VerticalAlignment = VerticalAlignment.Stretch
+        };
+        right.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        right.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+        Avalonia.Controls.Grid.SetRow(composer, 0);
+        Avalonia.Controls.Grid.SetRow(linesCard, 1);
         right.Children.Add(composer);
         right.Children.Add(linesCard);
 
-        var split = new Avalonia.Controls.Grid { Classes = { "bo_stock_editor_split_grid" } };
+        var split = new Avalonia.Controls.Grid
+        {
+            Classes = { "bo_stock_editor_split_grid" },
+            MinHeight = 520
+        };
         split.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1.1, GridUnitType.Star)));
         split.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1.6, GridUnitType.Star)));
         Avalonia.Controls.Grid.SetColumn(left, 0);
@@ -1645,7 +1685,7 @@ public partial class StockManagementView : UserControl
         }
     }
 
-    private Border BuildAttachmentDropzone()
+    private Border BuildAttachmentDropzone(bool stretch = false)
     {
         _attachLabel = new TextBlock { Text = "Sem anexo", Classes = { "bo_stock_dropzone_title" } };
         _attachHint = new TextBlock
@@ -1664,7 +1704,13 @@ public partial class StockManagementView : UserControl
         content.Children.Add(_attachLabel);
         content.Children.Add(_attachHint);
 
-        var zone = new Border { Classes = { "bo_stock_dropzone" }, Child = content };
+        var zone = new Border
+        {
+            Classes = { "bo_stock_dropzone" },
+            Child = content,
+            VerticalAlignment = stretch ? VerticalAlignment.Stretch : VerticalAlignment.Top,
+            MinHeight = stretch ? 140 : 96
+        };
         zone.PointerPressed += async (_, _) => await PickAttachmentAsync();
         DragDrop.SetAllowDrop(zone, true);
         zone.AddHandler(DragDrop.DropEvent, async (_, args) =>
@@ -1692,7 +1738,12 @@ public partial class StockManagementView : UserControl
         return zone;
     }
 
-    private static Border StockCard(string title, string iconPath, Control body, Control? trailing = null)
+    private static Border StockCard(
+        string title,
+        string iconPath,
+        Control body,
+        Control? trailing = null,
+        bool stretch = false)
     {
         Control icon = iconPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
             ? new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
@@ -1732,10 +1783,19 @@ public partial class StockManagementView : UserControl
             header = row;
         }
 
-        var stack = new StackPanel { Classes = { "bo_stock_card_body" } };
-        stack.Children.Add(header);
-        stack.Children.Add(body);
-        return new Border { Classes = { "bo_stock_card" }, Child = stack };
+        var shell = new DockPanel();
+        DockPanel.SetDock(header, Dock.Top);
+        shell.Children.Add(header);
+        body.VerticalAlignment = VerticalAlignment.Stretch;
+        shell.Children.Add(body);
+
+        return new Border
+        {
+            Classes = { "bo_stock_card" },
+            Child = shell,
+            VerticalAlignment = stretch ? VerticalAlignment.Stretch : VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Stretch
+        };
     }
 
     private static void CaptureSerialValues(MovementLineControls line)

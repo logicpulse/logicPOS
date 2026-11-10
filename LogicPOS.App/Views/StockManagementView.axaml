@@ -242,10 +242,10 @@
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <DockPanel>
-                            <Button Classes="pos_dialog_close" DockPanel.Dock="Right" Click="OnEditorCancelClick"
+                            <Button Classes="bo_window_button" DockPanel.Dock="Right" Click="OnEditorCancelClick"
                                     ToolTip.Tip="Fechar">
-                                <Image Classes="pos_dialog_close_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_window_close.png" />
+                                <svg:Svg Classes="bo_window_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                             </Button>
                             <StackPanel Classes="login_alert_title_row">
                                 <Image x:Name="EditorTitleIcon" Classes="login_alert_title_icon"
