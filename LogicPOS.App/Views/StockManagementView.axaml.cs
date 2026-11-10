@@ -277,9 +277,17 @@ public partial class StockManagementView : UserControl
 
     private void AddText(string binding, string header, double minWidth, bool star = false)
     {
+        // Header TextBlock: ellipsis when narrow + tooltip with the full title on hover.
+        var headerBlock = new TextBlock
+        {
+            Text = header,
+            TextTrimming = TextTrimming.CharacterEllipsis,
+            TextWrapping = TextWrapping.NoWrap
+        };
+        ToolTip.SetTip(headerBlock, header);
         Grid.Columns.Add(new DataGridTextColumn
         {
-            Header = header,
+            Header = headerBlock,
             Binding = new Binding(binding)
             {
                 StringFormat = binding is "Quantity" or "Price" or "TotalStock" or "MinimumStock" or "PurchasePrice"
@@ -290,13 +298,16 @@ public partial class StockManagementView : UserControl
                             ? "{0:dd/MM/yyyy HH:mm}"
                             : null
             },
-            MinWidth = minWidth,
-            MaxWidth = star ? double.PositiveInfinity : Math.Max(minWidth + 80, 280),
+            MinWidth = Math.Max(minWidth, EstimateHeaderWidth(header)),
+            MaxWidth = star ? double.PositiveInfinity : Math.Max(minWidth + 120, 320),
             Width = star
                 ? new DataGridLength(1, DataGridLengthUnitType.Star)
                 : new DataGridLength(1, DataGridLengthUnitType.Auto)
         });
     }
+
+    private static double EstimateHeaderWidth(string header)
+        => Math.Max(96, (header?.Length ?? 0) * 8 + 28);
 
     private void AddEditAction()
     {

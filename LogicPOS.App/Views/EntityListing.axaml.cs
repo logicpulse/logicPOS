@@ -525,10 +525,18 @@ public partial class EntityListing : UserControl
                 starred = true;
             }
 
-            var titleWidth = Math.Max(120, (column.Header?.Length ?? 0) * 8 + 64);
+            var title = column.Header ?? string.Empty;
+            var titleWidth = Math.Max(120, title.Length * 8 + 64);
+            var headerBlock = new TextBlock
+            {
+                Text = title,
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                TextWrapping = TextWrapping.NoWrap
+            };
+            ToolTip.SetTip(headerBlock, title);
             Grid.Columns.Add(new DataGridTextColumn
             {
-                Header = column.Header,
+                Header = headerBlock,
                 Binding = new Binding($"[{column.Key}]"),
                 IsVisible = column.Visible,
                 MinWidth = titleWidth,
@@ -537,8 +545,8 @@ public partial class EntityListing : UserControl
                     ? new DataGridLength(1, DataGridLengthUnitType.Star)
                     : new DataGridLength(1, DataGridLengthUnitType.Auto)
             });
-            _columnKeys[column.Header] = column.Key;
-            _defaultVisible[column.Header] = column.Visible;
+            _columnKeys[title] = column.Key;
+            _defaultVisible[title] = column.Visible;
             if (column.Visible && _cardKeys.Count < 3)
             {
                 _cardKeys.Add(column.Key);
@@ -649,11 +657,20 @@ public partial class EntityListing : UserControl
         return true;
     }
 
+    private static string ColumnHeaderText(DataGridColumn column)
+        => column.Header switch
+        {
+            TextBlock block => block.Text ?? string.Empty,
+            string text => text,
+            null => string.Empty,
+            var other => other.ToString() ?? string.Empty
+        };
+
     private void RestoreColumns()
     {
         foreach (var column in ChoosableColumns())
         {
-            var header = column.Header?.ToString() ?? string.Empty;
+            var header = ColumnHeaderText(column);
             if (_defaultVisible.TryGetValue(header, out var visible))
             {
                 column.IsVisible = visible;
@@ -679,7 +696,7 @@ public partial class EntityListing : UserControl
             _columnSnapshot.Add((column, column.IsVisible));
             var box = new CheckBox
             {
-                Content = column.Header?.ToString(),
+                Content = ColumnHeaderText(column),
                 IsChecked = column.IsVisible,
                 Tag = column,
                 Classes = { "bo_doc_column_check" }
@@ -771,13 +788,17 @@ public partial class EntityListing : UserControl
 
     private IEnumerable<DataGridColumn> ChoosableColumns()
     {
-        return Grid.Columns.Where(column => column.Header?.ToString() is not ("Editar" or "Eliminar"));
+        return Grid.Columns.Where(column =>
+        {
+            var header = ColumnHeaderText(column);
+            return header is not ("Editar" or "Eliminar") && string.IsNullOrWhiteSpace(header) == false;
+        });
     }
 
     private async Task ExportAsync(bool excel)
     {
         var columns = ChoosableColumns().Where(column => column.IsVisible).ToList();
-        var headers = columns.Select(column => column.Header?.ToString() ?? string.Empty).ToList();
+        var headers = columns.Select(ColumnHeaderText).ToList();
         var rows = (Grid.ItemsSource as IEnumerable<ListingRow> ?? []).Select(row =>
             (IReadOnlyList<string>)headers.Select(header =>
                 _columnKeys.TryGetValue(header, out var key) ? row[key] : string.Empty).ToList()).ToList();

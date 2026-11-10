@@ -4483,14 +4483,32 @@
         <Setter Property="Foreground" Value="#222222" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="FontSize" Value="12" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="ToolTip.Tip" Value="{Binding Content, RelativeSource={RelativeSource Self}}" />
+    </Style>
+
+    <Style Selector="DataGrid.bo_doc_grid DataGridColumnHeader TextBlock">
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
+        <Setter Property="ToolTip.Tip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
+    </Style>
+
+    <Style Selector="DataGrid.bo_doc_grid DataGridCell TextBlock">
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
+        <Setter Property="ToolTip.Tip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
     </Style>
 
     <Style Selector="DataGrid.bo_line_grid DataGridColumnHeader TextBlock">
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
+        <Setter Property="ToolTip.Tip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
     </Style>
 
     <Style Selector="DataGrid.bo_line_grid DataGridCell TextBlock">
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
+        <Setter Property="ToolTip.Tip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
     </Style>
 
 
