@@ -4656,6 +4656,93 @@
         <Setter Property="Margin" Value="12,0,0,0" />
     </Style>
 
+    <Style Selector="Border.bo_new_doc_customer_card">
+        <Setter Property="Background" Value="#F5F8FC" />
+        <Setter Property="BorderBrush" Value="#D7E0EA" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="12,8,12,10" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="Border.bo_new_doc_articles">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#D7E0EA" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="MinHeight" Value="220" />
+    </Style>
+
+    <Style Selector="Border.bo_new_doc_articles_header">
+        <Setter Property="Background" Value="#2563EB" />
+        <Setter Property="Padding" Value="12,8" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_articles_title_row">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_new_doc_articles_icon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+    </Style>
+
+    <Style Selector="Border.bo_new_doc_articles_header TextBlock.bo_new_doc_ship_title">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_articles_footer">
+        <Setter Property="Margin" Value="10,8" />
+        <Setter Property="Spacing" Value="6" />
+    </Style>
+
+    <Style Selector="Border.bo_new_doc_total_box">
+        <Setter Property="Background" Value="#E8F0FE" />
+        <Setter Property="BorderBrush" Value="#BFDBFE" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="MinWidth" Value="110" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="8,0,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_empty">
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="16,28" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_new_doc_empty_icon">
+        <Setter Property="Width" Value="56" />
+        <Setter Property="Height" Value="56" />
+        <Setter Property="Opacity" Value="0.35" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_empty_title">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#4B5563" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_empty_text">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="#6B7280" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="MaxWidth" Value="320" />
+    </Style>
+
     <Style Selector="ScrollViewer.bo_new_doc_transport">
         <Setter Property="Margin" Value="0" />
     </Style>
@@ -4733,9 +4820,10 @@
     <Style Selector="TextBlock.bo_new_doc_total">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="Margin" Value="0,6,0,0" />
-        <Setter Property="Foreground" Value="#222222" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Foreground" Value="#1D4ED8" />
     </Style>
 
     <Style Selector="Border.bo_line_editor">

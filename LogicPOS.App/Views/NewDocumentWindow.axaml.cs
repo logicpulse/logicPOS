@@ -2056,12 +2056,13 @@ public partial class NewDocumentWindow : UserControl
         LinesGrid.ItemsSource = null;
         LinesGrid.ItemsSource = _lines.ToList();
         LinesGrid.SelectedItem = null;
+        LinesEmpty.IsVisible = _lines.Count == 0;
         RefreshTotal();
     }
 
     private void RefreshTotal()
     {
-        TotalLabel.Text = "Total: " + Money(_lines.Sum(line => line.GrossTotal));
+        TotalLabel.Text = Money(_lines.Sum(line => line.GrossTotal));
     }
 
     private PosVatOption? SelectedVat()

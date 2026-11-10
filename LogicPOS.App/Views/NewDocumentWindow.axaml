@@ -19,11 +19,18 @@
                     PointerMoved="OnDocumentTitlePointerMoved"
                     PointerReleased="OnDocumentTitlePointerReleased"
                     PointerCaptureLost="OnDocumentTitlePointerCaptureLost">
-                <StackPanel Classes="login_alert_title_row">
-                    <Image Classes="login_alert_title_icon"
-                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
-                    <TextBlock Classes="login_alert_title" Text="Novo documento" />
-                </StackPanel>
+                <DockPanel>
+                    <Button Classes="bo_window_button" DockPanel.Dock="Right" Click="OnCancelClick"
+                            ToolTip.Tip="Fechar">
+                        <svg:Svg Classes="bo_window_icon"
+                                 Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                    </Button>
+                    <StackPanel Classes="login_alert_title_row">
+                        <svg:Svg Classes="login_alert_title_icon"
+                                 Path="avares://LogicPOS.App/Assets/Images/Listing/botao_novo_w.svg" />
+                        <TextBlock Classes="login_alert_title" Text="Novo documento" />
+                    </StackPanel>
+                </DockPanel>
             </Border>
             <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                 <DockPanel>
@@ -67,7 +74,7 @@
                               VerticalScrollBarVisibility="Auto">
                 <Grid x:Name="HeaderFields" Classes="bo_new_doc_fields" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto">
                     <StackPanel>
-                        <TextBlock Classes="bo_new_doc_caption" Text="Tipo documento" />
+                        <TextBlock Classes="bo_new_doc_caption" Text="Tipo de documento" />
                         <ComboBox x:Name="TypeBox" Classes="bo_new_doc_combo" SelectionChanged="OnTypeChanged" />
                     </StackPanel>
                     <StackPanel Grid.Column="1">
@@ -102,6 +109,7 @@
                                     ToolTip.Tip="Limpar" />
                             <AutoCompleteBox x:Name="OriginBox"
                                             Classes="bo_new_doc_search"
+                                            PlaceholderText="Nº, cliente ou NIF..."
                                             SelectionChanged="OnOriginChanged"
                                             TextChanged="OnOriginTextChanged" />
                         </DockPanel>
@@ -118,116 +126,147 @@
                                     ToolTip.Tip="Limpar" />
                             <AutoCompleteBox x:Name="CopyBox"
                                             Classes="bo_new_doc_search"
+                                            PlaceholderText="Nº, cliente ou NIF..."
                                             SelectionChanged="OnCopyChanged"
                                             TextChanged="OnCopyTextChanged" />
                         </DockPanel>
                     </StackPanel>
-                    <Grid Grid.Row="2" Grid.ColumnSpan="4" ColumnDefinitions="*,160,Auto">
-                        <StackPanel>
-                            <TextBlock Classes="bo_new_doc_caption" Text="Cliente" />
-                            <TextBox x:Name="CustomerName"
-                                     Classes="bo_line_editor_input"
-                                     PlaceholderText="nome, NIF ou cartão"
-                                     KeyDown="OnCustomerSearchKey"
-                                     TextChanged="OnCustomerEdited" />
-                            <Popup x:Name="CustomerSuggest"
-                                   Placement="Bottom"
-                                   IsLightDismissEnabled="True">
-                                <Border Classes="bo_new_doc_suggest" MinWidth="360">
-                                    <ScrollViewer MaxHeight="220">
-                                        <StackPanel x:Name="CustomerSuggestList" />
-                                    </ScrollViewer>
-                                </Border>
-                            </Popup>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1">
-                            <TextBlock Classes="bo_new_doc_caption" Text="NIF" />
-                            <TextBox x:Name="CustomerFiscal"
-                                     Classes="bo_line_editor_input bo_numeric"
-                                     KeyDown="OnCustomerSearchKey"
-                                     TextChanged="OnCustomerEdited" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Classes="bo_new_doc_customer_actions">
-                            <Button Classes="bo_line_icon" Click="OnCustomerSearchClick" ToolTip.Tip="Procurar">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
-                            </Button>
-                            <Button Classes="bo_line_icon" Click="OnNewCustomerClick" ToolTip.Tip="Novo">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_novo_b.svg" />
-                            </Button>
-                            <Button x:Name="CustomerEditButton" Classes="bo_line_icon" IsVisible="False" Click="OnEditCustomerClick" ToolTip.Tip="Editar">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
-                            </Button>
-                            <Button Classes="bo_line_icon" Click="OnClearCustomerClick" ToolTip.Tip="Limpar">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_limpar_b.svg" />
-                            </Button>
-                        </StackPanel>
-                    </Grid>
+                    <Border Grid.Row="2" Grid.ColumnSpan="4" Classes="bo_new_doc_customer_card">
+                        <Grid ColumnDefinitions="*,180,Auto">
+                            <StackPanel>
+                                <TextBlock Classes="bo_new_doc_caption" Text="Cliente" />
+                                <TextBox x:Name="CustomerName"
+                                         Classes="bo_line_editor_input"
+                                         PlaceholderText="Consumidor Final"
+                                         KeyDown="OnCustomerSearchKey"
+                                         TextChanged="OnCustomerEdited" />
+                                <Popup x:Name="CustomerSuggest"
+                                       Placement="Bottom"
+                                       IsLightDismissEnabled="True">
+                                    <Border Classes="bo_new_doc_suggest" MinWidth="360">
+                                        <ScrollViewer MaxHeight="220">
+                                            <StackPanel x:Name="CustomerSuggestList" />
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Classes="bo_new_doc_caption" Text="NIF" />
+                                <TextBox x:Name="CustomerFiscal"
+                                         Classes="bo_line_editor_input bo_numeric"
+                                         KeyDown="OnCustomerSearchKey"
+                                         TextChanged="OnCustomerEdited" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Classes="bo_new_doc_customer_actions">
+                                <Button Classes="bo_line_icon" Click="OnCustomerSearchClick" ToolTip.Tip="Procurar">
+                                    <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                                </Button>
+                                <Button Classes="bo_line_icon" Click="OnNewCustomerClick" ToolTip.Tip="Novo">
+                                    <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_novo_b.svg" />
+                                </Button>
+                                <Button x:Name="CustomerEditButton" Classes="bo_line_icon" IsVisible="False" Click="OnEditCustomerClick" ToolTip.Tip="Editar">
+                                    <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
+                                </Button>
+                                <Button Classes="bo_line_icon" Click="OnClearCustomerClick" ToolTip.Tip="Limpar">
+                                    <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_limpar_b.svg" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                     <StackPanel Grid.Row="3" Grid.ColumnSpan="4">
                         <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
-                        <TextBox x:Name="NotesBox" Classes="bo_new_doc_notes" />
+                        <TextBox x:Name="NotesBox"
+                                 Classes="bo_new_doc_notes"
+                                 PlaceholderText="Introduza notas sobre o documento..." />
                     </StackPanel>
                 </Grid>
                 </ScrollViewer>
                 <TextBlock x:Name="ErrorLabel" Classes="bo_new_doc_error" DockPanel.Dock="Bottom" />
-                <StackPanel DockPanel.Dock="Bottom">
-                    <TextBlock Classes="bo_new_doc_ship_title" Text="Artigos" />
-                    <DockPanel Classes="bo_new_doc_search">
-                        <StackPanel Classes="bo_new_doc_article_tools" DockPanel.Dock="Right">
-                            <Button Classes="bo_new_doc_tool" Click="OnNewArticleClick" ToolTip.Tip="Novo artigo">Novo</Button>
-                            <Button x:Name="SerialButton" Classes="bo_new_doc_tool" IsVisible="False" Click="OnSerialClick" ToolTip.Tip="Artigo único">Série</Button>
-                            <Button Classes="bo_line_icon" Click="OnOpenArticlePad" ToolTip.Tip="Escolher">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_selecionar_b.svg" />
-                            </Button>
+                <Border Classes="bo_new_doc_articles">
+                    <DockPanel>
+                        <Border Classes="bo_new_doc_articles_header" DockPanel.Dock="Top">
+                            <StackPanel Classes="bo_new_doc_articles_title_row">
+                                <svg:Svg Classes="bo_new_doc_articles_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_artigos.svg" />
+                                <TextBlock Classes="bo_new_doc_ship_title" Text="Artigos" />
+                            </StackPanel>
+                        </Border>
+                        <StackPanel DockPanel.Dock="Bottom" Classes="bo_new_doc_articles_footer">
+                            <DockPanel Classes="bo_new_doc_search">
+                                <StackPanel Classes="bo_new_doc_article_tools" DockPanel.Dock="Right">
+                                    <Button Classes="bo_new_doc_tool" Click="OnNewArticleClick" ToolTip.Tip="Novo artigo">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <TextBlock Text="+" FontWeight="Bold" VerticalAlignment="Center" />
+                                            <TextBlock Text="Novo" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="SerialButton" Classes="bo_new_doc_tool" IsVisible="False" Click="OnSerialClick" ToolTip.Tip="Artigo único">Série</Button>
+                                    <Button Classes="bo_line_icon" Click="OnOpenArticlePad" ToolTip.Tip="Escolher">
+                                        <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_selecionar_b.svg" />
+                                    </Button>
+                                    <Border Classes="bo_new_doc_total_box">
+                                        <TextBlock x:Name="TotalLabel" Classes="bo_new_doc_total" Text="Total: 0,00 €" />
+                                    </Border>
+                                </StackPanel>
+                                <TextBox x:Name="ArticleSearch"
+                                         Classes="bo_new_doc_search_box"
+                                         PlaceholderText="Referência, descrição ou família..."
+                                         TextChanged="OnSearchChanged"
+                                         KeyDown="OnSearchKeyDown" />
+                            </DockPanel>
+                            <Border x:Name="ArticleSuggest" Classes="bo_new_doc_suggest" IsVisible="False">
+                                <ScrollViewer>
+                                    <StackPanel x:Name="ArticleSuggestList" />
+                                </ScrollViewer>
+                            </Border>
                         </StackPanel>
-                        <TextBox x:Name="ArticleSearch"
-                                 Classes="bo_new_doc_search_box"
-                                 PlaceholderText="referência, descrição ou família"
-                                 TextChanged="OnSearchChanged"
-                                 KeyDown="OnSearchKeyDown" />
+                        <Panel>
+                            <DataGrid x:Name="LinesGrid"
+                                      x:CompileBindings="False"
+                                      Classes="bo_doc_grid bo_line_grid"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      CanUserResizeColumns="True"
+                                      HeadersVisibility="Column"
+                                      GridLinesVisibility="Horizontal"
+                                      DoubleTapped="OnLineOpen"
+                                      LoadingRow="OnLineLoading">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Ref." Binding="{Binding Code}" Width="80" MinWidth="70" />
+                                    <DataGridTextColumn Header="Descrição" Binding="{Binding Designation}" Width="*" MinWidth="140" />
+                                    <DataGridTextColumn Header="Nº série" Binding="{Binding SerialText}" Width="140" MinWidth="110" />
+                                    <DataGridTextColumn Header="Qtd." Binding="{Binding QuantityText}" Width="80" MinWidth="70" />
+                                    <DataGridTextColumn Header="Preço uni." Binding="{Binding PriceText}" Width="110" MinWidth="100" />
+                                    <DataGridTextColumn Header="Preço s/ IVA" Binding="{Binding NetPriceText}" Width="120" MinWidth="110" />
+                                    <DataGridTextColumn Header="Desc. %" Binding="{Binding DiscountText}" Width="90" MinWidth="80" />
+                                    <DataGridTextColumn Header="Total s/ desconto" Binding="{Binding TotalWithoutDiscountText}" Width="140" MinWidth="130" />
+                                    <DataGridTextColumn Header="Total" Binding="{Binding TotalText}" Width="110" MinWidth="90" />
+                                    <DataGridTemplateColumn Header="" Width="88">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Classes="bo_line_icons">
+                                                    <Button Classes="bo_line_icon" Click="OnEditRowClick" ToolTip.Tip="Editar">
+                                                        <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
+                                                    </Button>
+                                                    <Button Classes="bo_line_icon" Click="OnRemoveRowClick" ToolTip.Tip="Eliminar">
+                                                        <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg" />
+                                                    </Button>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <StackPanel x:Name="LinesEmpty" Classes="bo_new_doc_empty">
+                                <svg:Svg Classes="bo_new_doc_empty_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_artigos.svg" />
+                                <TextBlock Classes="bo_new_doc_empty_title" Text="Ainda não há artigos" />
+                                <TextBlock Classes="bo_new_doc_empty_text"
+                                           Text="Adicione artigos ao documento usando o campo abaixo" />
+                            </StackPanel>
+                        </Panel>
                     </DockPanel>
-                    <Border x:Name="ArticleSuggest" Classes="bo_new_doc_suggest" IsVisible="False">
-                        <ScrollViewer>
-                            <StackPanel x:Name="ArticleSuggestList" />
-                        </ScrollViewer>
-                    </Border>
-                </StackPanel>
-                <TextBlock x:Name="TotalLabel" Classes="bo_new_doc_total" DockPanel.Dock="Bottom" Text="Total: 0,00 €" />
-                <DataGrid x:Name="LinesGrid"
-                          x:CompileBindings="False"
-                          Classes="bo_doc_grid bo_line_grid"
-                          AutoGenerateColumns="False"
-                          IsReadOnly="True"
-                          CanUserResizeColumns="True"
-                          HeadersVisibility="Column"
-                          GridLinesVisibility="Horizontal"
-                          DoubleTapped="OnLineOpen"
-                          LoadingRow="OnLineLoading">
-                    <DataGrid.Columns>
-                            <DataGridTextColumn Header="Ref." Binding="{Binding Code}" Width="80" MinWidth="70" />
-                            <DataGridTextColumn Header="Descrição" Binding="{Binding Designation}" Width="*" MinWidth="140" />
-                            <DataGridTextColumn Header="Nº série" Binding="{Binding SerialText}" Width="140" MinWidth="110" />
-                            <DataGridTextColumn Header="Qtd." Binding="{Binding QuantityText}" Width="80" MinWidth="70" />
-                            <DataGridTextColumn Header="Preço uni." Binding="{Binding PriceText}" Width="110" MinWidth="100" />
-                            <DataGridTextColumn Header="Preço s/ IVA" Binding="{Binding NetPriceText}" Width="120" MinWidth="110" />
-                            <DataGridTextColumn Header="Desc. %" Binding="{Binding DiscountText}" Width="90" MinWidth="80" />
-                            <DataGridTextColumn Header="Total s/ desconto" Binding="{Binding TotalWithoutDiscountText}" Width="140" MinWidth="130" />
-                            <DataGridTextColumn Header="Total" Binding="{Binding TotalText}" Width="110" MinWidth="90" />
-                        <DataGridTemplateColumn Header="" Width="88">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel Classes="bo_line_icons">
-                                        <Button Classes="bo_line_icon" Click="OnEditRowClick" ToolTip.Tip="Editar">
-                                            <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
-                                        </Button>
-                                        <Button Classes="bo_line_icon" Click="OnRemoveRowClick" ToolTip.Tip="Eliminar">
-                                            <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg" />
-                                        </Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                </Border>
             </DockPanel>
         </DockPanel>
     </Border>
