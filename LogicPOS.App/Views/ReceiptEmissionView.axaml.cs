@@ -335,20 +335,20 @@ public partial class ReceiptEmissionView : UserControl
         var portugal = AppComposition.Services?.GetService<ISystemInformationService>()?.IsPortugal() == true;
         var pay = ReceiptPayDefaults.For(portugal, _net, selected[0].CurrencyId, _catalog.Currencies);
         ExchangeFields.IsVisible = ReceiptPayDefaults.ShowExchange(portugal);
-        SystemAmount.IsVisible = ExchangeFields.IsVisible;
         _filling = true;
         PaymentMethodBox.ItemsSource = _catalog.PaymentMethods;
-        PaymentMethodBox.SelectedItem = null;
+        PaymentMethodBox.SelectedItem = _catalog.PaymentMethods.FirstOrDefault();
         CurrencyBox.ItemsSource = _catalog.Currencies;
         CurrencyBox.SelectedItem = pay.Currency;
         ExchangeRate.Text = pay.Rate.ToString("0.00", CultureInfo.CurrentCulture);
         TotalPaid.Text = pay.Delivered.ToString("0.00", CultureInfo.CurrentCulture);
-        PayDate.Text = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+        PayDate.SelectedDate = DateTime.Today;
         PayNotes.Text = string.Empty;
         PayError.Text = string.Empty;
         _filling = false;
         ApplyAmounts();
         PayOverlay.IsVisible = true;
+        RelayoutForViewport();
     }
 
     private void OnPayCancelClick(object? sender, RoutedEventArgs e) => PayOverlay.IsVisible = false;
@@ -728,9 +728,9 @@ public partial class ReceiptEmissionView : UserControl
             return "O valor do pagamento � superior ao total em d�vida dos documentos seleccionados.";
         }
 
-        if (DateTime.TryParseExact(PayDate.Text?.Trim(), "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out _) == false)
+        if (PayDate.SelectedDate is null)
         {
-            return "Data inv�lida.";
+            return "Indique a data do pagamento.";
         }
 
         return null;
@@ -753,7 +753,7 @@ public partial class ReceiptEmissionView : UserControl
         DesktopTools.IsVisible = _portrait == false;
         DocumentGrid.IsVisible = _portrait == false;
         CardList.IsVisible = _portrait;
-        PortraitChrome.FitOverlay(PayFrame, this, 1080, 720);
+        PortraitChrome.FitOverlay(PayFrame, this, 520, 560, lockHeight: false);
         if (_portrait == false)
         {
             FilterSheet.IsVisible = false;

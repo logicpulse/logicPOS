@@ -6362,6 +6362,26 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <Style Selector="Border.bo_receipt_pay_dialog">
+        <Setter Property="MinWidth" Value="460" />
+        <Setter Property="MaxWidth" Value="560" />
+        <Setter Property="Width" Value="520" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MaxHeight" Value="640" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#D0D5DA" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="Border.bo_receipt_pay_dialog DockPanel.login_alert_inner">
+        <Setter Property="Background" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Border.bo_receipt_pay_dialog CalendarDatePicker.bo_entity_input">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
     <Style Selector="TextBox.bo_email_body">
         <Setter Property="Height" Value="180" />
         <Setter Property="AcceptsReturn" Value="True" />

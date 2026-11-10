@@ -175,45 +175,59 @@
         </Panel>
 
         <Panel x:Name="PayOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border x:Name="PayFrame" Classes="login_alert_frame bo_pay_dialog">
+            <Border x:Name="PayFrame" Classes="login_alert_frame bo_email_dialog bo_receipt_pay_dialog">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                        <TextBlock x:Name="PayTitle" Classes="login_alert_title" Text="Liquidar Faturas" />
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                                <TextBlock x:Name="PayTitle" Classes="login_alert_title" Text="Liquidar Faturas" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="bo_window_button" Click="OnPayCancelClick" ToolTip.Tip="Fechar">
+                                <TextBlock Text="✕" FontSize="14" Foreground="#FFFFFF" VerticalAlignment="Center" />
+                            </Button>
+                        </Grid>
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                        <StackPanel Classes="login_alert_action_buttons">
-                            <Button x:Name="PayOkButton" Classes="login_alert_action" Click="OnPayOkClick">
-                                <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
-                                    <TextBlock Classes="login_alert_action_text" Text="OK" />
-                                </StackPanel>
-                            </Button>
-                            <Button Classes="login_alert_action" Click="OnPayCancelClick">
-                                <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
-                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
+                        <DockPanel>
+                            <StackPanel Classes="login_alert_action_buttons" DockPanel.Dock="Right">
+                                <Button x:Name="PayOkButton" Classes="login_alert_action" Click="OnPayOkClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="OK" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="login_alert_action" Click="OnPayCancelClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock x:Name="PayError" Classes="bo_entity_error" VerticalAlignment="Center" Text="" />
+                        </DockPanel>
                     </Border>
-                    <TextBlock x:Name="PayError" Classes="bo_entity_error" DockPanel.Dock="Bottom" Text="" />
-                    <StackPanel Classes="bo_entity_form" Spacing="8">
-                        <TextBlock Classes="bo_doc_label" Text="Método de Pagamento" />
-                        <ComboBox x:Name="PaymentMethodBox" Classes="bo_entity_input" />
-                        <StackPanel x:Name="ExchangeFields" Spacing="8">
-                            <TextBlock Classes="bo_doc_label" Text="Moeda" />
-                            <ComboBox x:Name="CurrencyBox" Classes="bo_entity_input" SelectionChanged="OnCurrencyChanged" />
-                            <TextBlock Classes="bo_doc_label" Text="Câmbio" />
-                            <TextBox x:Name="ExchangeRate" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
+                    <ScrollViewer>
+                        <StackPanel Classes="bo_entity_form" Spacing="10">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Método de pagamento" />
+                            <ComboBox x:Name="PaymentMethodBox" Classes="bo_entity_input" HorizontalAlignment="Stretch" />
+                            <StackPanel x:Name="ExchangeFields" Spacing="10">
+                                <TextBlock Classes="bo_new_doc_caption" Text="Moeda" />
+                                <ComboBox x:Name="CurrencyBox" Classes="bo_entity_input" HorizontalAlignment="Stretch" SelectionChanged="OnCurrencyChanged" />
+                                <TextBlock Classes="bo_new_doc_caption" Text="Câmbio" />
+                                <TextBox x:Name="ExchangeRate" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
+                                <TextBlock Classes="bo_new_doc_caption" Text="Total (sistema)" />
+                                <TextBox x:Name="SystemAmount" Classes="bo_entity_input" IsReadOnly="True" />
+                            </StackPanel>
+                            <TextBlock Classes="bo_new_doc_caption" Text="Total entregue" />
+                            <TextBox x:Name="TotalPaid" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Data" />
+                            <CalendarDatePicker x:Name="PayDate" Classes="bo_entity_input" HorizontalAlignment="Stretch" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
+                            <TextBox x:Name="PayNotes" Classes="bo_entity_input" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="64" />
                         </StackPanel>
-                        <TextBlock Classes="bo_doc_label" Text="Total entregue" />
-                        <TextBox x:Name="TotalPaid" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
-                        <TextBox x:Name="SystemAmount" Classes="bo_entity_input" IsReadOnly="True" />
-                        <TextBlock Classes="bo_doc_label" Text="Data" />
-                        <TextBox x:Name="PayDate" Classes="bo_entity_input" />
-                        <TextBlock Classes="bo_doc_label" Text="Notas" />
-                        <TextBox x:Name="PayNotes" Classes="bo_entity_input" />
-                    </StackPanel>
+                    </ScrollViewer>
                 </DockPanel>
             </Border>
         </Panel>
