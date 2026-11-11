@@ -5721,7 +5721,7 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <!-- Novo/Editar artigo: Novo documento look (section cards, icon tabs, wide footer buttons). -->
+    <!-- Novo/Editar artigo and Novo/Editar cliente: Novo documento look (section cards, icon tabs, wide footer buttons). -->
     <Style Selector="Border.bo_entity_editor_article StackPanel.bo_entity_form">
         <Setter Property="Margin" Value="20,12,20,12" />
     </Style>

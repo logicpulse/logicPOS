@@ -929,10 +929,10 @@ public partial class EntityListing : UserControl
 
         // Tabbed editors keep a stable workspace; simple forms size to content.
         var simpleForm = groups.Count <= 1;
-        var articleForm = IsArticlesListing() && groups.Count > 1;
+        var cardForm = (IsArticlesListing() || IsCustomersListing()) && groups.Count > 1;
         EditorFrame.Classes.Set("bo_entity_editor_fit", simpleForm);
         EditorFrame.Classes.Set("bo_entity_editor_narrow", simpleForm);
-        EditorFrame.Classes.Set("bo_entity_editor_article", articleForm);
+        EditorFrame.Classes.Set("bo_entity_editor_article", cardForm);
         EditorBody.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
         EditorBody.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled;
         if (groups.Count > 1)
@@ -950,13 +950,13 @@ public partial class EntityListing : UserControl
                     continue;
                 }
 
-                var page = articleForm
-                    ? await LayoutArticleGroupAsync(service, group, groupFields)
-                    : await LayoutGroupAsync(service, groupFields);
+                var page = cardForm == false ? await LayoutGroupAsync(service, groupFields)
+                    : IsCustomersListing() ? await LayoutCustomerGroupAsync(service, group, groupFields)
+                    : await LayoutArticleGroupAsync(service, group, groupFields);
                 var header = new Button
                 {
                     Classes = { "bo_entity_tab" },
-                    Content = articleForm ? ArticleTabContent(group) : new TextBlock { Text = group }
+                    Content = cardForm ? ArticleTabContent(group) : new TextBlock { Text = group }
                 };
                 // Finance tab stays visible: TypeHasPrice used to hide it when TypeId lookup
                 // had not bound yet, so prices / IVA looked "missing" from the article form.
@@ -973,10 +973,10 @@ public partial class EntityListing : UserControl
             bar.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
             bar.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
             bar.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
-            Control strip = articleForm ? new Border { Classes = { "bo_article_tab_strip" }, Child = headers } : headers;
+            Control strip = cardForm ? new Border { Classes = { "bo_article_tab_strip" }, Child = headers } : headers;
             Avalonia.Controls.Grid.SetColumn(strip, 0);
             bar.Children.Add(strip);
-            if (imageField is not null && articleForm)
+            if (imageField is not null && cardForm)
             {
                 var chrome = CreateImageChrome(imageField);
                 _inputs.Add((imageField.Key, chrome.Preview, imageField.Kind));
@@ -1028,11 +1028,19 @@ public partial class EntityListing : UserControl
             return creating ? "Novo artigo" : "Editar artigo";
         }
 
+        if (IsCustomersListing())
+        {
+            return creating ? "Novo cliente" : "Editar cliente";
+        }
+
         return creating ? "Novo" : "Editar";
     }
 
     private bool IsArticlesListing()
         => _title is "Artigos" or "Articles";
+
+    private bool IsCustomersListing()
+        => _title == "Clientes";
 
     private async Task AddFieldAsync(IBackOfficeListingService service, Panel panel, ListingField field)
     {
@@ -1071,6 +1079,9 @@ public partial class EntityListing : UserControl
         "Detalhes financeiros" => "coins",
         "Artigos Associados" => "layers",
         "Número de série" => "barcode",
+        "Geral" => "user",
+        "Morada e contactos" => "pin",
+        "Comercial" => "coins",
         _ => "box"
     };
 
@@ -1132,6 +1143,54 @@ public partial class EntityListing : UserControl
 
         var columns = group == "Artigos Associados" ? 2 : 3;
         root.Children.Add(ArticleSection(group, ArticleTabIcon(group), await BuildColumnsAsync(service, fields, columns)));
+        return root;
+    }
+
+    /// <summary>
+    /// Customer tabs: one card per section; fields no section claims land in the tab's first card.
+    /// </summary>
+    private async Task<Control> LayoutCustomerGroupAsync(IBackOfficeListingService service, string group, IReadOnlyList<ListingField> fields)
+    {
+        (string Title, string Icon, int Columns, string[] Keys)[] sections = group switch
+        {
+            "Geral" =>
+            [
+                ("Identificação", "user", 3, ["Name", "FiscalNumber", "Code", "CustomerTypeId", "BirthDate", "Order", "Supplier"]),
+                ("Observações", "note", 1, ["Notes"])
+            ],
+            "Morada e contactos" =>
+            [
+                ("Morada", "pin", 3, ["Address", "Locality", "ZipCode", "City", "CountryId"]),
+                ("Contactos", "phone", 3, ["Phone", "MobilePhone", "Fax", "Email", "WebSite"])
+            ],
+            "Comercial" =>
+            [
+                ("Preços e descontos", "coins", 2, ["PriceTypeId", "DiscountGroupId", "DiscountType", "Discount"]),
+                ("Cartão de cliente", "card", 3, ["CardNumber", "CardMode", "CardCredit"])
+            ],
+            _ => [(group, ArticleTabIcon(group), 3, [])]
+        };
+
+        var used = new HashSet<string>(StringComparer.Ordinal);
+        var cards = sections
+            .Select(section => section.Keys
+                .Select(key => fields.FirstOrDefault(field => field.Key == key))
+                .Where(field => field is not null && used.Add(field.Key))
+                .Select(field => field!)
+                .ToList())
+            .ToList();
+        cards[0].AddRange(fields.Where(field => used.Contains(field.Key) == false));
+
+        var root = new StackPanel { Classes = { "bo_article_sections" } };
+        for (var index = 0; index < sections.Length; index++)
+        {
+            if (cards[index].Count > 0)
+            {
+                root.Children.Add(ArticleSection(sections[index].Title, sections[index].Icon,
+                    await BuildColumnsAsync(service, cards[index], sections[index].Columns)));
+            }
+        }
+
         return root;
     }
 
@@ -2078,13 +2137,15 @@ public partial class EntityListing : UserControl
             return present;
         }
 
-        // Prefer the catalog that matches the groups present (article vs user).
+        // Prefer the catalog that matches the groups present (article vs user vs customer).
         IReadOnlyList<string> preferred =
             present.Any(name => BackOfficeListingService.ArticleTabOrder.Contains(name, StringComparer.Ordinal))
                 ? BackOfficeListingService.ArticleTabOrder
                 : present.Any(name => BackOfficeListingService.UserTabOrder.Contains(name, StringComparer.Ordinal))
                     ? BackOfficeListingService.UserTabOrder
-                    : Array.Empty<string>();
+                    : present.Any(name => BackOfficeListingService.CustomerTabOrder.Contains(name, StringComparer.Ordinal))
+                        ? BackOfficeListingService.CustomerTabOrder
+                        : Array.Empty<string>();
 
         var ordered = new List<string>();
         foreach (var name in preferred)

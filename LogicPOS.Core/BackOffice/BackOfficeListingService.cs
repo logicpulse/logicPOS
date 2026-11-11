@@ -1197,6 +1197,20 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             };
         }
 
+        if (entityType == typeof(Customer))
+        {
+            return propertyName switch
+            {
+                "Address" or "Locality" or "ZipCode" or "City" or "CountryId"
+                    or "Phone" or "MobilePhone" or "Fax" or "Email" or "WebSite"
+                    => "Morada e contactos",
+                "PriceTypeId" or "DiscountGroupId" or "DiscountType" or "Discount"
+                    or "CardNumber" or "CardMode" or "CardCredit"
+                    => "Comercial",
+                _ => "Geral"
+            };
+        }
+
         if (entityType != typeof(Article))
         {
             return null;
@@ -1239,6 +1253,14 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         "Detalhe",
         "Contactos",
         "Outros"
+    ];
+
+    /// <summary>Stable customer editor tab order (reflection must not decide).</summary>
+    public static IReadOnlyList<string> CustomerTabOrder { get; } =
+    [
+        "Geral",
+        "Morada e contactos",
+        "Comercial"
     ];
 
     private static List<ListingColumn> PickColumns(IReadOnlyList<ListingField> fields)
