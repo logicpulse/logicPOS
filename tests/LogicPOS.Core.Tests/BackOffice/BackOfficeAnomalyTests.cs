@@ -233,6 +233,15 @@ public class BackOfficeAnomalyTests
     }
 
     [Fact]
+    public void Document_stock_out_marks_serial_sold_and_cancel_restores_available()
+    {
+        Assert.Equal(-1m, LocalDocumentStockProcessor.SignedQuantity(ProcessArticleStockMode.Out, 1m, reverse: false));
+        Assert.Equal(ArticleSerialNumberStatus.Sold, LocalDocumentStockProcessor.SerialStatusFor(ProcessArticleStockMode.Out, reverse: false));
+        Assert.Equal(1m, LocalDocumentStockProcessor.SignedQuantity(ProcessArticleStockMode.Out, 1m, reverse: true));
+        Assert.Equal(ArticleSerialNumberStatus.Available, LocalDocumentStockProcessor.SerialStatusFor(ProcessArticleStockMode.Out, reverse: true));
+    }
+
+    [Fact]
     public void Lookup_choice_ignores_a_partial_match()
     {
         var cafe = new LookupOption { Id = Guid.Parse("55555555-5555-5555-5555-555555555555"), Label = "Café - Expresso", Search = "A1 Café Expresso" };

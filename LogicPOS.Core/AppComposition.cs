@@ -1,4 +1,5 @@
 using System.Globalization;
+using LogicPOS.Application.Features.Articles.Stocks;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
@@ -104,6 +105,9 @@ public static class AppComposition
             services.AddSingleton<IBackOfficeListingService>(provider => provider.GetRequiredService<BackOfficeListingService>());
             services.AddSingleton<LocalStockService>();
             services.AddSingleton<IStockManagementService>(provider => provider.GetRequiredService<LocalStockService>());
+            services.AddSingleton<LocalDocumentStockProcessor>();
+            services.AddSingleton<IDocumentStockProcessor>(
+                provider => provider.GetRequiredService<LocalDocumentStockProcessor>());
             services.AddSingleton<IReceiptEmission, LocalReceiptEmission>();
             services.AddSingleton<DashboardBillingService>();
             services.AddSingleton<IDashboardBillingService>(provider => provider.GetRequiredService<DashboardBillingService>());

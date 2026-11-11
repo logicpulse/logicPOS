@@ -3,12 +3,14 @@ using System.Net;
 using System.Net.Mail;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
+using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.Licensing;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Documents;
 using LogicPOS.Domain.Entities.Dtos;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Domain.Repositories;
 using LogicPOS.Domain.Services;
 using LogicPOS.Domain.ValueObjects;
@@ -905,6 +907,7 @@ public sealed class PosDocumentService : IPosDocumentService
 
         var document = created.Value!;
         await database.Documents.AddAsync(document, cancellationToken);
+        await ApplyDocumentStockAsync(database, document, isDraft: false, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
         InvalidateCustomerSearchIfCreated(dto);
         return PosDocumentResult.Ok(document.Id, document.Number);
@@ -916,6 +919,50 @@ public sealed class PosDocumentService : IPosDocumentService
         {
             AppComposition.Services?.GetService<PosCustomerService>()?.InvalidateSearch();
         }
+    }
+
+    private static async Task ApplyDocumentStockAsync(
+        LogicPOSDbContext database,
+        Document document,
+        bool isDraft,
+        CancellationToken cancellationToken)
+    {
+        if (isDraft || document.IsDraft)
+        {
+            return;
+        }
+
+        var stockMode = await ResolveStockModeAsync(database, document.Type, cancellationToken);
+        if (stockMode == ProcessArticleStockMode.None)
+        {
+            return;
+        }
+
+        var details = document.Details ?? [];
+        await LocalDocumentStockProcessor.ApplyOnContextAsync(
+            database,
+            document,
+            details,
+            stockMode,
+            reverse: false,
+            cancellationToken);
+    }
+
+    private static async Task<ProcessArticleStockMode> ResolveStockModeAsync(
+        LogicPOSDbContext database,
+        string documentType,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(documentType))
+        {
+            return ProcessArticleStockMode.None;
+        }
+
+        var mode = await database.DocumentTypes.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Acronym == documentType)
+            .Select(item => (ProcessArticleStockMode?)item.StockMode)
+            .FirstOrDefaultAsync(cancellationToken);
+        return mode ?? ProcessArticleStockMode.None;
     }
 
     private static async Task<PosDocumentResult> EnsureSeriesAsync(
@@ -1350,6 +1397,21 @@ public sealed class PosDocumentService : IPosDocumentService
         document.Status = "A";
         document.StatusReason = string.IsNullOrWhiteSpace(reason) ? "Anulação" : reason.Trim();
         document.StatusDate = DateTime.Now.ToString("yyyy-MM-dd");
+        var stockMode = await ResolveStockModeAsync(database, document.Type, cancellationToken);
+        if (stockMode != ProcessArticleStockMode.None)
+        {
+            var details = await database.DocumentDetails
+                .Where(item => item.DocumentId == document.Id && item.IsDeleted == false)
+                .ToListAsync(cancellationToken);
+            await LocalDocumentStockProcessor.ApplyOnContextAsync(
+                database,
+                document,
+                details,
+                stockMode,
+                reverse: true,
+                cancellationToken);
+        }
+
         await database.SaveChangesAsync(cancellationToken);
         var fiscal = scope.ServiceProvider.GetService<IFiscalModule>();
         if (fiscal is { IsAvailable: true })
@@ -1900,6 +1962,7 @@ public sealed class PosDocumentService : IPosDocumentService
 
         var document = created.Value!;
         await database.Documents.AddAsync(document, cancellationToken);
+        await ApplyDocumentStockAsync(database, document, isDraft, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
         InvalidateCustomerSearchIfCreated(dto);
         return PosDocumentResult.Ok(document.Id, document.Number);
