@@ -157,6 +157,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["ButtonLabel"] = "Etiqueta do botão",
         ["ButtonImage"] = "Imagem",
         ["SerialNotice"] = "Números de série",
+        ["IsSdrPackaging"] = "Embalagem SDR",
+        ["IsTicketing"] = "Bilhética",
         // Remaining BO table fields — GTK Resx (pt-PT) only
         ["AccessCardNumber"] = "Número do cartão de acesso",
         ["BaudRate"] = "Bits por Segundo",
@@ -1152,10 +1154,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             }
             else
             {
+                modelIndex = fields.Count;
                 fields.Add(modelField);
             }
 
-            fields.Add(new ListingField
+            fields.Insert(modelIndex + 1, new ListingField
             {
                 Key = "AssociatedPrinterId",
                 Label = Header("AssociatedPrinterId"),
