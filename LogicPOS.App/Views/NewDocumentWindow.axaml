@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              xmlns:views="using:LogicPOS.App.Views"
@@ -45,7 +45,7 @@
                 <StackPanel x:Name="DocumentActions" Classes="login_alert_action_buttons">
                     <Button Classes="login_alert_action action_secondary" Click="OnPreviewClick">
                         <StackPanel Classes="login_alert_action_content">
-                            <svg:Svg Classes="login_alert_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_w.svg" />
+                            <svg:Svg Classes="login_alert_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_w.svg" />
                             <TextBlock Classes="login_alert_action_text" Text="Pré-visualizar" />
                         </StackPanel>
                     </Button>
@@ -506,14 +506,14 @@
                     <Grid Classes="bo_new_doc_fields bo_new_doc_editor" ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                         <StackPanel Grid.ColumnSpan="3">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_clientes_b.svg" />
+                                <Image Classes="bo_new_doc_label_icon" Source="{x:Static views:CustomerFieldIcons.Name}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Cliente" />
                             </StackPanel>
                             <TextBox x:Name="EditorName" Classes="bo_line_editor_input" />
                         </StackPanel>
                         <StackPanel Grid.Row="1">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_b.svg" />
+                                <Image Classes="bo_new_doc_label_icon" Source="{x:Static views:CustomerFieldIcons.FiscalNumber}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="NIF" />
                             </StackPanel>
                             <DockPanel Classes="bo_touch_row">
@@ -531,84 +531,84 @@
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="1">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_clientes_tipo_clientes_b.svg" />
+                                <svg:Svg Classes="bo_new_doc_label_icon" Path="{x:Static views:CustomerFieldIcons.CardNumber}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Número do Cartão de Cliente" />
                             </StackPanel>
                             <TextBox x:Name="EditorCard" Classes="bo_line_editor_input" />
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="2">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_clientes_grupo_desconto_b.svg" />
+                                <svg:Svg Classes="bo_new_doc_label_icon" Path="{x:Static views:CustomerFieldIcons.Discount}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Desconto" />
                             </StackPanel>
                             <TextBox x:Name="EditorDiscount" Classes="bo_line_editor_input bo_numeric" Text="0,00" />
                         </StackPanel>
                         <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_origem_b.svg" />
+                                <Image Classes="bo_new_doc_label_icon" Source="{x:Static views:CustomerFieldIcons.Address}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Morada" />
                             </StackPanel>
                             <TextBox x:Name="EditorAddress" Classes="bo_line_editor_input" />
                         </StackPanel>
                         <StackPanel Grid.Row="2" Grid.Column="2">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_menu_dispositivos_paises_b.svg" />
+                                <Image Classes="bo_new_doc_label_icon" Source="{x:Static views:CustomerFieldIcons.Locality}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Localidade" />
                             </StackPanel>
                             <TextBox x:Name="EditorLocality" Classes="bo_line_editor_input" />
                         </StackPanel>
                         <StackPanel Grid.Row="3">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_b.svg" />
+                                <Image Classes="bo_new_doc_label_icon" Source="{x:Static views:CustomerFieldIcons.ZipCode}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Código-postal" />
                             </StackPanel>
                             <TextBox x:Name="EditorZip" Classes="bo_line_editor_input bo_numeric" />
                         </StackPanel>
                         <StackPanel Grid.Row="3" Grid.Column="1">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_menu_dispositivos_paises_b.svg" />
+                                <Image Classes="bo_new_doc_label_icon" Source="{x:Static views:CustomerFieldIcons.City}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Cidade" />
                             </StackPanel>
                             <TextBox x:Name="EditorCity" Classes="bo_line_editor_input" />
                         </StackPanel>
                         <StackPanel Grid.Row="3" Grid.Column="2">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_menu_dispositivos_paises_b.svg" />
+                                <Image Classes="bo_new_doc_label_icon" Source="{x:Static views:CustomerFieldIcons.Country}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="País" />
                             </StackPanel>
                             <ComboBox x:Name="EditorCountry" Classes="bo_new_doc_combo" />
                         </StackPanel>
                         <StackPanel Grid.Row="4">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_clientes_b.svg" />
+                                <svg:Svg Classes="bo_new_doc_label_icon" Path="{x:Static views:CustomerFieldIcons.Phone}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Telefone" />
                             </StackPanel>
                             <TextBox x:Name="EditorPhone" Classes="bo_line_editor_input bo_numeric" />
                         </StackPanel>
                         <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
                             <StackPanel Classes="bo_new_doc_label">
-                                <Image Classes="bo_new_doc_label_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_email_b.png" />
+                                <Image Classes="bo_new_doc_label_icon" Source="{x:Static views:CustomerFieldIcons.Email}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Email" />
                             </StackPanel>
                             <TextBox x:Name="EditorEmail" Classes="bo_line_editor_input" />
                         </StackPanel>
                         <StackPanel Grid.Row="5">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_clientes_tipo_clientes_b.svg" />
+                                <svg:Svg Classes="bo_new_doc_label_icon" Path="{x:Static views:CustomerFieldIcons.CustomerType}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Tipo de cliente" />
                             </StackPanel>
                             <ComboBox x:Name="EditorType" Classes="bo_new_doc_combo" />
                         </StackPanel>
                         <StackPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_tipos_preco_b.svg" />
+                                <svg:Svg Classes="bo_new_doc_label_icon" Path="{x:Static views:CustomerFieldIcons.PriceType}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Tipo de preço" />
                             </StackPanel>
                             <ComboBox x:Name="EditorPrice" Classes="bo_new_doc_combo" />
                         </StackPanel>
                         <StackPanel Grid.Row="6" Grid.ColumnSpan="3">
                             <StackPanel Classes="bo_new_doc_label">
-                                <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
+                                <svg:Svg Classes="bo_new_doc_label_icon" Path="{x:Static views:CustomerFieldIcons.Notes}" />
                                 <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
                             </StackPanel>
                             <TextBox x:Name="EditorNotes" Classes="bo_line_editor_notes" />
