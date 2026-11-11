@@ -163,6 +163,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         FoDialogChrome.ApplyHosted(DocumentsHost);
         FoDialogChrome.ApplyHosted(ReceiptHost);
         FoDialogChrome.ApplyHosted(EntityHost);
+        ApplyFoListingTitleIcon(DocumentsTitleIcon, "Documentos");
         ApplyFoListingTitleIcon(ReceiptTitleIcon, "Emissão Recibos");
         ApplyFoListingTitleIcon(StockTitleIcon, "Gestão de Stocks");
         ListingNotice.BindToast(VoltaNotice, this);
@@ -2217,6 +2218,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         HideListingOverlays();
         FoDialogChrome.ApplyHosted(DocumentsHost);
+        ApplyFoListingTitleIcon(DocumentsTitleIcon, "Documentos");
         DocumentsOverlay.IsVisible = true;
         FitHostedOverlays();
         await DocumentsHost.ReloadAsync();

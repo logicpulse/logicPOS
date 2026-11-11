@@ -377,7 +377,7 @@
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Classes="login_alert_title_row">
-                                <Image Classes="login_alert_title_icon"
+                                <Image x:Name="DocumentsTitleIcon" Classes="login_alert_title_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                                 <TextBlock Classes="login_alert_title" Text="Documentos" />
                             </StackPanel>
