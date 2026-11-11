@@ -3299,6 +3299,11 @@ public partial class NewDocumentWindow : UserControl
         CopyShip(ToAddress, ToRegion, ToPostal, ToCity, ToCountry, ToDate, ToTime, FromAddress, FromRegion, FromPostal, FromCity, FromCountry, FromDate, FromTime);
     }
 
+    private void OnCopyOriginToDestination(object? sender, RoutedEventArgs e)
+    {
+        CopyShip(FromAddress, FromRegion, FromPostal, FromCity, FromCountry, FromDate, FromTime, ToAddress, ToRegion, ToPostal, ToCity, ToCountry, ToDate, ToTime);
+    }
+
     private void ApplyCustomerAddress()
     {
         if (_customer is null)

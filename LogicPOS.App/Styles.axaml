@@ -4975,16 +4975,27 @@
         <Setter Property="Margin" Value="0,4" />
     </Style>
 
-    <Style Selector="Border.bo_new_doc_ship_arrow">
-        <Setter Property="Width" Value="32" />
-        <Setter Property="Height" Value="32" />
-        <Setter Property="CornerRadius" Value="16" />
+    <Style Selector="Button.bo_new_doc_ship_arrow">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="CornerRadius" Value="18" />
         <Setter Property="Background" Value="#FFFFFF" />
         <Setter Property="BorderBrush" Value="#C5CED6" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="BoxShadow" Value="0 2 6 0 #14000000" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="Button.bo_new_doc_ship_arrow:pointerover">
+        <Setter Property="Background" Value="#F3F6F9" />
+    </Style>
+
+    <Style Selector="Image.bo_new_doc_ship_arrow_icon">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Stretch" Value="Uniform" />
     </Style>
 
     <Style Selector="TextBlock.bo_new_doc_ship_arrow_mark">
