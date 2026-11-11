@@ -21,6 +21,7 @@ internal static class Toast
     private static readonly TimeSpan Duration = TimeSpan.FromSeconds(10);
     private static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(50);
     private static readonly Dictionary<TopLevel, StackPanel> Hosts = new();
+    private static readonly Dictionary<Border, Action> Restarts = new();
 
     public static void Success(Visual? source, string title) => Show(source, ToastKind.Success, title);
 
@@ -41,6 +42,14 @@ internal static class Toast
             return;
         }
 
+        var key = (kind, title);
+        if (host.Children.OfType<Border>().FirstOrDefault(item => Equals(item.Tag, key)) is { } shown
+            && Restarts.TryGetValue(shown, out var restart))
+        {
+            restart();
+            return;
+        }
+
         var progress = new Border { Classes = { "app_toast_progress" } };
         var close = new Button { Classes = { "app_toast_close" }, Content = "×" };
         var body = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto") };
@@ -56,17 +65,19 @@ internal static class Toast
         layout.Children.Add(progress);
         layout.Children.Add(body);
 
-        var card = new Border { Classes = { "app_toast", ToastClass(kind) }, Child = layout };
+        var card = new Border { Classes = { "app_toast", ToastClass(kind) }, Child = layout, Tag = key };
         host.Children.Add(card);
 
         var remaining = Duration;
         var paused = false;
         var timer = new DispatcherTimer { Interval = Tick };
+        Restarts.Add(card, () => remaining = Duration);
 
         void Dismiss()
         {
             timer.Stop();
             host.Children.Remove(card);
+            Restarts.Remove(card);
         }
 
         timer.Tick += (_, _) =>

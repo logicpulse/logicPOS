@@ -55,8 +55,8 @@ public partial class ReceiptEmissionView : UserControl
         CardList.ItemTemplate = new FuncDataTemplate<ReceiptGridRow>((item, _) =>
             PortraitChrome.Card(
                 item.Number,
-                $"{item.DateText} � {item.Status}",
-                $"{item.CustomerName} � {item.TotalToPayText}",
+                $"{item.DateText} · {item.Status}",
+                $"{item.CustomerName} · {item.TotalToPayText}",
                 item), false);
         AttachedToVisualTree += (_, _) =>
         {
@@ -365,7 +365,7 @@ public partial class ReceiptEmissionView : UserControl
 
         if (TryMoney(TotalPaid.Text, out var currencyAmount) == false || TryMoney(ExchangeRate.Text, out var rate) == false)
         {
-            PayError.Text = "A taxa de c�mbio tem de ser superior a zero.";
+            PayError.Text = "A taxa de câmbio tem de ser superior a zero.";
             return;
         }
 
@@ -378,7 +378,7 @@ public partial class ReceiptEmissionView : UserControl
             var service = AppComposition.Services?.GetService<IReceiptEmission>();
             if (service is null)
             {
-                PayError.Text = "Emiss�o de recibos indispon�vel.";
+                PayError.Text = "Emissão de recibos indisponível.";
                 return;
             }
 
@@ -663,28 +663,28 @@ public partial class ReceiptEmissionView : UserControl
     {
         if (selected.Count == 0)
         {
-            return "� necess�rio seleccionar pelo menos um documento.";
+            return "É necessário seleccionar pelo menos um documento.";
         }
 
         if (selected.Any(item => item.IsDraft))
         {
-            return "Rascunhos n�o podem ser liquidados";
+            return "Rascunhos não podem ser liquidados";
         }
 
         var paid = string.Join(",", selected.Where(item => item.Paid).Select(item => item.Number));
         if (paid.Length > 0)
         {
-            return $"Os seguintes documentos j� foram pagos: {paid}";
+            return $"Os seguintes documentos já foram pagos: {paid}";
         }
 
         if (selected.All(item => item.Type == "NC"))
         {
-            return "� necess�rio pelo menos uma fatura ou nota de d�bito para liquidar.";
+            return "É necessário pelo menos uma fatura ou nota de débito para liquidar.";
         }
 
         if (ReceiptSettlement.Net(selected) < 0)
         {
-            return "O total das notas de cr�dito seleccionadas excede a d�vida das faturas.";
+            return "O total das notas de crédito seleccionadas excede a dívida das faturas.";
         }
 
         if (selected.Select(item => item.CustomerId).Distinct().Count() > 1)
@@ -699,22 +699,22 @@ public partial class ReceiptEmissionView : UserControl
     {
         if (PaymentMethodBox.SelectedItem is not ReceiptPayOption)
         {
-            return "O m�todo de pagamento � obrigat�rio.";
+            return "O método de pagamento é obrigatório.";
         }
 
         if (CurrencyBox.SelectedItem is not ReceiptPayOption)
         {
-            return "A moeda � obrigat�ria.";
+            return "A moeda é obrigatória.";
         }
 
         if (TryMoney(ExchangeRate.Text, out var rate) == false || rate <= 0)
         {
-            return "A taxa de c�mbio tem de ser superior a zero.";
+            return "A taxa de câmbio tem de ser superior a zero.";
         }
 
         if (TryMoney(TotalPaid.Text, out var currencyAmount) == false || currencyAmount < 0)
         {
-            return "O montante em moeda n�o pode ser negativo.";
+            return "O montante em moeda não pode ser negativo.";
         }
 
         var amount = DocumentLineCalculator.ReceiptAmount(_net, currencyAmount, rate);
@@ -725,7 +725,7 @@ public partial class ReceiptEmissionView : UserControl
 
         if (amount > _net)
         {
-            return "O valor do pagamento � superior ao total em d�vida dos documentos seleccionados.";
+            return "O valor do pagamento é superior ao total em dívida dos documentos seleccionados.";
         }
 
         if (PayDate.SelectedDate is null)

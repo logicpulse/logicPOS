@@ -51,8 +51,8 @@ public partial class DocumentsListing : UserControl
         CardList.ItemTemplate = new FuncDataTemplate<CheckedDocument>((item, _) =>
             PortraitChrome.Card(
                 item.Number,
-                $"{item.DocumentDateText} � {item.Status}",
-                $"{item.EntityName} � {item.FinalTotalText}",
+                $"{item.DocumentDateText} · {item.Status}",
+                $"{item.EntityName} · {item.FinalTotalText}",
                 item), false);
         AttachedToVisualTree += (_, _) =>
         {
@@ -389,7 +389,7 @@ public partial class DocumentsListing : UserControl
         }
         catch (Exception)
         {
-            ActionNotice.Text = "N�o foi poss�vel abrir o rascunho.";
+            ActionNotice.Text = "Não foi possível abrir o rascunho.";
         }
     }
 
@@ -415,7 +415,7 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        OpenPrompt("cancel", "Anular documento", "Motivo da anula��o");
+        OpenPrompt("cancel", "Anular documento", "Motivo da anulação");
     }
 
     private async void OnEmailClick(object? sender, RoutedEventArgs e)
@@ -531,7 +531,7 @@ public partial class DocumentsListing : UserControl
         {
             if (System.Net.Mail.MailAddress.TryCreate(email, out _) == false)
             {
-                return "Email inv�lido.";
+                return "Email inválido.";
             }
         }
 
@@ -572,7 +572,7 @@ public partial class DocumentsListing : UserControl
     {
         _pendingPrintIds.Clear();
         _pendingPrintIds.Add(row.Id);
-        OpenPrompt("reprint", string.Format(PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.N�: {0}"), row.Number), string.Empty);
+        OpenPrompt("reprint", string.Format(PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nº: {0}"), row.Number), string.Empty);
         await BuildReprintOptionsAsync(row.Id);
     }
 
@@ -616,11 +616,11 @@ public partial class DocumentsListing : UserControl
             ReprintCopyChecks.Children.Add(box);
         }
 
-        ReprintCopiesLabel.Text = PreferenceLabels.Text("global_print_copies", "C�pias");
+        ReprintCopiesLabel.Text = PreferenceLabels.Text("global_print_copies", "Cópias");
         ReprintSecondCopy.Content = PreferenceLabels.Text("global_second_copy", "Segunda via");
         ReprintSecondCopy.IsVisible = requestMotive;
         ReprintSecondCopy.IsChecked = true;
-        ReprintMotiveLabel.Text = PreferenceLabels.Text("global_reprint_original_motive", "Motivo da re-impress�o do original");
+        ReprintMotiveLabel.Text = PreferenceLabels.Text("global_reprint_original_motive", "Motivo da re-impressão do original");
         ReprintMotive.Text = string.Empty;
         ReprintSecondCopy.IsCheckedChanged -= OnReprintSecondCopyChanged;
         ReprintSecondCopy.IsCheckedChanged += OnReprintSecondCopyChanged;
@@ -667,7 +667,7 @@ public partial class DocumentsListing : UserControl
             var copies = ReprintCopyChecks.Children.OfType<CheckBox>().Count(box => box.IsChecked == true && box.IsEnabled);
             if (copies < 1)
             {
-                ActionNotice.Text = "Selecione pelo menos uma c�pia.";
+                ActionNotice.Text = "Selecione pelo menos uma cópia.";
                 return;
             }
 
@@ -675,7 +675,7 @@ public partial class DocumentsListing : UserControl
             var reason = ReprintMotive.Text?.Trim() ?? string.Empty;
             if (secondCopy == false && string.IsNullOrWhiteSpace(reason))
             {
-                ActionNotice.Text = "Indique o motivo da reimpress�o do original.";
+                ActionNotice.Text = "Indique o motivo da reimpressão do original.";
                 return;
             }
 
@@ -741,7 +741,7 @@ public partial class DocumentsListing : UserControl
 
         if (string.IsNullOrWhiteSpace(value))
         {
-            ActionNotice.Text = "Indique o motivo da anula��o.";
+            ActionNotice.Text = "Indique o motivo da anulação.";
             return;
         }
 
@@ -923,7 +923,7 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        ActionNotice.Text = "A comunicar a guia � AT�";
+        ActionNotice.Text = "A comunicar a guia à AT…";
         var result = await documents.SendTransportDocumentToAtAsync(row.Id);
         if (result.Succeeded == false)
         {
@@ -938,26 +938,26 @@ public partial class DocumentsListing : UserControl
         }
 
         ActionNotice.Text = path is null
-            ? $"{result.Message} N�o foi poss�vel abrir o PDF."
-            : $"{result.Message} O PDF foi aberto com esse c�digo.";
+            ? $"{result.Message} Não foi possível abrir o PDF."
+            : $"{result.Message} O PDF foi aberto com esse código.";
     }
 
     private static string? TransportSendBlock(PosDocumentRow row)
     {
         if (row.Status == "Rascunho")
         {
-            return "Emita a guia antes de a comunicar � AT.";
+            return "Emita a guia antes de a comunicar à AT.";
         }
 
         if (row.Status == "Anulado")
         {
-            return "N�o � poss�vel comunicar uma guia anulada.";
+            return "Não é possível comunicar uma guia anulada.";
         }
 
         var token = row.Number.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
         if (token is { Length: <= 3 } && PosDocumentRules.IsWayBill(token) == false)
         {
-            return "S� as guias (GT, GR, GA, GC e GD) s�o comunicadas � AT.";
+            return "Só as guias (GT, GR, GA, GC e GD) são comunicadas à AT.";
         }
 
         return null;
@@ -1340,7 +1340,7 @@ public partial class DocumentsListing : UserControl
             var path = await service.CreateA4FileAsync(row.Id);
             if (string.IsNullOrWhiteSpace(path))
             {
-                ActionNotice.Text = "N�o foi poss�vel gerar o PDF.";
+                ActionNotice.Text = "Não foi possível gerar o PDF.";
                 return null;
             }
 
@@ -1348,7 +1348,7 @@ public partial class DocumentsListing : UserControl
         }
         catch (Exception)
         {
-            ActionNotice.Text = "N�o foi poss�vel gerar o PDF.";
+            ActionNotice.Text = "Não foi possível gerar o PDF.";
             return null;
         }
     }
@@ -1368,7 +1368,7 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        ActionNotice.Text = "N�o foi poss�vel abrir o documento.";
+        ActionNotice.Text = "Não foi possível abrir o documento.";
     }
 
     private Task LoadAsync() => _load.RunAsync(LoadCoreAsync);
@@ -1443,7 +1443,7 @@ public partial class DocumentsListing : UserControl
             _totalPages = Math.Max(1, page.TotalPages);
             _loadedSearch = search ?? string.Empty;
             _picked.RemoveWhere(id => _rows.Exists(row => row.Id == id) == false);
-            EmptyLabel.Text = "N�o existem documentos neste per�odo.";
+            EmptyLabel.Text = "Não existem documentos neste período.";
         }
         catch (Exception exception)
         {
@@ -1483,9 +1483,9 @@ public partial class DocumentsListing : UserControl
         CardList.ItemsSource = items;
         PageLabel.Text = $"{_page} / {_totalPages}";
         EmptyLabel.IsVisible = _rows.Count == 0;
-        if (string.IsNullOrEmpty(EmptyLabel.Text) || EmptyLabel.Text == "N�o existem documentos neste per�odo.")
+        if (string.IsNullOrEmpty(EmptyLabel.Text) || EmptyLabel.Text == "Não existem documentos neste período.")
         {
-            EmptyLabel.Text = "N�o existem documentos neste per�odo.";
+            EmptyLabel.Text = "Não existem documentos neste período.";
         }
 
         RefreshSelectionLabel();
@@ -1547,13 +1547,13 @@ public partial class DocumentsListing : UserControl
     private static string DocumentCell(PosDocumentRow row, string header) => header switch
     {
         "Data do documento" => row.DocumentDateText,
-        "N�mero do Doc." => row.Number,
+        "Número do Doc." => row.Number,
         "Estado" => row.Status,
         "Entidade" => row.EntityName,
         "NIF" => row.TaxId,
         "Total Final" => row.FinalTotalText,
         "Valor Pago" => row.PaidAmountText,
-        "Valor em D�vida" => row.DebitAmountText,
+        "Valor em Dívida" => row.DebitAmountText,
         "Documentos Associados" => row.AssociatedDocuments,
         _ => string.Empty
     };
