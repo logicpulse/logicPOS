@@ -929,10 +929,8 @@ public partial class EntityListing : UserControl
 
         // Tabbed editors keep a stable workspace; simple forms size to content.
         var simpleForm = groups.Count <= 1;
-        var cardForm = (IsArticlesListing() || IsCustomersListing()) && groups.Count > 1;
         EditorFrame.Classes.Set("bo_entity_editor_fit", simpleForm);
         EditorFrame.Classes.Set("bo_entity_editor_narrow", simpleForm);
-        EditorFrame.Classes.Set("bo_entity_editor_article", cardForm);
         EditorBody.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
         EditorBody.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled;
         if (groups.Count > 1)
@@ -944,19 +942,17 @@ public partial class EntityListing : UserControl
             foreach (var group in groups)
             {
                 var groupFields = OrderEditorFields(
-                    fields.Where(item => item.Group == group && item.Kind != "image"));
+                    fields.Where(item => EntityEditorLayout.TabOf(item) == group && item.Kind != "image"));
                 if (groupFields.Count == 0)
                 {
                     continue;
                 }
 
-                var page = cardForm == false ? await LayoutGroupAsync(service, groupFields)
-                    : IsCustomersListing() ? await LayoutCustomerGroupAsync(service, group, groupFields)
-                    : await LayoutArticleGroupAsync(service, group, groupFields);
+                var page = await LayoutCardsAsync(service, group, groupFields);
                 var header = new Button
                 {
                     Classes = { "bo_entity_tab" },
-                    Content = cardForm ? ArticleTabContent(group) : new TextBlock { Text = group }
+                    Content = ArticleTabContent(group)
                 };
                 // Finance tab stays visible: TypeHasPrice used to hide it when TypeId lookup
                 // had not bound yet, so prices / IVA looked "missing" from the article form.
@@ -973,25 +969,14 @@ public partial class EntityListing : UserControl
             bar.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
             bar.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
             bar.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
-            Control strip = cardForm ? new Border { Classes = { "bo_article_tab_strip" }, Child = headers } : headers;
+            var strip = new Border { Classes = { "bo_article_tab_strip" }, Child = headers };
             Avalonia.Controls.Grid.SetColumn(strip, 0);
             bar.Children.Add(strip);
-            if (imageField is not null && cardForm)
+            if (imageField is not null)
             {
-                var chrome = CreateImageChrome(imageField);
-                _inputs.Add((imageField.Key, chrome.Preview, imageField.Kind));
-                var tools = ArticleImageTools(chrome);
+                var tools = ImageToolsFor(imageField);
                 Avalonia.Controls.Grid.SetColumn(tools, 1);
                 bar.Children.Add(tools);
-            }
-            else if (imageField is not null)
-            {
-                var chrome = CreateImageChrome(imageField);
-                _inputs.Add((imageField.Key, chrome.Preview, imageField.Kind));
-                Avalonia.Controls.Grid.SetColumn(chrome.Browse, 1);
-                Avalonia.Controls.Grid.SetColumn(chrome.Preview, 2);
-                bar.Children.Add(chrome.Browse);
-                bar.Children.Add(chrome.Preview);
             }
 
             var shell = new StackPanel();
@@ -1010,89 +995,31 @@ public partial class EntityListing : UserControl
         }
         else
         {
-            foreach (var field in OrderEditorFields(fields))
-            {
-                await AddFieldAsync(service, EditorFields, field);
-            }
-
+            EditorFields.Children.Add(await LayoutCardsAsync(service, groups.FirstOrDefault(), OrderEditorFields(fields)));
             ApplyArticleFieldVisibility();
         }
 
         EditorOverlay.IsVisible = true;
     }
 
-    private string EditorDialogTitle(bool creating)
-    {
-        if (IsArticlesListing())
-        {
-            return creating ? "Novo artigo" : "Editar artigo";
-        }
-
-        if (IsCustomersListing())
-        {
-            return creating ? "Novo cliente" : "Editar cliente";
-        }
-
-        return creating ? "Novo" : "Editar";
-    }
+    private string EditorDialogTitle(bool creating) => EntityEditorLayout.Title(_title, creating);
 
     private bool IsArticlesListing()
         => _title is "Artigos" or "Articles";
-
-    private bool IsCustomersListing()
-        => _title == "Clientes";
-
-    private async Task AddFieldAsync(IBackOfficeListingService service, Panel panel, ListingField field)
-    {
-        panel.Children.Add(await CreateFieldBlockAsync(service, field, caption: field.Kind != "bool"));
-    }
-
-    private async Task<Control> LayoutGroupAsync(IBackOfficeListingService service, IReadOnlyList<ListingField> fields)
-    {
-        var permissions = fields
-            .Where(field => field.Key.StartsWith("perm:", StringComparison.Ordinal) && field.Kind == "bool")
-            .ToList();
-        if (permissions.Count > 0
-            && permissions.Count == fields.Count(field => field.Kind != "image"))
-        {
-            return await BuildPermissionGroupAsync(service, permissions);
-        }
-
-        var root = new StackPanel();
-        var prices = fields.Where(field => IsPriceCell(field.Key)).ToList();
-        if (prices.Count > 0)
-        {
-            root.Children.Add(await BuildPriceTableAsync(service, prices));
-        }
-
-        root.Children.Add(await BuildColumnsAsync(service, fields.Where(field => IsPriceCell(field.Key) == false).ToList()));
-        return root;
-    }
 
     private const string ArticleIconFolder = "avares://LogicPOS.App/Assets/Images/Articles/";
 
     private static string ArticleIcon(string name, bool green) => $"{ArticleIconFolder}icon_{name}_{(green ? "g" : "b")}.svg";
 
-    private static string ArticleTabIcon(string group) => group switch
-    {
-        "Detalhes" => "tag",
-        "Detalhes financeiros" => "coins",
-        "Artigos Associados" => "layers",
-        "Número de série" => "barcode",
-        "Geral" => "user",
-        "Morada e contactos" => "pin",
-        "Comercial" => "coins",
-        _ => "box"
-    };
-
     private static Control ArticleTabContent(string group)
     {
+        var icon = EntityEditorLayout.TabIcon(group);
         var content = new StackPanel { Classes = { "bo_article_tab_content" } };
         content.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
         {
             Classes = { "bo_article_tab_icon" },
-            Tag = ArticleTabIcon(group),
-            Path = ArticleIcon(ArticleTabIcon(group), false)
+            Tag = icon,
+            Path = ArticleIcon(icon, false)
         });
         content.Children.Add(new TextBlock { Text = group, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
         return content;
@@ -1115,62 +1042,23 @@ public partial class EntityListing : UserControl
         return new Border { Classes = { "bo_article_section" }, Child = dock };
     }
 
-    private async Task<Control> LayoutArticleGroupAsync(IBackOfficeListingService service, string group, IReadOnlyList<ListingField> fields)
-    {
-        var root = new StackPanel { Classes = { "bo_article_sections" } };
-        if (group == "Detalhes")
-        {
-            await AddArticleDetailSectionsAsync(service, root, fields);
-            return root;
-        }
-
-        if (group == "Detalhes financeiros")
-        {
-            var prices = fields.Where(field => IsPriceCell(field.Key)).ToList();
-            if (prices.Count > 0)
-            {
-                root.Children.Add(ArticleSection("Preços", "coins", await BuildPriceTableAsync(service, prices)));
-            }
-
-            var rest = fields.Where(field => IsPriceCell(field.Key) == false).ToList();
-            if (rest.Count > 0)
-            {
-                root.Children.Add(ArticleSection("IVA e descontos", "tag", await BuildColumnsAsync(service, rest, 3)));
-            }
-
-            return root;
-        }
-
-        var columns = group == "Artigos Associados" ? 2 : 3;
-        root.Children.Add(ArticleSection(group, ArticleTabIcon(group), await BuildColumnsAsync(service, fields, columns)));
-        return root;
-    }
-
     /// <summary>
-    /// Customer tabs: one card per section; fields no section claims land in the tab's first card.
+    /// One tab (or the whole single-tab form) as section cards from <see cref="EntityEditorLayout"/>;
+    /// fields no card claims land in the first card.
     /// </summary>
-    private async Task<Control> LayoutCustomerGroupAsync(IBackOfficeListingService service, string group, IReadOnlyList<ListingField> fields)
+    private async Task<Control> LayoutCardsAsync(IBackOfficeListingService service, string? group, IReadOnlyList<ListingField> fields)
     {
-        (string Title, string Icon, int Columns, string[] Keys)[] sections = group switch
+        if (group == EntityEditorLayout.PermissionsTab)
         {
-            "Geral" =>
-            [
-                ("Identificação", "user", 3, ["Name", "FiscalNumber", "Code", "CustomerTypeId", "BirthDate", "Order", "Supplier"]),
-                ("Observações", "note", 1, ["Notes"])
-            ],
-            "Morada e contactos" =>
-            [
-                ("Morada", "pin", 3, ["Address", "Locality", "ZipCode", "City", "CountryId"]),
-                ("Contactos", "phone", 3, ["Phone", "MobilePhone", "Fax", "Email", "WebSite"])
-            ],
-            "Comercial" =>
-            [
-                ("Preços e descontos", "coins", 2, ["PriceTypeId", "DiscountGroupId", "DiscountType", "Discount"]),
-                ("Cartão de cliente", "card", 3, ["CardNumber", "CardMode", "CardCredit"])
-            ],
-            _ => [(group, ArticleTabIcon(group), 3, [])]
-        };
+            return await BuildPermissionGroupAsync(service, fields);
+        }
 
+        if (IsArticlesListing() && group is "Detalhes" or "Detalhes financeiros")
+        {
+            return await LayoutArticleGroupAsync(service, group, fields);
+        }
+
+        var sections = EntityEditorLayout.CardsFor(_title, group, fields);
         var used = new HashSet<string>(StringComparer.Ordinal);
         var cards = sections
             .Select(section => section.Keys
@@ -1182,13 +1070,55 @@ public partial class EntityListing : UserControl
         cards[0].AddRange(fields.Where(field => used.Contains(field.Key) == false));
 
         var root = new StackPanel { Classes = { "bo_article_sections" } };
-        for (var index = 0; index < sections.Length; index++)
+        for (var index = 0; index < sections.Count; index++)
         {
             if (cards[index].Count > 0)
             {
                 root.Children.Add(ArticleSection(sections[index].Title, sections[index].Icon,
-                    await BuildColumnsAsync(service, cards[index], sections[index].Columns)));
+                    await CardBodyAsync(service, cards[index], _portrait ? 1 : sections[index].Columns)));
             }
+        }
+
+        return root;
+    }
+
+    /// <summary>Field grid of one card; an image field sits on the card's right edge.</summary>
+    private async Task<Control> CardBodyAsync(IBackOfficeListingService service, IReadOnlyList<ListingField> fields, int columns)
+    {
+        var grid = await BuildColumnsAsync(service, fields, columns);
+        var image = fields.FirstOrDefault(field => field.Kind == "image");
+        if (image is null)
+        {
+            return grid;
+        }
+
+        var body = new Grid { Classes = { "bo_article_row" }, ColumnDefinitions = ColumnDefinitions.Parse("*,Auto") };
+        var tools = ImageToolsFor(image);
+        Avalonia.Controls.Grid.SetColumn(tools, 1);
+        body.Children.Add(grid);
+        body.Children.Add(tools);
+        return body;
+    }
+
+    private async Task<Control> LayoutArticleGroupAsync(IBackOfficeListingService service, string group, IReadOnlyList<ListingField> fields)
+    {
+        var root = new StackPanel { Classes = { "bo_article_sections" } };
+        if (group == "Detalhes")
+        {
+            await AddArticleDetailSectionsAsync(service, root, fields);
+            return root;
+        }
+
+        var prices = fields.Where(field => IsPriceCell(field.Key)).ToList();
+        if (prices.Count > 0)
+        {
+            root.Children.Add(ArticleSection("Preços", "coins", await BuildPriceTableAsync(service, prices)));
+        }
+
+        var rest = fields.Where(field => IsPriceCell(field.Key) == false).ToList();
+        if (rest.Count > 0)
+        {
+            root.Children.Add(ArticleSection("IVA e descontos", "tag", await BuildColumnsAsync(service, rest, 3)));
         }
 
         return root;
@@ -1264,6 +1194,13 @@ public partial class EntityListing : UserControl
         return grid;
     }
 
+    private Control ImageToolsFor(ListingField field)
+    {
+        var chrome = CreateImageChrome(field);
+        _inputs.Add((field.Key, chrome.Preview, field.Kind));
+        return ArticleImageTools(chrome);
+    }
+
     private static Control ArticleImageTools(ImageChrome chrome)
     {
         var browse = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 8 };
@@ -1286,6 +1223,7 @@ public partial class EntityListing : UserControl
         return tools;
     }
 
+    /// <summary>Permissions tab: one search over one card per permission group; cards without matches hide.</summary>
     private async Task<Control> BuildPermissionGroupAsync(IBackOfficeListingService service, IReadOnlyList<ListingField> fields)
     {
         var root = new StackPanel { Classes = { "bo_perm_root" } };
@@ -1294,76 +1232,77 @@ public partial class EntityListing : UserControl
             Classes = { "bo_entity_input", "bo_perm_search" },
             PlaceholderText = "Pesquisar permissões..."
         };
-        var grid = new Grid { Classes = { "bo_perm_grid" } };
-        grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
-        grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
-        var items = new List<(Control Block, string Label)>();
-        var column = 0;
-        var row = 0;
-        foreach (var field in fields)
+        var cards = new StackPanel { Classes = { "bo_article_sections" } };
+        var sections = new List<(Border Card, Grid Grid, List<(Control Block, string Label)> Items)>();
+        foreach (var section in fields.GroupBy(field => field.Group ?? string.Empty))
         {
-            var block = await CreateFieldBlockAsync(service, field, caption: false);
-            block.Classes.Add("bo_perm_item");
-            if (block is CheckBox box)
+            var grid = new Grid { Classes = { "bo_perm_grid" } };
+            grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
+            grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
+            var items = new List<(Control Block, string Label)>();
+            foreach (var field in section)
             {
-                box.Content = new TextBlock
+                var block = await CreateFieldBlockAsync(service, field, caption: false);
+                block.Classes.Add("bo_perm_item");
+                if (block is CheckBox box)
                 {
-                    Text = field.Label,
-                    TextWrapping = TextWrapping.Wrap
-                };
+                    box.Content = new TextBlock
+                    {
+                        Text = field.Label,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                }
+
+                grid.Children.Add(block);
+                items.Add((block, field.Label ?? string.Empty));
             }
 
-            EnsureRow(grid, row);
-            Avalonia.Controls.Grid.SetRow(block, row);
-            Avalonia.Controls.Grid.SetColumn(block, column);
-            grid.Children.Add(block);
-            items.Add((block, field.Label ?? string.Empty));
-            if (column == 1)
-            {
-                column = 0;
-                row++;
-            }
-            else
-            {
-                column++;
-            }
+            var card = ArticleSection(section.Key, "lock", grid);
+            cards.Children.Add(card);
+            sections.Add((card, grid, items));
         }
 
         void ApplyFilter()
         {
             var needle = (search.Text ?? string.Empty).Trim();
-            var visible = items
-                .Where(item => needle.Length == 0
-                    || item.Label.Contains(needle, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-            foreach (var (block, _) in items)
+            foreach (var (card, grid, items) in sections)
             {
-                block.IsVisible = false;
-            }
+                var visible = items
+                    .Where(item => needle.Length == 0
+                        || item.Label.Contains(needle, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                foreach (var (block, _) in items)
+                {
+                    block.IsVisible = false;
+                }
 
-            var nextColumn = 0;
-            var nextRow = 0;
-            foreach (var (block, _) in visible)
-            {
-                EnsureRow(grid, nextRow);
-                Avalonia.Controls.Grid.SetRow(block, nextRow);
-                Avalonia.Controls.Grid.SetColumn(block, nextColumn);
-                block.IsVisible = true;
-                if (nextColumn == 1)
+                var nextColumn = 0;
+                var nextRow = 0;
+                foreach (var (block, _) in visible)
                 {
-                    nextColumn = 0;
-                    nextRow++;
+                    EnsureRow(grid, nextRow);
+                    Avalonia.Controls.Grid.SetRow(block, nextRow);
+                    Avalonia.Controls.Grid.SetColumn(block, nextColumn);
+                    block.IsVisible = true;
+                    if (nextColumn == 1)
+                    {
+                        nextColumn = 0;
+                        nextRow++;
+                    }
+                    else
+                    {
+                        nextColumn++;
+                    }
                 }
-                else
-                {
-                    nextColumn++;
-                }
+
+                card.IsVisible = visible.Count > 0;
             }
         }
 
+        ApplyFilter();
         search.TextChanged += (_, _) => ApplyFilter();
         root.Children.Add(search);
-        root.Children.Add(grid);
+        root.Children.Add(cards);
         return root;
     }
 
@@ -2127,7 +2066,7 @@ public partial class EntityListing : UserControl
     private static List<string> OrderEditorGroups(IReadOnlyList<ListingField> fields)
     {
         var present = fields
-            .Select(field => field.Group)
+            .Select(EntityEditorLayout.TabOf)
             .Where(group => string.IsNullOrWhiteSpace(group) == false)
             .Select(group => group!)
             .Distinct(StringComparer.Ordinal)

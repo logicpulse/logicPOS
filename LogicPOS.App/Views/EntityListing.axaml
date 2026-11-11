@@ -172,7 +172,7 @@
         </Panel>
 
         <Panel x:Name="EditorOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border x:Name="EditorFrame" Classes="login_alert_frame bo_entity_editor">
+            <Border x:Name="EditorFrame" Classes="login_alert_frame bo_entity_editor bo_entity_editor_article">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <DockPanel>
