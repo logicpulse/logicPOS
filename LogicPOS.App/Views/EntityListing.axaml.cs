@@ -991,6 +991,7 @@ public partial class EntityListing : UserControl
             {
                 ApplyArticleTabs();
                 ApplyArticleFieldVisibility();
+                PinArticlePagesHeight();
             });
         }
         else
@@ -2165,6 +2166,27 @@ public partial class EntityListing : UserControl
         }
     }
 
+    // Frame height follows content; pin it to the tallest tab so switching tabs does not resize the window.
+    private void PinArticlePagesHeight()
+    {
+        if (_articlePages is not { } pages || EditorOverlay.IsVisible == false)
+        {
+            return;
+        }
+
+        var current = pages.Content;
+        var tallest = 0d;
+        foreach (var tab in _articleTabs.Where(tab => tab.Header.IsVisible))
+        {
+            pages.Content = tab.Page;
+            pages.UpdateLayout();
+            tallest = Math.Max(tallest, pages.Bounds.Height);
+        }
+
+        pages.Content = current;
+        pages.MinHeight = tallest;
+    }
+
     private static void SetArticleTabIcon(Button header, bool on)
     {
         if (header.Content is StackPanel content
@@ -2983,7 +3005,7 @@ public partial class EntityListing : UserControl
         DesktopTools.IsVisible = _portrait == false;
         Grid.IsVisible = _portrait == false;
         CardList.IsVisible = _portrait;
-        PortraitChrome.FitOverlay(EditorFrame, this, 1080, 720);
+        PortraitChrome.FitOverlay(EditorFrame, this, 1080, 720, lockHeight: false);
         if (PromptFrame is not null)
         {
             PortraitChrome.FitOverlay(PromptFrame, this, 480, 320, lockHeight: false);
