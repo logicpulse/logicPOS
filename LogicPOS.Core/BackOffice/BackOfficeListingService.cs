@@ -226,7 +226,36 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["TypeSubtotal"] = "SubT.",
         ["CodeTable"] = "CodeTable",
         ["StandByLine1"] = "StandBy Linha #1",
-        ["StandByLine2"] = "StandBy Linha #2"
+        ["StandByLine2"] = "StandBy Linha #2",
+        // Editor captions that would otherwise show the raw property name
+        ["EnumValue"] = "Número do preço",
+        ["AcronymLastSerie"] = "Última série do acrónimo",
+        ["CreditDebit"] = "Crédito/Débito",
+        ["PrintRequestMotive"] = "Pedir motivo ao imprimir",
+        ["WayBill"] = "Documento de transporte",
+        ["WsAtDocument"] = "Comunicar à AT",
+        ["SaftAuditFile"] = "Incluir no SAF-T",
+        ["SaftDocumentType"] = "Tipo de documento SAF-T",
+        ["StockMode"] = "Movimento de stock",
+        ["ExpirationDate"] = "Data de expiração",
+        ["StandardApplicable"] = "Norma aplicável",
+        ["AllowPayback"] = "Permite troco",
+        ["Need2FA"] = "Autenticação de dois fatores",
+        ["PasswordResetDate"] = "Data de reposição da palavra-passe",
+        ["ShowInDialog"] = "Mostrar na seleção de impressora",
+        ["VendorId"] = "ID do fabricante",
+        ["ProductId"] = "ID do produto",
+        ["TLD"] = "Domínio de topo",
+        ["Currency"] = "Moeda",
+        ["OpennedAt"] = "Data de abertura",
+        ["VatDirectSelling"] = "Imposto venda direta",
+        ["ValueTip"] = "Dica do valor",
+        ["Required"] = "Obrigatório",
+        ["RegEx"] = "Expressão regular",
+        ["ResourceStringInfo"] = "Informação",
+        ["FormPageNo"] = "Página do formulário",
+        ["InputType"] = "Tipo de campo",
+        ["ReadingDate"] = "Data de leitura"
     };
 
     private readonly IServiceScopeFactory _scopes;
@@ -1191,7 +1220,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             {
                 "Name" or "Login" or "ProfileId" or "CommissionGroupId" or "DateOfContract" or "PasswordReset" or "Pin"
                     => "Detalhe",
-                "Residence" or "Locality" or "City" or "ZipCode" or "Phone" or "MobilePhone" or "Email"
+                "Residence" or "Locality" or "City" or "ZipCode" or "ZipCpde" or "Phone" or "MobilePhone" or "Email"
                     => "Contactos",
                 _ => "Outros"
             };
@@ -3392,6 +3421,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         if (entityType == typeof(Printer) && propertyName == "TypeId")
         {
             return "Tipo de Impressora";
+        }
+
+        if (entityType == typeof(SystemNotification) && propertyName == "TypeId")
+        {
+            return "Tipo de notificação";
         }
 
         return Header(propertyName);
