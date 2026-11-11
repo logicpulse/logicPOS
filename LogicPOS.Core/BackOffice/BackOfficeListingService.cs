@@ -1207,8 +1207,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         // 5) global_serial_number ("Número de série")
         return propertyName switch
         {
-            "Ord" or "Order" or "Code" or "CodeDealer" or "Designation" or "FamilyId" or "SubfamilyId"
+            "Ord" or "Order" or "Code" or "Designation" or "FamilyId" or "SubfamilyId"
                 or "TypeId" or "IsComposed" or "Favorite" or "UseWeighingBalance" or "Disabled"
+                or "MeasurementUnitId" or "SizeUnitId" or "CommissionGroupId" or "DiscountGroupId"
                 => "Detalhes",
             "Price1" or "Price2" or "Price3" or "Price4" or "Price5" or "PriceWithVat" or "Discount"
                 or "PVPVariable" or "ClassId" or "VatOnTableId" or "VatDirectSellingId" or "VatExemptionReasonId"

@@ -197,7 +197,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Guardar" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnEditorCancelClick">
+                            <Button Classes="login_alert_action bo_entity_cancel" Click="OnEditorCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />

@@ -950,11 +950,13 @@ public partial class EntityListing : UserControl
                     continue;
                 }
 
-                var page = await LayoutGroupAsync(service, groupFields);
+                var page = articleForm
+                    ? await LayoutArticleGroupAsync(service, group, groupFields)
+                    : await LayoutGroupAsync(service, groupFields);
                 var header = new Button
                 {
                     Classes = { "bo_entity_tab" },
-                    Content = new TextBlock { Text = group }
+                    Content = articleForm ? ArticleTabContent(group) : new TextBlock { Text = group }
                 };
                 // Finance tab stays visible: TypeHasPrice used to hide it when TypeId lookup
                 // had not bound yet, so prices / IVA looked "missing" from the article form.
@@ -971,9 +973,18 @@ public partial class EntityListing : UserControl
             bar.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
             bar.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
             bar.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
-            Avalonia.Controls.Grid.SetColumn(headers, 0);
-            bar.Children.Add(headers);
-            if (imageField is not null)
+            Control strip = articleForm ? new Border { Classes = { "bo_article_tab_strip" }, Child = headers } : headers;
+            Avalonia.Controls.Grid.SetColumn(strip, 0);
+            bar.Children.Add(strip);
+            if (imageField is not null && articleForm)
+            {
+                var chrome = CreateImageChrome(imageField);
+                _inputs.Add((imageField.Key, chrome.Preview, imageField.Kind));
+                var tools = ArticleImageTools(chrome);
+                Avalonia.Controls.Grid.SetColumn(tools, 1);
+                bar.Children.Add(tools);
+            }
+            else if (imageField is not null)
             {
                 var chrome = CreateImageChrome(imageField);
                 _inputs.Add((imageField.Key, chrome.Preview, imageField.Kind));
@@ -1048,6 +1059,172 @@ public partial class EntityListing : UserControl
 
         root.Children.Add(await BuildColumnsAsync(service, fields.Where(field => IsPriceCell(field.Key) == false).ToList()));
         return root;
+    }
+
+    private const string ArticleIconFolder = "avares://LogicPOS.App/Assets/Images/Articles/";
+
+    private static string ArticleIcon(string name, bool green) => $"{ArticleIconFolder}icon_{name}_{(green ? "g" : "b")}.svg";
+
+    private static string ArticleTabIcon(string group) => group switch
+    {
+        "Detalhes" => "tag",
+        "Detalhes financeiros" => "coins",
+        "Artigos Associados" => "layers",
+        "Número de série" => "barcode",
+        _ => "box"
+    };
+
+    private static Control ArticleTabContent(string group)
+    {
+        var content = new StackPanel { Classes = { "bo_article_tab_content" } };
+        content.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+        {
+            Classes = { "bo_article_tab_icon" },
+            Tag = ArticleTabIcon(group),
+            Path = ArticleIcon(ArticleTabIcon(group), false)
+        });
+        content.Children.Add(new TextBlock { Text = group, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
+        return content;
+    }
+
+    private static Border ArticleSection(string title, string icon, Control body)
+    {
+        var titleRow = new StackPanel { Classes = { "bo_article_section_title_row" } };
+        titleRow.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+        {
+            Classes = { "bo_article_section_icon" },
+            Path = ArticleIcon(icon, true)
+        });
+        titleRow.Children.Add(new TextBlock { Classes = { "bo_article_section_title" }, Text = title });
+        var header = new Border { Classes = { "bo_article_section_header" }, Child = titleRow };
+        var dock = new DockPanel();
+        DockPanel.SetDock(header, Dock.Top);
+        dock.Children.Add(header);
+        dock.Children.Add(new Border { Classes = { "bo_article_section_body" }, Child = body });
+        return new Border { Classes = { "bo_article_section" }, Child = dock };
+    }
+
+    private async Task<Control> LayoutArticleGroupAsync(IBackOfficeListingService service, string group, IReadOnlyList<ListingField> fields)
+    {
+        var root = new StackPanel { Classes = { "bo_article_sections" } };
+        if (group == "Detalhes")
+        {
+            await AddArticleDetailSectionsAsync(service, root, fields);
+            return root;
+        }
+
+        if (group == "Detalhes financeiros")
+        {
+            var prices = fields.Where(field => IsPriceCell(field.Key)).ToList();
+            if (prices.Count > 0)
+            {
+                root.Children.Add(ArticleSection("Preços", "coins", await BuildPriceTableAsync(service, prices)));
+            }
+
+            var rest = fields.Where(field => IsPriceCell(field.Key) == false).ToList();
+            if (rest.Count > 0)
+            {
+                root.Children.Add(ArticleSection("IVA e descontos", "tag", await BuildColumnsAsync(service, rest, 3)));
+            }
+
+            return root;
+        }
+
+        var columns = group == "Artigos Associados" ? 2 : 3;
+        root.Children.Add(ArticleSection(group, ArticleTabIcon(group), await BuildColumnsAsync(service, fields, columns)));
+        return root;
+    }
+
+    /// <summary>
+    /// Detalhes tab: Identificação, Classificação and Estado e composição cards; unknown fields land in Identificação.
+    /// </summary>
+    private async Task AddArticleDetailSectionsAsync(IBackOfficeListingService service, Panel root, IReadOnlyList<ListingField> fields)
+    {
+        var used = new HashSet<string>(StringComparer.Ordinal);
+        List<ListingField> Take(params string[] keys)
+            => keys
+                .Select(key => fields.FirstOrDefault(field => field.Key == key && field.Kind != "bool"))
+                .Where(field => field is not null && used.Add(field.Key))
+                .Select(field => field!)
+                .ToList();
+
+        var first = Take("Designation", "Code", "SubfamilyId");
+        var second = Take("TypeId", "Ord", "Order", "ButtonLabel");
+        var classification = Take("MeasurementUnitId", "SizeUnitId", "CommissionGroupId", "DiscountGroupId");
+        var extra = fields.Where(field => field.Kind != "bool" && used.Contains(field.Key) == false).ToList();
+
+        var identity = new StackPanel { Classes = { "bo_article_rows" } };
+        identity.Children.Add(await ArticleRowAsync(service, first, first.Count == 3 ? "2*,*,1.3*" : null));
+        identity.Children.Add(await ArticleRowAsync(service, second, null));
+        foreach (var chunk in extra.Chunk(3))
+        {
+            identity.Children.Add(await ArticleRowAsync(service, chunk, "*,*,*"));
+        }
+
+        root.Children.Add(ArticleSection("Identificação", "tag", identity));
+        if (classification.Count > 0)
+        {
+            root.Children.Add(ArticleSection("Classificação", "layers", await ArticleRowAsync(service, classification, null)));
+        }
+
+        string[] flagOrder = ["Favorite", "UseWeighingBalance", "IsComposed"];
+        var flags = fields
+            .Where(field => field.Kind == "bool")
+            .OrderBy(field =>
+            {
+                var index = Array.IndexOf(flagOrder, field.Key);
+                return index < 0 ? flagOrder.Length : index;
+            })
+            .ToList();
+        if (flags.Count > 0)
+        {
+            var wrap = new WrapPanel { Classes = { "bo_entity_flags" } };
+            foreach (var field in flags)
+            {
+                wrap.Children.Add(await CreateFieldBlockAsync(service, field, caption: false));
+            }
+
+            root.Children.Add(ArticleSection("Estado e composição", "gear", wrap));
+        }
+    }
+
+    private async Task<Control> ArticleRowAsync(IBackOfficeListingService service, IReadOnlyList<ListingField> fields, string? columns)
+    {
+        var grid = new Grid
+        {
+            Classes = { "bo_article_row" },
+            ColumnDefinitions = ColumnDefinitions.Parse(columns ?? string.Join(",", Enumerable.Repeat("*", Math.Max(1, fields.Count))))
+        };
+        for (var index = 0; index < fields.Count; index++)
+        {
+            var block = await CreateFieldBlockAsync(service, fields[index], caption: true);
+            Avalonia.Controls.Grid.SetColumn(block, index);
+            grid.Children.Add(block);
+        }
+
+        return grid;
+    }
+
+    private static Control ArticleImageTools(ImageChrome chrome)
+    {
+        var browse = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 8 };
+        browse.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+        {
+            Classes = { "bo_image_action_icon" },
+            Path = ArticleIconFolder + "icon_folder_w.svg"
+        });
+        browse.Children.Add(new TextBlock { Text = "Procurar...", VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
+        chrome.Browse.Content = browse;
+        if (chrome.Remove.Parent is Panel owner)
+        {
+            owner.Children.Remove(chrome.Remove);
+        }
+
+        var tools = new StackPanel { Classes = { "bo_article_image_tools" } };
+        tools.Children.Add(chrome.Browse);
+        tools.Children.Add(chrome.Preview);
+        tools.Children.Add(chrome.Remove);
+        return tools;
     }
 
     private async Task<Control> BuildPermissionGroupAsync(IBackOfficeListingService service, IReadOnlyList<ListingField> fields)
@@ -1177,11 +1354,13 @@ public partial class EntityListing : UserControl
         return grid;
     }
 
-    private async Task<Control> BuildColumnsAsync(IBackOfficeListingService service, IReadOnlyList<ListingField> fields)
+    private async Task<Control> BuildColumnsAsync(IBackOfficeListingService service, IReadOnlyList<ListingField> fields, int columns = 2)
     {
         var grid = new Grid { Classes = { "bo_entity_columns" } };
-        grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
-        grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
+        for (var index = 0; index < columns; index++)
+        {
+            grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
+        }
 
         var flags = new WrapPanel { Classes = { "bo_entity_flags" } };
         var row = 0;
@@ -1200,7 +1379,7 @@ public partial class EntityListing : UserControl
             }
 
             var wide = field.Kind == "multiline";
-            if (wide && column == 1)
+            if (wide && column > 0)
             {
                 column = 0;
                 row++;
@@ -1212,11 +1391,11 @@ public partial class EntityListing : UserControl
             Avalonia.Controls.Grid.SetColumn(block, column);
             if (wide)
             {
-                Avalonia.Controls.Grid.SetColumnSpan(block, 2);
+                Avalonia.Controls.Grid.SetColumnSpan(block, columns);
             }
 
             grid.Children.Add(block);
-            if (wide || column == 1)
+            if (wide || column == columns - 1)
             {
                 column = 0;
                 row++;
@@ -1229,14 +1408,14 @@ public partial class EntityListing : UserControl
 
         if (flags.Children.Count > 0)
         {
-            if (column == 1)
+            if (column > 0)
             {
                 row++;
             }
 
             EnsureRow(grid, row);
             Avalonia.Controls.Grid.SetRow(flags, row);
-            Avalonia.Controls.Grid.SetColumnSpan(flags, 2);
+            Avalonia.Controls.Grid.SetColumnSpan(flags, columns);
             grid.Children.Add(flags);
         }
 
@@ -1975,12 +2154,23 @@ public partial class EntityListing : UserControl
         foreach (var item in _articleTabs)
         {
             item.Header.Classes.Remove("bo_entity_tab_on");
+            SetArticleTabIcon(item.Header, false);
         }
 
         tab.Header.Classes.Add("bo_entity_tab_on");
+        SetArticleTabIcon(tab.Header, true);
         if (_articlePages is not null)
         {
             _articlePages.Content = tab.Page;
+        }
+    }
+
+    private static void SetArticleTabIcon(Button header, bool on)
+    {
+        if (header.Content is StackPanel content
+            && content.Children.OfType<Avalonia.Svg.Skia.Svg>().FirstOrDefault() is { Tag: string icon } svg)
+        {
+            svg.Path = ArticleIcon(icon, on);
         }
     }
 
@@ -2168,7 +2358,7 @@ public partial class EntityListing : UserControl
             }
         }
 
-        return new ImageChrome(wrap, browse);
+        return new ImageChrome(wrap, browse, remove);
     }
 
     private async Task<IStorageFile?> PickImageAsync()
@@ -2233,15 +2423,18 @@ public partial class EntityListing : UserControl
 
     private sealed class ImageChrome
     {
-        public ImageChrome(Control preview, Button browse)
+        public ImageChrome(Control preview, Button browse, Button remove)
         {
             Preview = preview;
             Browse = browse;
+            Remove = remove;
         }
 
         public Control Preview { get; }
 
         public Button Browse { get; }
+
+        public Button Remove { get; }
     }
 
     private sealed class ImagePick

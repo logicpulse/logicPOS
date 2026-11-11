@@ -5506,7 +5506,8 @@
 
     <Style Selector="Border.bo_entity_editor.bo_entity_editor_article">
         <Setter Property="MinWidth" Value="820" />
-        <Setter Property="MaxWidth" Value="960" />
+        <Setter Property="MaxWidth" Value="1024" />
+        <Setter Property="MaxHeight" Value="700" />
         <Setter Property="Width" Value="900" />
     </Style>
 
@@ -5718,6 +5719,233 @@
         <Setter Property="Margin" Value="0,2,18,2" />
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Novo/Editar artigo: Novo documento look (section cards, icon tabs, wide footer buttons). -->
+    <Style Selector="Border.bo_entity_editor_article StackPanel.bo_entity_form">
+        <Setter Property="Margin" Value="20,12,20,12" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article Grid.bo_entity_tab_bar">
+        <Setter Property="Margin" Value="0,0,0,14" />
+        <Setter Property="ColumnSpacing" Value="10" />
+    </Style>
+
+    <Style Selector="Border.bo_article_tab_strip">
+        <Setter Property="BorderBrush" Value="#E3E8EE" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_article_tab_strip StackPanel.bo_entity_tab_headers">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Spacing" Value="10" />
+    </Style>
+
+    <Style Selector="Border.bo_article_tab_strip Button.bo_entity_tab">
+        <Setter Property="Padding" Value="6,10,10,9" />
+        <Setter Property="Foreground" Value="#374151" />
+        <Setter Property="FontSize" Value="13.5" />
+    </Style>
+
+    <Style Selector="Border.bo_article_tab_strip Button.bo_entity_tab:pointerover">
+        <Setter Property="Foreground" Value="#15202B" />
+    </Style>
+
+    <Style Selector="Border.bo_article_tab_strip Button.bo_entity_tab.bo_entity_tab_on">
+        <Setter Property="Foreground" Value="#2563EB" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_tab_content">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="7" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_article_tab_icon">
+        <Setter Property="Width" Value="17" />
+        <Setter Property="Height" Value="17" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_image_tools">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="10" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_image_tools Button.bo_image_browse">
+        <Setter Property="Background" Value="#7B8088" />
+        <Setter Property="MinHeight" Value="34" />
+        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_image_tools Button.bo_image_browse:pointerover">
+        <Setter Property="Background" Value="#8D939B" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_image_tools Grid.bo_image_photo_wrap">
+        <Setter Property="Width" Value="72" />
+        <Setter Property="Height" Value="72" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_image_tools Border.bo_image_frame">
+        <Setter Property="Width" Value="72" />
+        <Setter Property="Height" Value="72" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="BorderBrush" Value="#D7E0EA" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_image_tools Image.bo_image_photo">
+        <Setter Property="Width" Value="64" />
+        <Setter Property="Height" Value="64" />
+        <Setter Property="Stretch" Value="Uniform" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_image_tools Button.bo_image_remove">
+        <Setter Property="Width" Value="34" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_image_tools Button.bo_image_remove:pointerover">
+        <Setter Property="Background" Value="#F3F5F8" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_image_tools svg|Svg.bo_image_action_icon">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_sections">
+        <Setter Property="Spacing" Value="12" />
+    </Style>
+
+    <Style Selector="Border.bo_article_section">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#E3E8EE" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="Border.bo_article_section_header">
+        <Setter Property="Background" Value="#F2F7E4" />
+        <Setter Property="BorderBrush" Value="#E2EDC4" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="14,7" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_section_title_row">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_article_section_icon">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_article_section_title">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_article_section_body">
+        <Setter Property="Padding" Value="16,2,16,12" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_article_rows">
+        <Setter Property="Spacing" Value="2" />
+    </Style>
+
+    <Style Selector="Grid.bo_article_row">
+        <Setter Property="ColumnSpacing" Value="18" />
+    </Style>
+
+    <Style Selector="Border.bo_article_section_body Grid.bo_entity_columns">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="ColumnSpacing" Value="18" />
+    </Style>
+
+    <Style Selector="Border.bo_article_section_body Grid.bo_price_table">
+        <Setter Property="Margin" Value="0,6,0,0" />
+    </Style>
+
+    <Style Selector="Border.bo_article_section_body WrapPanel.bo_entity_flags">
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+
+    <Style Selector="Border.bo_article_section_body WrapPanel.bo_entity_flags > CheckBox">
+        <Setter Property="Margin" Value="0,2,44,2" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article Border.login_alert_actions">
+        <Setter Property="Padding" Value="16,12,20,14" />
+        <Setter Property="BorderBrush" Value="#E3E8EE" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article StackPanel.login_alert_action_buttons">
+        <Setter Property="Spacing" Value="12" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article Button.login_alert_action">
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="MinWidth" Value="124" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Padding" Value="18,0" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article StackPanel.login_alert_action_content">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article Image.login_alert_action_icon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="MinWidth" Value="20" />
+        <Setter Property="MinHeight" Value="20" />
+        <Setter Property="MaxWidth" Value="20" />
+        <Setter Property="MaxHeight" Value="20" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article TextBlock.login_alert_action_text">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article Button.login_alert_action.bo_entity_cancel">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#4477A4" />
+        <Setter Property="BorderThickness" Value="1.5" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article Button.login_alert_action.bo_entity_cancel:pointerover">
+        <Setter Property="Background" Value="#EEF3F9" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article Button.bo_entity_cancel Image.login_alert_action_icon">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor_article Button.bo_entity_cancel TextBlock.login_alert_action_text">
+        <Setter Property="Foreground" Value="#2E5F8A" />
     </Style>
 
     <Style Selector="StackPanel.bo_perm_root">
