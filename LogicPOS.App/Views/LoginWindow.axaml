@@ -263,7 +263,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="{Binding AlertConfirmText}" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action"
+                            <Button Classes="login_alert_action action_secondary"
                                     IsVisible="{Binding AlertShowsCancel}"
                                     Click="OnAlertDismissClick">
                                 <StackPanel Classes="login_alert_action_content">
@@ -324,7 +324,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Ok" />
                                 </StackPanel>
                             </Button>
-                            <Button Grid.Column="2" Classes="login_alert_action" Margin="8,0,0,0" Click="OnTerminalCancelClick">
+                            <Button Grid.Column="2" Classes="login_alert_action action_secondary" Margin="12,0,0,0" Click="OnTerminalCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Cancelar" />

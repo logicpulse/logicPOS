@@ -24,7 +24,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Criar" />
                                 </StackPanel>
                             </Button>
-                            <Button x:Name="CloseButton" Classes="login_alert_action" Click="OnCloseClick">
+                            <Button x:Name="CloseButton" Classes="login_alert_action action_secondary" Click="OnCloseClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />

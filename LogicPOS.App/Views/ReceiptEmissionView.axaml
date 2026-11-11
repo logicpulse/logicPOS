@@ -162,7 +162,7 @@
                             <Button Classes="login_alert_action" Click="OnMobileFilterApplyClick">
                                 <TextBlock Classes="login_alert_action_text" Text="Filtrar" />
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnMobileFilterCloseClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnMobileFilterCloseClick">
                                 <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                             </Button>
                         </StackPanel>
@@ -198,7 +198,7 @@
                                         <TextBlock Classes="login_alert_action_text" Text="OK" />
                                     </StackPanel>
                                 </Button>
-                                <Button Classes="login_alert_action" Click="OnPayCancelClick">
+                                <Button Classes="login_alert_action action_secondary" Click="OnPayCancelClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Cancelar" />

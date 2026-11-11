@@ -137,7 +137,7 @@
                             <Button Classes="login_alert_action" Click="OnMobileFilterApplyClick">
                                 <TextBlock Classes="login_alert_action_text" Text="Filtrar" />
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnMobileFilterCloseClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnMobileFilterCloseClick">
                                 <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                             </Button>
                         </StackPanel>
@@ -159,7 +159,7 @@
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                         <StackPanel Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnMobileMoreCloseClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnMobileMoreCloseClick">
                                 <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                             </Button>
                         </StackPanel>
@@ -197,7 +197,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Guardar" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action bo_entity_cancel" Click="OnEditorCancelClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnEditorCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
@@ -242,7 +242,7 @@
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                         <StackPanel Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnImportRemoveClick" ToolTip.Tip="Remover selecionadas">
+                            <Button Classes="login_alert_action action_secondary" Click="OnImportRemoveClick" ToolTip.Tip="Remover selecionadas">
                                 <StackPanel Classes="login_alert_action_content">
                                     <svg:Svg Classes="login_alert_action_icon"
                                              Path="avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_w.svg" />
@@ -256,7 +256,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Importar" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnImportCancelClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnImportCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
@@ -297,7 +297,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Ok" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnPromptCancelClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnPromptCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />

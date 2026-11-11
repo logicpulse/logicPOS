@@ -17,7 +17,7 @@
                 <Border Classes="login_alert_actions bo_fiscal_wizard_actions" DockPanel.Dock="Bottom">
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Right" Classes="login_alert_action_buttons">
-                            <Button x:Name="BackButton" Classes="login_alert_action" Click="OnBackClick">
+                            <Button x:Name="BackButton" Classes="login_alert_action action_secondary" Click="OnBackClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <svg:Svg Classes="login_alert_action_icon"
                                              Path="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_back.svg" />
@@ -31,7 +31,7 @@
                                     <TextBlock x:Name="PrimaryText" Classes="login_alert_action_text" Text="Abrir dia" />
                                 </StackPanel>
                             </Button>
-                            <Button x:Name="LaterButton" Classes="login_alert_action" Click="OnLaterClick">
+                            <Button x:Name="LaterButton" Classes="login_alert_action action_secondary" Click="OnLaterClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />

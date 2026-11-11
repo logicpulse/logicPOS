@@ -1227,7 +1227,9 @@
 
     <Style Selector="Border.login_alert_actions">
         <Setter Property="Background" Value="#FFFFFF" />
-        <Setter Property="Padding" Value="0,4,12,8" />
+        <Setter Property="Padding" Value="16,12,20,14" />
+        <Setter Property="BorderBrush" Value="#E3E8EE" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
         <Setter Property="CornerRadius" Value="0,0,14,14" />
         <Setter Property="ClipToBounds" Value="True" />
     </Style>
@@ -1236,7 +1238,7 @@
         <Setter Property="Orientation" Value="Horizontal" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Spacing" Value="8" />
+        <Setter Property="Spacing" Value="12" />
     </Style>
 
     <Style Selector="Button.login_alert_action">
@@ -5049,10 +5051,6 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="Button.login_alert_action.bo_new_doc_preview">
-        <Setter Property="Width" Value="118" />
-    </Style>
-
     <Style Selector="TextBox.bo_new_doc_notes">
         <Setter Property="MinHeight" Value="52" />
         <Setter Property="AcceptsReturn" Value="True" />
@@ -5892,30 +5890,32 @@
         <Setter Property="Margin" Value="0,2,44,2" />
     </Style>
 
-    <Style Selector="Border.bo_entity_editor_article Border.login_alert_actions">
-        <Setter Property="Padding" Value="16,12,20,14" />
-        <Setter Property="BorderBrush" Value="#E3E8EE" />
-        <Setter Property="BorderThickness" Value="0,1,0,0" />
-    </Style>
-
-    <Style Selector="Border.bo_entity_editor_article StackPanel.login_alert_action_buttons">
-        <Setter Property="Spacing" Value="12" />
-    </Style>
-
-    <Style Selector="Border.bo_entity_editor_article Button.login_alert_action">
+    <!-- Dialog footer actions (Guardar / Cancelar): wide blue primary with icon, outlined action_secondary.
+         Applies to every login_alert_actions footer; action_primary / action_secondary opt in elsewhere.
+         Kept after pos_pay_action / pos_tables_action / bo_pdf_dialog so these sizes win. -->
+    <Style Selector="Border.login_alert_actions Button.login_alert_action:not(.pos_tables_action),
+                     Button.login_alert_action.action_primary,
+                     Button.login_alert_action.action_secondary">
         <Setter Property="Width" Value="NaN" />
         <Setter Property="MinWidth" Value="124" />
         <Setter Property="Height" Value="40" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="18,0" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="Border.bo_entity_editor_article StackPanel.login_alert_action_content">
+    <Style Selector="Border.login_alert_actions Button.login_alert_action:not(.pos_tables_action) StackPanel.login_alert_action_content,
+                     Button.action_primary StackPanel.login_alert_action_content,
+                     Button.action_secondary StackPanel.login_alert_action_content">
         <Setter Property="Orientation" Value="Horizontal" />
         <Setter Property="Spacing" Value="8" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="Border.bo_entity_editor_article Image.login_alert_action_icon">
+    <Style Selector="Border.login_alert_actions Button.login_alert_action:not(.pos_tables_action) Image.login_alert_action_icon,
+                     Button.action_primary Image.login_alert_action_icon,
+                     Button.action_secondary Image.login_alert_action_icon">
         <Setter Property="Width" Value="20" />
         <Setter Property="Height" Value="20" />
         <Setter Property="MinWidth" Value="20" />
@@ -5924,27 +5924,37 @@
         <Setter Property="MaxHeight" Value="20" />
     </Style>
 
-    <Style Selector="Border.bo_entity_editor_article TextBlock.login_alert_action_text">
+    <Style Selector="Border.login_alert_actions Button.login_alert_action:not(.pos_tables_action) svg|Svg.login_alert_action_icon,
+                     Button.action_primary svg|Svg.login_alert_action_icon,
+                     Button.action_secondary svg|Svg.login_alert_action_icon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+    </Style>
+
+    <Style Selector="Border.login_alert_actions Button.login_alert_action:not(.pos_tables_action) TextBlock.login_alert_action_text,
+                     Button.action_primary TextBlock.login_alert_action_text,
+                     Button.action_secondary TextBlock.login_alert_action_text">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="Border.bo_entity_editor_article Button.login_alert_action.bo_entity_cancel">
+    <Style Selector="Button.login_alert_action.action_secondary">
         <Setter Property="Background" Value="#FFFFFF" />
         <Setter Property="BorderBrush" Value="#4477A4" />
         <Setter Property="BorderThickness" Value="1.5" />
     </Style>
 
-    <Style Selector="Border.bo_entity_editor_article Button.login_alert_action.bo_entity_cancel:pointerover">
+    <Style Selector="Button.login_alert_action.action_secondary:pointerover">
         <Setter Property="Background" Value="#EEF3F9" />
     </Style>
 
-    <Style Selector="Border.bo_entity_editor_article Button.bo_entity_cancel Image.login_alert_action_icon">
+    <Style Selector="Button.action_secondary Image.login_alert_action_icon,
+                     Button.action_secondary svg|Svg.login_alert_action_icon">
         <Setter Property="IsVisible" Value="False" />
     </Style>
 
-    <Style Selector="Border.bo_entity_editor_article Button.bo_entity_cancel TextBlock.login_alert_action_text">
+    <Style Selector="Button.action_secondary TextBlock.login_alert_action_text">
         <Setter Property="Foreground" Value="#2E5F8A" />
     </Style>
 

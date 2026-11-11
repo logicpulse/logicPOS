@@ -23,7 +23,7 @@
                 <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                     <DockPanel LastChildFill="True">
                         <StackPanel DockPanel.Dock="Right" Classes="login_alert_action_buttons">
-                            <Button x:Name="DemoButton" Classes="login_alert_action" Click="OnDemoClick">
+                            <Button x:Name="DemoButton" Classes="login_alert_action action_secondary" Click="OnDemoClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_demo.png" />

@@ -200,7 +200,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Sim" />
                                 </StackPanel>
                             </Button>
-                            <Button x:Name="NoticeNoButton" Classes="login_alert_action" IsVisible="False" Click="OnNoticeCloseClick">
+                            <Button x:Name="NoticeNoButton" Classes="login_alert_action action_secondary" IsVisible="False" Click="OnNoticeCloseClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
@@ -239,7 +239,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Ok" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnPartialCancelClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnPartialCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />

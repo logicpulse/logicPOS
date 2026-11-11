@@ -172,7 +172,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Sim" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnConfirmNoClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnConfirmNoClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
@@ -203,7 +203,7 @@
                             <Button Classes="login_alert_action" Click="OnMobileFilterApplyClick">
                                 <TextBlock Classes="login_alert_action_text" Text="Filtrar" />
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnMobileFilterCloseClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnMobileFilterCloseClick">
                                 <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                             </Button>
                         </StackPanel>
@@ -225,7 +225,7 @@
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                         <StackPanel Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnMobileMoreCloseClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnMobileMoreCloseClick">
                                 <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                             </Button>
                         </StackPanel>
@@ -263,7 +263,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Guardar" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnEditorCancelClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnEditorCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />

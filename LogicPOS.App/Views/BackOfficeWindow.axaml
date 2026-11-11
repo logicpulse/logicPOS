@@ -176,7 +176,7 @@
                                         <TextBlock Classes="login_alert_action_text" Text="Sim" />
                                     </StackPanel>
                                 </Button>
-                                <Button Classes="login_alert_action" Click="OnQuitDismissClick">
+                                <Button Classes="login_alert_action action_secondary" Click="OnQuitDismissClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
@@ -213,7 +213,7 @@
                                         <TextBlock Classes="login_alert_action_text" Text="Sim" />
                                     </StackPanel>
                                 </Button>
-                                <Button x:Name="UpdateDismiss" Classes="login_alert_action" Click="OnUpdateDismissClick">
+                                <Button x:Name="UpdateDismiss" Classes="login_alert_action action_secondary" Click="OnUpdateDismissClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
@@ -255,7 +255,7 @@
                         </Border>
                         <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                             <StackPanel Classes="login_alert_action_buttons" HorizontalAlignment="Right">
-                                <Button Classes="login_alert_action" Click="OnAboutCloseClick">
+                                <Button Classes="login_alert_action action_secondary" Click="OnAboutCloseClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
@@ -307,7 +307,7 @@
                                         <TextBlock Classes="login_alert_action_text" Text="Sim" />
                                     </StackPanel>
                                 </Button>
-                                <Button Classes="login_alert_action" Click="OnSaftConfirmNoClick">
+                                <Button Classes="login_alert_action action_secondary" Click="OnSaftConfirmNoClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
@@ -345,7 +345,7 @@
                                         <TextBlock Classes="login_alert_action_text" Text="Ok" />
                                     </StackPanel>
                                 </Button>
-                                <Button Classes="login_alert_action" Click="OnSaftPeriodCancelClick">
+                                <Button Classes="login_alert_action action_secondary" Click="OnSaftPeriodCancelClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />

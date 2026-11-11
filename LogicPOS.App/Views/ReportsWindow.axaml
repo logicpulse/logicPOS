@@ -19,23 +19,22 @@
                 </Border>
                 <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">
                     <DockPanel>
-                        <UniformGrid Classes="pos_pay_actions" Columns="2" Rows="1" DockPanel.Dock="Right"
-                                     Width="220">
-                            <Button Classes="login_alert_action pos_pay_action pos_pay_action_ok" Click="OnGenerateClick">
+                        <StackPanel Classes="login_alert_action_buttons" DockPanel.Dock="Right">
+                            <Button Classes="login_alert_action action_primary" Click="OnGenerateClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Gerar" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action pos_pay_action" Click="OnCloseClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnCloseClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                                 </StackPanel>
                             </Button>
-                        </UniformGrid>
+                        </StackPanel>
                         <TextBlock x:Name="Notice" Classes="bo_reports_notice" VerticalAlignment="Center" />
                     </DockPanel>
                 </Border>
@@ -71,23 +70,22 @@
                     </Border>
                     <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">
                         <DockPanel>
-                            <UniformGrid Classes="pos_pay_actions" Columns="2" Rows="1" DockPanel.Dock="Right"
-                                         Width="240">
-                                <Button Classes="login_alert_action pos_pay_action pos_pay_action_ok" Click="OnFiltersGenerateClick">
+                            <StackPanel Classes="login_alert_action_buttons" DockPanel.Dock="Right">
+                                <Button Classes="login_alert_action action_primary" Click="OnFiltersGenerateClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Gerar" />
                                     </StackPanel>
                                 </Button>
-                                <Button Classes="login_alert_action pos_pay_action" Click="OnFiltersCancelClick">
+                                <Button Classes="login_alert_action action_secondary" Click="OnFiltersCancelClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                                     </StackPanel>
                                 </Button>
-                            </UniformGrid>
+                            </StackPanel>
                             <TextBlock x:Name="FiltersNotice" Classes="bo_reports_notice" VerticalAlignment="Center" />
                         </DockPanel>
                     </Border>

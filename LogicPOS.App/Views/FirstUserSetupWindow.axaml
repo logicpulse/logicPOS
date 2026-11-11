@@ -20,16 +20,15 @@
     <Border DockPanel.Dock="Bottom" Background="White" Padding="20,14" BorderBrush="#D5DEE3" BorderThickness="0,1,0,0">
       <DockPanel>
         <Button x:Name="BtnCreate"
+                Classes="login_alert_action action_primary"
                 DockPanel.Dock="Right"
-                MinWidth="160"
-                Height="40"
-                Content="Criar e continuar"
-                FontWeight="SemiBold"
-                Background="#CDBF96"
-                Foreground="#263238"
-                BorderThickness="0"
-                CornerRadius="6"
-                Click="OnCreateClick" />
+                Click="OnCreateClick">
+          <StackPanel Classes="login_alert_action_content">
+            <Image Classes="login_alert_action_icon"
+                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+            <TextBlock Classes="login_alert_action_text" Text="Criar e continuar" />
+          </StackPanel>
+        </Button>
         <TextBlock x:Name="LblStatus"
                    TextWrapping="Wrap"
                    Foreground="#B54300"
