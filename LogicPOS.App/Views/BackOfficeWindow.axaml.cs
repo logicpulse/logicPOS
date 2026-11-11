@@ -411,17 +411,17 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         }
     }
 
-    private async Task RefreshHomeAfterSetupAsync()
+    private async Task RefreshHomeAfterSetupAsync(bool forceDashboard = false)
     {
         EntityHost.SetOverlayOnly(false);
-        await RefreshOnboardingAsync();
+        await RefreshOnboardingAsync(forceDashboard);
         if (_onboardingIncomplete == false)
         {
             await RefreshSetupAlertsAsync();
         }
     }
 
-    private async Task RefreshOnboardingAsync()
+    private async Task RefreshOnboardingAsync(bool forceDashboard = false)
     {
         var service = AppComposition.Services?.GetService<IOnboardingService>();
         if (service is null)
@@ -442,6 +442,12 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         catch (Exception exception)
         {
             App.WriteCrash("RefreshOnboardingAsync", exception);
+            if (forceDashboard)
+            {
+                ShowDashboardHome();
+                await ReloadDashboardSafeAsync();
+            }
+
             return;
         }
 
@@ -459,14 +465,20 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         var wasOnboarding = OnboardingHost.IsVisible;
         OnboardingHost.IsVisible = false;
 
-        if (HandoffToFrontOfficeWhenReady && _backOfficeOnly == false)
+        if (forceDashboard == false
+            && HandoffToFrontOfficeWhenReady
+            && _backOfficeOnly == false)
         {
             HandoffToFrontOfficeWhenReady = false;
             FrontOfficeHandoffRequested?.Invoke(this, EventArgs.Empty);
             return;
         }
 
-        if (wasOnboarding || DashboardHost.IsVisible || PageHost.IsVisible == false)
+        // Setup-complete refresh keeps the current listing; Painel click always returns home.
+        if (forceDashboard
+            || wasOnboarding
+            || DashboardHost.IsVisible
+            || PageHost.IsVisible == false)
         {
             ShowDashboardHome();
             await ReloadDashboardSafeAsync();
@@ -493,6 +505,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         SelectMenuItem(DashboardButton);
         PageTitle.Text = string.Empty;
         SyncPortraitChrome(AppText.Get("Painel"));
+        ReportsOverlay.IsVisible = false;
         OnboardingHost.IsVisible = false;
         DashboardHost.IsVisible = true;
         ArticleDashboardHost.IsVisible = false;
@@ -1495,7 +1508,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private void OnDashboardClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         _articleDashboardRequest++;
-        _ = RefreshHomeAfterSetupAsync();
+        SetDrawerOpen(false);
+        _ = RefreshHomeAfterSetupAsync(forceDashboard: true);
     }
 
     private void OnPosClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
