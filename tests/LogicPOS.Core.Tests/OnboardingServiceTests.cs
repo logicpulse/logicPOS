@@ -1,3 +1,4 @@
+using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Persistence.Database;
 using Microsoft.Data.Sqlite;
@@ -27,6 +28,69 @@ public sealed class OnboardingServiceTests
             Assert.Contains(status.Steps, step => step.Key == "table");
             Assert.Contains(status.Steps, step => step.Key == "article");
             Assert.Contains(status.Steps, step => step.Key == "final-consumer");
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Fresh_database_has_no_users_and_prefers_owner_profile()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-onboarding-nousers-");
+        try
+        {
+            ConfigureApp(root, module: "restaurant");
+            var services = AppComposition.Services!;
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                Assert.Equal(0, await database.Users.CountAsync());
+                Assert.True(await database.UserProfiles.AnyAsync());
+            }
+
+            var wizard = services.GetRequiredService<IFirstUserSetupWizard>();
+            Assert.True(await wizard.NeedsSetupAsync());
+            var draft = await wizard.LoadAsync();
+            var preferred = draft.Profiles.Single(profile => profile.Id == draft.PreferredProfileId);
+            Assert.Equal("Proprietário", preferred.Label);
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task First_user_is_created_without_forced_pin_change()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-onboarding-firstuser-");
+        try
+        {
+            ConfigureApp(root, module: "restaurant");
+            var services = AppComposition.Services!;
+            var wizard = services.GetRequiredService<IFirstUserSetupWizard>();
+            var draft = await wizard.LoadAsync();
+
+            var created = await wizard.CreateAsync(new FirstUserSetupRequest
+            {
+                ProfileId = draft.PreferredProfileId!.Value,
+                Name = "Dono",
+                Login = "dono",
+                Code = "7",
+                AccessPin = "4321",
+                AccessPinConfirm = "4321"
+            });
+
+            Assert.True(created.Ok, created.Message);
+            Assert.False(await wizard.NeedsSetupAsync());
+            var users = await services.GetRequiredService<ILoginService>().GetUsersAsync();
+            var user = Assert.Single(users);
+            Assert.Equal("Dono", user.Name);
+            Assert.False(user.RequiresPasswordReset);
+            var signIn = await services.GetRequiredService<ILoginService>().SignInAsync(user.Id, "4321");
+            Assert.True(signIn.Succeeded, signIn.Message);
         }
         finally
         {

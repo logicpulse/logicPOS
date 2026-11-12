@@ -1,63 +1,130 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         x:Class="LogicPOS.App.Views.FirstUserSetupWindow"
         Title="Primeiro utilizador"
-        Width="560"
-        Height="520"
+        Width="760"
+        Height="600"
+        WindowDecorations="None"
         WindowStartupLocation="CenterScreen"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
         CanResize="False"
-        Background="#EEF3F6"
         FontFamily="avares://LogicPOS.App/Assets/Fonts#Montserrat">
-  <DockPanel>
-    <Border DockPanel.Dock="Top" Background="#263238" Padding="20,14">
-      <TextBlock Text="Criar o primeiro utilizador"
-                 Foreground="White"
-                 FontSize="18"
-                 FontWeight="SemiBold"
-                 HorizontalAlignment="Center" />
+    <Border Classes="login_alert_frame bo_fiscal_wizard">
+        <DockPanel Classes="login_alert_inner">
+            <Border Classes="login_alert_titlebar" DockPanel.Dock="Top" PointerPressed="OnTitlePointerPressed">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Classes="login_alert_title_row">
+                        <Image Classes="login_alert_title_icon"
+                               Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_show_change_user_dialog.png" />
+                        <TextBlock Classes="login_alert_title" Text="Criar o primeiro utilizador" />
+                    </StackPanel>
+                    <Button Grid.Column="1" Classes="bo_window_button" Click="OnCancelClick" ToolTip.Tip="Fechar">
+                        <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                    </Button>
+                </Grid>
+            </Border>
+
+            <Border Classes="login_alert_actions bo_fiscal_wizard_actions" DockPanel.Dock="Bottom">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Right" Classes="login_alert_action_buttons">
+                        <Button x:Name="BackButton" Classes="login_alert_action action_secondary" Click="OnBackClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <svg:Svg Classes="login_alert_action_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_back.svg" />
+                                <TextBlock Classes="login_alert_action_text" Text="Anterior" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="NextButton" Classes="login_alert_action" Click="OnNextClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <svg:Svg Classes="login_alert_action_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_next.svg" />
+                                <TextBlock Classes="login_alert_action_text" Text="Seguinte" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnCreate" Classes="login_alert_action" Click="OnCreateClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Concluir" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="CancelButton" Classes="login_alert_action action_secondary" Click="OnCancelClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock x:Name="LblStatus" Classes="bo_entity_error" Margin="12,0,12,0"
+                               VerticalAlignment="Center" TextWrapping="Wrap" />
+                </DockPanel>
+            </Border>
+
+            <Border Classes="bo_fiscal_wizard_tabs_host" DockPanel.Dock="Top">
+                <StackPanel x:Name="TabBar" Classes="bo_fiscal_wizard_tabs" />
+            </Border>
+
+            <ScrollViewer Classes="bo_fiscal_wizard_scroll">
+                <Panel>
+                    <StackPanel x:Name="WelcomeStep" Classes="bo_fiscal_wizard_form">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Bem-vindo ao LogicPOS" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="Esta base de dados ainda não tem utilizadores. Antes de entrar, crie o primeiro utilizador do posto." />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="Nos passos seguintes indica o nome, escolhe o perfil (por defeito Proprietário, com acesso total) e define o PIN de acesso." />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="No fim volta ao ecrã de entrada com o novo utilizador seleccionado. Como o PIN acabou de ser definido, não lhe será pedido que o altere." />
+                    </StackPanel>
+
+                    <StackPanel x:Name="UserStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Dados do utilizador" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="O nome aparece no ecrã de entrada e nos documentos emitidos." />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Nome" />
+                        <TextBox x:Name="TxtName" Classes="bo_entity_input" PlaceholderText="Ex.: Administrador" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Login" />
+                        <TextBox x:Name="TxtLogin" Classes="bo_entity_input" PlaceholderText="Ex.: admin" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Código (opcional)" />
+                        <TextBox x:Name="TxtCode" Classes="bo_entity_input" PlaceholderText="1" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="ProfileStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Perfil" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="O perfil define as permissões. Proprietário é o administrador, com acesso a tudo." />
+                        <StackPanel x:Name="ProfileList" Spacing="6" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="PinStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="PIN de acesso" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="Mínimo 4 dígitos, só números, diferente de 0000." />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="PIN" />
+                        <TextBox x:Name="TxtPin" Classes="bo_entity_input" PasswordChar="•" PlaceholderText="PIN" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Confirmar PIN" />
+                        <TextBox x:Name="TxtPinConfirm" Classes="bo_entity_input" PasswordChar="•" PlaceholderText="Repetir PIN" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="SummaryStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Resumo" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="Confirme os dados e carregue em Concluir para criar o utilizador." />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Nome" />
+                        <TextBlock x:Name="SummaryName" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Login" />
+                        <TextBlock x:Name="SummaryLogin" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Código" />
+                        <TextBlock x:Name="SummaryCode" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Perfil" />
+                        <TextBlock x:Name="SummaryProfile" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="PIN" />
+                        <TextBlock Text="Definido" />
+                    </StackPanel>
+                </Panel>
+            </ScrollViewer>
+        </DockPanel>
     </Border>
-
-    <Border DockPanel.Dock="Bottom" Background="White" Padding="20,14" BorderBrush="#D5DEE3" BorderThickness="0,1,0,0">
-      <DockPanel>
-        <Button x:Name="BtnCreate"
-                Classes="login_alert_action action_primary"
-                DockPanel.Dock="Right"
-                Click="OnCreateClick">
-          <StackPanel Classes="login_alert_action_content">
-            <Image Classes="login_alert_action_icon"
-                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
-            <TextBlock Classes="login_alert_action_text" Text="Criar e continuar" />
-          </StackPanel>
-        </Button>
-        <TextBlock x:Name="LblStatus"
-                   TextWrapping="Wrap"
-                   Foreground="#B54300"
-                   FontSize="12.5"
-                   VerticalAlignment="Center"
-                   Margin="0,0,16,0" />
-      </DockPanel>
-    </Border>
-
-    <ScrollViewer Padding="28,20">
-      <StackPanel Spacing="12" MaxWidth="480">
-        <TextBlock TextWrapping="Wrap" Foreground="#546E7A" FontSize="13"
-                   Text="Defina o administrador do posto. Este utilizador não vem nos seeds — cria-o agora para poder entrar." />
-
-        <TextBlock Text="Perfil" FontWeight="SemiBold" Foreground="#263238" />
-        <ComboBox x:Name="CmbProfile" MinHeight="36" HorizontalAlignment="Stretch" />
-
-        <TextBlock Text="Nome" FontWeight="SemiBold" Foreground="#263238" />
-        <TextBox x:Name="TxtName" PlaceholderText="Ex.: Administrador" />
-
-        <TextBlock Text="Login" FontWeight="SemiBold" Foreground="#263238" />
-        <TextBox x:Name="TxtLogin" PlaceholderText="Ex.: admin" />
-
-        <TextBlock Text="PIN de acesso (mín. 4 dígitos)" FontWeight="SemiBold" Foreground="#263238" />
-        <TextBox x:Name="TxtPin" PasswordChar="•" PlaceholderText="PIN" />
-
-        <TextBlock Text="Confirmar PIN" FontWeight="SemiBold" Foreground="#263238" />
-        <TextBox x:Name="TxtPinConfirm" PasswordChar="•" PlaceholderText="Repetir PIN" />
-      </StackPanel>
-    </ScrollViewer>
-  </DockPanel>
 </Window>

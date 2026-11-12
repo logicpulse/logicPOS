@@ -41,9 +41,37 @@ public sealed class FirstUserSetupRequest
 
     public string Login { get; init; } = string.Empty;
 
+    public string Code { get; init; } = string.Empty;
+
     public string AccessPin { get; init; } = string.Empty;
 
     public string AccessPinConfirm { get; init; } = string.Empty;
+
+    public string? ValidateIdentity()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+            return "Indique o nome do utilizador.";
+
+        if (string.IsNullOrWhiteSpace(Login))
+            return "Indique o login.";
+
+        return null;
+    }
+
+    public string? ValidatePin()
+    {
+        var pin = AccessPin.Trim();
+        if (pin.Length < 4 || pin.Any(ch => char.IsDigit(ch) == false))
+            return "O PIN deve ter pelo menos 4 dígitos.";
+
+        if (pin == User.DefaultAccessPin)
+            return "Escolha um PIN diferente de 0000.";
+
+        if (pin != AccessPinConfirm.Trim())
+            return "A confirmação do PIN não coincide.";
+
+        return null;
+    }
 }
 
 public sealed class FirstUserSetupResult
@@ -100,9 +128,9 @@ public sealed class LocalFirstUserSetupWizard : IFirstUserSetupWizard
         }
 
         var preferred = profiles.FirstOrDefault(profile =>
-                profile.Label.Contains("Administr", StringComparison.OrdinalIgnoreCase)
-                || profile.Label.Contains("Propriet", StringComparison.OrdinalIgnoreCase)
+                profile.Label.Contains("Propriet", StringComparison.OrdinalIgnoreCase)
                 || profile.Label.Contains("Owner", StringComparison.OrdinalIgnoreCase))
+            ?? profiles.FirstOrDefault(profile => profile.Label.Contains("Administr", StringComparison.OrdinalIgnoreCase))
             ?? profiles[0];
 
         return new FirstUserSetupDraft
@@ -118,23 +146,12 @@ public sealed class LocalFirstUserSetupWizard : IFirstUserSetupWizard
     {
         var name = request.Name.Trim();
         var login = request.Login.Trim();
+        var code = string.IsNullOrWhiteSpace(request.Code) ? "1" : request.Code.Trim();
         var pin = request.AccessPin.Trim();
-        var pinConfirm = request.AccessPinConfirm.Trim();
 
-        if (string.IsNullOrWhiteSpace(name))
-            return FirstUserSetupResult.Fail("Indique o nome do utilizador.");
-
-        if (string.IsNullOrWhiteSpace(login))
-            return FirstUserSetupResult.Fail("Indique o login.");
-
-        if (pin.Length < 4 || pin.Any(ch => char.IsDigit(ch) == false))
-            return FirstUserSetupResult.Fail("O PIN deve ter pelo menos 4 dígitos.");
-
-        if (pin == User.DefaultAccessPin)
-            return FirstUserSetupResult.Fail("Escolha um PIN diferente de 0000.");
-
-        if (pin != pinConfirm)
-            return FirstUserSetupResult.Fail("A confirmação do PIN não coincide.");
+        var invalid = request.ValidateIdentity() ?? request.ValidatePin();
+        if (invalid is not null)
+            return FirstUserSetupResult.Fail(invalid);
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
@@ -159,7 +176,7 @@ public sealed class LocalFirstUserSetupWizard : IFirstUserSetupWizard
         {
             Id = Guid.NewGuid(),
             Order = nextOrder + 10,
-            Code = "1",
+            Code = code,
             Name = name,
             Login = login,
             AccessPin = _passwordHasher.HashPassword(pin),
