@@ -424,13 +424,24 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private async Task RefreshOnboardingAsync(bool forceDashboard = false)
     {
-        var service = AppComposition.Services?.GetService<IOnboardingService>();
+        IOnboardingService? service;
+        try
+        {
+            service = AppComposition.Services?.GetService<IOnboardingService>();
+        }
+        catch (Exception exception)
+        {
+            App.WriteCrash("RefreshOnboardingAsync.GetService", exception);
+            service = null;
+        }
+
         if (service is null)
         {
             // Cloud mode (or DI not ready): no local onboarding checklist — show Painel.
+            // Status unknown: keep onboarding reachable from the sidebar.
             _onboardingIncomplete = false;
             ApplyFrontOfficeGate();
-            OnboardingMenuButton.IsVisible = false;
+            OnboardingMenuButton.IsVisible = true;
             DashboardHost.ShowsOnboardingShortcut = false;
             ShowDashboardHome();
             await ReloadDashboardSafeAsync();
@@ -445,6 +456,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         catch (Exception exception)
         {
             App.WriteCrash("RefreshOnboardingAsync", exception);
+            OnboardingMenuButton.IsVisible = true;
+            DashboardHost.ShowsOnboardingShortcut = false;
             if (forceDashboard)
             {
                 ShowDashboardHome();
