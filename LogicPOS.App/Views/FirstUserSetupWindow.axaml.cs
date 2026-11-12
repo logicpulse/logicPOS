@@ -27,6 +27,7 @@ public partial class FirstUserSetupWindow : Window
     {
         _wizard = wizard;
         InitializeComponent();
+        TouchFields.Attach(this);
         ListingNotice.BindToast(LblStatus, this);
         ShowStep();
         Opened += async (_, _) => await LoadAsync();

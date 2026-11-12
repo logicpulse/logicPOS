@@ -20,6 +20,7 @@ public partial class FrontOfficeStartupWizard : UserControl
     public FrontOfficeStartupWizard()
     {
         InitializeComponent();
+        TouchFields.Attach(this);
         ListingNotice.BindToast(Notice, this);
     }
 

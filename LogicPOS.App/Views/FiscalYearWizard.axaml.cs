@@ -33,6 +33,7 @@ public partial class FiscalYearWizard : UserControl
     public FiscalYearWizard()
     {
         InitializeComponent();
+        TouchFields.Attach(this);
         ListingNotice.BindToast(Notice, this);
         CreateSeries.IsCheckedChanged += (_, _) => SelectAllSeries();
         Communicate.IsCheckedChanged += (_, _) => AtPanel.IsVisible = Communicate.IsChecked == true;

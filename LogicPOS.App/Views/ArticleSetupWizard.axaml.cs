@@ -17,6 +17,7 @@ public partial class ArticleSetupWizard : UserControl
     public ArticleSetupWizard()
     {
         InitializeComponent();
+        TouchFields.Attach(this);
         ListingNotice.BindToast(Notice, this);
     }
 
