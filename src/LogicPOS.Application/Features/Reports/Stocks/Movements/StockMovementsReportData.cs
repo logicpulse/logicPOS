@@ -4,6 +4,7 @@ namespace LogicPOS.Application.Features.Reports.Stocks.Movements;
 
 public record StockMovementsReportData : ReportData
 {
+    public string? Title { get; set; }
     public List<StockMovement> Movements { get; set; } = null!;
 }
 

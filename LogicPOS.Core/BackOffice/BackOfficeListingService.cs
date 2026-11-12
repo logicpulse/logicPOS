@@ -823,6 +823,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             && FiscalFeatures.ShowsAgt(_system.Country))
         {
             await EnsureAgtFeCompanyParametersAsync(database, cancellationToken);
+            await EnsureAgtOperationalPreferencesAsync(database, cancellationToken);
         }
 
         var rows = (await MaterializeAsync(database, page.EntityType!, cancellationToken))
@@ -2344,6 +2345,59 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             CreatedAt = now,
             UpdatedAt = now
         });
+        await database.SaveChangesAsync(cancellationToken);
+    }
+
+    private static async Task EnsureAgtOperationalPreferencesAsync(
+        LogicPOSDbContext database,
+        CancellationToken cancellationToken)
+    {
+        var tokens = new[]
+        {
+            LogicPOS.Application.Features.Finance.Agt.AgtFePreferenceTokens.ElectronicInvoicingEnabled,
+            LogicPOS.Application.Features.Finance.Agt.AgtFePreferenceTokens.AutoSendDocuments,
+            LogicPOS.Application.Features.Finance.Agt.AgtFePreferenceTokens.SyncValidationStatus,
+            LogicPOS.Application.Features.Finance.Agt.AgtFePreferenceTokens.SyncValidationIntervalMinutes
+        };
+        var existing = await database.PreferenceParameters
+            .Where(item => item.IsDeleted == false && tokens.Contains(item.Token))
+            .Select(item => item.Token)
+            .ToListAsync(cancellationToken);
+        if (existing.Count == tokens.Length)
+        {
+            return;
+        }
+
+        var now = DateTime.Now;
+        void Add(Guid id, string token, string value, string regex, string label, LogicPOS.Domain.Enums.PreferenceParameterInputType inputType, uint order)
+        {
+            if (existing.Contains(token))
+            {
+                return;
+            }
+
+            database.PreferenceParameters.Add(new PreferenceParameter
+            {
+                Id = id,
+                Token = token,
+                Value = value,
+                Required = true,
+                RegEx = regex,
+                ResourceString = label,
+                FormType = 2,
+                FormPageNo = 1,
+                InputType = inputType,
+                Order = order,
+                Code = order.ToString(),
+                CreatedAt = now,
+                UpdatedAt = now
+            });
+        }
+
+        Add(new Guid("a7c3e91f-4b2d-4e8a-9f1c-6d5e8b0a2c41"), tokens[0], "False", "RegexBoolean", "Facturação electrónica AGT", LogicPOS.Domain.Enums.PreferenceParameterInputType.CheckButton, 905u);
+        Add(new Guid("b8d4f02a-5c3e-4f9b-a02d-7e6f9c1b3d52"), tokens[1], "False", "RegexBoolean", "Enviar documentos à AGT", LogicPOS.Domain.Enums.PreferenceParameterInputType.CheckButton, 906u);
+        Add(new Guid("c9e5a13b-6d4f-40ac-b13e-8f7a0d2c4e63"), tokens[2], "False", "RegexBoolean", "Sincronizar estado de validação AGT", LogicPOS.Domain.Enums.PreferenceParameterInputType.CheckButton, 907u);
+        Add(new Guid("dae6b24c-7e5a-41bd-c24f-9a8b1e3d5f74"), tokens[3], "30", "RegexInteger", "Intervalo de sincronização AGT (minutos)", LogicPOS.Domain.Enums.PreferenceParameterInputType.Text, 908u);
         await database.SaveChangesAsync(cancellationToken);
     }
 

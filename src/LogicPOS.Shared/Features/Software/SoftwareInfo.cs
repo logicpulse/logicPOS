@@ -9,6 +9,7 @@ public record SoftwareInfo
     public string CompanyWeb { get; set; } = null!;
     public string ProductCompanyTaxId { get; set; } = null!;
     public string SaftCertificateNumber { get; set; } = null!;
+    public string AgtFeSoftwareValidationNumber { get; set; } = string.Empty;
     public string ProductId { get; set; } = null!;
     public string ProductVersion { get; set; } = null!;
     
@@ -21,6 +22,7 @@ public record SoftwareInfo
         CompanyWeb = "http://www.logicpulse.com",
         ProductCompanyTaxId = "5171164380",
         SaftCertificateNumber = "221/AGT/2019",
+        AgtFeSoftwareValidationNumber = "FE/28/AGT/2025",
         ProductId = "LogicPOS/LOGICPULSE ANGOLA",
         ProductVersion = "v1.0",
     };

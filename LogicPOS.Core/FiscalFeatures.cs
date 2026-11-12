@@ -22,7 +22,8 @@ public static class FiscalFeatures
     public static bool IsPreferenceVisible(string? token, FiscalCountry country)
     {
         var key = token?.Trim() ?? string.Empty;
-        if (key.StartsWith("AGT_", StringComparison.OrdinalIgnoreCase))
+        if (key.StartsWith("AGT_", StringComparison.OrdinalIgnoreCase)
+            || key.StartsWith("SERVICE_AGT_", StringComparison.OrdinalIgnoreCase))
         {
             return ShowsAgt(country);
         }

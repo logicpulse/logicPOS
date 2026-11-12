@@ -1267,11 +1267,17 @@ namespace LogicPOS.Persistence.Migrations
                             b1.Property<int?>("HttpStatusCode")
                                 .HasColumnType("INTEGER");
 
+                            b1.Property<DateTime?>("LastSyncAt")
+                                .HasColumnType("TEXT");
+
                             b1.Property<string>("RejectedDocumentNumber")
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("RequestId")
                                 .HasColumnType("TEXT");
+
+                            b1.Property<int>("SubmissionAttempts")
+                                .HasColumnType("INTEGER");
 
                             b1.Property<DateTime?>("SubmissionDate")
                                 .HasColumnType("TEXT");
@@ -1281,6 +1287,9 @@ namespace LogicPOS.Persistence.Migrations
 
                             b1.Property<string>("SubmissionErrorDescription")
                                 .HasColumnType("TEXT");
+
+                            b1.Property<bool>("SubmissionPending")
+                                .HasColumnType("INTEGER");
 
                             b1.Property<string>("SubmissionUuid")
                                 .HasColumnType("TEXT");
@@ -1293,6 +1302,9 @@ namespace LogicPOS.Persistence.Migrations
 
                             b1.Property<string>("ValidationStatus")
                                 .HasColumnType("TEXT");
+
+                            b1.Property<bool>("ValidationSyncPending")
+                                .HasColumnType("INTEGER");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("Customer", "LogicPOS.Domain.Entities.Document.Customer#DocumentCustomer", b1 =>
@@ -3257,11 +3269,17 @@ namespace LogicPOS.Persistence.Migrations
                             b1.Property<int?>("HttpStatusCode")
                                 .HasColumnType("INTEGER");
 
+                            b1.Property<DateTime?>("LastSyncAt")
+                                .HasColumnType("TEXT");
+
                             b1.Property<string>("RejectedDocumentNumber")
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("RequestId")
                                 .HasColumnType("TEXT");
+
+                            b1.Property<int>("SubmissionAttempts")
+                                .HasColumnType("INTEGER");
 
                             b1.Property<DateTime?>("SubmissionDate")
                                 .HasColumnType("TEXT");
@@ -3271,6 +3289,9 @@ namespace LogicPOS.Persistence.Migrations
 
                             b1.Property<string>("SubmissionErrorDescription")
                                 .HasColumnType("TEXT");
+
+                            b1.Property<bool>("SubmissionPending")
+                                .HasColumnType("INTEGER");
 
                             b1.Property<string>("SubmissionUuid")
                                 .HasColumnType("TEXT");
@@ -3283,6 +3304,9 @@ namespace LogicPOS.Persistence.Migrations
 
                             b1.Property<string>("ValidationStatus")
                                 .HasColumnType("TEXT");
+
+                            b1.Property<bool>("ValidationSyncPending")
+                                .HasColumnType("INTEGER");
                         });
 
                     b.HasKey("Id");

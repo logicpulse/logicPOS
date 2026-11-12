@@ -21,7 +21,7 @@ public interface IAgtServiceRequestBuilder
         string rejectedReceiptNumber, CancellationToken ct);
 
     public Task<ListInvoicesRequest> BuildListInvoicesRequestAsync(DateOnly startDate, DateOnly endDate,
-        CancellationToken ct);
+        CancellationToken ct, string? listingType = "EMITIDAS", int? page = null, int? size = null);
 
     public Task<GetInvoiceRequest>
         BuildGetInvoiceRequestAsync(string invoiceNo, string requestId, CancellationToken ct);

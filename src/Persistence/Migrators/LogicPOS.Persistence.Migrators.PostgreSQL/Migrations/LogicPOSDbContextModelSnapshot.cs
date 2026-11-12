@@ -1272,11 +1272,17 @@ namespace LogicPOS.Persistence.Migrators.PostgreSQL.Migrations
                             b1.Property<int?>("HttpStatusCode")
                                 .HasColumnType("integer");
 
+                            b1.Property<DateTime?>("LastSyncAt")
+                                .HasColumnType("timestamp without time zone");
+
                             b1.Property<string>("RejectedDocumentNumber")
                                 .HasColumnType("text");
 
                             b1.Property<string>("RequestId")
                                 .HasColumnType("text");
+
+                            b1.Property<int>("SubmissionAttempts")
+                                .HasColumnType("integer");
 
                             b1.Property<DateTime?>("SubmissionDate")
                                 .HasColumnType("timestamp without time zone");
@@ -1286,6 +1292,9 @@ namespace LogicPOS.Persistence.Migrators.PostgreSQL.Migrations
 
                             b1.Property<string>("SubmissionErrorDescription")
                                 .HasColumnType("text");
+
+                            b1.Property<bool>("SubmissionPending")
+                                .HasColumnType("boolean");
 
                             b1.Property<string>("SubmissionUuid")
                                 .HasColumnType("text");
@@ -1298,6 +1307,9 @@ namespace LogicPOS.Persistence.Migrators.PostgreSQL.Migrations
 
                             b1.Property<string>("ValidationStatus")
                                 .HasColumnType("text");
+
+                            b1.Property<bool>("ValidationSyncPending")
+                                .HasColumnType("boolean");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("Customer", "LogicPOS.Domain.Entities.Document.Customer#DocumentCustomer", b1 =>
@@ -3324,11 +3336,17 @@ namespace LogicPOS.Persistence.Migrators.PostgreSQL.Migrations
                             b1.Property<int?>("HttpStatusCode")
                                 .HasColumnType("integer");
 
+                            b1.Property<DateTime?>("LastSyncAt")
+                                .HasColumnType("timestamp without time zone");
+
                             b1.Property<string>("RejectedDocumentNumber")
                                 .HasColumnType("text");
 
                             b1.Property<string>("RequestId")
                                 .HasColumnType("text");
+
+                            b1.Property<int>("SubmissionAttempts")
+                                .HasColumnType("integer");
 
                             b1.Property<DateTime?>("SubmissionDate")
                                 .HasColumnType("timestamp without time zone");
@@ -3338,6 +3356,9 @@ namespace LogicPOS.Persistence.Migrators.PostgreSQL.Migrations
 
                             b1.Property<string>("SubmissionErrorDescription")
                                 .HasColumnType("text");
+
+                            b1.Property<bool>("SubmissionPending")
+                                .HasColumnType("boolean");
 
                             b1.Property<string>("SubmissionUuid")
                                 .HasColumnType("text");
@@ -3350,6 +3371,9 @@ namespace LogicPOS.Persistence.Migrators.PostgreSQL.Migrations
 
                             b1.Property<string>("ValidationStatus")
                                 .HasColumnType("text");
+
+                            b1.Property<bool>("ValidationSyncPending")
+                                .HasColumnType("boolean");
                         });
 
                     b.HasKey("Id");
