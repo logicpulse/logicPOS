@@ -149,7 +149,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["IsComposed"] = "Artigo composto",
         ["UseWeighingBalance"] = "Usar Balança",
         ["UniqueArticles"] = "Artigos únicos",
-        ["Disabled"] = "Desactivado",
+        ["Disabled"] = "Inativo",
         ["PriceWithVat"] = "Preço com imposto",
         ["PVPVariable"] = "Preço variável",
         ["ChildArticleId"] = "Artigo associado",
@@ -826,14 +826,14 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             await EnsureAgtOperationalPreferencesAsync(database, cancellationToken);
         }
 
-        // Artigos: Ativos / Desactivados / Todos — Disabled maps to soft-delete (IsDeleted).
-        var articleStatus = page.EntityType == typeof(Article) ? (string.IsNullOrWhiteSpace(mode) ? "Ativos" : mode) : null;
-        var includeDeleted = articleStatus is "Desactivados" or "Todos";
+        // Artigos: Ativo / Inativo / Todos — Disabled maps to soft-delete (IsDeleted).
+        var articleStatus = page.EntityType == typeof(Article) ? (string.IsNullOrWhiteSpace(mode) ? "Ativo" : mode) : null;
+        var includeDeleted = articleStatus is "Inativo" or "Todos";
         var rows = (await MaterializeCoreAsync(database, page.EntityType!, onlyActive: includeDeleted == false, cancellationToken))
             .Cast<object>()
             .Where(row => articleStatus switch
             {
-                "Desactivados" => ReadBool(row, "IsDeleted"),
+                "Inativo" => ReadBool(row, "IsDeleted"),
                 "Todos" => true,
                 _ => ReadBool(row, "IsDeleted") == false
             })
@@ -3641,7 +3641,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         [
             Entity("Famílias", typeof(ArticleFamily)),
             Entity("Subfamílias", typeof(ArticleSubfamily)),
-            Entity("Artigos", typeof(Article), modes: ["Ativos", "Desactivados", "Todos"]),
+            Entity("Artigos", typeof(Article), modes: ["Ativo", "Inativo", "Todos"]),
             Entity("Tipo de artigos", typeof(ArticleType)),
             Entity("Classe do artigo", typeof(ArticleClass)),
             Entity("Tipo de Preço", typeof(PriceType)),
