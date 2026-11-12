@@ -47,7 +47,7 @@
                                 <TextBlock Classes="bo_doc_action_text" Text="Imp.Como" />
                             </StackPanel>
                         </Button>
-                        <Button Classes="bo_page_action" Click="OnSendToAtClick" ToolTip.Tip="Comunicar a guia à AT">
+                        <Button x:Name="SendToAtButton" Classes="bo_page_action" Click="OnSendToAtClick" ToolTip.Tip="Comunicar a guia à AT">
                             <StackPanel Classes="bo_doc_action_content">
                                 <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_email_w.svg" />
                                 <TextBlock Classes="bo_doc_action_text" Text="AT" />

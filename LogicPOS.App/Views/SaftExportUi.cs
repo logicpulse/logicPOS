@@ -1,12 +1,9 @@
 ﻿using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
 
@@ -136,18 +133,7 @@ internal static class SaftExportUi
     };
 
     /// <summary>True when fiscal country is Angola — UI says AGT, actions stay saft-*.</summary>
-    public static bool UseAgtLabels()
-    {
-        var system = AppComposition.Services?.GetService<ISystemInformationService>();
-        if (system is not null)
-        {
-            return system.IsAngola();
-        }
-
-        var country = AppComposition.Services?.GetService<IConfiguration>()?["Country"];
-        return string.Equals(country, "AO", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(country, "Angola", StringComparison.OrdinalIgnoreCase);
-    }
+    public static bool UseAgtLabels() => FiscalFeatures.ShowsAgt(FiscalFeatures.Current);
 
     public static string ExportDialogTitle()
         => UseAgtLabels()

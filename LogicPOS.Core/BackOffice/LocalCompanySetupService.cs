@@ -1,6 +1,8 @@
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
+using LogicPOS.Domain.ValueObjects;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -95,8 +97,10 @@ public sealed class LocalCompanySetupService : ICompanySetupService
             .ThenBy(item => item.Code)
             .ToListAsync(cancellationToken);
 
+        var fiscalCountry = scope.ServiceProvider.GetService<ISystemInformationService>()?.Country ?? FiscalCountry.Portugal;
         var fields = parameters
             .Where(item => HiddenTokens.Contains(item.Token) == false)
+            .Where(item => FiscalFeatures.IsPreferenceVisible(item.Token, fiscalCountry))
             .Select(item => new CompanySetupField
             {
                 Token = item.Token,

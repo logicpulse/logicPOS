@@ -819,7 +819,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private async Task<ListingSnapshot> QueryEntitiesAsync(LogicPOSDbContext database, PageSpec page, CancellationToken cancellationToken)
     {
-        if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter))
+        if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter)
+            && FiscalFeatures.ShowsAgt(_system.Country))
         {
             await EnsureAgtFeCompanyParametersAsync(database, cancellationToken);
         }
@@ -1004,6 +1005,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
             // AO industrial withholding must not appear for PT/MZ tenants (including legacy stored amounts).
             if (property.Name == "WithholdingTaxAmount" && _system.IsAngola() == false)
+            {
+                continue;
+            }
+
+            // AT series validation code / «Comunicar à AT» are Portugal-only.
+            if (FiscalFeatures.IsEntityFieldVisible(property.Name, _system.Country) == false)
             {
                 continue;
             }
@@ -2260,11 +2267,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return true;
     }
 
-    private static bool MatchesFilter(PageSpec page, object row)
+    private bool MatchesFilter(PageSpec page, object row)
     {
         if (page.EntityType != typeof(PreferenceParameter) || row is not PreferenceParameter parameter)
         {
             return true;
+        }
+
+        // AGT-FE rows only for Angola; SERVICE_AT_* (AT credentials) only for Portugal.
+        if (FiscalFeatures.IsPreferenceVisible(parameter.Token, _system.Country) == false)
+        {
+            return false;
         }
 
         var company = parameter.Token.StartsWith("COMPANY", StringComparison.OrdinalIgnoreCase)

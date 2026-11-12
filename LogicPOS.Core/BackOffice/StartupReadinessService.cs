@@ -1,4 +1,6 @@
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Fiscal;
+using LogicPOS.Domain.ValueObjects;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -81,7 +83,7 @@ public sealed class StartupReadinessService : IStartupReadinessService
                 "Abertura de ano fiscal",
                 "Abrir"));
         }
-        else if (IsPortugal())
+        else if (FiscalFeatures.ShowsAtCommunication(FiscalCountryOf(scope.ServiceProvider)))
         {
             var withoutAt = await database.DocumentSeries.AsNoTracking()
                 .Where(item => item.IsDeleted == false
@@ -105,11 +107,15 @@ public sealed class StartupReadinessService : IStartupReadinessService
         return issues;
     }
 
-    private bool IsPortugal()
+    private FiscalCountry FiscalCountryOf(IServiceProvider services)
     {
-        var country = _configuration["Country"] ?? _configuration["SystemCountry"] ?? string.Empty;
-        return string.IsNullOrWhiteSpace(country)
-            || country.Equals("PT", StringComparison.OrdinalIgnoreCase)
-            || country.Equals("Portugal", StringComparison.OrdinalIgnoreCase);
+        var system = services.GetService<ISystemInformationService>();
+        if (system is not null)
+        {
+            return system.Country;
+        }
+
+        var country = _configuration["Country"] ?? _configuration["SystemCountry"];
+        return FiscalCountry.TryParse(country, out var parsed) ? parsed : FiscalCountry.Portugal;
     }
 }

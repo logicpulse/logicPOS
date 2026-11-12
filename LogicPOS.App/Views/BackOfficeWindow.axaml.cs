@@ -14,7 +14,6 @@ using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Core.Licensing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
@@ -1275,18 +1274,18 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         SaftMessageOverlay.IsVisible = true;
     }
 
-    private static bool IsAngola()
-    {
-        var country = AppComposition.Services?.GetService<IConfiguration>()?["Country"];
-        return string.Equals(country, "AO", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(country, "Angola", StringComparison.OrdinalIgnoreCase);
-    }
+    private static bool IsAngola() => FiscalFeatures.ShowsAgt(FiscalFeatures.Current);
 
     private void ShowPage(string title)
     {
         var service = AppComposition.Services?.GetService<IBackOfficeListingService>();
         title = service?.ResolveTitle(title) ?? title;
         if (IsMenuAllowed(title) == false)
+        {
+            return;
+        }
+
+        if (title is "Séries AGT" or "Documentos AGT" && IsAngola() == false)
         {
             return;
         }

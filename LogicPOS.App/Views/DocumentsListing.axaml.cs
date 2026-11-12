@@ -42,6 +42,7 @@ public partial class DocumentsListing : UserControl
     public DocumentsListing()
     {
         InitializeComponent();
+        SendToAtButton.IsVisible = FiscalFeatures.ShowsAtCommunication(FiscalFeatures.Current);
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
         ListingNotice.BindToast(ActionNotice, this, skipProgress: true);
@@ -1677,7 +1678,10 @@ public partial class DocumentsListing : UserControl
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Anular", OnCancelClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imprimir", OnPrintClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imp.Como", OnPrintAsClick));
-        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("AT", OnSendToAtClick));
+        if (SendToAtButton.IsVisible)
+        {
+            MoreSheetHost.Children.Add(PortraitChrome.SheetButton("AT", OnSendToAtClick));
+        }
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Abrir", OnOpenA4Click));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Email", OnEmailClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Colunas", OnChooseColumnsClick));
