@@ -280,9 +280,8 @@
                                        Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                                 <TextBlock Classes="login_alert_title" Text="Documentos" />
                             </StackPanel>
-                            <Button Grid.Column="1" Classes="pos_dialog_close" Click="OnDocumentsMenuCloseClick">
-                                <Image Classes="pos_dialog_close_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_window_close.png" />
+                            <Button Grid.Column="1" Classes="bo_window_button" Click="OnDocumentsMenuCloseClick" ToolTip.Tip="Fechar">
+                                <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                             </Button>
                         </Grid>
                     </Border>

@@ -185,7 +185,7 @@
                                 <TextBlock x:Name="PayTitle" Classes="login_alert_title" Text="Liquidar Faturas" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                             <Button Grid.Column="1" Classes="bo_window_button" Click="OnPayCancelClick" ToolTip.Tip="Fechar">
-                                <TextBlock Text="✕" FontSize="14" Foreground="#FFFFFF" VerticalAlignment="Center" />
+                                <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                             </Button>
                         </Grid>
                     </Border>

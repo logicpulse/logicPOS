@@ -1,5 +1,6 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         x:Class="LogicPOS.App.Views.PaymentWindow"
         Classes="pos_pay_window"
         Title="Pagamentos"
@@ -20,7 +21,7 @@
                             <TextBlock Classes="login_alert_title" Text="Pagamentos" />
                         </StackPanel>
                         <Button Grid.Column="1" Classes="bo_window_button" Click="OnCancelClick" ToolTip.Tip="Fechar">
-                            <TextBlock Text="✕" FontSize="14" Foreground="#FFFFFF" VerticalAlignment="Center" />
+                            <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                         </Button>
                     </Grid>
                 </Border>
