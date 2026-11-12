@@ -19,43 +19,43 @@
                    Classes="login_logo"
                    Source="avares://LogicPOS.App/Assets/Images/logicpos_logo.png"
                    RenderOptions.BitmapInterpolationMode="HighQuality" />
-            <Border x:Name="LoginUsersFrame" Classes="login_users_frame" />
+            <Border x:Name="LoginUsersFrame" Classes="login_users_frame" ClipToBounds="True">
+                <StackPanel x:Name="LoginUsersColumn" Classes="login_users_column">
+                    <Button x:Name="LoginUsersPrev" Classes="login_scroll" Click="OnPreviousUsersClick">
+                        <svg:Svg Classes="login_scroll_icon"
+                                 Path="avares://LogicPOS.App/Assets/Images/Pos/chevron_up.svg" />
+                    </Button>
+                    <ItemsControl x:Name="LoginUsers" Classes="login_users" ItemsSource="{Binding UserSlots}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="0" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:UserSlot">
+                                <Panel Classes="login_user_slot" IsVisible="{Binding HasUser}">
+                                    <Button Classes="login_user"
+                                            Classes.selected="{Binding IsSelected}"
+                                            Click="OnUserClick"
+                                            Tag="{Binding}">
+                                        <StackPanel HorizontalAlignment="Center" Spacing="2">
+                                            <Image Classes="login_user_icon"
+                                                   Source="avares://LogicPOS.App/Assets/Images/icon_user_default.png" />
+                                            <TextBlock Classes="login_user_name" Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Panel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button x:Name="LoginUsersNext" Classes="login_scroll" Click="OnNextUsersClick">
+                        <svg:Svg Classes="login_scroll_icon"
+                                 Path="avares://LogicPOS.App/Assets/Images/Pos/chevron_down.svg" />
+                    </Button>
+                </StackPanel>
+            </Border>
             <Border x:Name="LoginPinpadFrame" Classes="login_pinpad_frame" />
             <Button x:Name="LoginMinimize" Classes="login_minimize" Click="OnMinimizeClick" />
-            <StackPanel x:Name="LoginUsersColumn" Classes="login_users_column">
-                <Button x:Name="LoginUsersPrev" Classes="login_scroll" Click="OnPreviousUsersClick">
-                    <svg:Svg Classes="login_scroll_icon"
-                             Path="avares://LogicPOS.App/Assets/Images/Pos/chevron_up.svg" />
-                </Button>
-                <ItemsControl x:Name="LoginUsers" Classes="login_users" ItemsSource="{Binding UserSlots}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Spacing="0" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:UserSlot">
-                            <Panel Classes="login_user_slot">
-                                <Button Classes="login_user"
-                                        Classes.selected="{Binding IsSelected}"
-                                        IsVisible="{Binding HasUser}"
-                                        Click="OnUserClick"
-                                        Tag="{Binding}">
-                                    <StackPanel HorizontalAlignment="Center" Spacing="2">
-                                        <Image Classes="login_user_icon"
-                                               Source="avares://LogicPOS.App/Assets/Images/icon_user_default.png" />
-                                        <TextBlock Classes="login_user_name" Text="{Binding Name}" />
-                                    </StackPanel>
-                                </Button>
-                            </Panel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <Button x:Name="LoginUsersNext" Classes="login_scroll" Click="OnNextUsersClick">
-                    <svg:Svg Classes="login_scroll_icon"
-                             Path="avares://LogicPOS.App/Assets/Images/Pos/chevron_down.svg" />
-                </Button>
-            </StackPanel>
             <Border x:Name="LoginPinpad" Classes="login_pinpad">
                 <Grid Classes="login_pinpad_keys"
                       ColumnDefinitions="105,105,105"

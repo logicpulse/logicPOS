@@ -392,10 +392,11 @@ public partial class LoginWindow : UserControl
             AlertFrame.ClearValue(Avalonia.Layout.Layoutable.MaxHeightProperty);
         }
 
+        // Landscape: fit scroll + slots inside the users frame (pad 15, scroll 60, spacing 8, slot 102).
         var pageSize = _viewport.IsPortrait
             ? 4
-            : (_viewport.DesignHeight - (120 * 2) - (60 * 2)) / 102;
-        _viewModel.SetPageSize(pageSize < 1 ? 1 : pageSize);
+            : Math.Max(1, (861 - (15 * 2) - (60 * 2) - (8 * 2)) / 102);
+        _viewModel.SetPageSize(pageSize);
     }
 
     /// <summary>
@@ -427,14 +428,16 @@ public partial class LoginWindow : UserControl
 
         LoginUsersFrame.Width = 148;
         LoginUsersFrame.Height = 861;
+        LoginUsersFrame.Padding = new Avalonia.Thickness(14, 15);
         LoginUsersFrame.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
         LoginUsersFrame.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
         LoginUsersFrame.Margin = new Avalonia.Thickness(108, 105, 0, 0);
+        LoginUsersFrame.ClipToBounds = true;
 
         LoginUsersColumn.Width = 120;
-        LoginUsersColumn.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+        LoginUsersColumn.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
         LoginUsersColumn.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-        LoginUsersColumn.Margin = new Avalonia.Thickness(120, 120, 0, 0);
+        LoginUsersColumn.Margin = default;
 
         LoginUsers.Width = 120;
         LoginUsers.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
