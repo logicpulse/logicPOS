@@ -4257,7 +4257,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         _prompt = TicketPrompt.Card;
         TicketBarcode.Text = string.Empty;
-        ShowDialogChrome("Cartão de Cliente", question: true, confirmText: "Ok", showCancel: true);
+        ShowDialogChrome("Cartão de Cliente", question: true, confirmText: "Ok", showCancel: true, cancelText: "Cancelar");
         TicketQuestionBody.IsVisible = false;
         TicketKeypad.IsVisible = false;
         TicketBarcode.IsVisible = true;
@@ -4727,7 +4727,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         _prompt = TicketPrompt.Barcode;
         TicketBarcode.Text = string.Empty;
-        ShowDialogChrome("Código Barras / Código Artigo", question: true, confirmText: "Ok", showCancel: true);
+        ShowDialogChrome("Código Barras / Código Artigo", question: true, confirmText: "Ok", showCancel: true, cancelText: "Cancelar");
         TicketQuestionBody.IsVisible = false;
         TicketKeypad.IsVisible = false;
         TicketBarcode.IsVisible = true;
@@ -4881,7 +4881,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _prompt = prompt;
         _replaceKeypad = true;
         _keypadValue!.Text = value.ToString("0.00", CultureInfo.CurrentCulture);
-        ShowDialogChrome(title, question: true, confirmText: "Ok", showCancel: true);
+        ShowDialogChrome(title, question: true, confirmText: "Ok", showCancel: true, cancelText: "Cancelar");
         TicketQuestionBody.IsVisible = false;
         TicketBarcode.IsVisible = false;
         TicketDialogCancelText.Text = "Cancelar";
@@ -4996,10 +4996,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
     }
 
-    private void ShowDialogChrome(string title, bool question, string confirmText, bool showCancel)
+    private void ShowDialogChrome(string title, bool question, string confirmText, bool showCancel, string cancelText = "Não")
     {
         TicketDialogTitle.Text = title;
         TicketDialogConfirmText.Text = confirmText;
+        TicketDialogCancelText.Text = cancelText;
         TicketDialogCancel.IsVisible = showCancel;
         var icon = question ? "question" : "info";
         TicketDialogIcon.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}_window.png");
