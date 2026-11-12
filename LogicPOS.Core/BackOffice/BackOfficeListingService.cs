@@ -3317,16 +3317,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             query = (IQueryable)where.MakeGenericMethod(type).Invoke(null, [query, lambda])!;
         }
 
-        // Listing thumbnails read Button.Image for articles / families / subfamilies.
-        if (type == typeof(Article) || type == typeof(ArticleFamily) || type == typeof(ArticleSubfamily))
-        {
-            var include = typeof(EntityFrameworkQueryableExtensions).GetMethods()
-                .First(method => method.Name == "Include"
-                    && method.IsGenericMethod
-                    && method.GetParameters().Length == 2
-                    && method.GetParameters()[1].ParameterType == typeof(string));
-            query = (IQueryable)include.MakeGenericMethod(type).Invoke(null, [query, "Button"])!;
-        }
+        // Button is a ComplexType on Article/Family/Subfamily — always loaded; Include("Button") is invalid.
 
         var toList = typeof(EntityFrameworkQueryableExtensions).GetMethods()
             .First(method => method.Name == "ToListAsync"
