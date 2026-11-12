@@ -1922,6 +1922,22 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <Style Selector="Button.pos_menu_dimmed Image">
+        <Setter Property="Opacity" Value="0.55" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_dimmed TextBlock.pos_menu_caption">
+        <Setter Property="Opacity" Value="0.8" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_dimmed:pointerover Image">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_dimmed:pointerover TextBlock.pos_menu_caption">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
     <Style Selector="Button.pos_scroll">
         <Setter Property="Background" Value="#2F2F2F" />
         <Setter Property="BorderBrush" Value="#4A4A4A" />

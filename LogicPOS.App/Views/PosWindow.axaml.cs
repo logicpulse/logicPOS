@@ -971,6 +971,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 RefreshMenus();
             },
             assetImageUri: "avares://LogicPOS.App/Assets/Images/Pos/button_favorites.png");
+        var familyHasSelection = _showFavorites || _catalog.Families.Any(item => item.Id == _familyId);
+        DimIfNotSelected(favoritesButton, familyHasSelection);
         PlaceMenu(favoritesButton, layout.FavoritesX, layout.FavoritesY, layout.ButtonWidth, layout.ButtonHeight);
 
         var families = Page(_catalog.Families, _familyPage, layout.FamilyRows);
@@ -982,6 +984,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 false,
                 family.Id == _familyId && _showFavorites == false,
                 () => SelectFamily(family.Id));
+            DimIfNotSelected(button, familyHasSelection);
             PlaceMenu(button, layout.FamilyX, layout.FamilyY + (index * layout.ButtonHeight), layout.ButtonWidth, layout.ButtonHeight);
             images.Add(new MenuImageRequest(button, ButtonImageKind.Family, family.Id, false));
         }
@@ -990,6 +993,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
         var subfamilyColumns = VisibleSubfamilyColumns();
         var subfamilies = Page(SubfamiliesOfSelectedFamily(), _subfamilyPage, subfamilyColumns);
+        var subfamilyHasSelection = _showFavorites == false
+            && SubfamiliesOfSelectedFamily().Any(item => item.Id == _subfamilyId);
         for (var index = 0; index < subfamilies.Count; index++)
         {
             var subfamily = subfamilies[index];
@@ -999,6 +1004,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 subfamily.Id == _subfamilyId && _showFavorites == false,
                 () => SelectSubfamily(subfamily.Id),
                 subfamily: true);
+            DimIfNotSelected(button, subfamilyHasSelection);
             PlaceMenu(button, layout.SubfamilyX + (index * layout.ButtonWidth), layout.SubfamilyY, layout.ButtonWidth, layout.ButtonHeight);
             images.Add(new MenuImageRequest(button, ButtonImageKind.Subfamily, subfamily.Id, false));
         }
@@ -1757,6 +1763,14 @@ public partial class PosWindow : UserControl, IOfficeSurface
             Child = new TextBlock { Classes = { "pos_fo_article_plus_text" }, Text = "+" }
         });
         return host;
+    }
+
+    private static void DimIfNotSelected(Button button, bool groupHasSelection)
+    {
+        if (groupHasSelection && button.Classes.Contains("pos_menu_button_selected") == false)
+        {
+            button.Classes.Add("pos_menu_dimmed");
+        }
     }
 
     // Subfamília: imagem a ocupar o botão todo, legenda sobreposta em baixo; anel/visto marcam a seleccionada.
