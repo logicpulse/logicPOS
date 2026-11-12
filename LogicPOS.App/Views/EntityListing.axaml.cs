@@ -2002,7 +2002,8 @@ public partial class EntityListing : UserControl
         if (input is DockPanel dock)
         {
             var lookup = dock.Children.OfType<AutoCompleteBox>().FirstOrDefault();
-            input = lookup ?? dock.Children.OfType<TextBox>().FirstOrDefault() ?? input;
+            // PasswordReveal wraps the TextBox in a Panel inside the touch-keyboard DockPanel.
+            input = lookup ?? FindTextBox(dock) ?? input;
         }
 
         if (input is CheckBox check)
@@ -2039,7 +2040,29 @@ public partial class EntityListing : UserControl
             return box.Text ?? string.Empty;
         }
 
-        return string.Empty;
+        return FindTextBox(input)?.Text ?? string.Empty;
+    }
+
+    private static TextBox? FindTextBox(Control root)
+    {
+        if (root is TextBox box)
+        {
+            return box;
+        }
+
+        if (root is Panel panel)
+        {
+            foreach (var child in panel.Children.OfType<Control>())
+            {
+                var found = FindTextBox(child);
+                if (found is not null)
+                {
+                    return found;
+                }
+            }
+        }
+
+        return null;
     }
 
     private ComboBox CreateWindowsPrinterCombo(string? current)
