@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text;
 using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Application.Features.System;
+using LogicPOS.Application.Features.System.Users;
 using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.Fiscal;
@@ -86,6 +87,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Path"] = "Caminho",
         ["Login"] = "Login",
         ["Pin"] = "PIN",
+        ["PortalPassword"] = "Password do portal",
+        ["PortalPasswordConfirm"] = "Confirmar password do portal",
         ["Month"] = "Mês",
         ["Day"] = "Dia",
         ["Fixed"] = "Fixo",
@@ -527,6 +530,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             if (entity is User user)
             {
                 ApplyPin(user, fields, creating);
+                var portalError = ApplyPortalPassword(user, fields, creating);
+                if (portalError is not null)
+                {
+                    return ListingSaveResult.Fail(portalError);
+                }
             }
 
             var missing = await FillForeignKeysAsync(database, page.EntityType, entity, cancellationToken);
@@ -1144,7 +1152,26 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             {
                 Key = "Pin",
                 Label = "PIN",
-                Kind = "text",
+                Kind = "password",
+                Value = string.Empty,
+                Required = creating,
+                Group = "Detalhe"
+            });
+            // Password is hashed/hidden; clear-text portal fields mirror the web UserEditDialog.
+            fields.Add(new ListingField
+            {
+                Key = "PortalPassword",
+                Label = Header("PortalPassword"),
+                Kind = "password",
+                Value = string.Empty,
+                Required = creating,
+                Group = "Detalhe"
+            });
+            fields.Add(new ListingField
+            {
+                Key = "PortalPasswordConfirm",
+                Label = Header("PortalPasswordConfirm"),
+                Kind = "password",
                 Value = string.Empty,
                 Required = creating,
                 Group = "Detalhe"
@@ -1260,6 +1287,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return propertyName switch
             {
                 "Name" or "Login" or "ProfileId" or "CommissionGroupId" or "DateOfContract" or "PasswordReset" or "Pin"
+                    or "PortalPassword" or "PortalPasswordConfirm"
                     => "Detalhe",
                 "Residence" or "Locality" or "City" or "ZipCode" or "ZipCpde" or "Phone" or "MobilePhone" or "Email"
                     => "Contactos",
@@ -1519,7 +1547,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ApplyDisabled(entity, fields);
         foreach (var pair in fields)
         {
-            if (pair.Key is "Pin" or "Disabled")
+            if (pair.Key is "Pin" or "Disabled" or "PortalPassword" or "PortalPasswordConfirm")
             {
                 continue;
             }
@@ -1910,6 +1938,47 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         user.AccessPin = _passwords.HashPassword(pin);
         user.PasswordReset = false;
+    }
+
+    /// <summary>
+    /// Sets User.Password (web/portal). Empty on edit keeps the current hash; create requires min 8 chars (web parity).
+    /// </summary>
+    private string? ApplyPortalPassword(User user, IReadOnlyDictionary<string, string> fields, bool creating)
+    {
+        fields.TryGetValue("PortalPassword", out var password);
+        fields.TryGetValue("PortalPasswordConfirm", out var confirm);
+        password = (password ?? string.Empty).Trim();
+        confirm = (confirm ?? string.Empty).Trim();
+
+        if (password.Length == 0 && confirm.Length == 0)
+        {
+            if (creating)
+            {
+                return "Indique a password do portal (mínimo 8 caracteres).";
+            }
+
+            return null;
+        }
+
+        if (password.Length == 0 || confirm.Length == 0)
+        {
+            return "Preencha a password do portal e a confirmação, ou deixe ambas em branco.";
+        }
+
+        if (PortalPasswordRules.IsStrongEnough(password) == false)
+        {
+            return $"A password do portal tem de ter pelo menos {PortalPasswordRules.MinimumLength} caracteres.";
+        }
+
+        if (string.Equals(password, confirm, StringComparison.Ordinal) == false)
+        {
+            return "A confirmação da password do portal não coincide.";
+        }
+
+        user.Password = _passwords.HashPassword(password);
+        user.PasswordReset = false;
+        user.PasswordResetDate = DateTime.Now;
+        return null;
     }
 
     private async Task<ListingSaveResult> CommunicateSeriesAtAsync(Guid? id, CancellationToken cancellationToken)

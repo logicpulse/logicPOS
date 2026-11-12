@@ -1702,6 +1702,11 @@ public partial class EntityListing : UserControl
             box.Classes.Add("bo_entity_multiline");
         }
 
+        if (field.Kind == "password")
+        {
+            box.PasswordChar = '•';
+        }
+
         if (TouchFields.IsNumericKey(field.Key))
         {
             box.Classes.Add("bo_numeric");
@@ -1727,6 +1732,11 @@ public partial class EntityListing : UserControl
         }
 
         var input = field.ReadOnly ? (Control)box : AttachKeyboard(box);
+        if (field.Kind == "password" && field.ReadOnly == false)
+        {
+            PasswordReveal.Attach(box);
+        }
+
         if (_title == "Clientes" && field.Key == "FiscalNumber" && field.ReadOnly == false && input is DockPanel dock)
         {
             var vies = new Button { Classes = { "bo_doc_page_button" }, Content = "VIES" };

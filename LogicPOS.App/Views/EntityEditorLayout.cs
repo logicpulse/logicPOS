@@ -127,7 +127,7 @@ internal static class EntityEditorLayout
             ["Detalhe"] =
             [
                 new("Identificação", "user", 2, ["Name", "ProfileId", "CommissionGroupId", "DateOfContract"]),
-                new("Acesso", "lock", 2, ["Login", "Pin", "PasswordReset"])
+                new("Acesso", "lock", 2, ["Login", "Pin", "PortalPassword", "PortalPasswordConfirm", "PasswordReset"])
             ],
             ["Contactos"] =
             [
