@@ -14,6 +14,11 @@
                     <TextBlock Classes="dash_subtitle" Text="Resumo diário, trimestral e anual da empresa." />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Classes="dash_controls" Orientation="Horizontal">
+                    <Button x:Name="OnboardingButton"
+                            Classes="dash_action"
+                            Content="Primeiros passos"
+                            IsVisible="False"
+                            Click="OnOnboardingClick" />
                     <StackPanel Classes="dash_control_group">
                         <TextBlock Classes="dash_control_label" Text="APRESENTAÇÃO DOS VALORES" />
                         <Border Classes="dash_segmented">

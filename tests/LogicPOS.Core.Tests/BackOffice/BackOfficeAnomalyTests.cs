@@ -94,7 +94,8 @@ public class BackOfficeAnomalyTests
     public void Profile_menu_keeps_ungated_titles_and_filters_the_rest()
     {
         Assert.False(ProfileMenuAccess.IsRestricted("Backup DB"));
-        Assert.False(ProfileMenuAccess.IsRestricted("Novo Doc."));
+        Assert.False(ProfileMenuAccess.IsRestricted("Primeiros passos"));
+        Assert.True(ProfileMenuAccess.IsRestricted("Novo Doc."));
         Assert.True(ProfileMenuAccess.IsRestricted("Artigos"));
         Assert.True(ProfileMenuAccess.IsRestricted("Recibos"));
 

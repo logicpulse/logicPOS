@@ -112,6 +112,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             }
         };
         OnboardingHost.StepRequested += OnOnboardingStepRequested;
+        DashboardHost.OnboardingRequested += (_, _) => _ = OpenOnboardingAsync();
         AttachedToVisualTree += (_, _) =>
         {
             RelayoutForViewport();
@@ -429,6 +430,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             // Cloud mode (or DI not ready): no local onboarding checklist — show Painel.
             _onboardingIncomplete = false;
             ApplyFrontOfficeGate();
+            OnboardingMenuButton.IsVisible = false;
+            DashboardHost.ShowsOnboardingShortcut = false;
             ShowDashboardHome();
             await ReloadDashboardSafeAsync();
             return;
@@ -451,8 +454,11 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        var wasIncomplete = _onboardingIncomplete;
         _onboardingIncomplete = status.IsComplete == false;
         ApplyFrontOfficeGate();
+        OnboardingMenuButton.IsVisible = _onboardingIncomplete;
+        DashboardHost.ShowsOnboardingShortcut = _onboardingIncomplete == false;
 
         if (_onboardingIncomplete)
         {
@@ -463,6 +469,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         }
 
         var wasOnboarding = OnboardingHost.IsVisible;
+        // Revisiting a completed setup (optional steps): stay on the checklist.
+        if (wasOnboarding && wasIncomplete == false && forceDashboard == false)
+        {
+            RestoreOnboardingAfterOverlay();
+            return;
+        }
+
         OnboardingHost.IsVisible = false;
 
         if (forceDashboard == false
@@ -485,9 +498,18 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         }
     }
 
+    private async Task OpenOnboardingAsync()
+    {
+        _articleDashboardRequest++;
+        SetDrawerOpen(false);
+        ReportsOverlay.IsVisible = false;
+        EntityHost.SetOverlayOnly(false);
+        await ShowOnboardingHomeAsync();
+    }
+
     private async Task ShowOnboardingHomeAsync()
     {
-        SelectMenuItem(DashboardButton);
+        SelectMenuItem(OnboardingMenuButton.IsVisible ? OnboardingMenuButton : DashboardButton);
         PageTitle.Text = string.Empty;
         SyncPortraitChrome(AppText.Get("Configuração inicial"));
         DashboardHost.IsVisible = false;
@@ -1443,6 +1465,10 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         SetMenuButtonText(DashboardButton, dashLabel);
         ToolTip.SetTip(DashboardButton, dashLabel);
 
+        var onboardingLabel = AppText.Get("Primeiros passos");
+        SetMenuButtonText(OnboardingMenuButton, onboardingLabel);
+        ToolTip.SetTip(OnboardingMenuButton, onboardingLabel);
+
         var foLabel = AppText.Get("FrontOffice");
         SetMenuButtonText(FrontOfficeButton, foLabel);
         ToolTip.SetTip(FrontOfficeButton, foLabel);
@@ -1532,6 +1558,9 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         SetDrawerOpen(false);
         _ = RefreshHomeAfterSetupAsync(forceDashboard: true);
     }
+
+    private void OnOnboardingMenuClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        => _ = OpenOnboardingAsync();
 
     private void OnPosClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {

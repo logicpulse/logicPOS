@@ -28,7 +28,18 @@ public partial class DashboardView : UserControl
         ListingNotice.BindToast(StatusText, this);
     }
 
+    public event EventHandler? OnboardingRequested;
+
+    public bool ShowsOnboardingShortcut
+    {
+        get => OnboardingButton.IsVisible;
+        set => OnboardingButton.IsVisible = value;
+    }
+
     public Task ReloadAsync() => LoadAsync(_year);
+
+    private void OnOnboardingClick(object? sender, RoutedEventArgs e)
+        => OnboardingRequested?.Invoke(this, EventArgs.Empty);
 
     private void OnVatOnClick(object? sender, RoutedEventArgs e)
     {
