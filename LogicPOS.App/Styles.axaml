@@ -1804,6 +1804,11 @@
         <Setter Property="Foreground" Value="#000000" />
     </Style>
 
+    <Style Selector="Button.pos_menu_button_grey.pos_menu_article">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#1E1E1E" />
+    </Style>
+
     <Style Selector="Button.pos_menu_button:disabled">
         <Setter Property="Background" Value="#6E6E6E" />
         <Setter Property="Foreground" Value="#4A4A4A" />
@@ -1851,6 +1856,64 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="Margin" Value="2,2,2,0" />
+    </Style>
+
+    <Style Selector="Border.pos_menu_subfamily_clip">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_subfamily Image.pos_menu_image">
+        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="Border.pos_menu_subfamily_band">
+        <Setter Property="Background" Value="#B3000000" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="Border.pos_menu_subfamily_band TextBlock.pos_menu_caption">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Border.pos_menu_subfamily_band_plain">
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.pos_menu_subfamily_ring">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_subfamily.pos_menu_button_selected Border.pos_menu_subfamily_ring">
+        <Setter Property="BorderBrush" Value="#8DB33A" />
+        <Setter Property="BorderThickness" Value="4" />
+    </Style>
+
+    <Style Selector="Border.pos_menu_subfamily_check">
+        <Setter Property="IsVisible" Value="False" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Background" Value="#8DB33A" />
+        <Setter Property="CornerRadius" Value="11" />
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Margin" Value="0,6,6,0" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_subfamily.pos_menu_button_selected Border.pos_menu_subfamily_check">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_menu_subfamily_check_text">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Button.pos_scroll">

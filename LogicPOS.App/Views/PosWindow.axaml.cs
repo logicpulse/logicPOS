@@ -997,7 +997,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 subfamily.Text,
                 false,
                 subfamily.Id == _subfamilyId && _showFavorites == false,
-                () => SelectSubfamily(subfamily.Id));
+                () => SelectSubfamily(subfamily.Id),
+                subfamily: true);
             PlaceMenu(button, layout.SubfamilyX + (index * layout.ButtonWidth), layout.SubfamilyY, layout.ButtonWidth, layout.ButtonHeight);
             images.Add(new MenuImageRequest(button, ButtonImageKind.Subfamily, subfamily.Id, false));
         }
@@ -1429,7 +1430,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
                     ClipToBounds = true
                 };
                 var portraitArticle = request.Fill && _layout.IsPortrait;
-                request.Button.Content = BuildMenuTileContent(label, image, portraitArticle);
+                request.Button.Content = request.Button.Classes.Contains("pos_menu_subfamily")
+                    ? BuildSubfamilyTileContent(label, image)
+                    : BuildMenuTileContent(label, image, portraitArticle);
 
                 if ((index + 1) % chunk == 0)
                 {
@@ -1659,7 +1662,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         bool selected,
         Action? click,
         string? imageBase64 = null,
-        string? assetImageUri = null)
+        string? assetImageUri = null,
+        bool subfamily = false)
     {
         // Em portrait os artigos seguem a referência: fundo verde (não cinzento landscape).
         var colorClass = article && _layout.IsPortrait == false
@@ -1673,9 +1677,22 @@ public partial class PosWindow : UserControl, IOfficeSurface
         {
             button.Classes.Add("pos_fo_article");
         }
+        else if (article)
+        {
+            button.Classes.Add("pos_menu_article");
+        }
+
+        if (subfamily)
+        {
+            button.Classes.Add("pos_menu_subfamily");
+        }
 
         var image = TryLoadMenuImage(imageBase64, assetImageUri, fill: article);
-        if (image is not null || (article && _layout.IsPortrait))
+        if (subfamily)
+        {
+            button.Content = BuildSubfamilyTileContent(text, image);
+        }
+        else if (image is not null || (article && _layout.IsPortrait))
         {
             button.Content = BuildMenuTileContent(text, image, article && _layout.IsPortrait);
         }
@@ -1742,11 +1759,37 @@ public partial class PosWindow : UserControl, IOfficeSurface
         return host;
     }
 
+    // Subfamília: imagem a ocupar o botão todo, legenda sobreposta em baixo; anel/visto marcam a seleccionada.
+    private static Control BuildSubfamilyTileContent(string text, Image? image)
+    {
+        var tile = new Grid();
+        if (image is not null)
+        {
+            tile.Children.Add(image);
+        }
+
+        tile.Children.Add(new Border
+        {
+            Classes = { image is null ? "pos_menu_subfamily_band_plain" : "pos_menu_subfamily_band" },
+            Child = new TextBlock { Classes = { "pos_menu_caption" }, Text = text }
+        });
+        tile.Children.Add(new Border { Classes = { "pos_menu_subfamily_ring" } });
+        tile.Children.Add(new Border
+        {
+            Classes = { "pos_menu_subfamily_check" },
+            Child = new TextBlock { Classes = { "pos_menu_subfamily_check_text" }, Text = "✓" }
+        });
+        return new Border { Classes = { "pos_menu_subfamily_clip" }, Child = tile };
+    }
+
     private static string ExtractMenuButtonLabel(Button button)
     {
         return button.Content switch
         {
             TextBlock text => text.Text ?? string.Empty,
+            Border { Child: Panel tile } => tile.Children.OfType<Border>()
+                .Where(item => item.Classes.Contains("pos_menu_subfamily_check") == false)
+                .Select(item => item.Child).OfType<TextBlock>().LastOrDefault()?.Text ?? string.Empty,
             Grid grid => grid.Children.OfType<TextBlock>().LastOrDefault()?.Text ?? string.Empty,
             Panel panel => panel.Children.OfType<Grid>().SelectMany(g => g.Children.OfType<TextBlock>())
                 .LastOrDefault()?.Text
