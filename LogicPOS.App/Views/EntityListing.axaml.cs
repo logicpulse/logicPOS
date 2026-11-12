@@ -66,6 +66,7 @@ public partial class EntityListing : UserControl
         _load = new ListingLoad(Busy);
         ListingNotice.BindToast(Notice, this, keepCountsInline: true, skipProgress: true);
         ListingNotice.BindToast(EditorNotice, this);
+        ListingNotice.BindToast(BulkNotice, this);
         ListingNotice.BindToast(
             ImportNotice,
             this,
@@ -201,6 +202,7 @@ public partial class EntityListing : UserControl
     public async Task ShowAsync(string title)
     {
         _title = title;
+        _picked.Clear();
         TitleText.Text = title;
         BackOfficePageIcons.Apply(TitleIcon, title);
         SearchBox.Text = string.Empty;
@@ -526,6 +528,11 @@ public partial class EntityListing : UserControl
             button.Click += async (_, _) => await RunActionAsync(key);
             ActionBar.Children.Add(button);
         }
+
+        if (snapshot.CanEdit && BulkEditable)
+        {
+            ActionBar.Children.Add(BulkEditButton());
+        }
     }
 
     private static Control ActionButtonContent(string label, string? iconPath)
@@ -585,7 +592,8 @@ public partial class EntityListing : UserControl
 
     private void BindColumns(ListingSnapshot snapshot)
     {
-        var signature = string.Join("|", snapshot.Columns.Select(column => column.Key)) + snapshot.CanEdit + snapshot.CanDelete + ShowsDocument;
+        var picks = snapshot.CanEdit && BulkEditable;
+        var signature = string.Join("|", snapshot.Columns.Select(column => column.Key)) + snapshot.CanEdit + snapshot.CanDelete + ShowsDocument + picks;
         if (signature == _columnSignature)
         {
             return;
@@ -596,6 +604,12 @@ public partial class EntityListing : UserControl
         _defaultVisible.Clear();
         _cardKeys.Clear();
         Grid.Columns.Clear();
+        _pickAll = null;
+        if (picks)
+        {
+            Grid.Columns.Add(PickColumn());
+        }
+
         var starred = false;
         foreach (var column in snapshot.Columns)
         {
@@ -698,6 +712,7 @@ public partial class EntityListing : UserControl
         Grid.ItemsSource = rows;
         CardList.ItemsSource = rows;
         Notice.Text = string.IsNullOrEmpty(term) && rows.Count == _rows.Count && _notice is not null ? _notice : $"{rows.Count} registo(s)";
+        RefreshPickAll();
     }
 
     private bool InDateRange(ListingRow row)
@@ -742,7 +757,7 @@ public partial class EntityListing : UserControl
         {
             TextBlock block => block.Text ?? string.Empty,
             string text => text,
-            null => string.Empty,
+            null or CheckBox => string.Empty,
             var other => other.ToString() ?? string.Empty
         };
 

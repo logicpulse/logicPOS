@@ -103,6 +103,7 @@ public static class AppComposition
             services.AddSingleton<IPosOrderService>(provider => provider.GetRequiredService<PosOrderService>());
             services.AddSingleton<BackOfficeListingService>();
             services.AddSingleton<IBackOfficeListingService>(provider => provider.GetRequiredService<BackOfficeListingService>());
+            services.AddSingleton<IBulkEditService, BulkEditService>();
             services.AddSingleton<LocalStockService>();
             services.AddSingleton<IStockManagementService>(provider => provider.GetRequiredService<LocalStockService>());
             services.AddSingleton<LocalDocumentStockProcessor>();

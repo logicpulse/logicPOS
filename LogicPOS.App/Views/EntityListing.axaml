@@ -214,6 +214,49 @@
             </Border>
         </Panel>
 
+        <Panel x:Name="BulkOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame bo_entity_editor bo_entity_editor_narrow bo_entity_editor_fit" MaxHeight="680">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <DockPanel>
+                            <Button Classes="bo_window_button" DockPanel.Dock="Right" Click="OnBulkCancelClick"
+                                    ToolTip.Tip="Fechar">
+                                <svg:Svg Classes="bo_window_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                            </Button>
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                                <TextBlock x:Name="BulkTitle" Classes="login_alert_title" />
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button x:Name="BulkSaveButton" Classes="login_alert_action" Click="OnBulkSaveClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Guardar" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action action_secondary" Click="OnBulkCancelClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock x:Name="BulkNotice" Classes="bo_entity_error" DockPanel.Dock="Bottom" />
+                    <ScrollViewer>
+                        <StackPanel x:Name="BulkFields" Classes="bo_entity_form bo_article_sections" />
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Panel>
+
         <Panel x:Name="FiscalYearOverlay" Classes="login_alert_overlay" IsVisible="False">
             <views:FiscalYearWizard x:Name="FiscalYearHost" />
         </Panel>
