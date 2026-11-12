@@ -230,6 +230,10 @@
             <views:TableSetupWizard x:Name="TableSetupHost" />
         </Panel>
 
+        <Panel x:Name="PrinterSetupOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <views:PrinterSetupWizard x:Name="PrinterSetupHost" />
+        </Panel>
+
         <Panel x:Name="ImportOverlay" Classes="login_alert_overlay" IsVisible="False">
             <Border Classes="login_alert_frame bo_entity_editor">
                 <DockPanel Classes="login_alert_inner">

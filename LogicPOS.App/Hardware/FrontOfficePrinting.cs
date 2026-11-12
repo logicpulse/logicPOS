@@ -310,6 +310,26 @@ internal static class FrontOfficePrinting
         return await SendAsync(printer, report.Title, RenderCashReport(report, printer.ColumnsNormal));
     }
 
+    public static async Task<string?> PrintTestAsync(ThermalPrinterSettings printer)
+    {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return blocked;
+        }
+
+        var width = Math.Max(16, printer.ColumnsNormal);
+        var payload = RenderLines(lines =>
+        {
+            lines.Add("TESTE DE IMPRESSÃO");
+            lines.Add(new string('-', width));
+            lines.Add(printer.Designation ?? string.Empty);
+            lines.Add(Pair("Papel", $"{printer.PaperWidthMm} mm", width));
+            lines.Add(DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+        });
+        return await SendAsync(printer, "Teste", payload);
+    }
+
     private static async Task<ThermalPrinterSettings?> TerminalPrinterAsync()
     {
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();

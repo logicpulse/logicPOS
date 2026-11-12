@@ -127,15 +127,18 @@ public sealed class OnboardingService : IOnboardingService
     private readonly IServiceScopeFactory _scopes;
     private readonly ICompanySetupService _companySetup;
     private readonly IOperationMode _operationMode;
+    private readonly IPrinterSetupWizard _printerSetup;
 
     public OnboardingService(
         IServiceScopeFactory scopes,
         ICompanySetupService companySetup,
-        IOperationMode operationMode)
+        IOperationMode operationMode,
+        IPrinterSetupWizard printerSetup)
     {
         _scopes = scopes;
         _companySetup = companySetup;
         _operationMode = operationMode;
+        _printerSetup = printerSetup;
     }
 
     public async Task<OnboardingStatus> GetStatusAsync(CancellationToken cancellationToken = default)
@@ -163,6 +166,7 @@ public sealed class OnboardingService : IOnboardingService
             .AnyAsync(item => item.IsDeleted == false, cancellationToken);
         var hasPaymentMethod = await database.PaymentMethods.AsNoTracking()
             .AnyAsync(item => item.IsDeleted == false, cancellationToken);
+        var hasTerminalPrinter = await _printerSetup.HasTerminalPrinterAsync(cancellationToken);
 
         var steps = new List<OnboardingStep>
         {
@@ -229,6 +233,14 @@ public sealed class OnboardingService : IOnboardingService
             isComplete: userCount > 1,
             isOptional: true,
             statusText: userCount > 1 ? $"{userCount} utilizadores" : null));
+
+        steps.Add(new OnboardingStep(
+            "printer",
+            "Impressora",
+            "Escolha a impressora do Windows e o papel e associe-a a este terminal.",
+            "Impressoras",
+            isComplete: hasTerminalPrinter,
+            isOptional: true));
 
         return new OnboardingStatus(steps);
     }

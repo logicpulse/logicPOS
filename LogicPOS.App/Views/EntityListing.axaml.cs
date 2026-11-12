@@ -74,6 +74,7 @@ public partial class EntityListing : UserControl
         ArticleSetupHost.Finished += OnArticleSetupFinished;
         FinalConsumerSetupHost.Finished += OnFinalConsumerSetupFinished;
         TableSetupHost.Finished += OnTableSetupFinished;
+        PrinterSetupHost.Finished += OnPrinterSetupFinished;
         // No recycling: cards bake title/Tag from the row; recycled cells would show the wrong item.
         CardList.ItemTemplate = new FuncDataTemplate<ListingRow>((row, _) => BuildCard(row), false);
         AttachedToVisualTree += (_, _) =>
@@ -98,6 +99,8 @@ public partial class EntityListing : UserControl
     public event EventHandler? FinalConsumerSetupCompleted;
 
     public event EventHandler? TableSetupCompleted;
+
+    public event EventHandler? PrinterSetupCompleted;
 
     public event EventHandler? EntitySaved;
 
@@ -129,6 +132,12 @@ public partial class EntityListing : UserControl
             TableSetupOverlay,
             message,
             () => TableSetupCompleted?.Invoke(this, EventArgs.Empty));
+
+    private async void OnPrinterSetupFinished(object? sender, string? message)
+        => await FinishOnboardingOverlayAsync(
+            PrinterSetupOverlay,
+            message,
+            () => PrinterSetupCompleted?.Invoke(this, EventArgs.Empty));
 
     private async Task FinishOnboardingOverlayAsync(Panel overlay, string? message, Action completed)
     {
@@ -181,6 +190,12 @@ public partial class EntityListing : UserControl
     {
         TableSetupOverlay.IsVisible = true;
         await TableSetupHost.ShowAsync();
+    }
+
+    public async Task OpenPrinterSetupWizardAsync()
+    {
+        PrinterSetupOverlay.IsVisible = true;
+        await PrinterSetupHost.ShowAsync();
     }
 
     public async Task ShowAsync(string title)

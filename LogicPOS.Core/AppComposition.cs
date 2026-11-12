@@ -121,6 +121,8 @@ public static class AppComposition
             services.AddSingleton<IFinalConsumerSetupWizard>(provider => provider.GetRequiredService<LocalFinalConsumerSetupWizard>());
             services.AddSingleton<LocalTableSetupWizard>();
             services.AddSingleton<ITableSetupWizard>(provider => provider.GetRequiredService<LocalTableSetupWizard>());
+            services.AddSingleton<LocalPrinterSetupWizard>();
+            services.AddSingleton<IPrinterSetupWizard>(provider => provider.GetRequiredService<LocalPrinterSetupWizard>());
             services.AddSingleton<LocalCompanySetupService>();
             services.AddSingleton<ICompanySetupService>(provider => provider.GetRequiredService<LocalCompanySetupService>());
             services.AddSingleton<LocalFirstUserSetupWizard>();

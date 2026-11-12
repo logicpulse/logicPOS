@@ -50,7 +50,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
                         item.ThermalPrinter.ThermalMaxCharsPerLineNormalBold,
                         item.ThermalPrinter.ThermalMaxCharsPerLineSmall
                     },
-                Fallback = item.Printer == null || item.Printer.IsDeleted
+                Fallback = item.Printer == null || item.Printer.IsDeleted || item.Printer.Type!.ThermalPrinter == false
                     ? null
                     : new
                     {
@@ -204,7 +204,9 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             .Select(item => new
             {
                 Thermal = item.ThermalPrinter == null || item.ThermalPrinter.IsDeleted ? null : item.ThermalPrinter,
-                Fallback = item.Printer == null || item.Printer.IsDeleted ? null : item.Printer
+                Fallback = item.Printer == null || item.Printer.IsDeleted || item.Printer.Type!.ThermalPrinter == false
+                    ? null
+                    : item.Printer
             })
             .FirstOrDefaultAsync(cancellationToken);
         var chosen = row?.Thermal ?? row?.Fallback;

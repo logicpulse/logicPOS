@@ -1,5 +1,6 @@
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
 using Microsoft.Data.Sqlite;
@@ -179,6 +180,51 @@ public sealed class OnboardingServiceTests
             Assert.Equal("2 utilizadores", moreUsers.StatusText);
             Assert.Equal(before.TotalCount, after.TotalCount);
             Assert.Equal(before.CompletedCount, after.CompletedCount);
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Printer_step_is_optional_and_completes_when_the_terminal_has_a_printer()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-onboarding-printer-");
+        try
+        {
+            ConfigureApp(root, module: "restaurant");
+            var services = AppComposition.Services!;
+            var onboarding = services.GetRequiredService<IOnboardingService>();
+            var before = Assert.Single((await onboarding.GetStatusAsync()).Steps, step => step.Key == "printer");
+            Assert.True(before.IsOptional);
+            Assert.False(before.IsComplete);
+
+            var wizard = services.GetRequiredService<IPrinterSetupWizard>();
+            var draft = await wizard.LoadAsync();
+            Assert.Null(draft.BlockedReason);
+            var thermal = Assert.Single(draft.Types, type => type.Thermal);
+            Assert.Contains(draft.Types, type => type.Thermal == false);
+
+            var request = new PrinterSetupRequest { TypeId = thermal.Id, PrinterName = "POS-58", PaperLabel = "58 mm" };
+            var saved = await wizard.SaveAsync(request);
+            Assert.True(saved.Ok, saved.Message);
+            var again = await wizard.SaveAsync(request);
+            Assert.True(again.Ok, again.Message);
+
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                Assert.Equal(1, await database.Printers.CountAsync(item => item.IsDeleted == false && item.Designation == "POS-58"));
+            }
+
+            var printer = await services.GetRequiredService<IThermalPrintSource>().GetTerminalPrinterAsync();
+            Assert.NotNull(printer);
+            Assert.Equal("POS-58", printer.Designation);
+            Assert.Equal(58, printer.PaperWidthMm);
+
+            var after = Assert.Single((await onboarding.GetStatusAsync()).Steps, step => step.Key == "printer");
+            Assert.True(after.IsComplete);
         }
         finally
         {

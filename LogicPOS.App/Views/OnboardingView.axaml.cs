@@ -230,6 +230,7 @@ public partial class OnboardingView : UserControl
         "final-consumer" => "menu_clientes.svg",
         "table" => "menu_outras_tabelas_mesas.svg",
         "payment-method" => "menu_informacoes_fiscais_metodo_pagamento.svg",
+        "printer" => "menu_dispositivos_impressoras.svg",
         _ => "menu_dashboard.svg"
     };
 }

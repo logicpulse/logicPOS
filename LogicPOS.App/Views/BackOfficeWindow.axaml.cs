@@ -81,6 +81,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         EntityHost.ArticleSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.FinalConsumerSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.TableSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
+        EntityHost.PrinterSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         // Do not navigate away on ordinary entity save — only refresh setup alerts while onboarding.
         EntityHost.EntitySaved += (_, _) =>
         {
@@ -532,6 +533,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         if (step.Key == "more-users")
         {
             await OpenEntityCreateFromOnboardingAsync("Utilizadores");
+            return;
+        }
+
+        if (step.Key == "printer")
+        {
+            await PrepareOnboardingOverlayAsync("Impressoras");
+            await EntityHost.OpenPrinterSetupWizardAsync();
             return;
         }
 
