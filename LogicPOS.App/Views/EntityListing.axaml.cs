@@ -613,13 +613,21 @@ public partial class EntityListing : UserControl
         var starred = false;
         foreach (var column in snapshot.Columns)
         {
+            var title = column.Header ?? string.Empty;
+            if (column.Key == "ButtonImage")
+            {
+                Grid.Columns.Add(ThumbnailColumn(title));
+                _columnKeys[title] = column.Key;
+                _defaultVisible[title] = column.Visible;
+                continue;
+            }
+
             var flexible = starred == false && column.Key is "Designation" or "Name" or "Message" or "Notes" or "Value";
             if (flexible)
             {
                 starred = true;
             }
 
-            var title = column.Header ?? string.Empty;
             var titleWidth = Math.Max(120, title.Length * 8 + 64);
             var headerBlock = new TextBlock
             {
@@ -668,6 +676,45 @@ public partial class EntityListing : UserControl
         {
             Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg", row => _ = DeleteAsync(row), row => row.CanDelete));
         }
+    }
+
+    private static DataGridTemplateColumn ThumbnailColumn(string header)
+    {
+        return new DataGridTemplateColumn
+        {
+            Header = header,
+            CanUserSort = false,
+            CanUserReorder = false,
+            MinWidth = 52,
+            MaxWidth = 52,
+            Width = new DataGridLength(52),
+            IsVisible = true,
+            CellTemplate = new FuncDataTemplate<ListingRow>((_, _) =>
+            {
+                var image = new Image
+                {
+                    Classes = { "bo_listing_thumb" },
+                    Width = 40,
+                    Height = 40,
+                    Stretch = Stretch.UniformToFill
+                };
+                var frame = new Border
+                {
+                    Classes = { "bo_listing_thumb_frame" },
+                    Child = image,
+                    ClipToBounds = true
+                };
+                void Apply()
+                {
+                    var data = frame.DataContext is ListingRow row ? row["ButtonImage"] : string.Empty;
+                    image.Source = string.IsNullOrWhiteSpace(data) ? null : DecodeImage(data);
+                }
+
+                frame.DataContextChanged += (_, _) => Apply();
+                Apply();
+                return frame;
+            }, false)
+        };
     }
 
     private static DataGridTemplateColumn ActionColumn(string icon, Action<ListingRow> click, Func<ListingRow, bool> enabled)

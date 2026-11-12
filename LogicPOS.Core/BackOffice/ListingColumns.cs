@@ -19,7 +19,13 @@ public static class ListingColumns
 
     private static readonly Dictionary<string, (string Key, string Header)[]> Profiles = new(StringComparer.Ordinal)
     {
-        ["Famílias"] = CodeDesignationUpdated,
+        ["Famílias"] =
+        [
+            ("ButtonImage", "Imagem"),
+            ("Code", "Código"),
+            ("Designation", "Designação"),
+            ("UpdatedAt", "Atualizado em")
+        ],
         ["Tipo de Preço"] = CodeDesignationUpdated,
         ["Unidades de tamanho"] = CodeDesignationUpdated,
         ["Armazém"] = CodeDesignationUpdated,
@@ -40,6 +46,7 @@ public static class ListingColumns
         ["Motivo de isenção de IVA"] = CodeDesignationAcronymUpdated,
         ["Subfamílias"] =
         [
+            ("ButtonImage", "Imagem"),
             ("Code", "Código"),
             ("Designation", "Designação"),
             ("FamilyId", "Família do artigo"),
@@ -47,6 +54,7 @@ public static class ListingColumns
         ],
         ["Artigos"] =
         [
+            ("ButtonImage", "Imagem"),
             ("Code", "Código"),
             ("Designation", "Designação"),
             ("IsComposed", "Artigo composto"),

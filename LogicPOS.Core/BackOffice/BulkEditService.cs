@@ -117,16 +117,17 @@ public sealed class BulkEditService : IBulkEditService
 
         VatExemptionReason? reason = null;
         var reasonTicked = changes.TryGetValue("VatExemptionReasonId", out var reasonText);
-        if (reasonTicked)
+        if (reasonTicked && string.IsNullOrWhiteSpace(reasonText) == false)
         {
             reason = await FindAsync(database.VatExemptionReasons, reasonText, cancellationToken);
             if (reason is null)
             {
-                return ListingSaveResult.Fail("Indique o motivo de isenção de IVA.");
+                return ListingSaveResult.Fail("Motivo de isenção de IVA inválido.");
             }
         }
 
         // Same rule as the article editor: a 0% rate needs an exemption reason.
+        // Non-zero rates clear the reason; an empty «Alterar» on the reason just clears it.
         if (vat is not null && vat.Value == 0 && reason is null)
         {
             return ListingSaveResult.Fail("A taxa de IVA é 0%. Indique o motivo de isenção de IVA.");

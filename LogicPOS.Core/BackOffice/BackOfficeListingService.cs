@@ -978,7 +978,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         var values = new Dictionary<string, string>();
         foreach (var column in columns)
         {
-            values[column.Key] = ReadCell(entity, column.Key, lookups);
+            values[column.Key] = column.Key == "ButtonImage"
+                ? ReadButtonImage(entity)
+                : ReadCell(entity, column.Key, lookups);
         }
 
         return new ListingRow
@@ -987,6 +989,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             CanDelete = page.CanDelete && CanRemove(entity),
             Values = values
         };
+    }
+
+    private static string ReadButtonImage(object entity)
+    {
+        var button = entity.GetType().GetProperty("Button")?.GetValue(entity) as Button;
+        return button?.Image ?? string.Empty;
     }
 
     private List<ListingField> Describe(PageSpec page, object entity, bool creating)
@@ -3265,6 +3273,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             var lambda = System.Linq.Expressions.Expression.Lambda(body, parameter);
             var where = typeof(Queryable).GetMethods().First(method => method.Name == "Where" && method.GetParameters().Length == 2);
             query = (IQueryable)where.MakeGenericMethod(type).Invoke(null, [query, lambda])!;
+        }
+
+        // Listing thumbnails read Button.Image for articles / families / subfamilies.
+        if (type == typeof(Article) || type == typeof(ArticleFamily) || type == typeof(ArticleSubfamily))
+        {
+            var include = typeof(EntityFrameworkQueryableExtensions).GetMethods()
+                .First(method => method.Name == "Include"
+                    && method.IsGenericMethod
+                    && method.GetParameters().Length == 2
+                    && method.GetParameters()[1].ParameterType == typeof(string));
+            query = (IQueryable)include.MakeGenericMethod(type).Invoke(null, [query, "Button"])!;
         }
 
         var toList = typeof(EntityFrameworkQueryableExtensions).GetMethods()
