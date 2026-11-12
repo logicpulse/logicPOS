@@ -12,11 +12,19 @@ namespace LogicPOS.App.Hardware;
 /// </summary>
 internal static class PdfWindowsPrint
 {
-    public static bool PrintOrOpen(string pdfPath, string? printerName = null)
+    /// <param name="paperWidthMm">
+    /// When set with <paramref name="paperHeightMm"/> (barcode labels), asks the printer for that
+    /// media size so each PDF page lands on one sticker instead of being stretched to A4/default.
+    /// </param>
+    public static bool PrintOrOpen(
+        string pdfPath,
+        string? printerName = null,
+        float? paperWidthMm = null,
+        float? paperHeightMm = null)
     {
         if (OperatingSystem.IsWindows())
         {
-            Print(pdfPath, printerName);
+            Print(pdfPath, printerName, paperWidthMm, paperHeightMm);
             return true;
         }
 
@@ -29,7 +37,11 @@ internal static class PdfWindowsPrint
     }
 
     [SupportedOSPlatform("windows")]
-    public static void Print(string pdfPath, string? printerName = null)
+    public static void Print(
+        string pdfPath,
+        string? printerName = null,
+        float? paperWidthMm = null,
+        float? paperHeightMm = null)
     {
         if (OperatingSystem.IsWindows() == false)
         {
@@ -38,7 +50,8 @@ internal static class PdfWindowsPrint
 
         EnsurePdf(pdfPath);
         var bytes = File.ReadAllBytes(pdfPath);
-        var pages = Conversion.ToImages(bytes, password: null, new RenderOptions { Dpi = 200 }).ToList();
+        var dpi = paperWidthMm is > 0 && paperHeightMm is > 0 ? 300 : 200;
+        var pages = Conversion.ToImages(bytes, password: null, new RenderOptions { Dpi = dpi }).ToList();
         if (pages.Count == 0)
         {
             throw new InvalidOperationException("O PDF não tem páginas.");
@@ -46,7 +59,7 @@ internal static class PdfWindowsPrint
 
         try
         {
-            WinSpoolBitmapPrint.Print(pages, printerName);
+            WinSpoolBitmapPrint.Print(pages, printerName, paperWidthMm, paperHeightMm, dpi);
         }
         finally
         {
@@ -104,10 +117,36 @@ internal static class PdfWindowsPrint
 /// <summary>Minimal Win32 bitmap printing via gdi32/winspool — no System.Drawing.</summary>
 file static class WinSpoolBitmapPrint
 {
-    public static void Print(IReadOnlyList<SKBitmap> pages, string? printerName)
+    private const int DmOutBuffer = 2;
+    private const int DmInBuffer = 8;
+    private const int DmInOut = DmInBuffer | DmOutBuffer;
+    private const int DmOrientation = 0x00000001;
+    private const int DmPaperSize = 0x00000002;
+    private const int DmPaperLength = 0x00000004;
+    private const int DmPaperWidth = 0x00000008;
+    private const short DmPaperUser = 256;
+    private const short DmOrientPortrait = 1;
+    private const short DmOrientLandscape = 2;
+
+    // DEVMODEW fixed-header offsets (Unicode).
+    private const int OffDmFields = 72;
+    private const int OffDmOrientation = 76;
+    private const int OffDmPaperSize = 78;
+    private const int OffDmPaperLength = 80;
+    private const int OffDmPaperWidth = 82;
+
+    public static void Print(
+        IReadOnlyList<SKBitmap> pages,
+        string? printerName,
+        float? paperWidthMm,
+        float? paperHeightMm,
+        int renderDpi)
     {
         var device = string.IsNullOrWhiteSpace(printerName) ? PreferDefaultPrinter() : printerName.Trim();
-        var hdc = CreateDC(null, device, null, IntPtr.Zero);
+        var labelMode = paperWidthMm is > 0 && paperHeightMm is > 0;
+        var hdc = labelMode
+            ? CreatePrinterDc(device, paperWidthMm!.Value, paperHeightMm!.Value)
+            : CreateDC(null, device, null, IntPtr.Zero);
         if (hdc == IntPtr.Zero)
         {
             throw new InvalidOperationException(
@@ -121,7 +160,7 @@ file static class WinSpoolBitmapPrint
             var gdiDoc = new DocInfoW
             {
                 SizeOfStruct = Marshal.SizeOf<DocInfoW>(),
-                DocName = "logicpos",
+                DocName = labelMode ? "logicpos-labels" : "logicpos",
                 Output = null,
                 DataType = null
             };
@@ -141,7 +180,7 @@ file static class WinSpoolBitmapPrint
 
                     try
                     {
-                        DrawPage(hdc, page);
+                        DrawPage(hdc, page, labelMode, renderDpi);
                     }
                     finally
                     {
@@ -160,7 +199,55 @@ file static class WinSpoolBitmapPrint
         }
     }
 
-    private static void DrawPage(IntPtr hdc, SKBitmap page)
+    private static IntPtr CreatePrinterDc(string device, float widthMm, float heightMm)
+    {
+        if (OpenPrinter(device, out var hPrinter, IntPtr.Zero) == false || hPrinter == IntPtr.Zero)
+        {
+            return CreateDC(null, device, null, IntPtr.Zero);
+        }
+
+        IntPtr pDevMode = IntPtr.Zero;
+        try
+        {
+            var bytesNeeded = DocumentProperties(IntPtr.Zero, hPrinter, device, IntPtr.Zero, IntPtr.Zero, 0);
+            if (bytesNeeded <= 0)
+            {
+                return CreateDC(null, device, null, IntPtr.Zero);
+            }
+
+            pDevMode = Marshal.AllocHGlobal(bytesNeeded);
+            if (DocumentProperties(IntPtr.Zero, hPrinter, device, pDevMode, IntPtr.Zero, DmOutBuffer) < 0)
+            {
+                return CreateDC(null, device, null, IntPtr.Zero);
+            }
+
+            var widthTenths = (short)Math.Clamp(Math.Round(widthMm * 10), 1, short.MaxValue);
+            var heightTenths = (short)Math.Clamp(Math.Round(heightMm * 10), 1, short.MaxValue);
+            var fields = Marshal.ReadInt32(pDevMode, OffDmFields);
+            fields |= DmOrientation | DmPaperSize | DmPaperLength | DmPaperWidth;
+            Marshal.WriteInt32(pDevMode, OffDmFields, fields);
+            // Portrait + custom size matches the PDF page (already WxH mm); landscape would rotate twice.
+            Marshal.WriteInt16(pDevMode, OffDmOrientation, DmOrientPortrait);
+            Marshal.WriteInt16(pDevMode, OffDmPaperSize, DmPaperUser);
+            Marshal.WriteInt16(pDevMode, OffDmPaperWidth, widthTenths);
+            Marshal.WriteInt16(pDevMode, OffDmPaperLength, heightTenths);
+
+            _ = DocumentProperties(IntPtr.Zero, hPrinter, device, pDevMode, pDevMode, DmInOut);
+            var hdc = CreateDC(null, device, null, pDevMode);
+            return hdc != IntPtr.Zero ? hdc : CreateDC(null, device, null, IntPtr.Zero);
+        }
+        finally
+        {
+            if (pDevMode != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(pDevMode);
+            }
+
+            ClosePrinter(hPrinter);
+        }
+    }
+
+    private static void DrawPage(IntPtr hdc, SKBitmap page, bool labelMode, int renderDpi)
     {
         var printableWidth = GetDeviceCaps(hdc, HORZRES);
         var printableHeight = GetDeviceCaps(hdc, VERTRES);
@@ -176,13 +263,37 @@ file static class WinSpoolBitmapPrint
             canvas.DrawBitmap(page, 0, 0);
         }
 
-        var scale = Math.Min(
-            printableWidth / (double)flipped.Width,
-            printableHeight / (double)flipped.Height);
-        var destW = Math.Max(1, (int)Math.Round(flipped.Width * scale));
-        var destH = Math.Max(1, (int)Math.Round(flipped.Height * scale));
-        var destX = Math.Max(0, (printableWidth - destW) / 2);
-        var destY = Math.Max(0, (printableHeight - destH) / 2);
+        int destW;
+        int destH;
+        int destX;
+        int destY;
+        if (labelMode)
+        {
+            // 1:1 physical size from the PDF render DPI; do not stretch to a larger default page.
+            var dpiX = Math.Max(1, GetDeviceCaps(hdc, LOGPIXELSX));
+            var dpiY = Math.Max(1, GetDeviceCaps(hdc, LOGPIXELSY));
+            destW = Math.Max(1, (int)Math.Round(flipped.Width * (dpiX / (double)renderDpi)));
+            destH = Math.Max(1, (int)Math.Round(flipped.Height * (dpiY / (double)renderDpi)));
+            if (destW > printableWidth || destH > printableHeight)
+            {
+                var fit = Math.Min(printableWidth / (double)destW, printableHeight / (double)destH);
+                destW = Math.Max(1, (int)Math.Round(destW * fit));
+                destH = Math.Max(1, (int)Math.Round(destH * fit));
+            }
+
+            destX = Math.Max(0, (printableWidth - destW) / 2);
+            destY = Math.Max(0, (printableHeight - destH) / 2);
+        }
+        else
+        {
+            var scale = Math.Min(
+                printableWidth / (double)flipped.Width,
+                printableHeight / (double)flipped.Height);
+            destW = Math.Max(1, (int)Math.Round(flipped.Width * scale));
+            destH = Math.Max(1, (int)Math.Round(flipped.Height * scale));
+            destX = Math.Max(0, (printableWidth - destW) / 2);
+            destY = Math.Max(0, (printableHeight - destH) / 2);
+        }
 
         var info = flipped.Info;
         var pixels = flipped.GetPixels();
@@ -230,6 +341,8 @@ file static class WinSpoolBitmapPrint
 
     private const int HORZRES = 8;
     private const int VERTRES = 10;
+    private const int LOGPIXELSX = 88;
+    private const int LOGPIXELSY = 90;
     private const int BI_RGB = 0;
     private const int DIB_RGB_COLORS = 0;
     private const uint SRCCOPY = 0x00CC0020;
@@ -237,6 +350,21 @@ file static class WinSpoolBitmapPrint
 
     [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern bool GetDefaultPrinter(char[] buffer, ref int bufferSize);
+
+    [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern bool OpenPrinter(string printerName, out IntPtr printerHandle, IntPtr defaults);
+
+    [DllImport("winspool.drv", SetLastError = true)]
+    private static extern bool ClosePrinter(IntPtr printerHandle);
+
+    [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern int DocumentProperties(
+        IntPtr hwnd,
+        IntPtr printerHandle,
+        string deviceName,
+        IntPtr devModeOutput,
+        IntPtr devModeInput,
+        int mode);
 
     [DllImport("gdi32.dll", CharSet = CharSet.Unicode)]
     private static extern IntPtr CreateDC(string? driver, string device, string? output, IntPtr initData);

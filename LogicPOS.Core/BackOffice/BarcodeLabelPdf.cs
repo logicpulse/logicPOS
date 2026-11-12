@@ -37,6 +37,14 @@ public static class BarcodeLabelPdf
         return Models.First(item => item.Model == key).Label;
     }
 
+    /// <summary>Physical label size in millimetres for the printer media (one sticker per page).</summary>
+    public static (float WidthMm, float HeightMm) SizeMm(string? model)
+    {
+        return string.Equals(NormalizeModel(model), Model40x30, StringComparison.OrdinalIgnoreCase)
+            ? (40f, 30f)
+            : (100f, 50f);
+    }
+
     public static string Write(IReadOnlyList<BarcodeLabelLine> labels, string? forceModel = null)
     {
         QuestPDF.Settings.License = LicenseType.Community;

@@ -394,11 +394,20 @@ public partial class PdfDocumentView : UserControl
         }
 
         var printer = SelectedPrinter();
+        float? labelWidthMm = null;
+        float? labelHeightMm = null;
+        if (_barcodeMode)
+        {
+            var size = BarcodeLabelPdf.SizeMm(SelectedTemplate() ?? _barcodeTemplate);
+            labelWidthMm = size.WidthMm;
+            labelHeightMm = size.HeightMm;
+        }
+
         await PrintUi.RunAsync(this, Busy, async () =>
         {
             await Task.Run(() =>
             {
-                if (PdfWindowsPrint.PrintOrOpen(_pdfPath, printer) == false)
+                if (PdfWindowsPrint.PrintOrOpen(_pdfPath, printer, labelWidthMm, labelHeightMm) == false)
                 {
                     throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
                 }
