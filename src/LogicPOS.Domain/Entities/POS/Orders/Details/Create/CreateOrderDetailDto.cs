@@ -3,4 +3,5 @@ namespace LogicPOS.Domain.Entities.Dtos;
 public record CreateOrderDetailDto(Guid ArticleId,
                                    decimal Quantity,
                                    decimal UnitPrice,
-                                   bool PriceIncludesVat = false);
+                                   bool PriceIncludesVat = false,
+                                   decimal? Discount = null);

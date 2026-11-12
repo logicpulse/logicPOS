@@ -19,7 +19,10 @@ public sealed class PosStoredLine
         decimal netUnitPrice,
         string? ticketKey = null,
         decimal? unitPrice = null,
-        bool priceWithVat = false)
+        bool priceWithVat = false,
+        decimal? discount = null,
+        string? designation = null,
+        decimal? vatPercentage = null)
     {
         ArticleId = articleId;
         Quantity = quantity;
@@ -27,6 +30,9 @@ public sealed class PosStoredLine
         TicketKey = ticketKey;
         UnitPrice = unitPrice ?? netUnitPrice;
         PriceWithVat = priceWithVat;
+        Discount = discount;
+        Designation = designation;
+        VatPercentage = vatPercentage;
     }
 
     public string? TicketKey { get; }
@@ -40,6 +46,12 @@ public sealed class PosStoredLine
     public decimal UnitPrice { get; }
 
     public bool PriceWithVat { get; }
+
+    public decimal? Discount { get; }
+
+    public string? Designation { get; }
+
+    public decimal? VatPercentage { get; }
 }
 
 public sealed class PosOpenOrder
@@ -140,7 +152,8 @@ public sealed class PosOrderService : IPosOrderService
             line.ArticleId,
             line.Quantity,
             line.UnitPrice,
-            PriceIncludesVat: line.PriceWithVat)).ToList();
+            PriceIncludesVat: line.PriceWithVat,
+            Discount: line.Discount)).ToList();
 
         if (orderId is Guid existingId)
         {
@@ -357,7 +370,14 @@ public sealed class PosOrderService : IPosOrderService
             .Where(detail => detail.IsDeleted == false && detail.Ticket != null && detail.Ticket.OrderId == orderId)
             .ToListAsync(cancellationToken);
 
-        return details.Select(detail => new PosStoredLine(detail.ArticleId, detail.Quantity, detail.Price, detail.TicketId.ToString())).ToList();
+        return details.Select(detail => new PosStoredLine(
+            detail.ArticleId,
+            detail.Quantity,
+            detail.Price,
+            detail.TicketId.ToString(),
+            discount: detail.Discount,
+            designation: detail.Designation,
+            vatPercentage: detail.Vat)).ToList();
     }
 
     public async Task<PosDocumentResult> ReduceLineAsync(Guid orderId, Guid articleId, decimal unitPrice, decimal quantity, CancellationToken cancellationToken = default)
@@ -696,6 +716,7 @@ public sealed class PosOrderService : IPosOrderService
             .ToList();
 
         IReadOnlyList<PosCashReportLine> families = [];
+        IReadOnlyList<PosCashReportLine> payments = [];
         if (documentIds.Count > 0)
         {
             families = await database.DocumentDetails
@@ -707,6 +728,18 @@ public sealed class PosOrderService : IPosOrderService
                     Name = group.Key,
                     Quantity = group.Sum(item => item.Quantity),
                     Total = group.Sum(item => item.TotalFinal)
+                })
+                .ToListAsync(cancellationToken);
+
+            payments = await database.Set<DocumentPaymentMethod>()
+                .AsNoTracking()
+                .Where(item => documentIds.Contains(item.DocumentId))
+                .GroupBy(item => item.PaymentMethod!.Designation)
+                .Select(group => new PosCashReportLine
+                {
+                    Name = group.Key ?? string.Empty,
+                    Quantity = group.Count(),
+                    Total = group.Sum(item => item.Amount)
                 })
                 .ToListAsync(cancellationToken);
         }
@@ -722,7 +755,8 @@ public sealed class PosOrderService : IPosOrderService
             CashIn = cashIn,
             CashOut = cashOut,
             ClosingCash = closed != 0 ? closed : opening + cashIn - cashOut,
-            Families = families
+            Families = families,
+            Payments = payments
         };
     }
 

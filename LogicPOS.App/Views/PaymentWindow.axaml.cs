@@ -68,6 +68,7 @@ public partial class PaymentWindow : Window
         ListingNotice.BindToast(CustomerSearchNotice, this);
         ApplySaleDocumentType();
         BuildMethods();
+        FullPaymentButton.Click += OnFullPaymentClick;
         TouchFields.Attach(this);
         Opened += (_, _) => CoverOwner();
         Opened += async (_, _) => await LoadCustomerAsync();
@@ -228,14 +229,31 @@ public partial class PaymentWindow : Window
         SetEnabled(_customerCard, HasCard());
     }
 
-    private void OnClearCustomerClick(object? sender, RoutedEventArgs e)
+    private async void OnClearCustomerClick(object? sender, RoutedEventArgs e)
     {
+        Notes.Text = string.Empty;
+        try
+        {
+            var finalConsumer = AppComposition.Services is { } services
+                ? await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync()
+                : null;
+            if (finalConsumer is not null)
+            {
+                ShowCustomer(finalConsumer);
+                return;
+            }
+        }
+        catch
+        {
+            // Fall back to clearing the fields; IssueAsync will ask for a customer.
+        }
+
         _customerSearch++;
         HideCustomerSuggest();
         CustomerSearchNotice.IsVisible = false;
         _filling = true;
         _customerId = null;
-        _finalConsumer = false;
+        _finalConsumer = true;
         CustomerName.Text = string.Empty;
         FiscalNumber.Text = string.Empty;
         CardNumber.Text = string.Empty;
@@ -245,10 +263,15 @@ public partial class PaymentWindow : Window
         ZipCode.Text = string.Empty;
         City.Text = string.Empty;
         Country.Text = _defaultCountry;
-        Notes.Text = string.Empty;
         Dispatcher.UIThread.Post(() => _filling = false, DispatcherPriority.Input);
         SetEnabled(_customerCard, false);
         RefreshTotals();
+    }
+
+    private void OnFullPaymentClick(object? sender, RoutedEventArgs e)
+    {
+        PartialOverlay.IsVisible = false;
+        FullPaymentButton.Classes.Add("selected");
     }
 
     private async void OnInvoiceClick(object? sender, RoutedEventArgs e)
@@ -267,6 +290,12 @@ public partial class PaymentWindow : Window
 
     private void OnPartialPaymentClick(object? sender, RoutedEventArgs e)
     {
+        FullPaymentButton.Classes.Remove("selected");
+        if (sender is Button partialButton)
+        {
+            partialButton.Classes.Add("selected");
+        }
+
         PartialLines.Children.Clear();
         _partialRows.Clear();
         for (var index = 0; index < _lines.Count; index++)

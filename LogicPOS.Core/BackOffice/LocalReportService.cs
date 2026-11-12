@@ -46,7 +46,16 @@ public sealed class LocalReportService : IReportService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var rows = await ReadRowsAsync(database, report, filters, cancellationToken);
+        List<Dictionary<string, string>> rows;
+        try
+        {
+            rows = await ReadRowsAsync(database, report, filters, cancellationToken);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return ListingSaveResult.Fail(exception.Message);
+        }
+
         if (rows.Count == 0)
         {
             return ListingSaveResult.Fail("Não há dados para este relatório no intervalo indicado.");
@@ -127,6 +136,12 @@ public sealed class LocalReportService : IReportService
                 ("Série", item.SerialNumber ?? string.Empty))).ToList();
         }
 
+        if (report.Key is not ("sales-day" or "sales-customer" or "sales-customer-detail"
+            or "sales-document-type" or "sales-document-type-detail"))
+        {
+            throw new InvalidOperationException($"O relatório \"{report.Name}\" ainda não está disponível nesta edição.");
+        }
+
         var documents = database.Documents.AsNoTracking()
             .Where(item => item.IsDeleted == false && item.IsDraft == false && item.Status != "A");
         if (report.ShowDates)
@@ -179,20 +194,10 @@ public sealed class LocalReportService : IReportService
                 .ToList();
         }
 
-        if (report.Key is "sales-document-type" or "sales-document-type-detail")
-        {
-            return sales
-                .GroupBy(item => item.Type)
-                .Select(group => Row(("Tipo", group.Key ?? string.Empty), ("Documentos", group.Count().ToString()), ("Total", group.Sum(item => item.TotalFinal).ToString("0.00"))))
-                .ToList();
-        }
-
-        return sales.Select(item => Row(
-            ("Data", item.CreatedAt.ToString("dd/MM/yyyy")),
-            ("Número", item.Number ?? string.Empty),
-            ("Tipo", item.Type ?? string.Empty),
-            ("Cliente", item.Customer ?? string.Empty),
-            ("Total", item.TotalFinal.ToString("0.00")))).ToList();
+        return sales
+            .GroupBy(item => item.Type)
+            .Select(group => Row(("Tipo", group.Key ?? string.Empty), ("Documentos", group.Count().ToString()), ("Total", group.Sum(item => item.TotalFinal).ToString("0.00"))))
+            .ToList();
     }
 
     private static Dictionary<string, string> Row(params (string Key, string Value)[] cells)

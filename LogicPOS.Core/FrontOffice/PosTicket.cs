@@ -28,7 +28,7 @@ public sealed class PosTicketLine
 
     public decimal QuantityStep { get; }
 
-    public decimal Discount { get; }
+    public decimal Discount { get; set; }
 
     public Guid VatRateId { get; }
 
@@ -167,6 +167,17 @@ public sealed class PosTicket
     public void SetSelectedDisplayPrice(decimal price)
     {
         Selected?.SetDisplayPrice(price);
+    }
+
+    public void SetSelectedDiscount(decimal discount)
+    {
+        var line = Selected;
+        if (line is null || discount < 0m)
+        {
+            return;
+        }
+
+        line.Discount = discount;
     }
 
     public void Clear()

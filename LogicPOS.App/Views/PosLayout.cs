@@ -258,9 +258,9 @@ public sealed class PosLayout
         var contentBottom = ToolbarY - floatInset;
         var contentHeight = Math.Max(200, contentBottom - contentTop);
 
-        // Pad compacto 6×2 (referência FO portrait) — botões quase quadrados.
+        // Pad compacto 6×3 — botões quase quadrados; a 3.ª linha tem Dividir, Volta, código, peso e desconto.
         PadColumns = 6;
-        PadRows = 2;
+        PadRows = 3;
         TicketButtonWidth = Math.Max(40, (ScreenWidth - (Margin * 2)) / PadColumns);
         TicketButtonHeight = Math.Max(44, Math.Min(TicketButtonWidth - 4, 56));
         TicketIconSize = Math.Min(TicketIconSize, 24);
