@@ -5,7 +5,8 @@ namespace LogicPOS.Core.BackOffice;
 public static class ArticleFormRules
 {
     // Patterns copied from the GTK SettingsApp article dialog.
-    private const string CodePattern = @"^[0-9A-Za-z€$&@#%()\[\]+\-_ \.\\\/]{2,25}$";
+    // Min length 1: the first-article wizard seeds Code = "1".
+    private const string CodePattern = @"^[0-9A-Za-z€$&@#%()\[\]+\-_ \.\\\/]{1,25}$";
     private const string DealerPattern = @"^[À-ÿ\-_ \s\w]*$";
     private const string DesignationPattern = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]{1,200}$";
     private const string ButtonPattern = @"^[0-9A-Za-zéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂçÇ€$&@#%ºª()\[\]';:!?<>+\-_ \.\,\s\\\/\*]{2,35}$";
