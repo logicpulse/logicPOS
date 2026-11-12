@@ -115,6 +115,33 @@ public sealed class OnboardingStatus
     public bool IsComplete => NextStep is null;
 }
 
+/// <summary>
+/// What a status source found. A null value means the source could not check it
+/// (e.g. the cloud API refused the request); that step is then shown as optional.
+/// </summary>
+public sealed class OnboardingFacts
+{
+    public bool BackOfficeOnly { get; init; }
+
+    public bool? CompanyComplete { get; init; }
+
+    public int? UserCount { get; init; }
+
+    public bool? HasFiscalYearAndSeries { get; init; }
+
+    public bool? HasArticle { get; init; }
+
+    public bool? HasFinalConsumer { get; init; }
+
+    public bool HasPlace { get; init; }
+
+    public bool? HasTable { get; init; }
+
+    public bool? HasPaymentMethod { get; init; }
+
+    public bool? HasTerminalPrinter { get; init; }
+}
+
 public interface IOnboardingService
 {
     Task<OnboardingStatus> GetStatusAsync(CancellationToken cancellationToken = default);
@@ -122,7 +149,9 @@ public interface IOnboardingService
 
 public sealed class OnboardingService : IOnboardingService
 {
-    private const string FinalConsumerName = "Consumidor Final";
+    public const string FinalConsumerName = "Consumidor Final";
+
+    private const string UncheckedText = "Não foi possível verificar";
 
     private readonly IServiceScopeFactory _scopes;
     private readonly ICompanySetupService _companySetup;
@@ -151,7 +180,6 @@ public sealed class OnboardingService : IOnboardingService
         var companyNeedsSetup = await _companySetup.NeedsSetupAsync(cancellationToken);
         var userCount = await database.Users.AsNoTracking()
             .CountAsync(item => item.IsDeleted == false, cancellationToken);
-        var hasUser = userCount > 0;
         var hasCurrentFiscalYear = await database.FiscalYears.AsNoTracking()
             .AnyAsync(item => item.IsDeleted == false && item.Year == year, cancellationToken);
         var hasSeries = await database.DocumentSeries.AsNoTracking()
@@ -168,80 +196,118 @@ public sealed class OnboardingService : IOnboardingService
             .AnyAsync(item => item.IsDeleted == false, cancellationToken);
         var hasTerminalPrinter = await _printerSetup.HasTerminalPrinterAsync(cancellationToken);
 
+        return Build(new OnboardingFacts
+        {
+            BackOfficeOnly = backOfficeOnly,
+            CompanyComplete = companyNeedsSetup == false,
+            UserCount = userCount,
+            HasFiscalYearAndSeries = hasCurrentFiscalYear && hasSeries,
+            HasArticle = hasArticle,
+            HasFinalConsumer = hasFinalConsumer,
+            HasPlace = hasPlace,
+            HasTable = hasTable,
+            HasPaymentMethod = hasPaymentMethod,
+            HasTerminalPrinter = hasTerminalPrinter
+        });
+    }
+
+    /// <summary>Step list shared by the local database and the cloud API status sources.</summary>
+    public static OnboardingStatus Build(OnboardingFacts facts)
+    {
+        var userCount = facts.UserCount;
         var steps = new List<OnboardingStep>
         {
-            new(
+            Step(
                 "first-user",
                 "Primeiro utilizador",
                 "Crie o utilizador administrador e o PIN de acesso ao posto.",
                 "Utilizadores",
-                hasUser),
-            new(
+                userCount is null ? null : userCount > 0),
+            Step(
                 "company",
                 "Dados da empresa",
                 "Indique o país, a moeda e o NIF da empresa.",
                 actionPage: null,
-                isComplete: companyNeedsSetup == false,
+                facts.CompanyComplete,
                 opensCompanySetup: true),
-            new(
+            Step(
                 "fiscal-year",
                 "Ano fiscal e séries",
                 "Crie o ano fiscal corrente e as séries de documento.",
                 "Abertura de ano fiscal",
-                hasCurrentFiscalYear && hasSeries),
-            new(
+                facts.HasFiscalYearAndSeries),
+            Step(
                 "article",
                 "Primeiro artigo",
                 "Crie família, subfamília e o primeiro artigo para vender no posto.",
                 "Artigos",
-                hasArticle),
-            new(
+                facts.HasArticle),
+            Step(
                 "final-consumer",
                 "Cliente de balcão",
                 "Crie o «Consumidor Final» para fatura simplificada.",
                 "Clientes",
-                hasFinalConsumer)
+                facts.HasFinalConsumer)
         };
 
-        if (backOfficeOnly == false)
+        if (facts.BackOfficeOnly == false)
         {
-            steps.Add(new OnboardingStep(
+            steps.Add(Step(
                 "table",
                 "Mesa de venda",
-                hasPlace
+                facts.HasPlace
                     ? "Crie pelo menos uma mesa para gravar pedidos no posto."
                     : "Crie um local e uma mesa para gravar pedidos no posto.",
-                hasPlace ? "Mesas" : "Locais",
-                hasTable));
+                facts.HasPlace ? "Mesas" : "Locais",
+                facts.HasTable));
         }
 
-        if (hasPaymentMethod == false)
+        if (facts.HasPaymentMethod != true)
         {
-            steps.Add(new OnboardingStep(
+            steps.Add(Step(
                 "payment-method",
                 "Métodos de pagamento",
                 "Crie pelo menos um método de pagamento para fechar vendas.",
                 "Métodos de pagamento",
-                isComplete: false));
+                facts.HasPaymentMethod));
         }
 
-        steps.Add(new OnboardingStep(
+        steps.Add(Step(
             "more-users",
             "Adicionar utilizadores",
             "Crie mais utilizadores (empregados, gerentes) e atribua perfis.",
             "Utilizadores",
-            isComplete: userCount > 1,
+            userCount is null ? null : userCount > 1,
             isOptional: true,
             statusText: userCount > 1 ? $"{userCount} utilizadores" : null));
 
-        steps.Add(new OnboardingStep(
+        steps.Add(Step(
             "printer",
             "Impressora",
             "Escolha a impressora do Windows e o papel e associe-a a este terminal.",
             "Impressoras",
-            isComplete: hasTerminalPrinter,
+            facts.HasTerminalPrinter,
             isOptional: true));
 
         return new OnboardingStatus(steps);
     }
+
+    private static OnboardingStep Step(
+        string key,
+        string title,
+        string description,
+        string? actionPage,
+        bool? isComplete,
+        bool opensCompanySetup = false,
+        bool isOptional = false,
+        string? statusText = null)
+        => new(
+            key,
+            title,
+            description,
+            actionPage,
+            isComplete == true,
+            opensCompanySetup,
+            isOptional || isComplete is null,
+            isComplete is null ? UncheckedText : statusText);
 }

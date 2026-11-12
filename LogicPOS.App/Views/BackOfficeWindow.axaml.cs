@@ -573,6 +573,12 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
         if (step.Key == "printer")
         {
+            if (HasService<IPrinterSetupWizard>() == false)
+            {
+                ShowPage("Impressoras");
+                return;
+            }
+
             await PrepareOnboardingOverlayAsync("Impressoras");
             await EntityHost.OpenPrinterSetupWizardAsync();
             return;
@@ -609,6 +615,12 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         if (step.Key == "article"
             || string.Equals(step.ActionPage, "Artigos", StringComparison.OrdinalIgnoreCase))
         {
+            if (HasService<IArticleSetupWizard>() == false)
+            {
+                await OpenEntityCreateFromOnboardingAsync("Artigos");
+                return;
+            }
+
             await OpenArticleSetupWizardFromOnboardingAsync();
             return;
         }
@@ -616,6 +628,12 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         if (step.Key == "final-consumer"
             || string.Equals(step.ActionPage, "Clientes", StringComparison.OrdinalIgnoreCase))
         {
+            if (HasService<IFinalConsumerSetupWizard>() == false)
+            {
+                await OpenEntityCreateFromOnboardingAsync("Clientes");
+                return;
+            }
+
             await OpenFinalConsumerSetupWizardFromOnboardingAsync();
             return;
         }
@@ -623,6 +641,12 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         if (step.Key == "table"
             || step.ActionPage is "Mesas" or "Locais")
         {
+            if (HasService<ITableSetupWizard>() == false)
+            {
+                await OpenEntityCreateFromOnboardingAsync(step.ActionPage ?? "Mesas");
+                return;
+            }
+
             await OpenTableSetupWizardFromOnboardingAsync();
             return;
         }
@@ -638,6 +662,10 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             ShowPage(step.ActionPage);
         }
     }
+
+    private static bool HasService<T>()
+        where T : class
+        => AppComposition.Services?.GetService<T>() is not null;
 
     private static bool IsOnboardingCreateStep(OnboardingStep step)
         => step.Key is "payment-method"
@@ -724,8 +752,14 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private async Task OpenCompanySetupAsync()
     {
         var setup = AppComposition.Services?.GetService<ICompanySetupService>();
+        if (setup is null)
+        {
+            ShowPage("Parâmetros da Empresa");
+            return;
+        }
+
         var owner = HostWindow;
-        if (setup is null || owner is null)
+        if (owner is null)
         {
             return;
         }

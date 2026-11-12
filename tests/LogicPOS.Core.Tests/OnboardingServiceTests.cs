@@ -340,6 +340,31 @@ public sealed class OnboardingServiceTests
         }
     }
 
+    [Fact]
+    public void Unchecked_facts_become_optional_and_do_not_block_setup()
+    {
+        var status = OnboardingService.Build(new OnboardingFacts
+        {
+            CompanyComplete = true,
+            UserCount = 2,
+            HasFiscalYearAndSeries = true,
+            HasArticle = null,
+            HasFinalConsumer = true,
+            HasPlace = true,
+            HasTable = true,
+            HasPaymentMethod = null,
+            HasTerminalPrinter = null
+        });
+
+        Assert.True(status.IsComplete);
+        var article = status.Steps.Single(step => step.Key == "article");
+        Assert.True(article.IsOptional);
+        Assert.False(article.IsComplete);
+        Assert.Equal("Não foi possível verificar", article.StatusText);
+        Assert.True(status.Steps.Single(step => step.Key == "payment-method").IsOptional);
+        Assert.Equal("Não foi possível verificar", status.Steps.Single(step => step.Key == "printer").StatusText);
+    }
+
     private static void ConfigureApp(DirectoryInfo root, string module)
     {
         var databasePath = Path.Combine(root.FullName, "logicpos.db");

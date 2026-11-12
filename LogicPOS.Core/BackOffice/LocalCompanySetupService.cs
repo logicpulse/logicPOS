@@ -14,7 +14,7 @@ namespace LogicPOS.Core.BackOffice;
 /// </summary>
 public sealed class LocalCompanySetupService : ICompanySetupService
 {
-    private static readonly string[] RequiredTokens =
+    public static readonly string[] RequiredTokens =
     [
         "COMPANY_COUNTRY_OID",
         "COMPANY_COUNTRY_CODE2",
