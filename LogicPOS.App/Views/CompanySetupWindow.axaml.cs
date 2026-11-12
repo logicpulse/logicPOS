@@ -165,7 +165,7 @@ public partial class CompanySetupWindow : Window
         return combo;
     }
 
-    private static StackPanel Labelled(TextBlock caption, string? icon, Control input)
+    internal static StackPanel Labelled(TextBlock caption, string? icon, Control input)
     {
         var label = new StackPanel { Classes = { "bo_new_doc_label" } };
         if (icon is not null)

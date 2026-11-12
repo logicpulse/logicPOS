@@ -22,17 +22,20 @@ public partial class SettingsPage : UserControl
     ];
 
     private readonly List<(Guid Id, string Token, string Order, string Code, string Notes, Func<string> Read)> _fields = new();
-    private readonly Dictionary<string, Grid> _pages = new();
+    private readonly Dictionary<string, Control> _pages = new();
     private readonly Dictionary<string, Control> _byToken = new(StringComparer.OrdinalIgnoreCase);
+    private readonly List<(Grid Grid, int Columns, List<(Control Block, bool Wide)> Blocks)> _cardGrids = new();
     private List<LookupOption> _countries = [];
     private static List<LookupOption>? _countryCache;
     private string _title = string.Empty;
     private string _tab = string.Empty;
+    private bool _portrait;
 
     public SettingsPage()
     {
         InitializeComponent();
         ListingNotice.BindToast(Notice, this);
+        SizeChanged += (_, _) => RelayoutCards();
     }
 
     public async Task ShowAsync(string title)
@@ -44,7 +47,9 @@ public partial class SettingsPage : UserControl
         _fields.Clear();
         _pages.Clear();
         _byToken.Clear();
+        _cardGrids.Clear();
         _countries.Clear();
+        _portrait = IsPortrait();
         FieldsHost.Children.Clear();
         TabBar.Children.Clear();
         var service = AppComposition.Services?.GetService<IBackOfficeListingService>();
@@ -92,7 +97,7 @@ public partial class SettingsPage : UserControl
         _tab = tabs.FirstOrDefault() ?? string.Empty;
         foreach (var tab in tabs)
         {
-            var page = BuildPage(groups[tab]);
+            var page = BuildPage(tab, groups[tab]);
             page.IsHitTestVisible = tab == _tab;
             page.Opacity = tab == _tab ? 1 : 0;
             _pages[tab] = page;
@@ -108,7 +113,8 @@ public partial class SettingsPage : UserControl
         TouchFields.Attach(FieldsHost);
     }
 
-    private Grid BuildPage(IReadOnlyList<ListingRow> rows)
+    /// <summary>One tab as section cards from <see cref="SettingsLayout"/>: a field grid, then the Sim/Não toggles.</summary>
+    private Control BuildPage(string tab, IReadOnlyList<ListingRow> rows)
     {
         // OID interno: sincronizado pelo País; não mostrar GUID na ficha.
         foreach (var hidden in rows.Where(IsHiddenCompanyField))
@@ -116,61 +122,122 @@ public partial class SettingsPage : UserControl
             RegisterHiddenField(hidden);
         }
 
-        // Capital Social (left) + Chave Privada AGT-FE (right) on the same row.
-        var pem = rows.FirstOrDefault(row => AgtFePrivateKeyBox.IsToken(row["Token"]));
-        var capital = rows.FirstOrDefault(row =>
-            row["Token"].Equals("COMPANY_STOCK_CAPITAL", StringComparison.OrdinalIgnoreCase));
-        var regular = rows
-            .Where(row => AgtFePrivateKeyBox.IsToken(row["Token"]) == false
-                && IsHiddenCompanyField(row) == false
-                && row["Token"].Equals("COMPANY_STOCK_CAPITAL", StringComparison.OrdinalIgnoreCase) == false)
+        var shown = rows
+            .Where(row => IsHiddenCompanyField(row) == false)
             .OrderBy(row => ParseOrder(row["Order"]))
             .ThenBy(row => row["Code"], StringComparer.OrdinalIgnoreCase)
             .ToList();
+        var byToken = shown.ToLookup(row => row["Token"], StringComparer.OrdinalIgnoreCase);
+        var tokens = shown.Select(row => row["Token"]).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
 
-        var capitalOrder = capital is null ? int.MaxValue : ParseOrder(capital["Order"]);
-        var before = regular.Where(row => ParseOrder(row["Order"]) < capitalOrder).ToList();
-        var after = regular.Where(row => ParseOrder(row["Order"]) >= capitalOrder).ToList();
-
-        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,*") };
-        var rowIndex = 0;
-        rowIndex = AddTwoColumnBlock(grid, before, rowIndex);
-
-        if (capital is not null || pem is not null)
+        var root = new StackPanel { Classes = { "bo_article_sections" } };
+        foreach (var (card, cardTokens) in SettingsLayout.CardsFor(tab, tokens))
         {
-            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
-            if (capital is not null)
+            var blocks = new List<(Control Block, bool Wide)>();
+            var toggles = new List<(Control Block, bool Wide)>();
+            foreach (var row in cardTokens.SelectMany(token => byToken[token]))
             {
-                AddField(grid, capital, rowIndex, 0, columnSpan: 1);
+                var input = AddField(row);
+                if (input is ToggleSwitch toggle)
+                {
+                    toggles.Add((ToggleRow(LabelOf(row), toggle), false));
+                    continue;
+                }
+
+                var caption = new TextBlock { Classes = { "bo_new_doc_caption" }, Text = LabelOf(row) };
+                var wide = AgtFePrivateKeyBox.IsToken(row["Token"]) || row["InputType"].Contains("Multi", StringComparison.OrdinalIgnoreCase);
+                blocks.Add((CompanySetupWindow.Labelled(caption, SettingsLayout.FieldIcon(row["Token"]), input), wide));
             }
 
-            if (pem is not null)
-            {
-                AddField(grid, pem, rowIndex, capital is null ? 0 : 1, columnSpan: 1);
-            }
-
-            rowIndex++;
+            var body = new StackPanel { Classes = { "bo_settings_card_body" } };
+            AddCardGrid(body, "bo_entity_columns", card.Columns, blocks);
+            AddCardGrid(body, "bo_settings_toggles", Math.Min(2, card.Columns), toggles);
+            root.Children.Add(EntityListing.ArticleSection(card.Title, card.Icon, body));
         }
 
-        AddTwoColumnBlock(grid, after, rowIndex);
-        return grid;
+        return root;
     }
 
-    private int AddTwoColumnBlock(Grid grid, IReadOnlyList<ListingRow> rows, int startRow)
+    private void AddCardGrid(Panel body, string classes, int columns, List<(Control Block, bool Wide)> blocks)
     {
-        var half = (int)Math.Ceiling(rows.Count / 2d);
-        for (var index = 0; index < half; index++)
+        if (blocks.Count == 0)
         {
-            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
-            var rowIndex = startRow + index;
-            AddField(grid, rows[index], rowIndex, 0, columnSpan: 1);
-            if (index + half < rows.Count)
-            {
-                AddField(grid, rows[index + half], rowIndex, 1, columnSpan: 1);
-            }
+            return;
         }
 
-        return startRow + half;
+        var grid = new Grid { Classes = { classes } };
+        body.Children.Add(grid);
+        _cardGrids.Add((grid, columns, blocks));
+        ArrangeCardGrid(grid, columns, blocks);
+    }
+
+    /// <summary>Card grid left to right in <paramref name="columns"/> (one in portrait); wide fields take a full row.</summary>
+    private void ArrangeCardGrid(Grid grid, int columns, IReadOnlyList<(Control Block, bool Wide)> blocks)
+    {
+        var count = _portrait ? 1 : columns;
+        grid.Children.Clear();
+        grid.RowDefinitions.Clear();
+        grid.ColumnDefinitions.Clear();
+        for (var index = 0; index < count; index++)
+        {
+            grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
+        }
+
+        var row = 0;
+        var column = 0;
+        foreach (var (block, wide) in blocks)
+        {
+            if (wide && column > 0)
+            {
+                column = 0;
+                row++;
+            }
+
+            if (grid.RowDefinitions.Count <= row)
+            {
+                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            }
+
+            Grid.SetRow(block, row);
+            Grid.SetColumn(block, column);
+            Grid.SetColumnSpan(block, wide ? count : 1);
+            grid.Children.Add(block);
+            column = wide ? count : column + 1;
+            if (column >= count)
+            {
+                column = 0;
+                row++;
+            }
+        }
+    }
+
+    private bool IsPortrait()
+        => TopLevel.GetTopLevel(this) is { } top && top.ClientSize.Height > top.ClientSize.Width;
+
+    private void RelayoutCards()
+    {
+        var portrait = IsPortrait();
+        if (portrait == _portrait)
+        {
+            return;
+        }
+
+        _portrait = portrait;
+        foreach (var (grid, columns, blocks) in _cardGrids)
+        {
+            ArrangeCardGrid(grid, columns, blocks);
+        }
+    }
+
+    private static Control ToggleRow(string label, ToggleSwitch toggle)
+    {
+        var text = new TextBlock { Classes = { "bo_settings_toggle_label" }, Text = label };
+        text.Tapped += (_, _) => toggle.IsChecked = toggle.IsChecked != true;
+        var row = new Grid { Classes = { "bo_settings_toggle_row" }, ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+        Grid.SetColumn(toggle, 1);
+        row.Children.Add(text);
+        row.Children.Add(toggle);
+        return row;
     }
 
     private static int ParseOrder(string? text)
@@ -188,22 +255,21 @@ public partial class SettingsPage : UserControl
         _fields.Add((row.Id, row["Token"], row["Order"], row["Code"], row["Notes"], () => ReadInput(input)));
     }
 
-    private void AddField(Grid grid, ListingRow row, int rowIndex, int column, int columnSpan)
+    private Control AddField(ListingRow row)
     {
-        var stack = new StackPanel { Margin = new Avalonia.Thickness(8, 6) };
+        var input = CreateInput(row);
+        _byToken[row["Token"]] = input;
+        _fields.Add((row.Id, row["Token"], row["Order"], row["Code"], row["Notes"], () => ReadInput(input)));
+        return input;
+    }
+
+    private static string LabelOf(ListingRow row)
+    {
         var translated = row["ResourceStringValue"];
         var label = string.IsNullOrWhiteSpace(translated) || translated.StartsWith("prefparam_", StringComparison.OrdinalIgnoreCase)
             ? PreferenceLabels.Get(row["ResourceString"], row["Token"])
             : translated;
-        stack.Children.Add(new TextBlock { Classes = { "bo_doc_label" }, Text = PreferenceLabels.Title(label) });
-        var input = CreateInput(row);
-        stack.Children.Add(input);
-        _byToken[row["Token"]] = input;
-        Grid.SetRow(stack, rowIndex);
-        Grid.SetColumn(stack, column);
-        Grid.SetColumnSpan(stack, columnSpan);
-        grid.Children.Add(stack);
-        _fields.Add((row.Id, row["Token"], row["Order"], row["Code"], row["Notes"], () => ReadInput(input)));
+        return PreferenceLabels.Title(label);
     }
 
     private Control CreateInput(ListingRow row)
@@ -366,6 +432,11 @@ public partial class SettingsPage : UserControl
             return logo.Value;
         }
 
+        if (input is ToggleSwitch toggle)
+        {
+            return toggle.IsChecked == true ? "True" : "False";
+        }
+
         if (input is CheckBox check)
         {
             return check.IsChecked == true ? "1" : "0";
@@ -413,21 +484,13 @@ public partial class SettingsPage : UserControl
             or "Sim" or "Yes" or "Oui" or "Sí" or "Si";
 
     private static Control CreateBooleanField(string value)
-    {
-        var yesLabel = AppText.Get("Sim");
-        var noLabel = AppText.Get("Não");
-        var box = new ComboBox
+        => new ToggleSwitch
         {
-            Classes = { "bo_entity_input" },
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            Classes = { "bo_settings_toggle" },
+            IsChecked = IsTruthy(value),
+            OnContent = null,
+            OffContent = null
         };
-        var yes = new ComboBoxItem { Content = yesLabel, Tag = "True" };
-        var no = new ComboBoxItem { Content = noLabel, Tag = "False" };
-        box.Items.Add(yes);
-        box.Items.Add(no);
-        box.SelectedItem = IsTruthy(value) ? yes : no;
-        return box;
-    }
 
     private static Control CreateGlossField(string value)
     {
@@ -647,7 +710,7 @@ public partial class SettingsPage : UserControl
             var button = new Button
             {
                 Classes = { "bo_entity_tab" },
-                Content = tab
+                Content = TabContent(tab, tab == _tab)
             };
             if (tab == _tab)
             {
@@ -668,6 +731,18 @@ public partial class SettingsPage : UserControl
             };
             TabBar.Children.Add(button);
         }
+    }
+
+    private static Control TabContent(string tab, bool on)
+    {
+        var content = new StackPanel { Classes = { "bo_article_tab_content" } };
+        content.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+        {
+            Classes = { "bo_article_tab_icon" },
+            Path = $"avares://LogicPOS.App/Assets/Images/Articles/icon_{SettingsLayout.TabIcon(tab)}_{(on ? "g" : "b")}.svg"
+        });
+        content.Children.Add(new TextBlock { Text = tab, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
+        return content;
     }
 
     private async void OnSaveClick(object? sender, RoutedEventArgs e)
