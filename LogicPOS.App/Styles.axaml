@@ -1,6 +1,28 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia">
+    <!-- CheckBox-only Fluent keys, so toggles and accent buttons keep SystemAccentColor. -->
+    <Styles.Resources>
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="#323537" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="#323537" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" Color="#4A4E51" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" Color="#4A4E51" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed" Color="#232527" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" Color="#232527" />
+        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="White" />
+        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="White" />
+        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" Color="White" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminate" Color="#323537" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminate" Color="#323537" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminatePointerOver" Color="#4A4E51" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePointerOver" Color="#4A4E51" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminatePressed" Color="#232527" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePressed" Color="#232527" />
+        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminate" Color="White" />
+        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" Color="White" />
+        <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePressed" Color="White" />
+    </Styles.Resources>
+
     <Style Selector="Window.login_window">
         <Setter Property="Background" Value="#111111" />
         <Setter Property="Padding" Value="0" />
@@ -5754,9 +5776,9 @@
     </Style>
 
     <Style Selector="Button.bo_entity_tab.bo_entity_tab_on">
-        <Setter Property="Foreground" Value="#2563EB" />
+        <Setter Property="Foreground" Value="#323537" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="BorderBrush" Value="#2563EB" />
+        <Setter Property="BorderBrush" Value="#323537" />
     </Style>
 
     <Style Selector="Border.bo_entity_editor.bo_entity_editor_article">
@@ -6009,7 +6031,7 @@
     </Style>
 
     <Style Selector="Border.bo_article_tab_strip Button.bo_entity_tab.bo_entity_tab_on">
-        <Setter Property="Foreground" Value="#2563EB" />
+        <Setter Property="Foreground" Value="#323537" />
     </Style>
 
     <Style Selector="StackPanel.bo_article_tab_content">
@@ -6164,7 +6186,7 @@
     </Style>
 
     <Style Selector="ScrollViewer.bo_settings_tabs Button.bo_entity_tab.bo_entity_tab_on">
-        <Setter Property="Foreground" Value="#2563EB" />
+        <Setter Property="Foreground" Value="#323537" />
     </Style>
 
     <Style Selector="StackPanel.bo_settings_card_body">
