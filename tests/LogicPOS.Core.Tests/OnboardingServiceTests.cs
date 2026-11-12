@@ -341,6 +341,31 @@ public sealed class OnboardingServiceTests
     }
 
     [Fact]
+    public void Company_is_configured_when_nif_country_and_currency_exist_without_oids()
+    {
+        Assert.True(LocalCompanySetupService.IsCompanyConfigured(
+        [
+            ("COMPANY_FISCALNUMBER", "999999990"),
+            ("COMPANY_COUNTRY", "Portugal"),
+            ("COMPANY_COUNTRY_CODE2", "PT"),
+            ("SYSTEM_CURRENCY", "EUR")
+        ]));
+
+        Assert.False(LocalCompanySetupService.IsCompanyConfigured(
+        [
+            ("COMPANY_COUNTRY", "Portugal"),
+            ("SYSTEM_CURRENCY", "EUR")
+        ]));
+
+        Assert.False(LocalCompanySetupService.IsCompanyConfigured(
+        [
+            ("COMPANY_FISCALNUMBER", "999999990"),
+            ("COMPANY_COUNTRY_OID", ""),
+            ("SYSTEM_CURRENCY_OID", "")
+        ]));
+    }
+
+    [Fact]
     public void Unchecked_facts_become_optional_and_do_not_block_setup()
     {
         var status = OnboardingService.Build(new OnboardingFacts

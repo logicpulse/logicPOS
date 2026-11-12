@@ -1611,6 +1611,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     {
         _articleDashboardRequest++;
         SetDrawerOpen(false);
+        // Show Painel immediately; cloud status refresh is slow and must not bounce back to setup.
+        ShowDashboardHome();
         _ = RefreshHomeAfterSetupAsync(forceDashboard: true);
     }
 

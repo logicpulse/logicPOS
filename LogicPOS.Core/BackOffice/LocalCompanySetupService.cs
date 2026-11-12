@@ -43,14 +43,40 @@ public sealed class LocalCompanySetupService : ICompanySetupService
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var values = await database.PreferenceParameters.AsNoTracking()
-            .Where(item => item.IsDeleted == false && RequiredTokens.Contains(item.Token))
+            .Where(item => item.IsDeleted == false)
             .Select(item => new { item.Token, item.Value })
             .ToListAsync(cancellationToken);
 
-        foreach (var token in RequiredTokens)
+        return IsCompanyConfigured(values.Select(item => (item.Token, item.Value))) == false;
+    }
+
+    /// <summary>
+    /// Company setup is done when NIF, country and currency are present.
+    /// Accept country/currency text tokens when the historical *_OID rows are empty or missing.
+    /// </summary>
+    public static bool IsCompanyConfigured(IEnumerable<(string Token, string? Value)> values)
+    {
+        var map = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var (token, value) in values)
         {
-            var value = values.FirstOrDefault(item => item.Token == token)?.Value;
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                continue;
+            }
+
+            map[token] = value;
+        }
+
+        return HasAny(map, "COMPANY_FISCALNUMBER")
+            && HasAny(map, "COMPANY_COUNTRY_OID", "COMPANY_COUNTRY_CODE2", "COMPANY_COUNTRY")
+            && HasAny(map, "SYSTEM_CURRENCY_OID", "SYSTEM_CURRENCY");
+    }
+
+    private static bool HasAny(IReadOnlyDictionary<string, string?> map, params string[] tokens)
+    {
+        foreach (var token in tokens)
+        {
+            if (map.TryGetValue(token, out var value) && string.IsNullOrWhiteSpace(value) == false)
             {
                 return true;
             }
