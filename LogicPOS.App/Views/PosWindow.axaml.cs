@@ -503,7 +503,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         else if (TicketKeypad.IsVisible)
         {
             // Digit-only quantity/weight pad (no side presets).
-            PortraitChrome.FitOverlay(TicketFrame, this, 320, 360, lockHeight: false, bottomReserve: bottomReserve);
+            PortraitChrome.FitOverlay(TicketFrame, this, 420, 540, lockHeight: false, bottomReserve: bottomReserve);
         }
         else
         {
@@ -4884,7 +4884,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         ShowDialogChrome(title, question: true, confirmText: "Ok", showCancel: true);
         TicketQuestionBody.IsVisible = false;
         TicketBarcode.IsVisible = false;
-        TicketDialogCancelText.Text = "Não";
+        TicketDialogCancelText.Text = "Cancelar";
         HidePinPad();
 
         if (prompt == TicketPrompt.Price)
@@ -4945,6 +4945,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             _splitHost.IsVisible = false;
         }
 
+        TicketDialogIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Pos/icon_pos_ticketpad_change_quantity.png");
         FitHostedOverlays();
     }
 
@@ -5013,15 +5014,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private void BuildKeypad()
     {
-        _keypadValue = new TextBlock
-        {
-            Classes = { "pos_ticket_cell" },
-            FontSize = 16,
-            FontWeight = Avalonia.Media.FontWeight.Bold,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            Margin = new Avalonia.Thickness(0, 4, 0, 2)
-        };
-        TicketKeypad.Children.Add(_keypadValue);
+        _keypadValue = new TextBlock { Classes = { "pos_qty_value" } };
 
         _splitNotice = new TextBlock
         {
@@ -5056,25 +5049,42 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
         _quantityPad = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("*,*,*"),
-            RowDefinitions = new RowDefinitions("*,*,*,*"),
-            Width = 260,
-            Height = 220,
+            Classes = { "pos_qty_pad" },
+            ColumnDefinitions = new ColumnDefinitions("*,*,*,*"),
+            RowDefinitions = new RowDefinitions("Auto,*,*,*,*"),
+            Width = 372,
+            Height = 364,
             HorizontalAlignment = HorizontalAlignment.Center
         };
         var pad = _quantityPad;
 
-        AddQuantityDigit(pad, "7", 0, 0);
-        AddQuantityDigit(pad, "8", 0, 1);
-        AddQuantityDigit(pad, "9", 0, 2);
-        AddQuantityDigit(pad, "4", 1, 0);
-        AddQuantityDigit(pad, "5", 1, 1);
-        AddQuantityDigit(pad, "6", 1, 2);
-        AddQuantityDigit(pad, "1", 2, 0);
-        AddQuantityDigit(pad, "2", 2, 1);
-        AddQuantityDigit(pad, "3", 2, 2);
-        AddQuantityDigit(pad, "0", 3, 0);
-        AddQuantityDigit(pad, ",", 3, 1);
+        var display = new Border { Classes = { "pos_qty_display" }, Child = _keypadValue };
+        Grid.SetColumnSpan(display, 4);
+        pad.Children.Add(display);
+
+        AddQuantityDigit(pad, "7", 1, 0);
+        AddQuantityDigit(pad, "8", 1, 1);
+        AddQuantityDigit(pad, "9", 1, 2);
+        AddQuantityDigit(pad, "4", 2, 0);
+        AddQuantityDigit(pad, "5", 2, 1);
+        AddQuantityDigit(pad, "6", 2, 2);
+        AddQuantityDigit(pad, "1", 3, 0);
+        AddQuantityDigit(pad, "2", 3, 1);
+        AddQuantityDigit(pad, "3", 3, 2);
+        AddQuantityDigit(pad, "0", 4, 0);
+        Grid.SetColumnSpan(pad.Children[^1], 2);
+        AddQuantityDigit(pad, ",", 4, 2);
+
+        var backspace = new Button
+        {
+            Classes = { "pos_price_digit" },
+            Content = new PathIcon { Classes = { "pos_qty_backspace" } }
+        };
+        backspace.Click += (_, _) => RemoveKeypadDigit();
+        Grid.SetRow(backspace, 1);
+        Grid.SetColumn(backspace, 3);
+        Grid.SetRowSpan(backspace, 2);
+        pad.Children.Add(backspace);
 
         var clear = new Button
         {
@@ -5091,7 +5101,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
             _replaceKeypad = true;
         };
         Grid.SetRow(clear, 3);
-        Grid.SetColumn(clear, 2);
+        Grid.SetColumn(clear, 3);
+        Grid.SetRowSpan(clear, 2);
         pad.Children.Add(clear);
         TicketKeypad.Children.Add(pad);
         BuildPinPad();
@@ -5177,7 +5188,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         var button = new Button
         {
-            Classes = { "pos_price_money" },
+            Classes = { "pos_price_digit" },
             Content = caption
         };
         button.Click += (_, _) => AppendKey(caption);
@@ -5210,6 +5221,18 @@ public partial class PosWindow : UserControl, IOfficeSurface
     }
 
     private async void OnTicketDialogConfirmClick(object? sender, RoutedEventArgs e)
+    private void RemoveKeypadDigit()
+    {
+        if (_keypadValue is null)
+        {
+            return;
+        }
+
+        var current = _keypadValue.Text ?? string.Empty;
+        _keypadValue.Text = current.Length <= 1 ? "0" : current[..^1];
+        _replaceKeypad = false;
+    }
+
     {
         switch (_prompt)
         {

@@ -1783,6 +1783,55 @@
         <Setter Property="Background" Value="#D17A6C" />
     </Style>
 
+    <!-- POS Quantidade / Peso: same light keys and value box as Preço. -->
+    <Style Selector="Grid.pos_qty_pad">
+        <Setter Property="Margin" Value="0,18,0,14" />
+    </Style>
+
+    <Style Selector="Border.pos_qty_display">
+        <Setter Property="Height" Value="64" />
+        <Setter Property="Margin" Value="4,0,4,12" />
+        <Setter Property="Padding" Value="18,0" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#D5DBE1" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_qty_value">
+        <Setter Property="Foreground" Value="#1F2933" />
+        <Setter Property="FontSize" Value="32" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Grid.pos_qty_pad Button.pos_price_digit">
+        <Setter Property="Background" Value="#F3F4F6" />
+        <Setter Property="Foreground" Value="#1F2933" />
+        <Setter Property="BorderBrush" Value="#D5DBE1" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="Margin" Value="4" />
+    </Style>
+
+    <Style Selector="Grid.pos_qty_pad Button.pos_price_digit:pointerover">
+        <Setter Property="Background" Value="#E5E9EE" />
+    </Style>
+
+    <Style Selector="Grid.pos_qty_pad Button.pos_qty_clear">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Margin" Value="4" />
+    </Style>
+
+    <Style Selector="PathIcon.pos_qty_backspace">
+        <Setter Property="Width" Value="30" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Data" Value="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" />
+    </Style>
+
     <Style Selector="Border.pos_menu_slot">
         <Setter Property="Background" Value="#3A3A3A" />
         <Setter Property="BorderThickness" Value="0" />
