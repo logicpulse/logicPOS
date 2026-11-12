@@ -5,28 +5,50 @@
     <Border Classes="bo_doc_page">
         <ScrollViewer>
             <StackPanel Classes="onboarding_page">
-                <Grid ColumnDefinitions="Auto,*" Classes="onboarding_header">
-                    <Border Classes="onboarding_progress_ring">
-                        <TextBlock x:Name="PercentText"
-                                   Classes="onboarding_progress_value"
-                                   Text="0%"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
-                    </Border>
-                    <StackPanel Grid.Column="1" Classes="onboarding_header_text" VerticalAlignment="Center">
-                        <TextBlock Classes="onboarding_title"
-                                   Text="Conclua a configuração inicial" />
-                        <TextBlock x:Name="ProgressLabel"
-                                   Classes="onboarding_subtitle"
-                                   Text="0 de 0 passos concluídos" />
-                    </StackPanel>
-                </Grid>
+                <Border Classes="onboarding_header_card">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Panel Classes="onboarding_progress_ring">
+                            <Ellipse Classes="onboarding_progress_track" />
+                            <Arc x:Name="ProgressArc"
+                                 Classes="onboarding_progress_arc"
+                                 StartAngle="-90"
+                                 SweepAngle="0" />
+                            <TextBlock x:Name="PercentText"
+                                       Classes="onboarding_progress_value"
+                                       Text="0%"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Panel>
+                        <StackPanel Grid.Column="1" Classes="onboarding_header_text" VerticalAlignment="Center">
+                            <TextBlock Classes="onboarding_title"
+                                       Text="Conclua a configuração inicial"
+                                       TextWrapping="Wrap" />
+                            <TextBlock x:Name="ProgressLabel"
+                                       Classes="onboarding_subtitle"
+                                       Text="0 de 0 passos obrigatórios concluídos"
+                                       TextWrapping="Wrap" />
+                            <TextBlock x:Name="NextStepLabel"
+                                       Classes="onboarding_next_hint"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
 
-                <TextBlock Classes="onboarding_intro"
-                           Text="Estes passos são obrigatórios antes de usar o posto de venda. Escolha por onde começar."
-                           TextWrapping="Wrap" />
+                <StackPanel Classes="onboarding_section">
+                    <TextBlock Classes="onboarding_section_title" Text="Passos obrigatórios" />
+                    <TextBlock Classes="onboarding_section_caption"
+                               Text="Necessários antes de usar o posto de venda. Pode fazê-los por qualquer ordem."
+                               TextWrapping="Wrap" />
+                    <UniformGrid x:Name="RequiredCardsHost" Classes="onboarding_cards" Columns="3" />
+                </StackPanel>
 
-                <WrapPanel x:Name="CardsHost" Classes="onboarding_cards" />
+                <StackPanel x:Name="OptionalSection" Classes="onboarding_section" IsVisible="False">
+                    <TextBlock Classes="onboarding_section_title" Text="Opcional" />
+                    <TextBlock Classes="onboarding_section_caption"
+                               Text="Não contam para a configuração obrigatória. Pode fazê-los agora ou mais tarde."
+                               TextWrapping="Wrap" />
+                    <UniformGrid x:Name="OptionalCardsHost" Classes="onboarding_cards" Columns="3" />
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Border>

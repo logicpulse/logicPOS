@@ -1,5 +1,6 @@
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -91,6 +92,93 @@ public sealed class OnboardingServiceTests
             Assert.False(user.RequiresPasswordReset);
             var signIn = await services.GetRequiredService<ILoginService>().SignInAsync(user.Id, "4321");
             Assert.True(signIn.Succeeded, signIn.Message);
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public void Optional_steps_do_not_count_towards_required_progress()
+    {
+        var status = new OnboardingStatus(new[]
+        {
+            new OnboardingStep("first-user", "Primeiro utilizador", "", "Utilizadores", isComplete: true),
+            new OnboardingStep("article", "Primeiro artigo", "", "Artigos", isComplete: false),
+            new OnboardingStep("more-users", "Adicionar utilizadores", "", "Utilizadores", isComplete: false, isOptional: true)
+        });
+
+        Assert.Equal(1, status.CompletedCount);
+        Assert.Equal(2, status.TotalCount);
+        Assert.Equal(50, status.PercentComplete);
+        Assert.Equal("article", status.NextStep?.Key);
+        Assert.False(status.IsComplete);
+
+        var requiredDone = new OnboardingStatus(new[]
+        {
+            new OnboardingStep("first-user", "Primeiro utilizador", "", "Utilizadores", isComplete: true),
+            new OnboardingStep("more-users", "Adicionar utilizadores", "", "Utilizadores", isComplete: false, isOptional: true)
+        });
+
+        Assert.True(requiredDone.IsComplete);
+        Assert.Equal(100, requiredDone.PercentComplete);
+        Assert.Null(requiredDone.NextStep);
+    }
+
+    [Fact]
+    public async Task More_users_step_is_optional_and_completes_with_a_second_user()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-onboarding-moreusers-");
+        try
+        {
+            ConfigureApp(root, module: "restaurant");
+            var services = AppComposition.Services!;
+            var wizard = services.GetRequiredService<IFirstUserSetupWizard>();
+            var draft = await wizard.LoadAsync();
+            var created = await wizard.CreateAsync(new FirstUserSetupRequest
+            {
+                ProfileId = draft.PreferredProfileId!.Value,
+                Name = "Dono",
+                Login = "dono",
+                AccessPin = "4321",
+                AccessPinConfirm = "4321"
+            });
+            Assert.True(created.Ok, created.Message);
+
+            var onboarding = services.GetRequiredService<IOnboardingService>();
+            var before = await onboarding.GetStatusAsync();
+            var moreUsers = Assert.Single(before.Steps, step => step.Key == "more-users");
+            Assert.True(moreUsers.IsOptional);
+            Assert.False(moreUsers.IsComplete);
+            Assert.Null(moreUsers.StatusText);
+            Assert.Equal(before.Steps.Count(step => step.IsOptional == false), before.TotalCount);
+
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                database.Users.Add(new User
+                {
+                    Id = Guid.NewGuid(),
+                    Order = 100,
+                    Code = "8",
+                    Name = "Empregado",
+                    Login = "empregado",
+                    AccessPin = "x",
+                    ProfileId = draft.PreferredProfileId!.Value,
+                    IsDeleted = false,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                });
+                await database.SaveChangesAsync();
+            }
+
+            var after = await onboarding.GetStatusAsync();
+            moreUsers = Assert.Single(after.Steps, step => step.Key == "more-users");
+            Assert.True(moreUsers.IsComplete);
+            Assert.Equal("2 utilizadores", moreUsers.StatusText);
+            Assert.Equal(before.TotalCount, after.TotalCount);
+            Assert.Equal(before.CompletedCount, after.CompletedCount);
         }
         finally
         {

@@ -3795,112 +3795,204 @@
     </Style>
 
     <Style Selector="StackPanel.onboarding_page">
-        <Setter Property="Spacing" Value="20" />
-        <Setter Property="Margin" Value="8" />
+        <Setter Property="Spacing" Value="24" />
+        <Setter Property="Margin" Value="12" />
     </Style>
 
-    <Style Selector="Grid.onboarding_header">
-        <Setter Property="Margin" Value="0,0,0,4" />
+    <Style Selector="Border.onboarding_header_card">
+        <Setter Property="Background" Value="#F7FAEF" />
+        <Setter Property="BorderBrush" Value="#E2EDC4" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="24,20" />
     </Style>
 
-    <Style Selector="Border.onboarding_progress_ring">
-        <Setter Property="Width" Value="88" />
-        <Setter Property="Height" Value="88" />
-        <Setter Property="CornerRadius" Value="44" />
-        <Setter Property="BorderBrush" Value="#585858" />
-        <Setter Property="BorderThickness" Value="6" />
-        <Setter Property="Background" Value="#F5F5F5" />
-        <Setter Property="Margin" Value="0,0,20,0" />
+    <Style Selector="Panel.onboarding_progress_ring">
+        <Setter Property="Width" Value="104" />
+        <Setter Property="Height" Value="104" />
+        <Setter Property="Margin" Value="0,0,24,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Ellipse.onboarding_progress_track">
+        <Setter Property="Stroke" Value="#DDE5D0" />
+        <Setter Property="StrokeThickness" Value="10" />
+        <Setter Property="Margin" Value="5" />
+    </Style>
+
+    <Style Selector="Arc.onboarding_progress_arc">
+        <Setter Property="Stroke" Value="#7DB33A" />
+        <Setter Property="StrokeThickness" Value="10" />
+        <Setter Property="StrokeLineCap" Value="Round" />
     </Style>
 
     <Style Selector="TextBlock.onboarding_progress_value">
-        <Setter Property="Foreground" Value="#222222" />
-        <Setter Property="FontSize" Value="22" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="FontSize" Value="26" />
+        <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
     <Style Selector="StackPanel.onboarding_header_text">
-        <Setter Property="Spacing" Value="4" />
+        <Setter Property="Spacing" Value="6" />
     </Style>
 
     <Style Selector="TextBlock.onboarding_title">
-        <Setter Property="Foreground" Value="#222222" />
-        <Setter Property="FontSize" Value="24" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="FontSize" Value="26" />
+        <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
     <Style Selector="TextBlock.onboarding_subtitle">
-        <Setter Property="Foreground" Value="#666666" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="#4A5560" />
+        <Setter Property="FontSize" Value="16" />
     </Style>
 
-    <Style Selector="TextBlock.onboarding_intro">
-        <Setter Property="Foreground" Value="#555555" />
+    <Style Selector="TextBlock.onboarding_next_hint">
+        <Setter Property="Foreground" Value="#2E5F8A" />
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="Margin" Value="0,0,0,4" />
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
-    <Style Selector="WrapPanel.onboarding_cards">
-        <Setter Property="ItemWidth" Value="260" />
+    <Style Selector="StackPanel.onboarding_section">
+        <Setter Property="Spacing" Value="4" />
+    </Style>
+
+    <Style Selector="TextBlock.onboarding_section_title">
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="TextBlock.onboarding_section_caption">
+        <Setter Property="Foreground" Value="#6B7580" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="0,0,0,6" />
+    </Style>
+
+    <Style Selector="UniformGrid.onboarding_cards">
+        <Setter Property="Margin" Value="-8,0" />
     </Style>
 
     <Style Selector="Border.onboarding_card">
         <Setter Property="Background" Value="#FFFFFF" />
-        <Setter Property="BorderBrush" Value="#E0E0E0" />
+        <Setter Property="BorderBrush" Value="#E3E8EE" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="10" />
-        <Setter Property="Padding" Value="16" />
-        <Setter Property="Margin" Value="0,0,16,16" />
-        <Setter Property="MinHeight" Value="160" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="20,18" />
+        <Setter Property="Margin" Value="8" />
+        <Setter Property="MinHeight" Value="196" />
     </Style>
 
     <Style Selector="Border.onboarding_card_complete">
-        <Setter Property="Background" Value="#F7F7F7" />
-        <Setter Property="BorderBrush" Value="#D0D0D0" />
+        <Setter Property="Background" Value="#FAFCF5" />
+        <Setter Property="BorderBrush" Value="#D7E8BC" />
     </Style>
 
-    <Style Selector="StackPanel.onboarding_card_body">
-        <Setter Property="Spacing" Value="10" />
+    <Style Selector="Border.onboarding_card_next">
+        <Setter Property="Background" Value="#F7FAFD" />
+        <Setter Property="BorderBrush" Value="#4477A4" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Padding" Value="19,17" />
+    </Style>
+
+    <Style Selector="Border.onboarding_card_optional">
+        <Setter Property="Background" Value="#FAFBFC" />
+    </Style>
+
+    <Style Selector="Border.onboarding_card_icon">
+        <Setter Property="Width" Value="52" />
+        <Setter Property="Height" Value="52" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Background" Value="#F2F7E4" />
+        <Setter Property="Padding" Value="11" />
+        <Setter Property="Margin" Value="0,0,14,0" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="Border.onboarding_card_optional Border.onboarding_card_icon">
+        <Setter Property="Background" Value="#EEF3F9" />
+    </Style>
+
+    <Style Selector="StackPanel.onboarding_card_heading">
+        <Setter Property="Spacing" Value="2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+
+    <Style Selector="TextBlock.onboarding_card_caption">
+        <Setter Property="Foreground" Value="#6B7580" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="Border.onboarding_card_next TextBlock.onboarding_card_caption">
+        <Setter Property="Foreground" Value="#2E5F8A" />
     </Style>
 
     <Style Selector="TextBlock.onboarding_card_title">
-        <Setter Property="Foreground" Value="#222222" />
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="FontSize" Value="17" />
+        <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
     <Style Selector="TextBlock.onboarding_card_description">
-        <Setter Property="Foreground" Value="#666666" />
-        <Setter Property="FontSize" Value="13" />
-        <Setter Property="MinHeight" Value="52" />
+        <Setter Property="Foreground" Value="#4A5560" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="LineHeight" Value="20" />
+        <Setter Property="Margin" Value="0,14,0,14" />
     </Style>
 
-    <Style Selector="TextBlock.onboarding_card_done">
-        <Setter Property="Foreground" Value="#2E7D32" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-    </Style>
-
-    <Style Selector="TextBlock.onboarding_card_pending">
-        <Setter Property="Foreground" Value="#888888" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-    </Style>
-
-    <Style Selector="Button.onboarding_card_start">
-        <Setter Property="Background" Value="#585858" />
-        <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="14,6" />
-        <Setter Property="MinHeight" Value="32" />
+    <Style Selector="TextBlock.onboarding_card_detail">
+        <Setter Property="Foreground" Value="#1E7B34" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="Border.onboarding_chip">
+        <Setter Property="CornerRadius" Value="11" />
+        <Setter Property="Padding" Value="10,4" />
+    </Style>
+
+    <Style Selector="TextBlock.onboarding_chip_text">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Path.onboarding_chip_check">
+        <Setter Property="Stroke" Value="#1E7B34" />
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="StrokeLineCap" Value="Round" />
+        <Setter Property="StrokeJoin" Value="Round" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.onboarding_chip_done">
+        <Setter Property="Background" Value="#E6F4EA" />
+    </Style>
+
+    <Style Selector="Border.onboarding_chip_done TextBlock.onboarding_chip_text">
+        <Setter Property="Foreground" Value="#1E7B34" />
+    </Style>
+
+    <Style Selector="Border.onboarding_chip_pending">
+        <Setter Property="Background" Value="#FFF4E0" />
+    </Style>
+
+    <Style Selector="Border.onboarding_chip_pending TextBlock.onboarding_chip_text">
+        <Setter Property="Foreground" Value="#A15C00" />
+    </Style>
+
+    <Style Selector="Border.onboarding_chip_optional">
+        <Setter Property="Background" Value="#EEF3F9" />
+    </Style>
+
+    <Style Selector="Border.onboarding_chip_optional TextBlock.onboarding_chip_text">
+        <Setter Property="Foreground" Value="#2E5F8A" />
+    </Style>
+
+    <Style Selector="Button.onboarding_card_action">
         <Setter Property="Cursor" Value="Hand" />
-    </Style>
-
-    <Style Selector="Button.onboarding_card_start:pointerover">
-        <Setter Property="Background" Value="#444444" />
     </Style>
 
     <Style Selector="TextBlock.bo_page_message">

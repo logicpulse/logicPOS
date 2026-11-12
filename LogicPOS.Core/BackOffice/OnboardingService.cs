@@ -13,7 +13,9 @@ public sealed class OnboardingStep
         string description,
         string? actionPage,
         bool isComplete,
-        bool opensCompanySetup = false)
+        bool opensCompanySetup = false,
+        bool isOptional = false,
+        string? statusText = null)
     {
         Key = key;
         Title = title;
@@ -21,6 +23,8 @@ public sealed class OnboardingStep
         ActionPage = actionPage;
         IsComplete = isComplete;
         OpensCompanySetup = opensCompanySetup;
+        IsOptional = isOptional;
+        StatusText = statusText;
     }
 
     public string Key { get; }
@@ -35,6 +39,12 @@ public sealed class OnboardingStep
     public bool IsComplete { get; }
 
     public bool OpensCompanySetup { get; }
+
+    /// <summary>Optional steps never block setup and are left out of the counts and percentage.</summary>
+    public bool IsOptional { get; }
+
+    /// <summary>Short extra status shown on the card, e.g. the number of users.</summary>
+    public string? StatusText { get; }
 }
 
 public sealed class OnboardingStatus
@@ -53,7 +63,7 @@ public sealed class OnboardingStatus
             var count = 0;
             for (var i = 0; i < Steps.Count; i++)
             {
-                if (Steps[i].IsComplete)
+                if (Steps[i].IsOptional == false && Steps[i].IsComplete)
                 {
                     count++;
                 }
@@ -63,28 +73,46 @@ public sealed class OnboardingStatus
         }
     }
 
-    public int TotalCount => Steps.Count;
+    public int TotalCount
+    {
+        get
+        {
+            var count = 0;
+            for (var i = 0; i < Steps.Count; i++)
+            {
+                if (Steps[i].IsOptional == false)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+    }
+
+    /// <summary>First required step still pending, or null when setup is complete.</summary>
+    public OnboardingStep? NextStep
+    {
+        get
+        {
+            for (var i = 0; i < Steps.Count; i++)
+            {
+                if (Steps[i].IsOptional == false && Steps[i].IsComplete == false)
+                {
+                    return Steps[i];
+                }
+            }
+
+            return null;
+        }
+    }
 
     public int PercentComplete
         => TotalCount == 0
             ? 100
             : (int)Math.Round(100.0 * CompletedCount / TotalCount);
 
-    public bool IsComplete
-    {
-        get
-        {
-            for (var i = 0; i < Steps.Count; i++)
-            {
-                if (Steps[i].IsComplete == false)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-    }
+    public bool IsComplete => NextStep is null;
 }
 
 public interface IOnboardingService
@@ -118,8 +146,9 @@ public sealed class OnboardingService : IOnboardingService
         var year = DateTime.Now.Year;
 
         var companyNeedsSetup = await _companySetup.NeedsSetupAsync(cancellationToken);
-        var hasUser = await database.Users.AsNoTracking()
-            .AnyAsync(item => item.IsDeleted == false, cancellationToken);
+        var userCount = await database.Users.AsNoTracking()
+            .CountAsync(item => item.IsDeleted == false, cancellationToken);
+        var hasUser = userCount > 0;
         var hasCurrentFiscalYear = await database.FiscalYears.AsNoTracking()
             .AnyAsync(item => item.IsDeleted == false && item.Year == year, cancellationToken);
         var hasSeries = await database.DocumentSeries.AsNoTracking()
@@ -191,6 +220,15 @@ public sealed class OnboardingService : IOnboardingService
                 "Métodos de pagamento",
                 isComplete: false));
         }
+
+        steps.Add(new OnboardingStep(
+            "more-users",
+            "Adicionar utilizadores",
+            "Crie mais utilizadores (empregados, gerentes) e atribua perfis.",
+            "Utilizadores",
+            isComplete: userCount > 1,
+            isOptional: true,
+            statusText: userCount > 1 ? $"{userCount} utilizadores" : null));
 
         return new OnboardingStatus(steps);
     }

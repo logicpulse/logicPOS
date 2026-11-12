@@ -530,6 +530,20 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private async void OnOnboardingStepRequested(object? sender, OnboardingStep step)
     {
+        if (step.Key == "more-users")
+        {
+            await OpenEntityCreateFromOnboardingAsync("Utilizadores");
+            return;
+        }
+
+        // Completed steps are reviewed in their listing; the setup wizards only create records.
+        var reviewPage = step.OpensCompanySetup ? "Parâmetros da Empresa" : step.ActionPage;
+        if (step.IsComplete && reviewPage is not null)
+        {
+            ShowPage(reviewPage);
+            return;
+        }
+
         if (step.OpensCompanySetup)
         {
             await OpenCompanySetupAsync();
