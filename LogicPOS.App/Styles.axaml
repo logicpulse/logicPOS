@@ -5708,10 +5708,46 @@
         <Setter Property="Stretch" Value="Uniform" />
     </Style>
 
-    <Style Selector="ComboBox.bo_entity_mode">
-        <Setter Property="Width" Value="180" />
-        <Setter Property="MinHeight" Value="32" />
-        <Setter Property="Margin" Value="0,0,8,0" />
+    <!-- Listing mode filter (e.g. Artigos Ativos / Desactivados / Todos): segmented pill like dash_segmented. -->
+    <Style Selector="ListBox.bo_entity_mode">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#D8D8D8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="Margin" Value="8,0,4,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+    </Style>
+
+    <Style Selector="ListBox.bo_entity_mode ListBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#5F6368" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="MinWidth" Value="88" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ListBox.bo_entity_mode ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#F1F5EA" />
+        <Setter Property="Foreground" Value="#323537" />
+    </Style>
+
+    <Style Selector="ListBox.bo_entity_mode ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#8CC63F" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="ListBox.bo_entity_mode ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#7DB436" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
     </Style>
 
     <Style Selector="StackPanel.bo_entity_form">

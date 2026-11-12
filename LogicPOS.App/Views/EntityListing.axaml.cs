@@ -3251,7 +3251,7 @@ public partial class EntityListing : UserControl
         if (ModeBox.Parent == FilterSheetHost)
         {
             FilterSheetHost.Children.Remove(ModeBox);
-            _modeBoxHome?.Children.Add(ModeBox);
+            _modeBoxHome?.Children.Insert(Math.Max(0, _modeBoxHome.Children.IndexOf(Notice)), ModeBox);
             DockPanel.SetDock(ModeBox, Dock.Left);
         }
     }

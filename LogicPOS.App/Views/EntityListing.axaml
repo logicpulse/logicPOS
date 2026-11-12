@@ -47,8 +47,14 @@
                                 <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_filtro_b.svg" />
                             </Button>
                         </StackPanel>
+                        <ListBox x:Name="ModeBox" Classes="bo_entity_mode" DockPanel.Dock="Left" IsVisible="False" SelectionMode="Single,AlwaysSelected" SelectionChanged="OnModeChanged">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="2" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
                         <TextBlock x:Name="Notice" Classes="bo_doc_count_inline" DockPanel.Dock="Left" />
-                        <ComboBox x:Name="ModeBox" Classes="bo_entity_mode" DockPanel.Dock="Left" IsVisible="False" SelectionChanged="OnModeChanged" />
                         <DockPanel Classes="bo_listing_tools">
                             <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnExportPdfClick" ToolTip.Tip="Exportar para PDF">
                                 <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pdf.svg" />
