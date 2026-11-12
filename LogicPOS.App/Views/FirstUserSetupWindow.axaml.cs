@@ -28,6 +28,7 @@ public partial class FirstUserSetupWindow : Window
         _wizard = wizard;
         InitializeComponent();
         TouchFields.Attach(this);
+        PasswordReveal.Attach(TxtPin, TxtPinConfirm, TxtWebPassword, TxtWebPasswordConfirm);
         ListingNotice.BindToast(LblStatus, this);
         ShowStep();
         Opened += async (_, _) => await LoadAsync();
@@ -84,7 +85,9 @@ public partial class FirstUserSetupWindow : Window
         Login = TxtLogin.Text ?? string.Empty,
         Code = TxtCode.Text ?? string.Empty,
         AccessPin = TxtPin.Text ?? string.Empty,
-        AccessPinConfirm = TxtPinConfirm.Text ?? string.Empty
+        AccessPinConfirm = TxtPinConfirm.Text ?? string.Empty,
+        PortalPassword = TxtWebPassword.Text ?? string.Empty,
+        PortalPasswordConfirm = TxtWebPasswordConfirm.Text ?? string.Empty
     };
 
     private string? ValidateStep()
@@ -94,7 +97,7 @@ public partial class FirstUserSetupWindow : Window
         {
             "Utilizador" => request.ValidateIdentity(),
             "Perfil" => SelectedProfile() is null ? "Seleccione um perfil." : null,
-            "PIN" => request.ValidatePin(),
+            "PIN" => request.ValidatePin() ?? request.ValidatePortalPassword(),
             _ => null
         };
     }
@@ -118,6 +121,9 @@ public partial class FirstUserSetupWindow : Window
             SummaryLogin.Text = request.Login.Trim();
             SummaryCode.Text = string.IsNullOrWhiteSpace(request.Code) ? "1" : request.Code.Trim();
             SummaryProfile.Text = SelectedProfile()?.Label ?? string.Empty;
+            SummaryWebPassword.Text = string.IsNullOrWhiteSpace(request.PortalPassword)
+                ? "Não definida (opcional)"
+                : "Definida";
         }
 
         TabBar.Children.Clear();

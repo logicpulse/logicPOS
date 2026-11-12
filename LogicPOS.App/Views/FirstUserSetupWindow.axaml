@@ -74,7 +74,7 @@
                         <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
                                    Text="Esta base de dados ainda não tem utilizadores. Antes de entrar, crie o primeiro utilizador do posto." />
                         <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
-                                   Text="Nos passos seguintes indica o nome, escolhe o perfil (por defeito Proprietário, com acesso total) e define o PIN de acesso." />
+                                   Text="Nos passos seguintes indica o nome, escolhe o perfil (por defeito Proprietário, com acesso total) e define o PIN de acesso. Pode também, se quiser, definir uma palavra-passe para o portal/webapp." />
                         <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
                                    Text="No fim volta ao ecrã de entrada com o novo utilizador seleccionado. Como o PIN acabou de ser definido, não lhe será pedido que o altere." />
                     </StackPanel>
@@ -106,6 +106,17 @@
                         <TextBox x:Name="TxtPin" Classes="bo_entity_input" PasswordChar="•" PlaceholderText="PIN" />
                         <TextBlock Classes="bo_fiscal_wizard_caption" Text="Confirmar PIN" />
                         <TextBox x:Name="TxtPinConfirm" Classes="bo_entity_input" PasswordChar="•" PlaceholderText="Repetir PIN" />
+
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Margin="0,16,0,0"
+                                   Text="Palavra-passe (acesso web)" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="Opcional. Para o portal/webapp. Deixe em branco para não definir agora (mínimo 8 caracteres se preencher)." />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Palavra-passe (acesso web)" />
+                        <TextBox x:Name="TxtWebPassword" Classes="bo_entity_input" PasswordChar="•"
+                                 PlaceholderText="Opcional" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Confirmar palavra-passe" />
+                        <TextBox x:Name="TxtWebPasswordConfirm" Classes="bo_entity_input" PasswordChar="•"
+                                 PlaceholderText="Repetir (se preencheu)" />
                     </StackPanel>
 
                     <StackPanel x:Name="SummaryStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
@@ -122,6 +133,8 @@
                         <TextBlock x:Name="SummaryProfile" />
                         <TextBlock Classes="bo_fiscal_wizard_caption" Text="PIN" />
                         <TextBlock Text="Definido" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Palavra-passe (acesso web)" />
+                        <TextBlock x:Name="SummaryWebPassword" />
                     </StackPanel>
                 </Panel>
             </ScrollViewer>

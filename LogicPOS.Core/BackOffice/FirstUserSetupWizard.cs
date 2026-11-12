@@ -35,6 +35,9 @@ public sealed class FirstUserProfileChoice
 
 public sealed class FirstUserSetupRequest
 {
+    /// <summary>Matches portal/webapp password rule (LogicPOS.Application PortalPasswordRules).</summary>
+    public const int PortalPasswordMinimumLength = 8;
+
     public Guid ProfileId { get; init; }
 
     public string Name { get; init; } = string.Empty;
@@ -46,6 +49,10 @@ public sealed class FirstUserSetupRequest
     public string AccessPin { get; init; } = string.Empty;
 
     public string AccessPinConfirm { get; init; } = string.Empty;
+
+    public string PortalPassword { get; init; } = string.Empty;
+
+    public string PortalPasswordConfirm { get; init; } = string.Empty;
 
     public string? ValidateIdentity()
     {
@@ -69,6 +76,25 @@ public sealed class FirstUserSetupRequest
 
         if (pin != AccessPinConfirm.Trim())
             return "A confirmação do PIN não coincide.";
+
+        return null;
+    }
+
+    public string? ValidatePortalPassword()
+    {
+        var password = PortalPassword.Trim();
+        var confirm = PortalPasswordConfirm.Trim();
+        if (password.Length == 0 && confirm.Length == 0)
+            return null;
+
+        if (password.Length == 0 || confirm.Length == 0)
+            return "Preencha a palavra-passe de acesso web e a confirmação, ou deixe ambas em branco.";
+
+        if (password.Length < PortalPasswordMinimumLength)
+            return $"A palavra-passe de acesso web deve ter pelo menos {PortalPasswordMinimumLength} caracteres.";
+
+        if (password != confirm)
+            return "A confirmação da palavra-passe de acesso web não coincide.";
 
         return null;
     }
@@ -148,8 +174,11 @@ public sealed class LocalFirstUserSetupWizard : IFirstUserSetupWizard
         var login = request.Login.Trim();
         var code = string.IsNullOrWhiteSpace(request.Code) ? "1" : request.Code.Trim();
         var pin = request.AccessPin.Trim();
+        var portalPassword = request.PortalPassword.Trim();
 
-        var invalid = request.ValidateIdentity() ?? request.ValidatePin();
+        var invalid = request.ValidateIdentity()
+            ?? request.ValidatePin()
+            ?? request.ValidatePortalPassword();
         if (invalid is not null)
             return FirstUserSetupResult.Fail(invalid);
 
@@ -172,7 +201,7 @@ public sealed class LocalFirstUserSetupWizard : IFirstUserSetupWizard
             .Select(user => (uint?)user.Order)
             .MaxAsync(cancellationToken) ?? 0;
 
-        database.Users.Add(new User
+        var user = new User
         {
             Id = Guid.NewGuid(),
             Order = nextOrder + 10,
@@ -186,7 +215,11 @@ public sealed class LocalFirstUserSetupWizard : IFirstUserSetupWizard
             IsDeleted = false,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
-        });
+        };
+        if (portalPassword.Length > 0)
+            user.Password = _passwordHasher.HashPassword(portalPassword);
+
+        database.Users.Add(user);
 
         await database.SaveChangesAsync(cancellationToken);
         return FirstUserSetupResult.Done($"Utilizador '{name}' criado. Pode entrar com o PIN definido.");
