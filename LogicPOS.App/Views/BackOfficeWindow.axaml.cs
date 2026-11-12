@@ -477,6 +477,14 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         {
             SetupAlerts.Children.Clear();
             SetupAlerts.IsVisible = false;
+            // Painel stays reachable while setup is pending; only the default home is the checklist.
+            if (forceDashboard)
+            {
+                ShowDashboardHome();
+                await ReloadDashboardSafeAsync();
+                return;
+            }
+
             await ShowOnboardingHomeAsync();
             return;
         }
