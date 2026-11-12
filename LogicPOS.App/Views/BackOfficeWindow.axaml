@@ -52,6 +52,15 @@
             </Grid>
         </Border>
 
+        <Button x:Name="OnboardingReturnButton"
+                Classes="bo_onboarding_return"
+                DockPanel.Dock="Top"
+                IsVisible="False"
+                Click="OnOnboardingReturnClick"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Content="← Voltar aos primeiros passos" />
+
         <StackPanel x:Name="SetupAlerts"
                     Classes="bo_setup_alerts"
                     DockPanel.Dock="Top"

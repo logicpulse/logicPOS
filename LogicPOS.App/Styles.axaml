@@ -3052,6 +3052,21 @@
         <Setter Property="Padding" Value="8,0" />
     </Style>
 
+    <Style Selector="Button.bo_onboarding_return">
+        <Setter Property="Background" Value="#E8EEF5" />
+        <Setter Property="BorderBrush" Value="#D0D7E2" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="16,10" />
+        <Setter Property="Foreground" Value="#2F3A45" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="Button.bo_onboarding_return:pointerover">
+        <Setter Property="Background" Value="#DDE5EF" />
+    </Style>
+
     <Style Selector="StackPanel.bo_setup_alerts">
         <Setter Property="Spacing" Value="0" />
     </Style>

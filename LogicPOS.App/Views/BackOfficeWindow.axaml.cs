@@ -442,7 +442,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             _onboardingIncomplete = false;
             ApplyFrontOfficeGate();
             OnboardingMenuButton.IsVisible = true;
-            DashboardHost.ShowsOnboardingShortcut = false;
+            DashboardHost.ShowsOnboardingShortcut = true;
             ShowDashboardHome();
             await ReloadDashboardSafeAsync();
             return;
@@ -457,7 +457,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         {
             App.WriteCrash("RefreshOnboardingAsync", exception);
             OnboardingMenuButton.IsVisible = true;
-            DashboardHost.ShowsOnboardingShortcut = false;
+            DashboardHost.ShowsOnboardingShortcut = true;
             if (forceDashboard)
             {
                 ShowDashboardHome();
@@ -470,8 +470,9 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         var wasIncomplete = _onboardingIncomplete;
         _onboardingIncomplete = status.IsComplete == false;
         ApplyFrontOfficeGate();
-        OnboardingMenuButton.IsVisible = _onboardingIncomplete;
-        DashboardHost.ShowsOnboardingShortcut = _onboardingIncomplete == false;
+        // Keep Primeiros passos in the sidebar after setup so Rever has an obvious way back.
+        OnboardingMenuButton.IsVisible = true;
+        DashboardHost.ShowsOnboardingShortcut = true;
 
         if (_onboardingIncomplete)
         {
@@ -525,11 +526,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         SetDrawerOpen(false);
         ReportsOverlay.IsVisible = false;
         EntityHost.SetOverlayOnly(false);
+        ClearOnboardingReturn();
         await ShowOnboardingHomeAsync();
     }
 
     private async Task ShowOnboardingHomeAsync()
     {
+        ClearOnboardingReturn();
         SelectMenuItem(OnboardingMenuButton.IsVisible ? OnboardingMenuButton : DashboardButton);
         PageTitle.Text = string.Empty;
         SyncPortraitChrome(AppText.Get("Configuração inicial"));
@@ -545,6 +548,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private void ShowDashboardHome()
     {
+        ClearOnboardingReturn();
         SelectMenuItem(DashboardButton);
         PageTitle.Text = string.Empty;
         SyncPortraitChrome(AppText.Get("Painel"));
@@ -583,7 +587,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         {
             if (HasService<IPrinterSetupWizard>() == false)
             {
-                ShowPage("Impressoras");
+                OpenPageFromOnboarding("Impressoras");
                 return;
             }
 
@@ -596,7 +600,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         var reviewPage = step.OpensCompanySetup ? "Parâmetros da Empresa" : step.ActionPage;
         if (step.IsComplete && reviewPage is not null)
         {
-            ShowPage(reviewPage);
+            OpenPageFromOnboarding(reviewPage);
             return;
         }
 
@@ -667,9 +671,27 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
         if (string.IsNullOrWhiteSpace(step.ActionPage) == false)
         {
-            ShowPage(step.ActionPage);
+            OpenPageFromOnboarding(step.ActionPage);
         }
     }
+
+    private void OpenPageFromOnboarding(string title)
+    {
+        ShowOnboardingReturn();
+        ShowPage(title);
+    }
+
+    private void ShowOnboardingReturn()
+    {
+        OnboardingReturnButton.IsVisible = true;
+        OnboardingMenuButton.IsVisible = true;
+    }
+
+    private void ClearOnboardingReturn()
+        => OnboardingReturnButton.IsVisible = false;
+
+    private void OnOnboardingReturnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        => _ = OpenOnboardingAsync();
 
     private static bool HasService<T>()
         where T : class
@@ -762,7 +784,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         var setup = AppComposition.Services?.GetService<ICompanySetupService>();
         if (setup is null)
         {
-            ShowPage("Parâmetros da Empresa");
+            OpenPageFromOnboarding("Parâmetros da Empresa");
             return;
         }
 
