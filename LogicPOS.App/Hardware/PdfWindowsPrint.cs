@@ -126,7 +126,6 @@ file static class WinSpoolBitmapPrint
     private const int DmPaperWidth = 0x00000008;
     private const short DmPaperUser = 256;
     private const short DmOrientPortrait = 1;
-    private const short DmOrientLandscape = 2;
 
     // DEVMODEW fixed-header offsets (Unicode).
     private const int OffDmFields = 72;
