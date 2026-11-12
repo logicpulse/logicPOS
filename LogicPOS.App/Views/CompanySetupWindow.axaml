@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         x:Class="LogicPOS.App.Views.CompanySetupWindow"
         Title="Dados da empresa"
         WindowDecorations="None"
@@ -11,14 +12,21 @@
     <!-- Same popup chrome as PaymentWindow / login_alert overlays (no OS title bar). -->
     <Panel>
         <Panel Classes="login_alert_overlay" />
-        <Border Classes="login_alert_frame" MinWidth="480" MaxWidth="640" Width="NaN" Height="NaN" MaxHeight="680">
+        <Border x:Name="DialogFrame" Classes="login_alert_frame" Width="1000">
             <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                    <StackPanel Classes="login_alert_title_row">
-                        <Image Classes="login_alert_title_icon"
-                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
-                        <TextBlock Classes="login_alert_title" Text="Dados da empresa" />
-                    </StackPanel>
+                    <DockPanel>
+                        <Button Classes="bo_window_button" DockPanel.Dock="Right" Click="OnCloseClick"
+                                ToolTip.Tip="Fechar">
+                            <svg:Svg Classes="bo_window_icon"
+                                     Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                        </Button>
+                        <StackPanel Classes="login_alert_title_row">
+                            <svg:Svg Classes="login_alert_title_icon"
+                                     Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_configuracoes_preferencias_empresa.svg" />
+                            <TextBlock Classes="login_alert_title" Text="Dados da empresa" />
+                        </StackPanel>
+                    </DockPanel>
                 </Border>
                 <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                     <DockPanel LastChildFill="True">
@@ -30,7 +38,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Demo" />
                                 </StackPanel>
                             </Button>
-                            <Button x:Name="OkButton" Classes="login_alert_action" Click="OnOkClick" IsEnabled="False">
+                            <Button x:Name="OkButton" Classes="login_alert_action action_primary" Click="OnOkClick" IsEnabled="False">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
@@ -47,7 +55,7 @@
                 </Border>
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                               VerticalScrollBarVisibility="Auto">
-                    <StackPanel x:Name="FieldsHost" Spacing="8" Margin="16,12,16,12" />
+                    <StackPanel x:Name="FieldsHost" Classes="bo_article_sections" Margin="16,14,16,14" />
                 </ScrollViewer>
             </DockPanel>
         </Border>

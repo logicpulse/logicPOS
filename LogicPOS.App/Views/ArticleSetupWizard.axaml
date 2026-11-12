@@ -56,34 +56,51 @@
                 </Border>
 
                 <ScrollViewer Classes="bo_fiscal_wizard_scroll">
-                    <Panel>
-                        <StackPanel x:Name="FamilyStep" Classes="bo_fiscal_wizard_form">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Família" />
-                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                       Text="A família agrupa os artigos no posto. Pode usar «Geral» se ainda não tiver categorias."
-                                       TextWrapping="Wrap" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
-                            <TextBox x:Name="FamilyBox" Classes="bo_entity_input" />
-                        </StackPanel>
-                        <StackPanel x:Name="SubfamilyStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Subfamília" />
-                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                       Text="A subfamília fica dentro da família e é obrigatória para criar o artigo."
-                                       TextWrapping="Wrap" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
-                            <TextBox x:Name="SubfamilyBox" Classes="bo_entity_input" />
-                        </StackPanel>
-                        <StackPanel x:Name="ArticleStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Artigo" />
-                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                       Text="Só precisa do nome e do preço. O código, o IVA e as unidades são preenchidos automaticamente."
-                                       TextWrapping="Wrap" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
-                            <TextBox x:Name="ArticleBox" Classes="bo_entity_input" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Preço" />
-                            <TextBox x:Name="PriceBox" Classes="bo_entity_input" />
-                        </StackPanel>
-                    </Panel>
+                    <Border Classes="bo_article_section bo_wizard_card">
+                        <Panel>
+                            <StackPanel x:Name="FamilyStep" Classes="bo_fiscal_wizard_form">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_layers_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Família" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                           Text="A família agrupa os artigos no posto. Pode usar «Geral» se ainda não tiver categorias."
+                                           TextWrapping="Wrap" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
+                                <TextBox x:Name="FamilyBox" Classes="bo_entity_input" />
+                            </StackPanel>
+                            <StackPanel x:Name="SubfamilyStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_layers_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Subfamília" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                           Text="A subfamília fica dentro da família e é obrigatória para criar o artigo."
+                                           TextWrapping="Wrap" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
+                                <TextBox x:Name="SubfamilyBox" Classes="bo_entity_input" />
+                            </StackPanel>
+                            <StackPanel x:Name="ArticleStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_tag_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Artigo" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                           Text="Só precisa do nome e do preço. O código, o IVA e as unidades são preenchidos automaticamente."
+                                           TextWrapping="Wrap" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
+                                <TextBox x:Name="ArticleBox" Classes="bo_entity_input" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Preço" />
+                                <TextBox x:Name="PriceBox" Classes="bo_entity_input" />
+                            </StackPanel>
+                        </Panel>
+                    </Border>
                 </ScrollViewer>
             </DockPanel>
         </Border>

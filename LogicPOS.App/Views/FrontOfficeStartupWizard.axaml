@@ -49,21 +49,35 @@
                 </Border>
 
                 <Panel>
-                    <StackPanel x:Name="DayStep" Classes="bo_fiscal_wizard_form">
-                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Abrir o dia" />
-                        <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                   Text="O dia de trabalho tem de estar aberto antes de abrir a sessão deste terminal. Sem isto não consegue vender."
-                                   TextWrapping="Wrap" />
-                        <TextBlock x:Name="DayStatus" Classes="bo_fiscal_wizard_caption" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <StackPanel x:Name="SessionStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Abrir a sessão" />
-                        <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                   Text="Indique o valor inicial em caixa (pode ser zero). Depois disso este posto fica pronto a vender."
-                                   TextWrapping="Wrap" />
-                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Valor inicial em caixa" />
-                        <TextBox x:Name="AmountBox" Classes="bo_entity_input" />
-                    </StackPanel>
+                    <Border Classes="bo_article_section bo_wizard_card">
+                        <Panel>
+                            <StackPanel x:Name="DayStep" Classes="bo_fiscal_wizard_form">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_calendar_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Abrir o dia" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                           Text="O dia de trabalho tem de estar aberto antes de abrir a sessão deste terminal. Sem isto não consegue vender."
+                                           TextWrapping="Wrap" />
+                                <TextBlock x:Name="DayStatus" Classes="bo_fiscal_wizard_caption" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel x:Name="SessionStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_coins_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Abrir a sessão" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                           Text="Indique o valor inicial em caixa (pode ser zero). Depois disso este posto fica pronto a vender."
+                                           TextWrapping="Wrap" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Valor inicial em caixa" />
+                                <TextBox x:Name="AmountBox" Classes="bo_entity_input" />
+                            </StackPanel>
+                        </Panel>
+                    </Border>
                 </Panel>
             </DockPanel>
         </Border>

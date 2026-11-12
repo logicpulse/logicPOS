@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +17,34 @@ public partial class CompanySetupWindow : Window
     private CompanySetupDraft? _draft;
     private ComboBox? _countryBox;
     private ComboBox? _currencyBox;
-    private bool _saved;
+    private bool _saving;
+
+    private sealed record Card(string Title, string Icon, int Columns, string[] Tokens);
+
+    /// <summary>Section cards of the company form; fields no card claims land in "Outros".</summary>
+    private static readonly Card[] Cards =
+    [
+        new("Identificação", "tag", 3, ["COMPANY_NAME", "COMPANY_BUSINESS_NAME", "COMPANY_FISCALNUMBER"]),
+        new("Morada", "pin", 3, ["COMPANY_ADDRESS", "COMPANY_CITY", "COMPANY_POSTALCODE"]),
+        new("Contactos", "phone", 3, ["COMPANY_TELEPHONE", "COMPANY_MOBILEPHONE", "COMPANY_FAX", "COMPANY_EMAIL", "COMPANY_WEBSITE"]),
+        new("Dados fiscais", "layers", 2, ["COMPANY_STOCK_CAPITAL", "COMPANY_TAX_ENTITY"]),
+        new("AGT-FE", "lock", 1, ["AGT_FE_QRCODE_LOGO", AgtFePrivateKeyBox.Token])
+    ];
+
+    private static readonly Dictionary<string, string> FieldIcons = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["COMPANY_NAME"] = CustomerFieldIcons.FiscalNumber,
+        ["COMPANY_BUSINESS_NAME"] = CustomerFieldIcons.PriceType,
+        ["COMPANY_FISCALNUMBER"] = "avares://LogicPOS.App/Assets/Images/Articles/icon_barcode_b.svg",
+        ["COMPANY_ADDRESS"] = CustomerFieldIcons.Address,
+        ["COMPANY_CITY"] = CustomerFieldIcons.City,
+        ["COMPANY_POSTALCODE"] = CustomerFieldIcons.ZipCode,
+        ["COMPANY_TELEPHONE"] = CustomerFieldIcons.Phone,
+        ["COMPANY_MOBILEPHONE"] = CustomerFieldIcons.Phone,
+        ["COMPANY_FAX"] = CustomerFieldIcons.Phone,
+        ["COMPANY_EMAIL"] = CustomerFieldIcons.Email,
+        ["COMPANY_STOCK_CAPITAL"] = CustomerFieldIcons.Discount
+    };
 
     public CompanySetupWindow()
         : this(AppComposition.Services?.GetService<ICompanySetupService>()
@@ -31,24 +60,20 @@ public partial class CompanySetupWindow : Window
         // Banner lives on the owner shell (LoginShell / POS); avoid stacking a second strip.
         Opened += (_, _) => CoverOwner();
         Opened += async (_, _) => await LoadAsync();
-        Closing += (_, args) =>
-        {
-            // GTK blocks ESC until OK — keep the same behaviour for a fresh database.
-            if (_saved == false)
-            {
-                args.Cancel = true;
-                Notice.Text = "Preencha e confirme os dados da empresa para continuar.";
-            }
-        };
+        SizeChanged += (_, _) => PortraitChrome.FitToContent(DialogFrame, this, 1000, lockWidth: true);
+        // Opened from the onboarding step: ✕ / ESC cancel without saving (the step stays pending).
+        Closing += (_, args) => args.Cancel = _saving;
         KeyDown += (_, e) =>
         {
-            if (_saved == false && e.Key == Avalonia.Input.Key.Escape)
+            if (e.Key == Avalonia.Input.Key.Escape)
             {
                 e.Handled = true;
-                Notice.Text = "Preencha e confirme os dados da empresa para continuar.";
+                Close();
             }
         };
     }
+
+    private void OnCloseClick(object? sender, RoutedEventArgs e) => Close();
 
     private void CoverOwner()
     {
@@ -80,38 +105,55 @@ public partial class CompanySetupWindow : Window
             return;
         }
 
-        _countryBox = AddCombo(
-            PreferenceLabels.Text("global_country", "País"),
-            _draft.Countries,
-            _draft.CountryId);
-        _currencyBox = AddCombo(
-            PreferenceLabels.Text("global_currency", "Moeda"),
-            _draft.Currencies,
-            _draft.CurrencyId);
+        var portrait = Owner is Window owner && owner.Bounds.Height > owner.Bounds.Width;
+        _countryBox = CreateCombo(_draft.Countries, _draft.CountryId);
+        _currencyBox = CreateCombo(_draft.Currencies, _draft.CurrencyId);
         _countryBox.SelectionChanged += (_, _) => RefreshValidation();
         _currencyBox.SelectionChanged += (_, _) => RefreshValidation();
+        FieldsHost.Children.Add(EntityListing.ArticleSection("País e moeda", "coins", CardGrid(
+        [
+            (Labelled(new TextBlock { Classes = { "bo_new_doc_caption" }, Text = PreferenceLabels.Text("global_country", "País") },
+                CustomerFieldIcons.Country, _countryBox), false),
+            (Labelled(new TextBlock { Classes = { "bo_new_doc_caption" }, Text = PreferenceLabels.Text("global_currency", "Moeda") },
+                CustomerFieldIcons.Discount, _currencyBox), false)
+        ], portrait ? 1 : 2)));
 
-        // AGT-FE private key last: expand-on-focus multiline for the full PEM.
-        foreach (var field in _draft.Fields.OrderBy(item => AgtFePrivateKeyBox.IsToken(item.Token) ? 1 : 0))
+        var blocks = new Dictionary<string, (Control Block, bool Wide)>(StringComparer.OrdinalIgnoreCase);
+        foreach (var field in _draft.Fields)
         {
             var caption = new TextBlock { Classes = { "bo_new_doc_caption" } };
-            var box = AgtFePrivateKeyBox.IsToken(field.Token)
+            // AGT-FE private key: expand-on-focus multiline for the full PEM, full card width.
+            var wide = AgtFePrivateKeyBox.IsToken(field.Token);
+            var box = wide
                 ? AgtFePrivateKeyBox.Create(field.Value)
                 : new TextBox { Classes = { "bo_entity_input" }, Text = field.Value };
             box.TextChanged += (_, _) => RefreshValidation();
             _inputs[field.Token] = box;
             _captions[field.Token] = caption;
-            var stack = new StackPanel { Spacing = 4 };
-            stack.Children.Add(caption);
-            stack.Children.Add(box);
-            FieldsHost.Children.Add(stack);
+            blocks[field.Token] = (Labelled(caption, FieldIcons.GetValueOrDefault(field.Token), box), wide);
+        }
+
+        var claimed = Cards.SelectMany(card => card.Tokens).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var others = new Card("Outros", "gear", 3,
+            _draft.Fields.Select(field => field.Token).Where(token => claimed.Contains(token) == false).ToArray());
+        foreach (var card in Cards.Append(others))
+        {
+            var cardBlocks = card.Tokens
+                .Where(blocks.ContainsKey)
+                .Select(token => blocks[token])
+                .ToList();
+            if (cardBlocks.Count > 0)
+            {
+                FieldsHost.Children.Add(EntityListing.ArticleSection(card.Title, card.Icon,
+                    CardGrid(cardBlocks, portrait ? 1 : card.Columns)));
+            }
         }
 
         TouchFields.Attach(FieldsHost);
         RefreshValidation();
     }
 
-    private ComboBox AddCombo(string caption, IReadOnlyList<CompanySetupChoice> options, Guid? selectedId)
+    private static ComboBox CreateCombo(IReadOnlyList<CompanySetupChoice> options, Guid? selectedId)
     {
         var combo = new ComboBox
         {
@@ -120,16 +162,67 @@ public partial class CompanySetupWindow : Window
             DisplayMemberBinding = new Avalonia.Data.Binding(nameof(CompanySetupChoice.Label))
         };
         combo.SelectedItem = options.FirstOrDefault(item => item.Id == selectedId) ?? options.FirstOrDefault();
-        FieldsHost.Children.Add(Wrap(caption, combo));
         return combo;
     }
 
-    private static StackPanel Wrap(string caption, Control input)
+    private static StackPanel Labelled(TextBlock caption, string? icon, Control input)
     {
-        var stack = new StackPanel { Spacing = 4 };
-        stack.Children.Add(new TextBlock { Classes = { "bo_new_doc_caption" }, Text = caption });
+        var label = new StackPanel { Classes = { "bo_new_doc_label" } };
+        if (icon is not null)
+        {
+            label.Children.Add(icon.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
+                ? new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/")) { Classes = { "bo_new_doc_label_icon" }, Path = icon }
+                : new Image { Classes = { "bo_new_doc_label_icon" }, Source = new Bitmap(AssetLoader.Open(new Uri(icon))) });
+        }
+
+        label.Children.Add(caption);
+        var stack = new StackPanel();
+        stack.Children.Add(label);
         stack.Children.Add(input);
         return stack;
+    }
+
+    /// <summary>Card field grid: left to right in <paramref name="columns"/>; wide fields take a full row.</summary>
+    private static Grid CardGrid(IReadOnlyList<(Control Block, bool Wide)> blocks, int columns)
+    {
+        var grid = new Grid { Classes = { "bo_entity_columns" } };
+        for (var index = 0; index < columns; index++)
+        {
+            grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
+        }
+
+        var row = 0;
+        var column = 0;
+        foreach (var (block, wide) in blocks)
+        {
+            if (wide && column > 0)
+            {
+                column = 0;
+                row++;
+            }
+
+            if (grid.RowDefinitions.Count <= row)
+            {
+                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            }
+
+            Grid.SetRow(block, row);
+            Grid.SetColumn(block, column);
+            if (wide)
+            {
+                Grid.SetColumnSpan(block, columns);
+            }
+
+            grid.Children.Add(block);
+            column = wide ? columns : column + 1;
+            if (column >= columns)
+            {
+                column = 0;
+                row++;
+            }
+        }
+
+        return grid;
     }
 
     private void RefreshValidation()
@@ -234,6 +327,7 @@ public partial class CompanySetupWindow : Window
         Notice.Text = "A gravar...";
         OkButton.IsEnabled = false;
         DemoButton.IsEnabled = false;
+        _saving = true;
         try
         {
             var result = await _service.SaveAsync(new CompanySetupRequest
@@ -242,6 +336,7 @@ public partial class CompanySetupWindow : Window
                 CurrencyId = currency.Id,
                 Values = values
             });
+            _saving = false;
             if (result.Succeeded == false)
             {
                 Notice.Text = result.Error ?? "Não foi possível gravar.";
@@ -250,11 +345,11 @@ public partial class CompanySetupWindow : Window
                 return;
             }
 
-            _saved = true;
             Close();
         }
         catch (Exception ex)
         {
+            _saving = false;
             Notice.Text = ex.Message;
             DemoButton.IsEnabled = true;
             RefreshValidation();

@@ -38,16 +38,23 @@
                 </Border>
 
                 <ScrollViewer Classes="bo_fiscal_wizard_scroll">
-                    <StackPanel Classes="bo_fiscal_wizard_form">
-                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Consumidor Final" />
-                        <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                   Text="Cliente usado nas faturas simplificadas de balcão. Em Portugal o NIF genérico é 999999990."
-                                   TextWrapping="Wrap" />
-                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Nome" />
-                        <TextBox x:Name="NameBox" Classes="bo_entity_input" />
-                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="NIF" />
-                        <TextBox x:Name="FiscalBox" Classes="bo_entity_input" />
-                    </StackPanel>
+                    <Border Classes="bo_article_section bo_wizard_card">
+                        <StackPanel Classes="bo_fiscal_wizard_form">
+                            <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                <StackPanel Classes="bo_article_section_title_row">
+                                    <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_user_g.svg" />
+                                    <TextBlock Classes="bo_article_section_title" Text="Consumidor Final" />
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                       Text="Cliente usado nas faturas simplificadas de balcão. Em Portugal o NIF genérico é 999999990."
+                                       TextWrapping="Wrap" />
+                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Nome" />
+                            <TextBox x:Name="NameBox" Classes="bo_entity_input" />
+                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="NIF" />
+                            <TextBox x:Name="FiscalBox" Classes="bo_entity_input" />
+                        </StackPanel>
+                    </Border>
                 </ScrollViewer>
             </DockPanel>
         </Border>

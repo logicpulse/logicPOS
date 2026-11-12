@@ -1026,7 +1026,7 @@ public partial class EntityListing : UserControl
         return content;
     }
 
-    private static Border ArticleSection(string title, string icon, Control body)
+    internal static Border ArticleSection(string title, string icon, Control body)
     {
         var titleRow = new StackPanel { Classes = { "bo_article_section_title_row" } };
         titleRow.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))

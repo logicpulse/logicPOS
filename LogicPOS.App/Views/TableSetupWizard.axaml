@@ -56,22 +56,34 @@
                 </Border>
 
                 <ScrollViewer Classes="bo_fiscal_wizard_scroll">
-                    <Panel>
-                        <StackPanel x:Name="PlaceStep" Classes="bo_fiscal_wizard_form">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Local" />
-                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                       Text="O local (sala, esplanada, etc.) agrupa as mesas no posto."
-                                       TextWrapping="Wrap" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
-                            <TextBox x:Name="PlaceBox" Classes="bo_entity_input" />
-                        </StackPanel>
-                        <StackPanel x:Name="TableStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Mesa" />
-                            <TextBlock x:Name="TableHint" Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
-                            <TextBox x:Name="TableBox" Classes="bo_entity_input" />
-                        </StackPanel>
-                    </Panel>
+                    <Border Classes="bo_article_section bo_wizard_card">
+                        <Panel>
+                            <StackPanel x:Name="PlaceStep" Classes="bo_fiscal_wizard_form">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_pin_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Local" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                           Text="O local (sala, esplanada, etc.) agrupa as mesas no posto."
+                                           TextWrapping="Wrap" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
+                                <TextBox x:Name="PlaceBox" Classes="bo_entity_input" />
+                            </StackPanel>
+                            <StackPanel x:Name="TableStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_box_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Mesa" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock x:Name="TableHint" Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
+                                <TextBox x:Name="TableBox" Classes="bo_entity_input" />
+                            </StackPanel>
+                        </Panel>
+                    </Border>
                 </ScrollViewer>
             </DockPanel>
         </Border>

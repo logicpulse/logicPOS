@@ -56,58 +56,80 @@
                 </Border>
 
                 <ScrollViewer Classes="bo_fiscal_wizard_scroll">
-                    <Panel>
-                        <StackPanel x:Name="YearStep" Classes="bo_fiscal_wizard_form">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Dados do ano" />
-                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                       Text="Confirme o ano, a designação e o acrónimo usados nas séries de documento."
-                                       TextWrapping="Wrap" />
-                            <StackPanel x:Name="CloseRow">
-                                <CheckBox x:Name="CloseCurrent" Classes="bo_entity_input" />
-                            </StackPanel>
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Ano fiscal" />
-                            <TextBox x:Name="YearBox" Classes="bo_entity_input" IsReadOnly="True" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
-                            <TextBox x:Name="DesignationBox" Classes="bo_entity_input" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Acrónimo" />
-                            <TextBox x:Name="AcronymBox" Classes="bo_entity_input" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Notas" />
-                            <TextBox x:Name="NotesBox" Classes="bo_entity_multiline" AcceptsReturn="True" />
-                        </StackPanel>
-                        <StackPanel x:Name="SeriesStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Séries de documento" />
-                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                       Text="Escolha os tipos de documento para os quais pretende criar séries."
-                                       TextWrapping="Wrap" />
-                            <CheckBox x:Name="CreateSeries" Classes="bo_entity_input" Content="Selecionar todas" IsChecked="True" />
-                            <CheckBox x:Name="PerTerminal" Classes="bo_entity_input" Content="Uma série por terminal" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Séries a criar" />
-                            <UniformGrid x:Name="SeriesList" Classes="bo_fiscal_wizard_checklist" Columns="2" />
-                        </StackPanel>
-                        <StackPanel x:Name="TerminalsStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Terminais" />
-                            <TextBlock x:Name="TerminalsHint" Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap" />
-                            <UniformGrid x:Name="TerminalList" Classes="bo_fiscal_wizard_checklist" Columns="2" />
-                        </StackPanel>
-                        <StackPanel x:Name="AtStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Comunicação AT" />
-                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                       Text="As séries novas são registadas na Autoridade Tributária. Se existir um ano activo, o fecho também comunica a anulação ou a finalização das séries anteriores."
-                                       TextWrapping="Wrap" />
-                            <CheckBox x:Name="Communicate" Classes="bo_entity_input" Content="Comunicar as séries com a AT" />
-                            <StackPanel x:Name="AtPanel" Classes="bo_fiscal_wizard_at" IsVisible="False">
-                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Parâmetros de comunicação com a AT" />
-                                <StackPanel x:Name="AtFields" Classes="bo_fiscal_wizard_at" />
-                                <Button x:Name="TestAtButton" Classes="login_alert_action" Click="OnTestAtClick" HorizontalAlignment="Left">
-                                    <StackPanel Classes="login_alert_action_content">
-                                        <Image Classes="login_alert_action_icon"
-                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info.png" />
-                                        <TextBlock Classes="login_alert_action_text" Text="Testar" />
+                    <Border Classes="bo_article_section bo_wizard_card">
+                        <Panel>
+                            <StackPanel x:Name="YearStep" Classes="bo_fiscal_wizard_form">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_calendar_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Dados do ano" />
                                     </StackPanel>
-                                </Button>
+                                </Border>
+                                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                           Text="Confirme o ano, a designação e o acrónimo usados nas séries de documento."
+                                           TextWrapping="Wrap" />
+                                <StackPanel x:Name="CloseRow">
+                                    <CheckBox x:Name="CloseCurrent" Classes="bo_entity_input" />
+                                </StackPanel>
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Ano fiscal" />
+                                <TextBox x:Name="YearBox" Classes="bo_entity_input" IsReadOnly="True" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
+                                <TextBox x:Name="DesignationBox" Classes="bo_entity_input" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Acrónimo" />
+                                <TextBox x:Name="AcronymBox" Classes="bo_entity_input" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Notas" />
+                                <TextBox x:Name="NotesBox" Classes="bo_entity_multiline" AcceptsReturn="True" />
                             </StackPanel>
-                        </StackPanel>
-                    </Panel>
+                            <StackPanel x:Name="SeriesStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_barcode_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Séries de documento" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                           Text="Escolha os tipos de documento para os quais pretende criar séries."
+                                           TextWrapping="Wrap" />
+                                <CheckBox x:Name="CreateSeries" Classes="bo_entity_input" Content="Selecionar todas" IsChecked="True" />
+                                <CheckBox x:Name="PerTerminal" Classes="bo_entity_input" Content="Uma série por terminal" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Séries a criar" />
+                                <UniformGrid x:Name="SeriesList" Classes="bo_fiscal_wizard_checklist" Columns="2" />
+                            </StackPanel>
+                            <StackPanel x:Name="TerminalsStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_printer_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Terminais" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock x:Name="TerminalsHint" Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap" />
+                                <UniformGrid x:Name="TerminalList" Classes="bo_fiscal_wizard_checklist" Columns="2" />
+                            </StackPanel>
+                            <StackPanel x:Name="AtStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                                <Border Classes="bo_article_section_header bo_wizard_card_header">
+                                    <StackPanel Classes="bo_article_section_title_row">
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_lock_g.svg" />
+                                        <TextBlock Classes="bo_article_section_title" Text="Comunicação AT" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                           Text="As séries novas são registadas na Autoridade Tributária. Se existir um ano activo, o fecho também comunica a anulação ou a finalização das séries anteriores."
+                                           TextWrapping="Wrap" />
+                                <CheckBox x:Name="Communicate" Classes="bo_entity_input" Content="Comunicar as séries com a AT" />
+                                <StackPanel x:Name="AtPanel" Classes="bo_fiscal_wizard_at" IsVisible="False">
+                                    <TextBlock Classes="bo_fiscal_wizard_caption" Text="Parâmetros de comunicação com a AT" />
+                                    <StackPanel x:Name="AtFields" Classes="bo_fiscal_wizard_at" />
+                                    <Button x:Name="TestAtButton" Classes="login_alert_action" Click="OnTestAtClick" HorizontalAlignment="Left">
+                                        <StackPanel Classes="login_alert_action_content">
+                                            <Image Classes="login_alert_action_icon"
+                                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info.png" />
+                                            <TextBlock Classes="login_alert_action_text" Text="Testar" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Panel>
+                    </Border>
                 </ScrollViewer>
             </DockPanel>
         </Border>
