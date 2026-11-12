@@ -7,11 +7,8 @@
     <Grid>
     <Panel x:Name="DocumentShell" Classes="bo_dialog_shell">
     <Border x:Name="DocumentFrame" Classes="login_alert_frame"
-            Background="#FFFFFF"
-            BorderBrush="#D0D5DA"
-            BorderThickness="1"
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <DockPanel Background="#FFFFFF">
+        <DockPanel Classes="login_alert_inner">
             <Border x:Name="DocumentTitlebar"
                     Classes="login_alert_titlebar bo_dialog_drag"
                     DockPanel.Dock="Top"
