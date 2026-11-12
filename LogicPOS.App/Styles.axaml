@@ -1014,12 +1014,16 @@
         <Setter Property="Background" Value="#3D3D3D" />
     </Style>
 
-    <!-- White only on the body fill (below titlebar / above footer). -->
-    <Style Selector="DockPanel.login_alert_inner > ScrollViewer,
-                     DockPanel.login_alert_inner > Grid,
-                     DockPanel.login_alert_inner > Panel,
-                     DockPanel.login_alert_inner > DataGrid,
-                     DockPanel.login_alert_inner > StackPanel">
+    <!-- White only on the body fill (below titlebar / above footer).
+         One selector per type: Avalonia compiles comma-lists against Control,
+         which has no Background (AVLN2000) and leaves App without precompiled XAML. -->
+    <Style Selector="DockPanel.login_alert_inner > ScrollViewer">
+        <Setter Property="Background" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="DockPanel.login_alert_inner > Panel">
+        <Setter Property="Background" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="DockPanel.login_alert_inner > DataGrid">
         <Setter Property="Background" Value="#FFFFFF" />
     </Style>
 

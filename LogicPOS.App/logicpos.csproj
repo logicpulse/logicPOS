@@ -36,8 +36,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Images/fonts only. Do NOT glob Themes: Avalonia already includes **/*.axaml as
+         AvaloniaXaml→AvaloniaResource; a second Themes\**\* entry duplicates
+         /Themes/GlassButton.axaml and crashes Main (ArgumentException same key). -->
     <AvaloniaResource Include="Assets\**\*" />
-    <AvaloniaResource Include="Themes\**\*" />
   </ItemGroup>
 
   <ItemGroup>
