@@ -57,6 +57,7 @@ public static class ListingColumns
             ("ButtonImage", "Imagem"),
             ("Code", "Código"),
             ("Designation", "Designação"),
+            ("Disabled", "Desactivado"),
             ("IsComposed", "Artigo composto"),
             ("SubfamilyId", "Subfamília do artigo"),
             ("TypeId", "Tipo de artigo"),

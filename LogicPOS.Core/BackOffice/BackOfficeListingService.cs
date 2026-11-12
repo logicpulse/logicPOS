@@ -310,7 +310,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             PageKind.Notice => NoticePage(page),
             _ => page.EntityType == typeof(Receipt)
                 ? await QueryReceiptsAsync(database, customerId, cancellationToken)
-                : await QueryEntitiesAsync(database, page, cancellationToken)
+                : await QueryEntitiesAsync(database, page, mode, cancellationToken)
         };
 
         var rows = snapshot.Rows;
@@ -817,7 +817,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return allowed;
     }
 
-    private async Task<ListingSnapshot> QueryEntitiesAsync(LogicPOSDbContext database, PageSpec page, CancellationToken cancellationToken)
+    private async Task<ListingSnapshot> QueryEntitiesAsync(LogicPOSDbContext database, PageSpec page, string? mode, CancellationToken cancellationToken)
     {
         if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter)
             && FiscalFeatures.ShowsAgt(_system.Country))
@@ -826,9 +826,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             await EnsureAgtOperationalPreferencesAsync(database, cancellationToken);
         }
 
-        var rows = (await MaterializeAsync(database, page.EntityType!, cancellationToken))
+        // Artigos: Ativos / Desactivados / Todos — Disabled maps to soft-delete (IsDeleted).
+        var articleStatus = page.EntityType == typeof(Article) ? (string.IsNullOrWhiteSpace(mode) ? "Ativos" : mode) : null;
+        var includeDeleted = articleStatus is "Desactivados" or "Todos";
+        var rows = (await MaterializeCoreAsync(database, page.EntityType!, onlyActive: includeDeleted == false, cancellationToken))
             .Cast<object>()
-            .Where(row => ReadBool(row, "IsDeleted") == false)
+            .Where(row => articleStatus switch
+            {
+                "Desactivados" => ReadBool(row, "IsDeleted"),
+                "Todos" => true,
+                _ => ReadBool(row, "IsDeleted") == false
+            })
             .Where(row => MatchesFilter(page, row))
             .OrderByDescending(row => ReadDate(row, "CreatedAt"))
             .Take(RowLimit)
@@ -978,9 +986,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         var values = new Dictionary<string, string>();
         foreach (var column in columns)
         {
-            values[column.Key] = column.Key == "ButtonImage"
-                ? ReadButtonImage(entity)
-                : ReadCell(entity, column.Key, lookups);
+            values[column.Key] = column.Key switch
+            {
+                "ButtonImage" => ReadButtonImage(entity),
+                "Disabled" => ReadBool(entity, "IsDeleted") ? "Sim" : "Não",
+                _ => ReadCell(entity, column.Key, lookups)
+            };
         }
 
         return new ListingRow
@@ -1174,6 +1185,20 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 Kind = "image",
                 Value = button?.Image ?? string.Empty,
                 Group = group
+            });
+        }
+
+        if (page.EntityType == typeof(Article))
+        {
+            // GTK/web DialogArticle: Disabled checkbox soft-deletes (IsDeleted) so the article leaves POS menus.
+            fields.Add(new ListingField
+            {
+                Key = "Disabled",
+                Label = Header("Disabled"),
+                Kind = "bool",
+                Value = ReadBool(entity, "IsDeleted") ? "true" : "false",
+                ReadOnly = page.CanEdit == false,
+                Group = "Detalhes"
             });
         }
 
@@ -1491,9 +1516,10 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
     private static string? ApplyFields(Type type, object entity, IReadOnlyDictionary<string, string> fields)
     {
         ApplyButton(entity, fields);
+        ApplyDisabled(entity, fields);
         foreach (var pair in fields)
         {
-            if (pair.Key == "Pin")
+            if (pair.Key is "Pin" or "Disabled")
             {
                 continue;
             }
@@ -1611,6 +1637,22 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         object stored = underlying == typeof(float) ? (float)number : underlying == typeof(double) ? (double)number : number;
         property.SetValue(entity, stored);
         return true;
+    }
+
+    /// <summary>Maps the editor Disabled checkbox onto soft-delete (IsDeleted / DeletedAt).</summary>
+    private static void ApplyDisabled(object entity, IReadOnlyDictionary<string, string> fields)
+    {
+        if (fields.TryGetValue("Disabled", out var raw) == false || entity is not Article article)
+        {
+            return;
+        }
+
+        var disabled = string.Equals(raw, "true", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(raw, "1", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(raw, "sim", StringComparison.OrdinalIgnoreCase);
+        article.IsDeleted = disabled;
+        article.DeletedAt = disabled ? DateTime.Now : default;
+        article.UpdatedAt = DateTime.Now;
     }
 
     /// <summary>Writes the POS button label and image stored on the Button complex property.</summary>
@@ -3601,14 +3643,14 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private static PageSpec[] BuildPages()
     {
-        PageSpec Entity(string title, Type type, bool create = true, bool edit = true, bool delete = true, string? filter = null, ListingAction[]? actions = null)
-            => new(title, PageKind.Entity, type, create, edit, delete, filter, actions ?? [], []);
+        PageSpec Entity(string title, Type type, bool create = true, bool edit = true, bool delete = true, string? filter = null, ListingAction[]? actions = null, string[]? modes = null)
+            => new(title, PageKind.Entity, type, create, edit, delete, filter, actions ?? [], modes ?? []);
 
         return
         [
             Entity("Famílias", typeof(ArticleFamily)),
             Entity("Subfamílias", typeof(ArticleSubfamily)),
-            Entity("Artigos", typeof(Article)),
+            Entity("Artigos", typeof(Article), modes: ["Ativos", "Desactivados", "Todos"]),
             Entity("Tipo de artigos", typeof(ArticleType)),
             Entity("Classe do artigo", typeof(ArticleClass)),
             Entity("Tipo de Preço", typeof(PriceType)),

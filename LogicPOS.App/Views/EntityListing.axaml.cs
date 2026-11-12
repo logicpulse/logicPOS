@@ -1234,7 +1234,7 @@ public partial class EntityListing : UserControl
             root.Children.Add(ArticleSection("Classificação", "layers", await ArticleRowAsync(service, classification, null)));
         }
 
-        string[] flagOrder = ["Favorite", "UseWeighingBalance", "IsComposed"];
+        string[] flagOrder = ["Favorite", "UseWeighingBalance", "IsComposed", "Disabled"];
         var flags = fields
             .Where(field => field.Kind == "bool")
             .OrderBy(field =>
