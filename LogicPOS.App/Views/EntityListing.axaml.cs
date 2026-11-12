@@ -1674,6 +1674,11 @@ public partial class EntityListing : UserControl
             ToolTip.SetTip(box, "V\u00E1rios emails: separar com ; ou ,");
         }
 
+        if (_title == "Impressoras" && field.Key == "Designation" && field.ReadOnly == false)
+        {
+            return CreateWindowsPrinterCombo(field.Value);
+        }
+
         var input = field.ReadOnly ? (Control)box : AttachKeyboard(box);
         if (_title == "Clientes" && field.Key == "FiscalNumber" && field.ReadOnly == false && input is DockPanel dock)
         {
@@ -1682,13 +1687,6 @@ public partial class EntityListing : UserControl
             DockPanel.SetDock(vies, Dock.Right);
             dock.Children.Insert(0, vies);
             box.LostFocus += async (_, _) => await CompleteVatAsync(false);
-        }
-
-        if (_title == "Impressoras" && field.Key == "Designation" && field.ReadOnly == false && input is DockPanel printerDock)
-        {
-            var pick = CreateInstalledPrinterButton(box);
-            DockPanel.SetDock(pick, Dock.Right);
-            printerDock.Children.Insert(0, pick);
         }
 
         if (_title == "Terminais" && field.Key == "HardwareId" && field.ReadOnly == false && input is DockPanel hardwareDock)
@@ -1966,9 +1964,17 @@ public partial class EntityListing : UserControl
             return option.Id == Guid.Empty ? string.Empty : option.Id.ToString();
         }
 
-        if (input is ComboBox choice && choice.SelectedItem is string selectedChoice)
+        if (input is ComboBox choice)
         {
-            return selectedChoice;
+            if (choice.SelectedItem is string selectedChoice && string.IsNullOrWhiteSpace(selectedChoice) == false)
+            {
+                return selectedChoice;
+            }
+
+            if (string.IsNullOrWhiteSpace(choice.Text) == false)
+            {
+                return choice.Text;
+            }
         }
 
         if (input is TextBox box)
@@ -1979,56 +1985,80 @@ public partial class EntityListing : UserControl
         return string.Empty;
     }
 
-    private static Button CreateInstalledPrinterButton(TextBox target)
+    private ComboBox CreateWindowsPrinterCombo(string? current)
     {
-        var button = new Button
-        {
-            Classes = { "bo_touch_key" },
-            Content = new Image
-            {
-                Classes = { "bo_printer_pick_icon" },
-                Source = new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri("avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_b.png")))
-            }
-        };
-        ToolTip.SetTip(button, "Impressoras instaladas no Windows");
-        button.Click += (_, _) =>
-        {
-            var menu = new MenuFlyout { Placement = PlacementMode.BottomEdgeAlignedRight };
-            FillInstalledPrinters(menu, target);
-            menu.ShowAt(button);
-        };
-        return button;
-    }
-
-    private static void FillInstalledPrinters(MenuFlyout menu, TextBox target)
-    {
-        IReadOnlyList<string> printers;
+        var printers = new List<string>();
+        string? hint = null;
         try
         {
-            printers = WindowsPrinters.Installed();
+            printers.AddRange(WindowsPrinters.Installed());
         }
         catch (Exception exception)
         {
-            menu.Items.Add(new MenuItem { Classes = { "bo_printer_pick_item" }, Header = exception.Message, IsEnabled = false });
-            return;
+            hint = exception.Message;
+        }
+
+        if (string.IsNullOrWhiteSpace(current) == false
+            && printers.Exists(item => string.Equals(item, current, StringComparison.OrdinalIgnoreCase)) == false)
+        {
+            printers.Insert(0, current);
         }
 
         if (printers.Count == 0)
         {
-            menu.Items.Add(new MenuItem { Classes = { "bo_printer_pick_item" }, Header = "Não existem impressoras instaladas.", IsEnabled = false });
+            hint ??= "Não há impressoras instaladas no Windows.";
+        }
+
+        var combo = new ComboBox
+        {
+            Classes = { "bo_entity_input" },
+            ItemsSource = printers,
+            IsEditable = true,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            PlaceholderText = hint ?? "Selecionar impressora do Windows"
+        };
+        ToolTip.SetTip(combo, "Impressoras instaladas no Windows");
+
+        var suppressSync = true;
+        combo.SelectionChanged += (_, _) =>
+        {
+            if (suppressSync
+                || combo.SelectedItem is not string name
+                || string.IsNullOrWhiteSpace(name))
+            {
+                return;
+            }
+
+            // Windows thermal printing uses NetworkName as the installed printer name.
+            var network = _inputs.FirstOrDefault(item => item.Key == "NetworkName").Input;
+            SetTextInput(network, name);
+        };
+
+        if (string.IsNullOrWhiteSpace(current) == false)
+        {
+            combo.SelectedItem = printers.Find(item => string.Equals(item, current, StringComparison.OrdinalIgnoreCase));
+            combo.Text = current;
+        }
+
+        suppressSync = false;
+        return combo;
+    }
+
+    private static void SetTextInput(Control? input, string value)
+    {
+        if (input is null)
+        {
             return;
         }
 
-        foreach (var printer in printers)
+        if (input is DockPanel dock)
         {
-            var item = new MenuItem { Classes = { "bo_printer_pick_item" }, Header = printer };
-            if (string.Equals(printer, target.Text, StringComparison.OrdinalIgnoreCase))
-            {
-                item.Classes.Add("selected");
-            }
+            input = dock.Children.OfType<TextBox>().FirstOrDefault() ?? input;
+        }
 
-            item.Click += (_, _) => target.Text = printer;
-            menu.Items.Add(item);
+        if (input is TextBox box)
+        {
+            box.Text = value;
         }
     }
 
