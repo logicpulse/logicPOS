@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         x:Class="LogicPOS.App.Views.EditionSetupWindow"
         Title="LogicPOS 2.0"
         Width="1120"
@@ -8,170 +9,113 @@
         MinHeight="640"
         WindowStartupLocation="CenterScreen"
         CanResize="False"
-        Background="#EEF1F3"
+        Background="#3D3D3D"
         FontFamily="avares://LogicPOS.App/Assets/Fonts#Montserrat">
   <Window.Styles>
-    <Style Selector="Border.edition-card">
-      <Setter Property="Background" Value="White" />
-      <Setter Property="CornerRadius" Value="12" />
-      <Setter Property="Padding" Value="18" />
+    <Style Selector="Border.edition_card">
       <Setter Property="BorderThickness" Value="2" />
-      <Setter Property="BorderBrush" Value="#D5DEE3" />
       <Setter Property="Cursor" Value="Hand" />
     </Style>
-    <Style Selector="Border.edition-card.selected-community">
-      <Setter Property="BorderBrush" Value="#A8C47A" />
+    <Style Selector="Border.edition_card.selected">
+      <Setter Property="BorderBrush" Value="#4477A4" />
     </Style>
-    <Style Selector="Border.edition-card.selected-business">
-      <Setter Property="BorderBrush" Value="#3D7EA6" />
+    <Style Selector="Border.edition_card Path.edition_icon">
+      <Setter Property="Width" Value="18" />
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Stretch" Value="Uniform" />
+      <Setter Property="Fill" Value="#9BBE1D" />
+      <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
-    <Style Selector="Border.edition-card.selected-cloud">
-      <Setter Property="BorderBrush" Value="#5B7C99" />
+    <Style Selector="Border.edition_card Button.login_alert_action">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="TextBlock.edition_tagline">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="#15202B" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.edition_hint">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="#64748B" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Margin" Value="0,0,0,4" />
     </Style>
     <Style Selector="TextBlock.feature">
       <Setter Property="TextWrapping" Value="Wrap" />
       <Setter Property="FontSize" Value="12.5" />
       <Setter Property="Foreground" Value="#334155" />
-      <Setter Property="Margin" Value="0,0,0,6" />
+    </Style>
+    <Style Selector="Button.edition_link">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#2E5F8A" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
   </Window.Styles>
 
-  <DockPanel>
-    <Border DockPanel.Dock="Top" Background="#263238" Padding="20,14">
-      <Grid ColumnDefinitions="Auto,*">
-        <Image Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png"
-               Width="132" Height="36" Stretch="Uniform" VerticalAlignment="Center" />
-        <TextBlock Grid.Column="1"
-                   Text="Escolha a sua edição"
-                   Foreground="White"
-                   FontSize="18"
-                   FontWeight="SemiBold"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center" />
-        <Button Grid.Column="2"
-                x:Name="BtnClose"
-                Content="✕"
-                Width="36" Height="32"
-                Background="Transparent"
-                Foreground="#CBDF96"
-                BorderThickness="0"
-                FontSize="16"
-                Click="OnCloseClick" />
-      </Grid>
+  <DockPanel Classes="login_alert_inner">
+    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top" CornerRadius="0">
+      <StackPanel Classes="login_alert_title_row">
+        <svg:Svg Classes="login_alert_title_icon"
+                 Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_configuracoes.svg" />
+        <TextBlock Classes="login_alert_title" Text="Escolha a sua edição" />
+      </StackPanel>
     </Border>
 
-    <Border DockPanel.Dock="Bottom" Background="White" Padding="20,14" BorderBrush="#D5DEE3" BorderThickness="0,1,0,0">
+    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom" CornerRadius="0">
       <DockPanel LastChildFill="True">
-        <Button x:Name="BtnContinue"
-                DockPanel.Dock="Right"
-                MinWidth="180"
-                Height="42"
-                Content="Começar a usar"
-                FontWeight="SemiBold"
-                Background="#CBDF96"
-                Foreground="#263238"
-                BorderThickness="0"
-                CornerRadius="8"
-                Click="OnContinueClick" />
-
-        <StackPanel Spacing="8" VerticalAlignment="Center" Margin="0,0,16,0">
-          <TextBlock x:Name="LblStatus" TextWrapping="Wrap" Foreground="#B45309" FontSize="12.5" />
-          <Border x:Name="PanelBusinessHosting" IsVisible="False" Background="#F4F7F8" CornerRadius="8" Padding="12">
-            <StackPanel Spacing="8">
-              <TextBlock FontWeight="SemiBold" Foreground="#263238" Text="Activar Business" />
-              <TextBlock FontSize="12" Foreground="#64748B" TextWrapping="Wrap"
-                         Text="Introduza a chave de software recebida após o pagamento. Sem chave não é possível activar o Business." />
-              <TextBox x:Name="TxtSoftwareKey" PlaceholderText="Chave de software" MinWidth="280" />
-              <Button Content="Não tem chave? Pagar em logic-pos.com"
-                      HorizontalAlignment="Left"
-                      Background="Transparent"
-                      Foreground="#3D7EA6"
-                      BorderThickness="0"
-                      Padding="0"
-                      Cursor="Hand"
-                      Click="OnPayBusinessClick" />
-              <TextBlock FontWeight="SemiBold" Foreground="#263238" Margin="0,8,0,0" Text="Alojamento" />
-              <RadioButton x:Name="RbLocalServer" GroupName="Hosting" IsChecked="True"
-                           Content="Este computador é o servidor (API e portal quando a licença estiver activa)" />
-              <RadioButton x:Name="RbRemoteApi" GroupName="Hosting"
-                           Content="Ligar a uma API já existente" />
-              <TextBox x:Name="TxtApiAddress" PlaceholderText="https://servidor:5001/" IsVisible="False" />
-              <TextBox x:Name="TxtClientId" PlaceholderText="Client ID (opcional)" IsVisible="False" />
+        <StackPanel DockPanel.Dock="Right" Classes="login_alert_action_buttons">
+          <Button x:Name="BtnContinue" Classes="login_alert_action action_primary" Click="OnContinueClick">
+            <StackPanel Classes="login_alert_action_content">
+              <Image Classes="login_alert_action_icon"
+                     Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+              <TextBlock x:Name="ContinueText" Classes="login_alert_action_text" Text="Começar a usar" />
             </StackPanel>
-          </Border>
-          <Border x:Name="PanelCloudClient" IsVisible="False" Background="#F4F7F8" CornerRadius="8" Padding="12">
-            <StackPanel Spacing="8">
-              <TextBlock FontWeight="SemiBold" Foreground="#263238" Text="Conta Cloud LogicPulse" />
-              <TextBlock FontSize="12" Foreground="#64748B" TextWrapping="Wrap"
-                         Text="Indique o Client ID de uma conta Cloud já criada. Só continua se a conta existir e estiver activa." />
-              <TextBox x:Name="TxtCloudClientId" PlaceholderText="Client ID" MinWidth="280" />
-              <Button Content="Criar / pagar conta em logic-pos.com"
-                      HorizontalAlignment="Left"
-                      Background="Transparent"
-                      Foreground="#5B7C99"
-                      BorderThickness="0"
-                      Padding="0"
-                      Cursor="Hand"
-                      Click="OnPayCloudClick" />
-            </StackPanel>
-          </Border>
+          </Button>
         </StackPanel>
+        <TextBlock x:Name="LblStatus" Margin="12,0,8,0" VerticalAlignment="Center"
+                   TextWrapping="Wrap" Foreground="#B45309" FontSize="12.5" />
       </DockPanel>
     </Border>
 
-    <ScrollViewer Padding="24,18,24,12" HorizontalScrollBarVisibility="Disabled">
-      <StackPanel Spacing="16">
-        <Grid ColumnDefinitions="*,Auto">
-          <StackPanel Spacing="6" VerticalAlignment="Center">
-            <TextBlock FontSize="22" FontWeight="SemiBold" Foreground="#1F2937"
-                       Text="Três edições, a mesma base. Escolha a que se adapta ao seu negócio."
-                       TextWrapping="Wrap" />
-            <TextBlock FontSize="13" Foreground="#64748B" TextWrapping="Wrap"
-                       Text="O LogicPOS é um ponto de venda e back-office moderno, certificado e flexível. A faturação certificada está em todas as edições." />
-          </StackPanel>
-          <Border Grid.Column="1" Width="84" Height="84" CornerRadius="16" Background="#263238"
-                  Margin="16,0,0,0" VerticalAlignment="Top">
-            <Image Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png"
-                   Width="56" Height="56"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Stretch="Uniform" />
-          </Border>
-        </Grid>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+      <StackPanel Spacing="14" Margin="20,16,20,16">
+        <StackPanel Spacing="4">
+          <TextBlock FontSize="18" FontWeight="Bold" Foreground="#15202B" TextWrapping="Wrap"
+                     Text="Três edições, a mesma base. Escolha a que se adapta ao seu negócio." />
+          <TextBlock FontSize="13" Foreground="#64748B" TextWrapping="Wrap"
+                     Text="O LogicPOS é um ponto de venda e back-office moderno, certificado e flexível. A faturação certificada está em todas as edições." />
+        </StackPanel>
 
         <Grid ColumnDefinitions="*,14,*,14,*">
           <!-- Community -->
-          <Border x:Name="CardCommunity" Classes="edition-card selected-community"
+          <Border x:Name="CardCommunity" Classes="bo_article_section edition_card selected"
                   PointerPressed="OnCommunityCardPressed">
             <DockPanel>
-              <Button DockPanel.Dock="Bottom"
-                      Content="Começar a usar"
-                      Height="40"
-                      Margin="0,12,0,0"
-                      Background="#CBDF96"
-                      Foreground="#263238"
-                      FontWeight="SemiBold"
-                      BorderThickness="0"
-                      CornerRadius="8"
-                      Click="OnCommunityClick" />
-              <Border DockPanel.Dock="Bottom" Background="#F3F8E8" CornerRadius="8" Padding="10" Margin="0,8,0,0">
-                <TextBlock TextWrapping="Wrap" FontSize="11.5" Foreground="#4B5563"
-                           Text="Distribuído as-is, sem suporte oficial LogicPulse. Ideal para começar já." />
+              <Border Classes="bo_article_section_header" DockPanel.Dock="Top">
+                <StackPanel Classes="bo_article_section_title_row">
+                  <Path Classes="edition_icon"
+                        Data="M12,5A3.5 3.5 0 1 1 8.5,8.5A3.5 3.5 0 0 1 12,5M5,8A3.5 3.5 0 1 1 1.5,4.5A3.5 3.5 0 0 1 5,8M19,8A3.5 3.5 0 1 1 15.5,4.5A3.5 3.5 0 0 1 19,8M12,14C9.33,14 4,15.33 4,18V20H20V18C20,15.33 14.67,14 12,14M6.5,13C4.5,13.3 2,14.3 2,16.5V20H0V16.5C0,13.9 3.1,12.7 6.5,12.1M17.5,13C20.9,12.7 24,13.9 24,16.5V20H22V16.5C22,14.3 19.5,13.3 17.5,13Z" />
+                  <TextBlock Classes="bo_article_section_title" Text="Community Edition" />
+                </StackPanel>
               </Border>
-              <StackPanel Spacing="8">
-                <Grid ColumnDefinitions="Auto,*">
-                  <Border Width="36" Height="36" CornerRadius="18" Background="#E8F0D4">
-                    <Path Width="18" Height="18" Stretch="Uniform"
-                          HorizontalAlignment="Center" VerticalAlignment="Center"
-                          Fill="#5F7D2E"
-                          Data="M12,5A3.5 3.5 0 1 1 8.5,8.5A3.5 3.5 0 0 1 12,5M5,8A3.5 3.5 0 1 1 1.5,4.5A3.5 3.5 0 0 1 5,8M19,8A3.5 3.5 0 1 1 15.5,4.5A3.5 3.5 0 0 1 19,8M12,14C9.33,14 4,15.33 4,18V20H20V18C20,15.33 14.67,14 12,14M6.5,13C4.5,13.3 2,14.3 2,16.5V20H0V16.5C0,13.9 3.1,12.7 6.5,12.1M17.5,13C20.9,12.7 24,13.9 24,16.5V20H22V16.5C22,14.3 19.5,13.3 17.5,13Z" />
-                  </Border>
-                  <TextBlock Grid.Column="1" Text="Community Edition" FontWeight="SemiBold"
-                             FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="#1F2937" />
-                </Grid>
-                <TextBlock Text="Um POS completo e certificado. Para começar sem barreiras."
-                           FontWeight="SemiBold" FontSize="13" TextWrapping="Wrap" Foreground="#263238" />
-                <TextBlock Text="Para pequenos negócios, programadores e quem quer começar sem investimento."
-                           FontSize="12" TextWrapping="Wrap" Foreground="#64748B" />
+              <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="16,0,16,14">
+                <Border Background="#F2F7E4" CornerRadius="8" Padding="10">
+                  <TextBlock TextWrapping="Wrap" FontSize="11.5" Foreground="#4B5563"
+                             Text="Distribuído as-is, sem suporte oficial LogicPulse. Ideal para começar já." />
+                </Border>
+                <Button Classes="login_alert_action action_primary" Click="OnCommunityClick">
+                  <StackPanel Classes="login_alert_action_content">
+                    <TextBlock Classes="login_alert_action_text" Text="Escolher Community" />
+                  </StackPanel>
+                </Button>
+              </StackPanel>
+              <StackPanel Spacing="6" Margin="16,12,16,12">
+                <TextBlock Classes="edition_tagline" Text="Um POS completo e certificado. Para começar sem barreiras." />
+                <TextBlock Classes="edition_hint" Text="Para pequenos negócios e quem quer começar sem investimento." />
                 <TextBlock Classes="feature" Text="✓  Faturação certificada (PT, AO, MZ)" />
                 <TextBlock Classes="feature" Text="✓  Vendas tácteis rápidas e gestão de mesas" />
                 <TextBlock Classes="feature" Text="✓  Stock, famílias e relatórios PDF" />
@@ -182,43 +126,31 @@
           </Border>
 
           <!-- Business -->
-          <Border x:Name="CardBusiness" Grid.Column="2" Classes="edition-card"
+          <Border x:Name="CardBusiness" Grid.Column="2" Classes="bo_article_section edition_card"
                   PointerPressed="OnBusinessCardPressed">
             <DockPanel>
-              <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="0,12,0,0">
-                <Button Content="Pagar em logic-pos.com"
-                        Height="36"
-                        Background="Transparent"
-                        Foreground="#3D7EA6"
-                        FontWeight="SemiBold"
-                        BorderBrush="#3D7EA6"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Click="OnPayBusinessClick" />
-                <Button Content="Escolher Business"
-                        Height="40"
-                        Background="#3D7EA6"
-                        Foreground="White"
-                        FontWeight="SemiBold"
-                        BorderThickness="0"
-                        CornerRadius="8"
-                        Click="OnBusinessClick" />
+              <Border Classes="bo_article_section_header" DockPanel.Dock="Top">
+                <StackPanel Classes="bo_article_section_title_row">
+                  <Path Classes="edition_icon"
+                        Data="M3,21V7H11V3H21V21H3M5,19H9V17H5V19M5,15H9V13H5V15M5,11H9V9H5V11M11,19H19V5H13V9H11V19M13,19V17H15V19H13M17,19V17H19V19H17M13,15V13H15V15H13M17,15V13H19V15H17M13,11V9H15V11H13M17,11V9H19V11H17Z" />
+                  <TextBlock Classes="bo_article_section_title" Text="Business Edition" />
+                </StackPanel>
+              </Border>
+              <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="16,0,16,14">
+                <Button Classes="login_alert_action action_secondary" Click="OnPayBusinessClick">
+                  <StackPanel Classes="login_alert_action_content">
+                    <TextBlock Classes="login_alert_action_text" Text="Mais informações em logic-pos.com" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="login_alert_action action_primary" Click="OnBusinessClick">
+                  <StackPanel Classes="login_alert_action_content">
+                    <TextBlock Classes="login_alert_action_text" Text="Escolher Business" />
+                  </StackPanel>
+                </Button>
               </StackPanel>
-              <StackPanel Spacing="8">
-                <Grid ColumnDefinitions="Auto,*">
-                  <Border Width="36" Height="36" CornerRadius="18" Background="#E3F0F7">
-                    <Path Width="18" Height="18" Stretch="Uniform"
-                          HorizontalAlignment="Center" VerticalAlignment="Center"
-                          Fill="#3D7EA6"
-                          Data="M3,21V7H11V3H21V21H3M5,19H9V17H5V19M5,15H9V13H5V15M5,11H9V9H5V11M11,19H19V5H13V9H11V19M13,19V17H15V19H13M17,19V17H19V19H17M13,15V13H15V15H13M17,15V13H19V15H17M13,11V9H15V11H13M17,11V9H19V11H17Z" />
-                  </Border>
-                  <TextBlock Grid.Column="1" Text="Business Edition" FontWeight="SemiBold"
-                             FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="#1F2937" />
-                </Grid>
-                <TextBlock Text="Tudo o que o Community tem, mais ferramentas para crescer."
-                           FontWeight="SemiBold" FontSize="13" TextWrapping="Wrap" Foreground="#263238" />
-                <TextBlock Text="Para empresas com vários postos, gestão remota e suporte LogicPulse."
-                           FontSize="12" TextWrapping="Wrap" Foreground="#64748B" />
+              <StackPanel Spacing="6" Margin="16,12,16,12">
+                <TextBlock Classes="edition_tagline" Text="Tudo o que o Community tem, mais ferramentas para crescer." />
+                <TextBlock Classes="edition_hint" Text="Para empresas com vários postos, gestão remota e suporte LogicPulse." />
                 <TextBlock Classes="feature" Text="✓  Portal web / back-office remoto" />
                 <TextBlock Classes="feature" Text="✓  API central para vários terminais" />
                 <TextBlock Classes="feature" Text="✓  Impressão em rede" />
@@ -229,43 +161,31 @@
           </Border>
 
           <!-- Cloud -->
-          <Border x:Name="CardCloud" Grid.Column="4" Classes="edition-card"
+          <Border x:Name="CardCloud" Grid.Column="4" Classes="bo_article_section edition_card"
                   PointerPressed="OnCloudCardPressed">
             <DockPanel>
-              <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="0,12,0,0">
-                <Button Content="Pagar em logic-pos.com"
-                        Height="36"
-                        Background="Transparent"
-                        Foreground="#5B7C99"
-                        FontWeight="SemiBold"
-                        BorderBrush="#5B7C99"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Click="OnPayCloudClick" />
-                <Button Content="Escolher Cloud"
-                        Height="40"
-                        Background="#5B7C99"
-                        Foreground="White"
-                        FontWeight="SemiBold"
-                        BorderThickness="0"
-                        CornerRadius="8"
-                        Click="OnCloudClick" />
+              <Border Classes="bo_article_section_header" DockPanel.Dock="Top">
+                <StackPanel Classes="bo_article_section_title_row">
+                  <Path Classes="edition_icon"
+                        Data="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0 0 6,20H19A5,5 0 0 0 24,15C24,12.36 21.95,10.22 19.35,10.04Z" />
+                  <TextBlock Classes="bo_article_section_title" Text="Cloud" />
+                </StackPanel>
+              </Border>
+              <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="16,0,16,14">
+                <Button Classes="login_alert_action action_secondary" Click="OnPayCloudClick">
+                  <StackPanel Classes="login_alert_action_content">
+                    <TextBlock Classes="login_alert_action_text" Text="Mais informações em logic-pos.com" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="login_alert_action action_primary" Click="OnCloudClick">
+                  <StackPanel Classes="login_alert_action_content">
+                    <TextBlock Classes="login_alert_action_text" Text="Escolher Cloud" />
+                  </StackPanel>
+                </Button>
               </StackPanel>
-              <StackPanel Spacing="8">
-                <Grid ColumnDefinitions="Auto,*">
-                  <Border Width="36" Height="36" CornerRadius="18" Background="#E8EEF3">
-                    <Path Width="18" Height="18" Stretch="Uniform"
-                          HorizontalAlignment="Center" VerticalAlignment="Center"
-                          Fill="#5B7C99"
-                          Data="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0 0 6,20H19A5,5 0 0 0 24,15C24,12.36 21.95,10.22 19.35,10.04Z" />
-                  </Border>
-                  <TextBlock Grid.Column="1" Text="Cloud" FontWeight="SemiBold"
-                             FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="#1F2937" />
-                </Grid>
-                <TextBlock Text="O seu POS, sem servidores."
-                           FontWeight="SemiBold" FontSize="13" TextWrapping="Wrap" Foreground="#263238" />
-                <TextBlock Text="Para quem quer começar já, várias lojas, e não quer gerir IT."
-                           FontSize="12" TextWrapping="Wrap" Foreground="#64748B" />
+              <StackPanel Spacing="6" Margin="16,12,16,12">
+                <TextBlock Classes="edition_tagline" Text="O seu POS, sem servidores." />
+                <TextBlock Classes="edition_hint" Text="Para quem quer começar já, várias lojas, e não quer gerir IT." />
                 <TextBlock Classes="feature" Text="✓  Pronto a usar — sem servidores locais" />
                 <TextBlock Classes="feature" Text="✓  Dados acessíveis em qualquer lado" />
                 <TextBlock Classes="feature" Text="✓  Backups e actualizações pela LogicPulse" />
@@ -275,6 +195,47 @@
             </DockPanel>
           </Border>
         </Grid>
+
+        <Border x:Name="PanelBusinessHosting" Classes="bo_article_section" IsVisible="False">
+          <StackPanel>
+            <Border Classes="bo_article_section_header">
+              <StackPanel Classes="bo_article_section_title_row">
+                <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_lock_g.svg" />
+                <TextBlock Classes="bo_article_section_title" Text="Activar Business" />
+              </StackPanel>
+            </Border>
+            <StackPanel Spacing="8" Margin="16,12,16,14">
+              <TextBlock Classes="edition_hint"
+                         Text="Introduza a chave de software recebida da LogicPulse. Sem chave não é possível activar o Business." />
+              <TextBox x:Name="TxtSoftwareKey" Classes="bo_entity_input" PlaceholderText="Chave de software" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
+              <Button Classes="edition_link" Content="Não tem chave? Mais informações em logic-pos.com" Click="OnPayBusinessClick" />
+              <TextBlock Classes="edition_tagline" Margin="0,6,0,0" Text="Alojamento" />
+              <RadioButton x:Name="RbLocalServer" GroupName="Hosting" IsChecked="True"
+                           Content="Este computador é o servidor (API e portal quando a licença estiver activa)" />
+              <RadioButton x:Name="RbRemoteApi" GroupName="Hosting"
+                           Content="Ligar a uma API já existente" />
+              <TextBox x:Name="TxtApiAddress" Classes="bo_entity_input" PlaceholderText="https://servidor:5001/" IsVisible="False" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
+              <TextBox x:Name="TxtClientId" Classes="bo_entity_input" PlaceholderText="Client ID (opcional)" IsVisible="False" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <Border x:Name="PanelCloudClient" Classes="bo_article_section" IsVisible="False">
+          <StackPanel>
+            <Border Classes="bo_article_section_header">
+              <StackPanel Classes="bo_article_section_title_row">
+                <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_user_g.svg" />
+                <TextBlock Classes="bo_article_section_title" Text="Conta Cloud LogicPulse" />
+              </StackPanel>
+            </Border>
+            <StackPanel Spacing="8" Margin="16,12,16,14">
+              <TextBlock Classes="edition_hint"
+                         Text="Indique o Client ID de uma conta Cloud já criada. Só continua se a conta existir e estiver activa." />
+              <TextBox x:Name="TxtCloudClientId" Classes="bo_entity_input" PlaceholderText="Client ID" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
+              <Button Classes="edition_link" Content="Não tem conta? Mais informações em logic-pos.com" Click="OnPayCloudClick" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
       </StackPanel>
     </ScrollViewer>
   </DockPanel>

@@ -2,7 +2,6 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using LogicPOS.Core;
 
 namespace LogicPOS.App.Views;
@@ -33,12 +32,6 @@ public partial class EditionSetupWindow : Window
         RbRemoteApi.IsCheckedChanged += (_, _) => RefreshApiFields();
         RbLocalServer.IsCheckedChanged += (_, _) => RefreshApiFields();
         SelectEdition(ProductEdition.Community, closeImmediately: false);
-    }
-
-    private void OnCloseClick(object? sender, RoutedEventArgs e)
-    {
-        Completed = false;
-        Close();
     }
 
     private void OnCommunityCardPressed(object? sender, PointerPressedEventArgs e)
@@ -82,9 +75,9 @@ public partial class EditionSetupWindow : Window
         SelectedEdition = edition;
         LblStatus.Text = string.Empty;
 
-        CardCommunity.Classes.Set("selected-community", edition == ProductEdition.Community);
-        CardBusiness.Classes.Set("selected-business", edition == ProductEdition.Business);
-        CardCloud.Classes.Set("selected-cloud", edition == ProductEdition.Cloud);
+        CardCommunity.Classes.Set("selected", edition == ProductEdition.Community);
+        CardBusiness.Classes.Set("selected", edition == ProductEdition.Business);
+        CardCloud.Classes.Set("selected", edition == ProductEdition.Cloud);
 
         PanelBusinessHosting.IsVisible = edition == ProductEdition.Business;
         PanelCloudClient.IsVisible = edition == ProductEdition.Cloud;
@@ -102,7 +95,7 @@ public partial class EditionSetupWindow : Window
 
     private void RefreshContinueButton(ProductEdition edition)
     {
-        BtnContinue.Content = edition switch
+        ContinueText.Text = edition switch
         {
             ProductEdition.Community => "Começar a usar",
             ProductEdition.Business => "Activar Business",
@@ -110,19 +103,6 @@ public partial class EditionSetupWindow : Window
             _ => throw new System.ComponentModel.InvalidEnumArgumentException(
                 nameof(edition), (int)edition, typeof(ProductEdition)),
         };
-
-        BtnContinue.Background = edition switch
-        {
-            ProductEdition.Community => Brush.Parse("#CBDF96"),
-            ProductEdition.Business => Brush.Parse("#3D7EA6"),
-            ProductEdition.Cloud => Brush.Parse("#5B7C99"),
-            _ => throw new System.ComponentModel.InvalidEnumArgumentException(
-                nameof(edition), (int)edition, typeof(ProductEdition)),
-        };
-
-        BtnContinue.Foreground = edition == ProductEdition.Community
-            ? Brush.Parse("#263238")
-            : Brushes.White;
     }
 
     private void RefreshApiFields()
