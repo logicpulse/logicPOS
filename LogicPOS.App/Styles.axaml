@@ -1877,6 +1877,11 @@
         <Setter Property="Foreground" Value="#FFFFFF" />
     </Style>
 
+    <Style Selector="Button.pos_menu_button_yellow">
+        <Setter Property="Background" Value="#F0C12E" />
+        <Setter Property="Foreground" Value="#1E1E1E" />
+    </Style>
+
     <Style Selector="Button.pos_menu_button_grey">
         <Setter Property="Background" Value="#AAAAAA" />
         <Setter Property="Foreground" Value="#000000" />
@@ -1894,6 +1899,12 @@
     </Style>
 
     <Style Selector="Button.pos_menu_button_green:disabled">
+        <Setter Property="Background" Value="#6E6E6E" />
+        <Setter Property="Foreground" Value="#4A4A4A" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_button_yellow:disabled">
         <Setter Property="Background" Value="#6E6E6E" />
         <Setter Property="Foreground" Value="#4A4A4A" />
         <Setter Property="Opacity" Value="0.7" />

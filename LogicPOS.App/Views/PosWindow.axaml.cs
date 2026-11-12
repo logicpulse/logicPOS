@@ -978,7 +978,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 _articlePage = 0;
                 RefreshMenus();
             },
-            assetImageUri: "avares://LogicPOS.App/Assets/Images/Pos/button_favorites.png");
+            assetImageUri: "avares://LogicPOS.App/Assets/Images/Pos/button_favorites.png",
+            favorites: true);
         var familyHasSelection = _showFavorites || _catalog.Families.Any(item => item.Id == _familyId);
         DimIfNotSelected(favoritesButton, familyHasSelection);
         PlaceMenu(favoritesButton, layout.FavoritesX, layout.FavoritesY, layout.ButtonWidth, layout.ButtonHeight);
@@ -991,7 +992,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 family.Text,
                 false,
                 family.Id == _familyId && _showFavorites == false,
-                () => SelectFamily(family.Id));
+                () => SelectFamily(family.Id),
+                photoTile: true);
             DimIfNotSelected(button, familyHasSelection);
             PlaceMenu(button, layout.FamilyX, layout.FamilyY + (index * layout.ButtonHeight), layout.ButtonWidth, layout.ButtonHeight);
             images.Add(new MenuImageRequest(button, ButtonImageKind.Family, family.Id, false));
@@ -1170,7 +1172,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
                     family.Text,
                     false,
                     selected,
-                    () => SelectPortraitFamily(family.Id, openSubfamilies: false));
+                    () => SelectPortraitFamily(family.Id, openSubfamilies: false),
+                    photoTile: true);
                 button.Width = tileWidth;
                 button.Height = tileHeight;
                 row.Children.Add(button);
@@ -1186,7 +1189,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
                     family.Text,
                     false,
                     false,
-                    () => DrillIntoFamilySubfamilies(family.Id));
+                    () => DrillIntoFamilySubfamilies(family.Id),
+                    photoTile: true);
                 button.Width = tileWidth;
                 button.Height = tileHeight;
                 row.Children.Add(button);
@@ -1677,12 +1681,16 @@ public partial class PosWindow : UserControl, IOfficeSurface
         Action? click,
         string? imageBase64 = null,
         string? assetImageUri = null,
-        bool subfamily = false)
+        bool subfamily = false,
+        bool photoTile = false,
+        bool favorites = false)
     {
         // Em portrait os artigos seguem a referência: fundo verde (não cinzento landscape).
-        var colorClass = article && _layout.IsPortrait == false
-            ? "pos_menu_button_grey"
-            : "pos_menu_button_green";
+        var colorClass = favorites
+            ? "pos_menu_button_yellow"
+            : article && _layout.IsPortrait == false
+                ? "pos_menu_button_grey"
+                : "pos_menu_button_green";
         var button = new Button
         {
             Classes = { "pos_menu_button", colorClass }
@@ -1696,13 +1704,14 @@ public partial class PosWindow : UserControl, IOfficeSurface
             button.Classes.Add("pos_menu_article");
         }
 
-        if (subfamily)
+        var usePhotoTile = subfamily || photoTile;
+        if (usePhotoTile)
         {
             button.Classes.Add("pos_menu_subfamily");
         }
 
-        var image = TryLoadMenuImage(imageBase64, assetImageUri, fill: article);
-        if (subfamily)
+        var image = TryLoadMenuImage(imageBase64, assetImageUri, fill: article || usePhotoTile);
+        if (usePhotoTile)
         {
             button.Content = BuildSubfamilyTileContent(text, image);
         }
