@@ -5,6 +5,8 @@
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Shared Host licensing sources omit MSI optional-component install on Android. -->
+    <DefineConstants>$(DefineConstants);LOGICPOS_ANDROID</DefineConstants>
     <!-- Retail entry: DevEditionBanner hides when name contains Host or +retail. -->
     <RootNamespace>LogicPOS.Host.Android</RootNamespace>
     <AssemblyName>LogicPOS.Host.Android</AssemblyName>
