@@ -691,6 +691,34 @@ public partial class StockManagementView : UserControl
         }
     }
 
+    private void OnGridDoubleTapped(object? sender, TappedEventArgs e)
+    {
+        if (e.Source is Visual visual && visual.FindAncestorOfType<Button>() is not null)
+        {
+            return;
+        }
+
+        var row = (e.Source as Visual)?.FindAncestorOfType<DataGridRow>()?.DataContext
+            ?? Grid.SelectedItem;
+        if (row is null)
+        {
+            return;
+        }
+
+        // Same path as the row pencil: warehouse → location; other tabs → toolbar Edit.
+        SelectRowWithoutLabelSync(row);
+        if (_tab == StockTab.Warehouse)
+        {
+            OnChangeLocationClick(null, new RoutedEventArgs());
+            return;
+        }
+
+        if (_tab is StockTab.Articles or StockTab.Movements or StockTab.History)
+        {
+            OnEditClick(null, new RoutedEventArgs());
+        }
+    }
+
     private async void OnEditClick(object? sender, RoutedEventArgs e)
     {
         switch (_tab)

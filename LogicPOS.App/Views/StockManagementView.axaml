@@ -147,7 +147,8 @@
                               SelectionMode="Extended"
                               CanUserResizeColumns="True"
                               CanUserSortColumns="True"
-                              HeadersVisibility="Column" />
+                              HeadersVisibility="Column"
+                              DoubleTapped="OnGridDoubleTapped" />
                     <views:ListingBusy x:Name="Busy" />
                 </Panel>
             </DockPanel>

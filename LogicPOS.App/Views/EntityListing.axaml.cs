@@ -398,10 +398,15 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        if (Grid.SelectedItem is not ListingRow row)
+        // Prefer the tapped row (portal Syncfusion RecordDoubleClick / RowData), then selection.
+        var row = (e.Source as Visual)?.FindAncestorOfType<DataGridRow>()?.DataContext as ListingRow
+            ?? Grid.SelectedItem as ListingRow;
+        if (row is null)
         {
             return;
         }
+
+        Grid.SelectedItem = row;
 
         if (ShowsDocument)
         {

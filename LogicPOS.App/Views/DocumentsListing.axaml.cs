@@ -1175,10 +1175,14 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        if (DocumentGrid.SelectedItem is not CheckedDocument item)
+        var item = (e.Source as Visual)?.FindAncestorOfType<DataGridRow>()?.DataContext as CheckedDocument
+            ?? DocumentGrid.SelectedItem as CheckedDocument;
+        if (item is null)
         {
             return;
         }
+
+        DocumentGrid.SelectedItem = item;
 
         if (item.CanEdit)
         {
