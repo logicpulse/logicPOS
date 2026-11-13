@@ -1894,6 +1894,11 @@
         <Setter Property="Foreground" Value="#1E1E1E" />
     </Style>
 
+    <Style Selector="Button.pos_menu_button_pink">
+        <Setter Property="Background" Value="#E57797" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
     <Style Selector="Button.pos_menu_button_grey">
         <Setter Property="Background" Value="#AAAAAA" />
         <Setter Property="Foreground" Value="#000000" />
@@ -1917,6 +1922,12 @@
     </Style>
 
     <Style Selector="Button.pos_menu_button_yellow:disabled">
+        <Setter Property="Background" Value="#6E6E6E" />
+        <Setter Property="Foreground" Value="#4A4A4A" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_button_pink:disabled">
         <Setter Property="Background" Value="#6E6E6E" />
         <Setter Property="Foreground" Value="#4A4A4A" />
         <Setter Property="Opacity" Value="0.7" />
@@ -4081,8 +4092,8 @@
     <Style Selector="Border.dash_kpi_today">
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#8CC63F" Offset="0" />
-                <GradientStop Color="#6B9E2E" Offset="1" />
+                <GradientStop Color="#93C949" Offset="0" />
+                <GradientStop Color="#6FA82E" Offset="1" />
             </LinearGradientBrush>
         </Setter>
     </Style>
@@ -4090,8 +4101,8 @@
     <Style Selector="Border.dash_kpi_month">
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#6B9E2E" Offset="0" />
-                <GradientStop Color="#4D6610" Offset="1" />
+                <GradientStop Color="#7C92CA" Offset="0" />
+                <GradientStop Color="#5A6FA8" Offset="1" />
             </LinearGradientBrush>
         </Setter>
     </Style>
@@ -4099,8 +4110,8 @@
     <Style Selector="Border.dash_kpi_year">
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#4D6610" Offset="0" />
-                <GradientStop Color="#3A4D0C" Offset="1" />
+                <GradientStop Color="#B063A8" Offset="0" />
+                <GradientStop Color="#8E4A86" Offset="1" />
             </LinearGradientBrush>
         </Setter>
     </Style>
@@ -4108,8 +4119,8 @@
     <Style Selector="Border.dash_kpi_docs">
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#5A8F28" Offset="0" />
-                <GradientStop Color="#3F6618" Offset="1" />
+                <GradientStop Color="#EA843E" Offset="0" />
+                <GradientStop Color="#C4682E" Offset="1" />
             </LinearGradientBrush>
         </Setter>
     </Style>
@@ -4117,18 +4128,17 @@
     <Style Selector="Border.dash_kpi_ticket">
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#4A6E1C" Offset="0" />
-                <GradientStop Color="#2F4810" Offset="1" />
+                <GradientStop Color="#E57797" Offset="0" />
+                <GradientStop Color="#C45A78" Offset="1" />
             </LinearGradientBrush>
         </Setter>
     </Style>
 
     <Style Selector="Border.dash_kpi_best">
-        <Setter Property="Margin" Value="0,0,0,10" />
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#323537" Offset="0" />
-                <GradientStop Color="#4A4F52" Offset="1" />
+                <GradientStop Color="#E74E34" Offset="0" />
+                <GradientStop Color="#C03C26" Offset="1" />
             </LinearGradientBrush>
         </Setter>
     </Style>
@@ -4207,8 +4217,8 @@
     </Style>
 
     <Style Selector="ProgressBar.dash_bar_progress">
-        <Setter Property="Foreground" Value="#8CC63F" />
-        <Setter Property="Background" Value="#EEF2E8" />
+        <Setter Property="Foreground" Value="#93C949" />
+        <Setter Property="Background" Value="#EDEDED" />
         <Setter Property="CornerRadius" Value="6" />
     </Style>
 

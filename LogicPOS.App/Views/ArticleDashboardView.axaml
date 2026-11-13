@@ -30,7 +30,7 @@
                 </Grid>
                 <TextBlock x:Name="StockStatus" Classes="dash_status" IsVisible="False" />
                 <Grid Classes="dash_kpis" ColumnDefinitions="*,*,*,*">
-                    <Border Classes="dash_kpi dash_kpi_today">
+                    <Border Classes="dash_kpi dash_kpi_best">
                         <StackPanel>
                             <TextBlock Classes="dash_kpi_label" Text="Abaixo do mínimo" />
                             <TextBlock x:Name="BelowMinimumValue" Classes="dash_kpi_value" Text="0" />
@@ -44,14 +44,14 @@
                             <TextBlock Classes="dash_kpi_hint" Text="Números de série por vender" />
                         </StackPanel>
                     </Border>
-                    <Border Grid.Column="2" Classes="dash_kpi dash_kpi_year">
+                    <Border Grid.Column="2" Classes="dash_kpi dash_kpi_docs">
                         <StackPanel>
                             <TextBlock Classes="dash_kpi_label" Text="Vendidos no ano" />
                             <TextBlock x:Name="UniqueSoldValue" Classes="dash_kpi_value" Text="0" />
                             <TextBlock x:Name="UniqueSoldHint" Classes="dash_kpi_hint" Text="Séries vendidas no ano" />
                         </StackPanel>
                     </Border>
-                    <Border Grid.Column="3" Classes="dash_kpi dash_kpi_best">
+                    <Border Grid.Column="3" Classes="dash_kpi dash_kpi_year">
                         <StackPanel>
                             <TextBlock Classes="dash_kpi_label" Text="Valor em stock" />
                             <TextBlock x:Name="StockValue" Classes="dash_kpi_value" Text="0,00 €" />

@@ -13,7 +13,7 @@ namespace LogicPOS.App.Views;
 public partial class ArticleDashboardView : UserControl
 {
     private static readonly CultureInfo Culture = CultureInfo.GetCultureInfo("pt-PT");
-    private static readonly string[] StockColors = ["#8CC63F", "#6B9E2E", "#4D6610"];
+    private static readonly string[] StockColors = ChartBrushes.Hex;
 
     private bool _suppressYear;
     private int _year = DateTime.Today.Year;

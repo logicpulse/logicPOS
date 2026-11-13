@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Shared dashboard chart / KPI palette (sync with web dashboard-palette.css). -->
+    <Color x:Key="DashVerde">#93C949</Color>
+    <Color x:Key="DashVermelho">#E74E34</Color>
+    <Color x:Key="DashLaranja">#EA843E</Color>
+    <Color x:Key="DashRosa">#E57797</Color>
+    <Color x:Key="DashAmarelo">#EAD84F</Color>
+    <Color x:Key="DashAzul">#7C92CA</Color>
+    <Color x:Key="DashRoxo">#B063A8</Color>
+    <Color x:Key="DashCinzento">#EDEDED</Color>
+</ResourceDictionary>

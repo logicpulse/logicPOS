@@ -17,10 +17,7 @@ namespace LogicPOS.App.Views;
 public partial class DashboardView : UserControl
 {
     private static readonly CultureInfo Culture = CultureInfo.GetCultureInfo("pt-PT");
-    private static readonly string[] PaymentColors =
-    [
-        "#8CC63F", "#6B9E2E", "#4D6610", "#A8D96A", "#C5E89A", "#3A4D0C"
-    ];
+    private static readonly string[] PaymentColors = ChartBrushes.Hex;
 
     private DashboardBillingOverview? _overview;
     private bool _includeVat = true;
@@ -421,8 +418,9 @@ public partial class DashboardView : UserControl
         _ = showLabelPrefix;
         var panel = new StackPanel { Spacing = 8 };
         var max = Math.Max(0.01d, items.Count == 0 ? 1d : items.Max(item => item.Value));
-        foreach (var item in items)
+        for (var index = 0; index < items.Count; index++)
         {
+            var item = items[index];
             var row = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitions("70,*,Auto"),
@@ -442,7 +440,8 @@ public partial class DashboardView : UserControl
                 Value = Math.Max(0, item.Value),
                 Height = 10,
                 MinHeight = 10,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground = ChartBrushes.SeriesAt(index)
             };
             Grid.SetColumn(bar, 1);
             row.Children.Add(bar);

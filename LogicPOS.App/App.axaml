@@ -6,6 +6,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://LogicPOS.App/Themes/GlassButton.axaml" />
+                <ResourceInclude Source="avares://LogicPOS.App/Themes/DashboardPalette.axaml" />
             </ResourceDictionary.MergedDictionaries>
             <!-- Flat tabs — not affected by APP_BUTTON_GLOSS / Glass.Button.* -->
             <ControlTheme x:Key="BoEntityTabTheme" TargetType="Button">

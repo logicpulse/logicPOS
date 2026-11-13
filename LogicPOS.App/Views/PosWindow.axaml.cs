@@ -1706,7 +1706,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         // Em portrait os artigos seguem a referência: fundo verde (não cinzento landscape).
         var colorClass = favorites
-            ? "pos_menu_button_yellow"
+            ? "pos_menu_button_pink"
             : article && _layout.IsPortrait == false
                 ? "pos_menu_button_grey"
                 : "pos_menu_button_green";

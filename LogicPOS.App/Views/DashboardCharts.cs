@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -61,7 +62,7 @@ public sealed class ColumnChart : DashboardChartControl
             var height = plot.Height * (point.Value / max);
             var x = plot.X + (slot * index) + ((slot - barWidth) / 2);
             var y = plot.Bottom - height;
-            context.DrawRectangle(ChartBrushes.Column, null, new Rect(x, y, barWidth, Math.Max(height, 0)), 5, 5);
+            context.DrawRectangle(ChartBrushes.SeriesAt(index), null, new Rect(x, y, barWidth, Math.Max(height, 0)), 5, 5);
             var label = _points.Count > 15 && index % 2 == 1 ? string.Empty : point.Label;
             if (label.Length > 0)
             {
@@ -196,13 +197,7 @@ public sealed class DonutChart : DashboardChartControl
     {
     }
 
-    private static readonly IBrush[] Palette =
-    [
-        ChartBrushes.Column,
-        new SolidColorBrush(Color.Parse("#6B9E2E")),
-        ChartBrushes.Line,
-        new SolidColorBrush(Color.Parse("#A8D96A"))
-    ];
+    private static readonly IBrush[] Palette = ChartBrushes.Series;
 
     private IReadOnlyList<DashboardChartPoint> _points = [];
 
@@ -335,17 +330,34 @@ public sealed class DashboardChartPoint
 
 internal static class ChartBrushes
 {
-    public static IBrush Column { get; } = new SolidColorBrush(Color.Parse("#8CC63F"));
+    // Keep hexes aligned with Themes/DashboardPalette.axaml and web dashboard-palette.css.
+    public static readonly string[] Hex =
+    [
+        "#93C949", // Verde
+        "#E74E34", // Vermelho
+        "#EA843E", // Laranja
+        "#E57797", // Rosa
+        "#EAD84F", // Amarelo
+        "#7C92CA", // Azul
+        "#B063A8"  // Roxo
+    ];
 
-    public static IBrush Area { get; } = new SolidColorBrush(Color.Parse("#598CC63F"));
+    public static IBrush[] Series { get; } =
+        Hex.Select(hex => (IBrush)new SolidColorBrush(Color.Parse(hex))).ToArray();
 
-    public static IBrush Line { get; } = new SolidColorBrush(Color.Parse("#4D6610"));
+    public static IBrush SeriesAt(int index) => Series[index % Series.Length];
 
-    public static IBrush Grid { get; } = new SolidColorBrush(Color.Parse("#ECECEC"));
+    public static IBrush Column { get; } = Series[0];
+
+    public static IBrush Area { get; } = new SolidColorBrush(Color.Parse("#5993C949"));
+
+    public static IBrush Line { get; } = Series[5]; // Azul trend / line
+
+    public static IBrush Grid { get; } = new SolidColorBrush(Color.Parse("#EDEDED"));
 
     public static IBrush Axis { get; } = new SolidColorBrush(Color.Parse("#8A8A8A"));
 
-    public static IBrush EmptyRing { get; } = new SolidColorBrush(Color.Parse("#E6E6E6"));
+    public static IBrush EmptyRing { get; } = new SolidColorBrush(Color.Parse("#EDEDED"));
 
     public static IBrush Ink { get; } = new SolidColorBrush(Color.Parse("#323537"));
 }
