@@ -81,6 +81,8 @@ public interface IPosDocumentService
 
     Task<IReadOnlyList<PosLookupItem>> ListPaymentConditionsAsync(CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<PosLookupItem>> ListPaymentMethodsAsync(CancellationToken cancellationToken = default);
+
     Task<IReadOnlyList<PosLookupItem>> ListCurrenciesAsync(CancellationToken cancellationToken = default);
 
     Task<PosCompanyAddress> GetCompanyAddressAsync(CancellationToken cancellationToken = default);

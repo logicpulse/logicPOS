@@ -38,6 +38,14 @@ public readonly struct DocumentTypeAnalyzer
     public bool RequireFullPayment() => IsSimplifiedInvoice() || IsInvoiceReceipt();
     public bool AllowsFinalConsumer() => IsSimplifiedInvoice() || IsInvoiceReceipt() || IsTableConsult() || IsVoltaRefundReceipt();
     public bool RequiresPaymentCondition() => IsInvoice() || IsConsignmentInvoice() || IsBudget() || IsProform();
+    /// <summary>Venda a dinheiro (sigla habitual VD).</summary>
+    public bool IsCashSale() => Type == "VD";
+    /// <summary>
+    /// Métodos de pagamento na emissão: fatura-recibo, fatura simplificada, venda a dinheiro (VD) e TRV.
+    /// Alinhado com webapp <c>UsesPaymentMethodsByAcronym</c>.
+    /// </summary>
+    public bool UsesPaymentMethodsByAcronym() =>
+        IsInvoiceReceipt() || IsSimplifiedInvoice() || IsCashSale() || IsVoltaRefundReceipt();
     public bool AllowsZeroUnitPrice() => IsWayBill();
 
     public bool IsValidSalesInvoiceFamilyParentDocumentType(FiscalCountry country)

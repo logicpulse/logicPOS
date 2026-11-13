@@ -179,6 +179,19 @@ public sealed class PosVatOption
     public override string ToString() => Label;
 }
 
+public sealed class PosDocumentPaymentMethod
+{
+    public PosDocumentPaymentMethod(Guid paymentMethodId, decimal amount)
+    {
+        PaymentMethodId = paymentMethodId;
+        Amount = amount;
+    }
+
+    public Guid PaymentMethodId { get; }
+
+    public decimal Amount { get; }
+}
+
 public sealed class PosDocumentHeader
 {
     public Guid? PaymentConditionId { get; init; }
@@ -188,6 +201,9 @@ public sealed class PosDocumentHeader
     public Guid? ParentDocumentId { get; init; }
 
     public string? PaymentToken { get; init; }
+
+    /// <summary>Explicit payment lines for FS/FR (and similar). When set, preferred over <see cref="PaymentToken"/>.</summary>
+    public IReadOnlyList<PosDocumentPaymentMethod>? PaymentMethods { get; init; }
 
     public string? Notes { get; init; }
 
@@ -395,6 +411,11 @@ public static class PosDocumentRules
     public static bool RequireFullPayment(string? acronym)
         => string.IsNullOrWhiteSpace(acronym) == false
             && new DocumentTypeAnalyzer(acronym).RequireFullPayment();
+
+    /// <summary>FS/FR/VD/TRV: show and require payment-method lines (web Novo Documento).</summary>
+    public static bool RequiresPaymentMethods(string? acronym)
+        => string.IsNullOrWhiteSpace(acronym) == false
+            && new DocumentTypeAnalyzer(acronym).UsesPaymentMethodsByAcronym();
 
     public static bool SupportsOptionalTransport(string? acronym)
     {
@@ -1323,6 +1344,19 @@ public sealed class PosDocumentService : IPosDocumentService
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<PosLookupItem>> ListPaymentMethodsAsync(CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        return await database.PaymentMethods
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false)
+            .OrderBy(item => item.Order)
+            .ThenBy(item => item.Designation)
+            .Select(item => new PosLookupItem(item.Id, item.Designation, item.Token ?? item.Acronym))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyList<PosLookupItem>> ListCurrenciesAsync(CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();
@@ -1873,7 +1907,21 @@ public sealed class PosDocumentService : IPosDocumentService
         var typeRules = new DocumentTypeAnalyzer(documentType);
         // FT/orçamento/etc.: sem liquidação no emit — não forçar NU/MONEY. FS/FR exigem método.
         var paymentMethods = Array.Empty<CreateDocumentPaymentMethodDto>();
-        if (typeRules.RequireFullPayment() || string.IsNullOrWhiteSpace(header?.PaymentToken) == false)
+        if (header?.PaymentMethods is { Count: > 0 })
+        {
+            paymentMethods = header.PaymentMethods
+                .Where(item => item.PaymentMethodId != Guid.Empty && item.Amount > 0)
+                .Select(item => new CreateDocumentPaymentMethodDto(item.PaymentMethodId, item.Amount))
+                .ToArray();
+            if (paymentMethods.Length == 0
+                && (typeRules.RequireFullPayment() || typeRules.UsesPaymentMethodsByAcronym()))
+            {
+                return PosDocumentResult.Fail("Indique o método de pagamento e o valor entregue.");
+            }
+        }
+        else if (typeRules.RequireFullPayment()
+            || typeRules.UsesPaymentMethodsByAcronym()
+            || string.IsNullOrWhiteSpace(header?.PaymentToken) == false)
         {
             var paymentToken = string.IsNullOrWhiteSpace(header?.PaymentToken) ? "MONEY" : header!.PaymentToken!;
             var paymentMethod = await database.PaymentMethods

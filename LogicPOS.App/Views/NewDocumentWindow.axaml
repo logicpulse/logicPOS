@@ -209,6 +209,22 @@
                 </Grid>
                 </ScrollViewer>
                 <TextBlock x:Name="ErrorLabel" Classes="bo_new_doc_error" DockPanel.Dock="Bottom" IsVisible="False" />
+                <Border x:Name="PaymentSection"
+                        Classes="bo_new_doc_payment_section"
+                        DockPanel.Dock="Bottom"
+                        IsVisible="False">
+                    <StackPanel>
+                        <StackPanel Classes="bo_new_doc_label">
+                            <svg:Svg Classes="bo_new_doc_label_icon"
+                                     Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_metodo_pagamento_b.svg" />
+                            <TextBlock Classes="bo_new_doc_ship_title" Text="Pagamento" />
+                        </StackPanel>
+                        <StackPanel x:Name="PaymentMethodRows" Classes="bo_new_doc_payment_rows" />
+                        <TextBlock x:Name="PaymentSummaryLabel"
+                                   Classes="bo_new_doc_payment_summary"
+                                   Text="Total documento: 0,00 € · Soma pagamentos: 0,00 €" />
+                    </StackPanel>
+                </Border>
                 <Border Classes="bo_new_doc_articles">
                     <DockPanel>
                         <Border Classes="bo_new_doc_articles_header" DockPanel.Dock="Top">

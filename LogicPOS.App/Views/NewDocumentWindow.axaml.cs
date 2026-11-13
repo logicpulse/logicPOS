@@ -57,6 +57,8 @@ public partial class NewDocumentWindow : UserControl
     private Guid? _padFamilyId;
     private Guid? _padSubfamilyId;
     private readonly List<PosLookupItem> _conditions = new();
+    private readonly List<PosLookupItem> _paymentMethods = new();
+    private readonly List<PaymentMethodEntry> _paymentEntries = new();
     private readonly List<PosLookupItem> _currencies = new();
     private readonly List<PosLookupItem> _documents = new();
     private readonly List<PosVatOption> _vatRates = new();
@@ -529,6 +531,7 @@ public partial class NewDocumentWindow : UserControl
         PosCatalog? catalog = null;
         IReadOnlyList<PosDocumentTypeOption>? types = null;
         IReadOnlyList<PosLookupItem>? conditions = null;
+        IReadOnlyList<PosLookupItem>? paymentMethods = null;
         IReadOnlyList<PosLookupItem>? currencies = null;
         IReadOnlyList<PosLookupItem>? sourceDocs = null;
         IReadOnlyList<PosVatOption>? vatRates = null;
@@ -551,6 +554,11 @@ public partial class NewDocumentWindow : UserControl
             {
                 try { conditions = await documents.ListPaymentConditionsAsync(); }
                 catch (Exception ex) { LogLookupError("condições de pagamento", ex, errors); }
+            }),
+            Task.Run(async () =>
+            {
+                try { paymentMethods = await documents.ListPaymentMethodsAsync(); }
+                catch (Exception ex) { LogLookupError("métodos de pagamento", ex, errors); }
             }),
             Task.Run(async () =>
             {
@@ -630,6 +638,14 @@ public partial class NewDocumentWindow : UserControl
             PaymentBox.ItemsSource = Optional(_conditions);
             ApplyPaymentConditionForType(SelectedType()?.Acronym);
         }
+
+        if (paymentMethods is not null)
+        {
+            _paymentMethods.Clear();
+            _paymentMethods.AddRange(paymentMethods);
+        }
+
+        ResetPaymentMethodsForDocumentType();
 
         if (currencies is not null)
         {
@@ -1320,12 +1336,17 @@ public partial class NewDocumentWindow : UserControl
         if (_filling == false)
         {
             ApplyPaymentConditionForType(type.Acronym);
+            ResetPaymentMethodsForDocumentType();
             // GTK: changing document type always clears Documento de origem.
             if (ListingFilters.SelectedDocumentId(OriginBox) is not null)
             {
                 SelectDocumentId(OriginBox, null);
                 RefreshOriginClear();
             }
+        }
+        else
+        {
+            RefreshPaymentSectionVisibility();
         }
 
         RefreshOriginPickerState();
@@ -1373,6 +1394,257 @@ public partial class NewDocumentWindow : UserControl
         }
 
         SelectCode(PaymentBox, "PP");
+    }
+
+    private void ResetPaymentMethodsForDocumentType()
+    {
+        _paymentEntries.Clear();
+        if (PosDocumentRules.RequiresPaymentMethods(SelectedType()?.Acronym) == false)
+        {
+            RefreshPaymentRows();
+            return;
+        }
+
+        _paymentEntries.Add(new PaymentMethodEntry
+        {
+            PaymentMethodId = DefaultPaymentMethodId(),
+            Amount = DocumentGrossTotal()
+        });
+        RefreshPaymentRows();
+    }
+
+    private void RefreshPaymentSectionVisibility()
+    {
+        PaymentSection.IsVisible = PosDocumentRules.RequiresPaymentMethods(SelectedType()?.Acronym);
+        RefreshPaymentSummary();
+    }
+
+    private Guid? DefaultPaymentMethodId()
+    {
+        var money = _paymentMethods.FirstOrDefault(item =>
+            string.Equals(item.Code, "MONEY", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(item.Code, "NU", StringComparison.OrdinalIgnoreCase));
+        return money?.Id ?? _paymentMethods.FirstOrDefault()?.Id;
+    }
+
+    private decimal DocumentGrossTotal()
+        => _lines.Sum(line => line.GrossTotal).Round();
+
+    private void SyncSinglePaymentEntryAmountWithTotal()
+    {
+        if (PosDocumentRules.RequiresPaymentMethods(SelectedType()?.Acronym) == false
+            || _paymentEntries.Count != 1)
+        {
+            RefreshPaymentSummary();
+            return;
+        }
+
+        _paymentEntries[0].Amount = DocumentGrossTotal();
+        if (PaymentMethodRows.Children.Count == 1
+            && PaymentMethodRows.Children[0] is Grid row
+            && row.Children.OfType<TextBox>().FirstOrDefault() is { } amountBox)
+        {
+            amountBox.Text = MoneyFormat.Format(_paymentEntries[0].Amount);
+        }
+
+        RefreshPaymentSummary();
+    }
+
+    private void RefreshPaymentRows()
+    {
+        PaymentMethodRows.Children.Clear();
+        RefreshPaymentSectionVisibility();
+        if (PaymentSection.IsVisible == false)
+        {
+            return;
+        }
+
+        for (var index = 0; index < _paymentEntries.Count; index++)
+        {
+            var entry = _paymentEntries[index];
+            var lineId = entry.LineId;
+            var row = new Grid { Classes = { "bo_new_doc_payment_row" } };
+            row.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+            row.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(180)));
+            row.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+
+            var methodPanel = new StackPanel();
+            methodPanel.Children.Add(new TextBlock
+            {
+                Classes = { "bo_new_doc_caption" },
+                Text = "Método de pagamento",
+                Margin = new Thickness(0, 0, 0, 4)
+            });
+            var methodBox = new ComboBox
+            {
+                Classes = { "bo_new_doc_combo" },
+                ItemsSource = _paymentMethods.ToList(),
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+            methodBox.SelectedItem = _paymentMethods.FirstOrDefault(item => item.Id == entry.PaymentMethodId)
+                ?? _paymentMethods.FirstOrDefault();
+            if (methodBox.SelectedItem is PosLookupItem selected)
+            {
+                entry.PaymentMethodId = selected.Id;
+            }
+
+            methodBox.SelectionChanged += (_, _) =>
+            {
+                if (methodBox.SelectedItem is PosLookupItem item)
+                {
+                    entry.PaymentMethodId = item.Id;
+                }
+            };
+            methodPanel.Children.Add(methodBox);
+            Grid.SetColumn(methodPanel, 0);
+            row.Children.Add(methodPanel);
+
+            var amountPanel = new StackPanel();
+            amountPanel.Children.Add(new TextBlock
+            {
+                Classes = { "bo_new_doc_caption" },
+                Text = "Total entregue",
+                Margin = new Thickness(0, 0, 0, 4)
+            });
+            var amountBox = new TextBox
+            {
+                Classes = { "bo_line_editor_input", "bo_numeric" },
+                Text = MoneyFormat.Format(entry.Amount)
+            };
+            amountBox.LostFocus += (_, _) =>
+            {
+                entry.Amount = ParseDecimal(amountBox.Text).Round();
+                amountBox.Text = MoneyFormat.Format(entry.Amount);
+                RefreshPaymentSummary();
+            };
+            amountPanel.Children.Add(amountBox);
+            Grid.SetColumn(amountPanel, 1);
+            row.Children.Add(amountPanel);
+
+            var actions = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 4,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Margin = new Thickness(0, 0, 0, 2)
+            };
+            var addButton = new Button
+            {
+                Classes = { "bo_line_icon" },
+                Content = "+",
+            };
+            ToolTip.SetTip(addButton, "Adicionar linha");
+            addButton.Click += (_, _) => AddPaymentMethodEntry();
+            var removeButton = new Button
+            {
+                Classes = { "bo_line_icon" },
+                Content = "×",
+                IsEnabled = _paymentEntries.Count > 1,
+            };
+            ToolTip.SetTip(removeButton, "Remover linha");
+            removeButton.Click += (_, _) => RemovePaymentMethodEntry(lineId);
+            actions.Children.Add(addButton);
+            actions.Children.Add(removeButton);
+            Grid.SetColumn(actions, 2);
+            row.Children.Add(actions);
+
+            PaymentMethodRows.Children.Add(row);
+        }
+
+        RefreshPaymentSummary();
+    }
+
+    private void AddPaymentMethodEntry()
+    {
+        var allocated = _paymentEntries.Sum(item => item.Amount);
+        var remainder = Math.Max(0, DocumentGrossTotal() - allocated).Round();
+        _paymentEntries.Add(new PaymentMethodEntry
+        {
+            PaymentMethodId = DefaultPaymentMethodId(),
+            Amount = remainder
+        });
+        RefreshPaymentRows();
+    }
+
+    private void RemovePaymentMethodEntry(Guid lineId)
+    {
+        if (_paymentEntries.Count <= 1)
+        {
+            return;
+        }
+
+        _paymentEntries.RemoveAll(item => item.LineId == lineId);
+        RefreshPaymentRows();
+    }
+
+    private void RefreshPaymentSummary()
+    {
+        if (PaymentSection.IsVisible == false)
+        {
+            return;
+        }
+
+        var total = DocumentGrossTotal();
+        var sum = _paymentEntries.Sum(item => item.Amount).Round();
+        PaymentSummaryLabel.Text =
+            $"Total documento: {Money(total)} · Soma pagamentos: {Money(sum)}";
+    }
+
+    private string? ValidatePaymentMethodsForIssue()
+    {
+        if (PosDocumentRules.RequiresPaymentMethods(SelectedType()?.Acronym) == false)
+        {
+            return null;
+        }
+
+        if (_paymentEntries.Count == 0)
+        {
+            return "Adicione pelo menos uma linha de pagamento.";
+        }
+
+        foreach (var entry in _paymentEntries)
+        {
+            if (entry.PaymentMethodId is null || entry.PaymentMethodId == Guid.Empty)
+            {
+                return "Seleccione o método de pagamento em cada linha.";
+            }
+
+            if (entry.Amount <= 0)
+            {
+                return "Indique o valor entregue em cada linha de pagamento.";
+            }
+        }
+
+        var sum = _paymentEntries.Sum(item => item.Amount).Round();
+        var total = DocumentGrossTotal();
+        if (Math.Abs(sum - total) > 0.01m)
+        {
+            return $"A soma dos pagamentos ({Money(sum)}) deve ser igual ao total do documento ({Money(total)}).";
+        }
+
+        return null;
+    }
+
+    private IReadOnlyList<PosDocumentPaymentMethod> BuildPaymentMethods()
+    {
+        if (PosDocumentRules.RequiresPaymentMethods(SelectedType()?.Acronym) == false)
+        {
+            return Array.Empty<PosDocumentPaymentMethod>();
+        }
+
+        return _paymentEntries
+            .Where(item => item.PaymentMethodId is Guid id && id != Guid.Empty && item.Amount > 0)
+            .Select(item => new PosDocumentPaymentMethod(item.PaymentMethodId!.Value, item.Amount.Round()))
+            .ToList();
+    }
+
+    private sealed class PaymentMethodEntry
+    {
+        public Guid LineId { get; } = Guid.NewGuid();
+
+        public Guid? PaymentMethodId { get; set; }
+
+        public decimal Amount { get; set; }
     }
 
     private static void SelectBlank(ComboBox box)
@@ -2188,6 +2460,7 @@ public partial class NewDocumentWindow : UserControl
         TotalNetLabel.Text = Money(net);
         TotalTaxLabel.Text = Money(gross - net);
         TotalLabel.Text = Money(gross);
+        SyncSinglePaymentEntryAmountWithTotal();
     }
 
     private PosVatOption? SelectedVat()
@@ -2976,6 +3249,17 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
+        if (draft == false)
+        {
+            var paymentError = ValidatePaymentMethodsForIssue();
+            if (paymentError is not null)
+            {
+                ShowDocumentError(paymentError);
+                PaymentSection.IsVisible = true;
+                return;
+            }
+        }
+
         if (draft == false
             && PosDocumentRules.RequiresSourceDocument(type.Acronym)
             && ListingFilters.SelectedDocumentId(OriginBox) is null)
@@ -3003,11 +3287,13 @@ public partial class NewDocumentWindow : UserControl
             line.Price,
             line.PriceIncludesVat,
             line.VatExemptionId)).ToList();
+        var paymentMethods = BuildPaymentMethods();
         var header = new PosDocumentHeader
         {
             PaymentConditionId = SelectedId(PaymentBox),
             CurrencyId = SelectedId(CurrencyBox),
             ParentDocumentId = ListingFilters.SelectedDocumentId(OriginBox),
+            PaymentMethods = paymentMethods.Count > 0 ? paymentMethods : null,
             Notes = NotesBox.Text,
             IsDraft = draft,
             ShipTo = transport ? ReadDestination() : null,
