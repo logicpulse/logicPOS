@@ -109,7 +109,6 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             }
         };
         OnboardingHost.StepRequested += OnOnboardingStepRequested;
-        DashboardHost.OnboardingRequested += (_, _) => _ = OpenOnboardingAsync();
         AttachedToVisualTree += (_, _) =>
         {
             RelayoutForViewport();
@@ -446,7 +445,6 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             _onboardingIncomplete = false;
             ApplyFrontOfficeGate();
             OnboardingMenuButton.IsVisible = true;
-            DashboardHost.ShowsOnboardingShortcut = true;
             ShowDashboardHome();
             await ReloadDashboardSafeAsync();
             return;
@@ -461,7 +459,6 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         {
             App.WriteCrash("RefreshOnboardingAsync", exception);
             OnboardingMenuButton.IsVisible = true;
-            DashboardHost.ShowsOnboardingShortcut = true;
             if (forceDashboard)
             {
                 ShowDashboardHome();
@@ -476,7 +473,6 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         ApplyFrontOfficeGate();
         // Keep Primeiros passos in the sidebar after setup so Rever has an obvious way back.
         OnboardingMenuButton.IsVisible = true;
-        DashboardHost.ShowsOnboardingShortcut = true;
 
         if (_onboardingIncomplete)
         {
