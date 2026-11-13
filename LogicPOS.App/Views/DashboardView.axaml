@@ -7,96 +7,196 @@
     <Panel>
     <ScrollViewer Classes="dash_scroll">
         <StackPanel Classes="dash_page">
-            <Grid ColumnDefinitions="*,Auto">
-                <StackPanel>
-                    <TextBlock Classes="dash_eyebrow" Text="DASHBOARD" />
-                    <TextBlock Classes="dash_title" Text="Faturação" />
-                    <TextBlock Classes="dash_subtitle" Text="Resumo diário, trimestral e anual da empresa." />
+            <StackPanel>
+                <TextBlock Classes="dash_eyebrow" Text="DASHBOARD" />
+                <TextBlock Classes="dash_title" Text="Faturação" />
+                <TextBlock Classes="dash_subtitle" Text="Resumo diário, trimestral e anual da empresa." />
+            </StackPanel>
+
+            <WrapPanel Classes="dash_filters">
+                <StackPanel Classes="dash_period_chips" Orientation="Horizontal">
+                    <Button x:Name="PeriodToday" Classes="dash_chip active" Content="Hoje" Tag="today" Click="OnPeriodClick" />
+                    <Button x:Name="Period7" Classes="dash_chip" Content="7 dias" Tag="last7" Click="OnPeriodClick" />
+                    <Button x:Name="Period30" Classes="dash_chip" Content="30 dias" Tag="last30" Click="OnPeriodClick" />
+                    <Button x:Name="PeriodMonth" Classes="dash_chip" Content="Mês" Tag="month" Click="OnPeriodClick" />
+                    <Button x:Name="PeriodYear" Classes="dash_chip" Content="Ano" Tag="year" Click="OnPeriodClick" />
                 </StackPanel>
-                <StackPanel Grid.Column="1" Classes="dash_controls" Orientation="Horizontal">
+
+                <StackPanel Classes="dash_control_group">
+                    <TextBlock Classes="dash_control_label" Text="APRESENTAÇÃO DOS VALORES" />
+                    <Border Classes="dash_segmented">
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="VatOn" Classes="dash_segment active" Content="Com IVA" Click="OnVatOnClick" />
+                            <Button x:Name="VatOff" Classes="dash_segment" Content="Sem IVA" Click="OnVatOffClick" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Classes="dash_selects" Orientation="Horizontal">
                     <StackPanel Classes="dash_control_group">
-                        <TextBlock Classes="dash_control_label" Text="APRESENTAÇÃO DOS VALORES" />
-                        <Border Classes="dash_segmented">
-                            <StackPanel Orientation="Horizontal">
-                                <Button x:Name="VatOn" Classes="dash_segment active" Content="Com IVA" Click="OnVatOnClick" />
-                                <Button x:Name="VatOff" Classes="dash_segment" Content="Sem IVA" Click="OnVatOffClick" />
-                            </StackPanel>
-                        </Border>
+                        <TextBlock Classes="dash_control_label" Text="LOJA" />
+                        <ComboBox x:Name="PlaceBox" Classes="dash_filter" SelectionChanged="OnFilterChanged" />
+                    </StackPanel>
+                    <StackPanel Classes="dash_control_group">
+                        <TextBlock Classes="dash_control_label" Text="TERMINAL" />
+                        <ComboBox x:Name="TerminalBox" Classes="dash_filter" SelectionChanged="OnFilterChanged" />
+                    </StackPanel>
+                    <StackPanel Classes="dash_control_group">
+                        <TextBlock Classes="dash_control_label" Text="FUNCIONÁRIO" />
+                        <ComboBox x:Name="UserBox" Classes="dash_filter" SelectionChanged="OnFilterChanged" />
                     </StackPanel>
                     <StackPanel Classes="dash_control_group">
                         <TextBlock Classes="dash_control_label" Text="ANO" />
                         <ComboBox x:Name="YearBox" Classes="dash_year" SelectionChanged="OnYearChanged" />
                     </StackPanel>
                 </StackPanel>
-            </Grid>
+            </WrapPanel>
 
             <TextBlock x:Name="StatusText" Classes="dash_status" IsVisible="False" />
 
-            <Grid Classes="dash_kpis" ColumnDefinitions="*,*,*,*">
-                <Border Classes="dash_kpi dash_kpi_today">
+            <UniformGrid Classes="dash_kpis" Columns="3" Rows="2">
+                <Border Classes="dash_kpi dash_kpi_today" PointerPressed="OnDocumentsStubClick">
                     <StackPanel>
                         <TextBlock Classes="dash_kpi_label" Text="Faturação de hoje" />
                         <TextBlock x:Name="TodayValue" Classes="dash_kpi_value" Text="0,00 €" />
-                        <TextBlock x:Name="TodayHint" Classes="dash_kpi_hint" />
+                        <TextBlock x:Name="TodayHint" Classes="dash_kpi_hint" Text="—" />
                     </StackPanel>
                 </Border>
-                <Border Grid.Column="1" Classes="dash_kpi dash_kpi_month">
+                <Border Classes="dash_kpi dash_kpi_month" PointerPressed="OnDocumentsStubClick">
                     <StackPanel>
                         <TextBlock Classes="dash_kpi_label" Text="Faturação do mês" />
                         <TextBlock x:Name="MonthValue" Classes="dash_kpi_value" Text="0,00 €" />
-                        <TextBlock x:Name="MonthHint" Classes="dash_kpi_hint" />
+                        <TextBlock x:Name="MonthHint" Classes="dash_kpi_hint" Text="—" />
                     </StackPanel>
                 </Border>
-                <Border Grid.Column="2" Classes="dash_kpi dash_kpi_year">
+                <Border Classes="dash_kpi dash_kpi_year" PointerPressed="OnDocumentsStubClick">
                     <StackPanel>
                         <TextBlock Classes="dash_kpi_label" Text="Faturação do ano" />
                         <TextBlock x:Name="YearValue" Classes="dash_kpi_value" Text="0,00 €" />
-                        <TextBlock x:Name="YearHint" Classes="dash_kpi_hint" />
+                        <TextBlock x:Name="YearHint" Classes="dash_kpi_hint" Text="—" />
                     </StackPanel>
                 </Border>
-                <Border Grid.Column="3" Classes="dash_kpi dash_kpi_best">
+                <Border Classes="dash_kpi dash_kpi_docs" PointerPressed="OnDocumentsStubClick">
                     <StackPanel>
-                        <TextBlock x:Name="BestLabel" Classes="dash_kpi_label" Text="Melhor mês" />
-                        <TextBlock x:Name="BestValue" Classes="dash_kpi_value" Text="0,00 €" />
-                        <TextBlock x:Name="BestHint" Classes="dash_kpi_hint" Text="—" />
+                        <TextBlock Classes="dash_kpi_label" Text="Documentos" />
+                        <TextBlock x:Name="DocumentsValue" Classes="dash_kpi_value" Text="0" />
+                        <TextBlock Classes="dash_kpi_hint" Text="No período selecionado" />
                     </StackPanel>
                 </Border>
-            </Grid>
-
-            <Border Classes="dash_panel">
-                <StackPanel>
-                    <TextBlock Classes="dash_panel_title" Text="Faturação diária" />
-                    <TextBlock Classes="dash_panel_hint" Text="Últimos 7 dias" />
-                    <views:ColumnChart x:Name="DailyChart" Classes="dash_chart" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend">
-                        <Ellipse Classes="dash_legend_swatch dash_legend_billing" />
-                        <TextBlock Classes="dash_legend_text" Text="Faturação" />
+                <Border Classes="dash_kpi dash_kpi_ticket">
+                    <StackPanel>
+                        <TextBlock Classes="dash_kpi_label" Text="Ticket médio" />
+                        <TextBlock x:Name="TicketValue" Classes="dash_kpi_value" Text="0,00 €" />
+                        <TextBlock Classes="dash_kpi_hint" Text="Por documento no período" />
                     </StackPanel>
-                </StackPanel>
-            </Border>
+                </Border>
+                <Border Classes="dash_kpi dash_kpi_best">
+                    <StackPanel>
+                        <TextBlock Classes="dash_kpi_label" Text="Evolução" />
+                        <TextBlock x:Name="EvolutionValue" Classes="dash_kpi_value" Text="—" />
+                        <TextBlock Classes="dash_kpi_hint" Text="Vs período anterior" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
 
-            <Grid ColumnDefinitions="*,*" Classes="dash_charts">
+            <Grid Classes="dash_charts dash_charts_primary" ColumnDefinitions="*,*,*" RowDefinitions="Auto">
                 <Border Classes="dash_panel">
+                    <StackPanel>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel>
+                                <TextBlock Classes="dash_panel_title" Text="Faturação diária" />
+                                <TextBlock x:Name="DailyHint" Classes="dash_panel_hint" Text="Últimos 7 dias" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Classes="dash_mini_chips">
+                                <Button x:Name="Daily7" Classes="dash_mini_chip active" Content="7" Tag="7" Click="OnDailyDaysClick" />
+                                <Button x:Name="Daily15" Classes="dash_mini_chip" Content="15" Tag="15" Click="OnDailyDaysClick" />
+                                <Button x:Name="Daily30" Classes="dash_mini_chip" Content="30" Tag="30" Click="OnDailyDaysClick" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock x:Name="DailyEmpty" Classes="dash_empty" Text="Sem dados para este gráfico." IsVisible="False" />
+                        <views:ColumnChart x:Name="DailyChart" Classes="dash_chart" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend">
+                            <Ellipse Classes="dash_legend_swatch dash_legend_billing" />
+                            <TextBlock Classes="dash_legend_text" Text="Faturação" />
+                            <Ellipse Classes="dash_legend_swatch dash_legend_trend" />
+                            <TextBlock Classes="dash_legend_text" Text="Tendência" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Classes="dash_panel dash_panel_mid">
                     <Grid RowDefinitions="Auto,*">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel>
                                 <TextBlock Classes="dash_panel_title" Text="Faturação anual" />
-                                <TextBlock x:Name="AnnualHint" Classes="dash_panel_hint" Text="Evolução mensal em 2026" />
+                                <TextBlock x:Name="AnnualHint" Classes="dash_panel_hint" Text="Evolução mensal" />
                             </StackPanel>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Classes="dash_total_caption" Text="TOTAL ILÍQUIDO" />
+                                <TextBlock Classes="dash_total_caption" Text="TOTAL" />
                                 <TextBlock x:Name="AnnualTotal" Classes="dash_total_value" Text="0,00 €" />
                             </StackPanel>
                         </Grid>
-                        <views:AreaChart x:Name="AnnualChart" Grid.Row="1" Classes="dash_chart" />
+                        <Panel Grid.Row="1">
+                            <TextBlock x:Name="AnnualEmpty" Classes="dash_empty" Text="Sem dados para este gráfico." IsVisible="False" />
+                            <views:ColumnChart x:Name="AnnualChart" Classes="dash_chart" />
+                        </Panel>
                     </Grid>
                 </Border>
-                <Border Grid.Column="1" Classes="dash_panel dash_panel_right">
+
+                <Border Grid.Column="2" Classes="dash_panel dash_panel_right">
                     <StackPanel>
                         <TextBlock Classes="dash_panel_title" Text="Faturação trimestral" />
-                        <TextBlock x:Name="QuarterHint" Classes="dash_panel_hint" Text="Distribuição por trimestre em 2026" />
-                        <views:DonutChart x:Name="QuarterChart" Classes="dash_chart dash_chart_donut" />
-                        <StackPanel x:Name="QuarterLegend" Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend" />
+                        <TextBlock x:Name="QuarterHint" Classes="dash_panel_hint" Text="Distribuição por trimestre" />
+                        <TextBlock x:Name="QuarterEmpty" Classes="dash_empty" Text="Sem dados para este gráfico." IsVisible="False" />
+                        <ItemsControl x:Name="QuarterBars" Classes="dash_bar_list" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid Classes="dash_charts dash_charts_secondary" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto">
+                <Border Classes="dash_panel">
+                    <StackPanel>
+                        <TextBlock Classes="dash_panel_title" Text="Top 10 artigos" />
+                        <TextBlock Classes="dash_panel_hint" Text="Mais faturados no período" />
+                        <TextBlock x:Name="ArticlesEmpty" Classes="dash_empty" Text="Sem artigos no período." IsVisible="False" />
+                        <ItemsControl x:Name="TopArticlesList" Classes="dash_articles" />
+                        <Button Classes="dash_link" Content="Ver relatório completo" Click="OnArticlesStubClick" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Classes="dash_panel dash_panel_mid">
+                    <StackPanel>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel>
+                                <TextBlock Classes="dash_panel_title" Text="Métodos de pagamento" />
+                                <TextBlock Classes="dash_panel_hint" Text="Distribuição no período" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Classes="dash_total_caption" Text="TOTAL" />
+                                <TextBlock x:Name="PaymentTotal" Classes="dash_total_value" Text="0,00 €" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock x:Name="PaymentEmpty" Classes="dash_empty" Text="Sem dados para este gráfico." IsVisible="False" />
+                        <views:DonutChart x:Name="PaymentChart" Classes="dash_chart dash_chart_donut" />
+                        <StackPanel x:Name="PaymentLegend" Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Classes="dash_panel dash_panel_mid">
+                    <StackPanel>
+                        <TextBlock Classes="dash_panel_title" Text="Faturação por hora" />
+                        <TextBlock x:Name="HourlyHint" Classes="dash_panel_hint" Text="Ao longo do dia" />
+                        <TextBlock x:Name="HourlyEmpty" Classes="dash_empty" Text="Sem dados para este gráfico." IsVisible="False" />
+                        <views:ColumnChart x:Name="HourlyChart" Classes="dash_chart" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="3" Classes="dash_panel dash_panel_right">
+                    <StackPanel>
+                        <TextBlock Classes="dash_panel_title" Text="Faturação por família" />
+                        <TextBlock Classes="dash_panel_hint" Text="Top famílias no período" />
+                        <TextBlock x:Name="FamilyEmpty" Classes="dash_empty" Text="Sem dados para este gráfico." IsVisible="False" />
+                        <ItemsControl x:Name="FamilyBars" Classes="dash_bar_list" />
                     </StackPanel>
                 </Border>
             </Grid>

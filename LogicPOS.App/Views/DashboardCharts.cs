@@ -22,7 +22,7 @@ public abstract class DashboardChartControl : Control
     }
 }
 
-/// <summary>Green column chart used by the billing dashboard.</summary>
+/// <summary>Green column chart used by the billing dashboard (optional dashed trend line).</summary>
 public sealed class ColumnChart : DashboardChartControl
 {
     public ColumnChart()
@@ -31,10 +31,12 @@ public sealed class ColumnChart : DashboardChartControl
     }
 
     private IReadOnlyList<DashboardChartPoint> _points = [];
+    private bool _showTrend;
 
-    public void SetPoints(IReadOnlyList<DashboardChartPoint> points)
+    public void SetPoints(IReadOnlyList<DashboardChartPoint> points, bool showTrend = false)
     {
         _points = points;
+        _showTrend = showTrend;
         InvalidateVisual();
     }
 
@@ -47,10 +49,12 @@ public sealed class ColumnChart : DashboardChartControl
         }
 
         var plot = new Rect(36, 8, Math.Max(10, bounds.Width - 44), Math.Max(10, bounds.Height - 32));
-        var max = Math.Max(1d, _points.Max(point => point.Value) * 1.15);
+        var maxValue = _points.Max(point => Math.Max(point.Value, _showTrend ? point.Trend : 0));
+        var max = Math.Max(1d, maxValue * 1.15);
         DrawGrid(context, plot, max);
         var slot = plot.Width / _points.Count;
-        var barWidth = Math.Max(8, slot * 0.55);
+        var barWidth = Math.Max(6, slot * (_points.Count > 20 ? 0.45 : 0.55));
+        var trendMarkers = new Point[_points.Count];
         for (var index = 0; index < _points.Count; index++)
         {
             var point = _points[index];
@@ -58,7 +62,23 @@ public sealed class ColumnChart : DashboardChartControl
             var x = plot.X + (slot * index) + ((slot - barWidth) / 2);
             var y = plot.Bottom - height;
             context.DrawRectangle(ChartBrushes.Column, null, new Rect(x, y, barWidth, Math.Max(height, 0)), 5, 5);
-            DrawLabel(context, point.Label, new Point(plot.X + (slot * index) + (slot / 2), plot.Bottom + 4), 10, ChartBrushes.Axis, center: true);
+            var label = _points.Count > 15 && index % 2 == 1 ? string.Empty : point.Label;
+            if (label.Length > 0)
+            {
+                DrawLabel(context, label, new Point(plot.X + (slot * index) + (slot / 2), plot.Bottom + 4), 10, ChartBrushes.Axis, center: true);
+            }
+
+            var trendY = plot.Bottom - (plot.Height * (point.Trend / max));
+            trendMarkers[index] = new Point(plot.X + (slot * index) + (slot / 2), trendY);
+        }
+
+        if (_showTrend && trendMarkers.Length > 1)
+        {
+            var pen = new Pen(ChartBrushes.Line, 2) { DashStyle = new DashStyle([4, 3], 0) };
+            for (var index = 1; index < trendMarkers.Length; index++)
+            {
+                context.DrawLine(pen, trendMarkers[index - 1], trendMarkers[index]);
+            }
         }
     }
 
@@ -309,6 +329,8 @@ public sealed class DashboardChartPoint
     public string Caption { get; init; } = string.Empty;
 
     public double Value { get; init; }
+
+    public double Trend { get; init; }
 }
 
 internal static class ChartBrushes

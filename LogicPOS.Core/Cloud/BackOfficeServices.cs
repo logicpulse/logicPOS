@@ -2,7 +2,11 @@
 
 public interface IDashboardBillingService
 {
-    Task<DashboardSnapshot> LoadAsync(int year, CancellationToken cancellationToken = default);
+    Task<DashboardFilterOptions> LoadFilterOptionsAsync(CancellationToken cancellationToken = default);
+
+    Task<DashboardBillingOverview> GetOverviewAsync(
+        DashboardBillingQuery query,
+        CancellationToken cancellationToken = default);
 }
 
 public interface IBackOfficeListingService

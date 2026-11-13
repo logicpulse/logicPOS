@@ -3982,6 +3982,77 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Margin" Value="0,8,0,0" />
     </Style>
+    <Style Selector="WrapPanel.dash_filters">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.dash_period_chips">
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+
+    <Style Selector="Button.dash_chip">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#5F6368" />
+        <Setter Property="BorderBrush" Value="#D8D8D8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="999" />
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="Button.dash_chip.active">
+        <Setter Property="Background" Value="#8CC63F" />
+        <Setter Property="BorderBrush" Value="#8CC63F" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="StackPanel.dash_selects">
+        <Setter Property="Spacing" Value="10" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="ComboBox.dash_filter">
+        <Setter Property="MinWidth" Value="140" />
+        <Setter Property="MinHeight" Value="34" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <Style Selector="StackPanel.dash_mini_chips">
+        <Setter Property="Spacing" Value="4" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="Button.dash_mini_chip">
+        <Setter Property="MinWidth" Value="34" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#5F6368" />
+        <Setter Property="BorderBrush" Value="#D8D8D8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="Button.dash_mini_chip.active">
+        <Setter Property="Background" Value="#8CC63F" />
+        <Setter Property="BorderBrush" Value="#8CC63F" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="UniformGrid.dash_kpis">
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+
     <Style Selector="Grid.dash_kpis">
         <Setter Property="Margin" Value="0,8,0,0" />
     </Style>
@@ -3990,8 +4061,9 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="14,12,14,10" />
         <Setter Property="MinHeight" Value="88" />
-        <Setter Property="Margin" Value="0,0,10,0" />
+        <Setter Property="Margin" Value="0,0,10,10" />
         <Setter Property="BoxShadow" Value="0 8 18 0 #14000000" />
+        <Setter Property="Cursor" Value="Hand" />
     </Style>
 
     <Style Selector="Border.dash_kpi_today">
@@ -4021,8 +4093,26 @@
         </Setter>
     </Style>
 
+    <Style Selector="Border.dash_kpi_docs">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#5A8F28" Offset="0" />
+                <GradientStop Color="#3F6618" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.dash_kpi_ticket">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#4A6E1C" Offset="0" />
+                <GradientStop Color="#2F4810" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
     <Style Selector="Border.dash_kpi_best">
-        <Setter Property="Margin" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,10" />
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                 <GradientStop Color="#323537" Offset="0" />
@@ -4060,8 +4150,16 @@
         <Setter Property="BoxShadow" Value="0 6 16 0 #0A000000" />
     </Style>
 
+    <Style Selector="Border.dash_panel_mid">
+        <Setter Property="Margin" Value="10,0,0,0" />
+    </Style>
+
     <Style Selector="Border.dash_panel_right">
         <Setter Property="Margin" Value="10,0,0,0" />
+    </Style>
+
+    <Style Selector="Grid.dash_charts">
+        <Setter Property="Margin" Value="0,0,0,10" />
     </Style>
 
     <Style Selector="TextBlock.dash_panel_title">
@@ -4074,6 +4172,71 @@
         <Setter Property="Foreground" Value="#8A8A8A" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="Margin" Value="0,2,0,8" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_empty">
+        <Setter Property="Foreground" Value="#8A8A8A" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Margin" Value="0,24,0,24" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_bar_label">
+        <Setter Property="Foreground" Value="#4A4A4A" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_bar_value">
+        <Setter Property="Foreground" Value="#4D6610" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="ProgressBar.dash_bar_progress">
+        <Setter Property="Foreground" Value="#8CC63F" />
+        <Setter Property="Background" Value="#EEF2E8" />
+        <Setter Property="CornerRadius" Value="6" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_article_rank">
+        <Setter Property="Foreground" Value="#8CC63F" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_article_name">
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_article_amount">
+        <Setter Property="Foreground" Value="#6D6D6D" />
+        <Setter Property="FontSize" Value="11" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_article_qty">
+        <Setter Property="Foreground" Value="#8A8A8A" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Margin" Value="8,0,0,0" />
+    </Style>
+
+    <Style Selector="Button.dash_link">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#6B9E2E" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0,8,0,0" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="Ellipse.dash_legend_trend">
+        <Setter Property="Fill" Value="#4D6610" />
     </Style>
 
     <Style Selector="TextBlock.dash_total_caption">
