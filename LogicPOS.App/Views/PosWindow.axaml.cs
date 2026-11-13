@@ -765,7 +765,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Preço", "icon_pos_ticketpad_change_price.png", 3, 1, 1, "pos_pad_button_grey", RequestPrice);
             AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 4, 1, 1, "pos_pad_button_grey", RequestCard);
             AddPadButton("Alt. lista", "icon_pos_ticketpad_list_mode.png", 5, 1, 1, "pos_pad_button_grey", ToggleListMode);
-            AddPadButton("Dividir", "icon_pos_ticketpad_payments.png", 0, 2, 1, "pos_pad_button_grey", RequestSplit);
+            AddPadButton("Dividir", "icon_pos_ticketpad_split_payments.png", 0, 2, 1, "pos_pad_button_grey", RequestSplit);
             AddPadButton("Reemb. Volta", "icon_pos_ticketpad_payments.png", 1, 2, 1, "pos_pad_button_grey", ShowVoltaRefund);
             AddPadButton("Cód.Barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 2, 1, "pos_pad_button_grey", RequestBarcode);
             AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 2, 1, "pos_pad_button_grey", RequestWeight);
@@ -782,7 +782,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Alt. lista", "icon_pos_ticketpad_list_mode.png", 1, 2, 1, "pos_pad_button_grey", ToggleListMode);
             AddPadButton("Preço", "icon_pos_ticketpad_change_price.png", 1, 3, 1, "pos_pad_button_grey", RequestPrice);
             AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 2, 0, 1, "pos_pad_button_green", FinishTicket);
-            AddPadButton("Dividir", "icon_pos_ticketpad_payments.png", 3, 0, 1, "pos_pad_button_grey", RequestSplit);
+            AddPadButton("Dividir", "icon_pos_ticketpad_split_payments.png", 3, 0, 1, "pos_pad_button_grey", RequestSplit);
             AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_green", RequestPayments);
             AddPadButton("Reemb. Volta", "icon_pos_ticketpad_payments.png", 3, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
             AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 2, 2, 1, "pos_pad_button_green", ShowOrders);
