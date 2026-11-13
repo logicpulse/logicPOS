@@ -14,8 +14,8 @@
                 <TextBlock Classes="dash_subtitle" Text="Resumo diário, trimestral e anual da empresa." />
             </StackPanel>
 
-            <WrapPanel Classes="dash_filters">
-                <StackPanel Classes="dash_period_chips" Orientation="Horizontal">
+            <Grid Classes="dash_filters" ColumnDefinitions="*,Auto">
+                <StackPanel Classes="dash_period_chips" Orientation="Horizontal" VerticalAlignment="Bottom">
                     <Button x:Name="PeriodToday" Classes="dash_chip active" Content="Hoje" Tag="today" Click="OnPeriodClick" />
                     <Button x:Name="Period7" Classes="dash_chip" Content="7 dias" Tag="last7" Click="OnPeriodClick" />
                     <Button x:Name="Period30" Classes="dash_chip" Content="30 dias" Tag="last30" Click="OnPeriodClick" />
@@ -23,51 +23,53 @@
                     <Button x:Name="PeriodYear" Classes="dash_chip" Content="Ano" Tag="year" Click="OnPeriodClick" />
                 </StackPanel>
 
-                <StackPanel Classes="dash_control_group">
-                    <TextBlock Classes="dash_control_label" Text="APRESENTAÇÃO DOS VALORES" />
-                    <Border Classes="dash_segmented">
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="VatOn" Classes="dash_segment active" Content="Com IVA" Click="OnVatOnClick" />
-                            <Button x:Name="VatOff" Classes="dash_segment" Content="Sem IVA" Click="OnVatOffClick" />
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
+                <StackPanel Grid.Column="1" Classes="dash_filters_right" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <StackPanel Classes="dash_control_group">
+                        <TextBlock Classes="dash_control_label" Text="APRESENTAÇÃO DOS VALORES" />
+                        <Border Classes="dash_segmented">
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="VatOn" Classes="dash_segment active" Content="Com IVA" Click="OnVatOnClick" />
+                                <Button x:Name="VatOff" Classes="dash_segment" Content="Sem IVA" Click="OnVatOffClick" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
 
-                <StackPanel Classes="dash_selects" Orientation="Horizontal">
-                    <StackPanel Classes="dash_control_group">
-                        <StackPanel Classes="dash_control_label_row" Orientation="Horizontal">
-                            <svg:Svg Classes="dash_filter_label_icon"
-                                     Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_locais_b.svg" />
-                            <TextBlock Classes="dash_control_label" Text="LOCAL" />
+                    <StackPanel Classes="dash_selects" Orientation="Horizontal">
+                        <StackPanel Classes="dash_control_group">
+                            <StackPanel Classes="dash_control_label_row" Orientation="Horizontal">
+                                <svg:Svg Classes="dash_filter_label_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_outras_tabelas_locais_b.svg" />
+                                <TextBlock Classes="dash_control_label" Text="LOCAL" />
+                            </StackPanel>
+                            <ComboBox x:Name="PlaceBox" Classes="dash_filter" SelectionChanged="OnFilterChanged" />
                         </StackPanel>
-                        <ComboBox x:Name="PlaceBox" Classes="dash_filter" SelectionChanged="OnFilterChanged" />
-                    </StackPanel>
-                    <StackPanel Classes="dash_control_group">
-                        <StackPanel Classes="dash_control_label_row" Orientation="Horizontal">
-                            <svg:Svg Classes="dash_filter_label_icon"
-                                     Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_configuracoes_terminais_b.svg" />
-                            <TextBlock Classes="dash_control_label" Text="TERMINAL" />
+                        <StackPanel Classes="dash_control_group">
+                            <StackPanel Classes="dash_control_label_row" Orientation="Horizontal">
+                                <svg:Svg Classes="dash_filter_label_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_configuracoes_terminais_b.svg" />
+                                <TextBlock Classes="dash_control_label" Text="TERMINAL" />
+                            </StackPanel>
+                            <ComboBox x:Name="TerminalBox" Classes="dash_filter" SelectionChanged="OnFilterChanged" />
                         </StackPanel>
-                        <ComboBox x:Name="TerminalBox" Classes="dash_filter" SelectionChanged="OnFilterChanged" />
-                    </StackPanel>
-                    <StackPanel Classes="dash_control_group">
-                        <StackPanel Classes="dash_control_label_row" Orientation="Horizontal">
-                            <svg:Svg Classes="dash_filter_label_icon"
-                                     Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_utilizadores_b.svg" />
-                            <TextBlock Classes="dash_control_label" Text="FUNCIONÁRIO" />
+                        <StackPanel Classes="dash_control_group">
+                            <StackPanel Classes="dash_control_label_row" Orientation="Horizontal">
+                                <svg:Svg Classes="dash_filter_label_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_utilizadores_b.svg" />
+                                <TextBlock Classes="dash_control_label" Text="FUNCIONÁRIO" />
+                            </StackPanel>
+                            <ComboBox x:Name="UserBox" Classes="dash_filter" SelectionChanged="OnFilterChanged" />
                         </StackPanel>
-                        <ComboBox x:Name="UserBox" Classes="dash_filter" SelectionChanged="OnFilterChanged" />
-                    </StackPanel>
-                    <StackPanel Classes="dash_control_group">
-                        <StackPanel Classes="dash_control_label_row" Orientation="Horizontal">
-                            <svg:Svg Classes="dash_filter_label_icon"
-                                     Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_anos_fiscais_b.svg" />
-                            <TextBlock Classes="dash_control_label" Text="ANO" />
+                        <StackPanel Classes="dash_control_group">
+                            <StackPanel Classes="dash_control_label_row" Orientation="Horizontal">
+                                <svg:Svg Classes="dash_filter_label_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_informacoes_fiscais_anos_fiscais_b.svg" />
+                                <TextBlock Classes="dash_control_label" Text="ANO" />
+                            </StackPanel>
+                            <ComboBox x:Name="YearBox" Classes="dash_year" SelectionChanged="OnYearChanged" />
                         </StackPanel>
-                        <ComboBox x:Name="YearBox" Classes="dash_year" SelectionChanged="OnYearChanged" />
                     </StackPanel>
                 </StackPanel>
-            </WrapPanel>
+            </Grid>
 
             <TextBlock x:Name="StatusText" Classes="dash_status" IsVisible="False" />
 
