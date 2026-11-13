@@ -1575,6 +1575,18 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <Style Selector="StackPanel.pos_status_clock">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="svg|Svg.pos_status_weather_icon">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="TextBlock.pos_status_text_small">
         <Setter Property="Foreground" Value="#D0D0D0" />
         <Setter Property="FontSize" Value="11" />
@@ -1935,16 +1947,23 @@
 
     <Style Selector="Image.pos_menu_image">
         <Setter Property="Stretch" Value="Uniform" />
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="Margin" Value="4,4,4,2" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="4" />
     </Style>
 
+    <!-- Center + ClipToBounds parent: UniformToFill crops equally (not bottom-biased). -->
     <Style Selector="Image.pos_menu_image_fill">
         <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="2" />
+    </Style>
+
+    <Style Selector="Border.pos_menu_image_clip">
+        <Setter Property="ClipToBounds" Value="True" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="Margin" Value="2,2,2,0" />
     </Style>
 
     <Style Selector="Border.pos_menu_subfamily_clip">
@@ -1954,6 +1973,8 @@
 
     <Style Selector="Button.pos_menu_subfamily Image.pos_menu_image">
         <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0" />
     </Style>
 
@@ -3254,6 +3275,19 @@
         <Setter Property="Foreground" Value="#DADADA" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_status_clock">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_status_weather_icon">
+        <Setter Property="Width" Value="14" />
+        <Setter Property="Height" Value="14" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 

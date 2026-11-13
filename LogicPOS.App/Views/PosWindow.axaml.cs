@@ -23,7 +23,9 @@ namespace LogicPOS.App.Views;
 
 public partial class PosWindow : UserControl, IOfficeSurface
 {
-    private const string ClockFormat = "dddd, dd' de 'MMMM' de 'yyyy' || 'HH:mm:ss tt";
+    private const string ClockDateFormat = "dddd, dd' de 'MMMM' de 'yyyy";
+    private const string ClockTimeFormat = "HH:mm:ss tt";
+    private const string WeatherIconPath = "avares://LogicPOS.App/Assets/Images/BackOffice/icon_weather_w.svg";
 
     private string _userName;
     private string _terminalName = string.Empty;
@@ -37,7 +39,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private UiViewport _viewport = new(1920, 1080);
     private PosCatalog _catalog = PosCatalog.Empty;
     private TextBlock? _terminalLabel;
-    private TextBlock? _clockLabel;
+    private TextBlock? _clockDateLabel;
+    private TextBlock? _clockTimeLabel;
     private Button? _familyPrevious;
     private Button? _familyNext;
     private Button? _subfamilyPrevious;
@@ -578,7 +581,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
         _terminalLabel = null;
         _sessionStateLabel = null;
-        _clockLabel = null;
+        _clockDateLabel = null;
+        _clockTimeLabel = null;
         _currentTableLabel = null;
         _amountDue = null;
 
@@ -624,11 +628,26 @@ public partial class PosWindow : UserControl, IOfficeSurface
             _terminalLabel = new TextBlock { Classes = { "pos_status_text" }, Text = SessionCaption.Format(_terminalName, _userName) };
             _sessionStateLabel = new TextBlock { Classes = { "pos_status_text" }, HorizontalAlignment = HorizontalAlignment.Center };
             Grid.SetColumn(_sessionStateLabel, 1);
-            _clockLabel = new TextBlock { Classes = { "pos_status_text" }, HorizontalAlignment = HorizontalAlignment.Right };
-            Grid.SetColumn(_clockLabel, 2);
+            _clockDateLabel = new TextBlock { Classes = { "pos_status_text" } };
+            _clockTimeLabel = new TextBlock { Classes = { "pos_status_text" } };
+            var weatherIcon = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+            {
+                Classes = { "pos_status_weather_icon" },
+                Path = WeatherIconPath
+            };
+            var clockPanel = new StackPanel
+            {
+                Classes = { "pos_status_clock" },
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Spacing = 8,
+                Children = { _clockDateLabel, weatherIcon, _clockTimeLabel }
+            };
+            Grid.SetColumn(clockPanel, 2);
             statusGrid.Children.Add(_terminalLabel);
             statusGrid.Children.Add(_sessionStateLabel);
-            statusGrid.Children.Add(_clockLabel);
+            statusGrid.Children.Add(clockPanel);
             status.Child = statusGrid;
             Place(status, layout.StatusBar1X, layout.StatusBar1Y, layout.StatusBar1Width, layout.StatusBar1Height);
 
@@ -1757,8 +1776,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
         var content = new Grid { RowDefinitions = new RowDefinitions("*,Auto") };
         if (image is not null)
         {
-            Grid.SetRow(image, 0);
-            content.Children.Add(image);
+            // Clip frame + Center alignment so UniformToFill crops symmetrically (not bottom-biased).
+            var frame = new Border { Classes = { "pos_menu_image_clip" }, Child = image };
+            Grid.SetRow(frame, 0);
+            content.Children.Add(frame);
         }
 
         Grid.SetRow(caption, 1);
@@ -1796,7 +1817,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         var tile = new Grid();
         if (image is not null)
         {
-            tile.Children.Add(image);
+            tile.Children.Add(new Border { Classes = { "pos_menu_image_clip" }, Child = image });
         }
 
         tile.Children.Add(new Border
@@ -2219,10 +2240,14 @@ public partial class PosWindow : UserControl, IOfficeSurface
     }
     private void UpdateClock()
     {
-        if (_clockLabel is not null)
+        if (_clockDateLabel is null || _clockTimeLabel is null)
         {
-            _clockLabel.Text = DateTime.Now.ToString(ClockFormat);
+            return;
         }
+
+        var now = DateTime.Now;
+        _clockDateLabel.Text = now.ToString(ClockDateFormat);
+        _clockTimeLabel.Text = now.ToString(ClockTimeFormat);
     }
 
     public async Task ShowNewDocumentAsync(
