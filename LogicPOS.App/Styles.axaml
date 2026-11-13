@@ -3911,10 +3911,22 @@
         <Setter Property="VerticalAlignment" Value="Bottom" />
     </Style>
 
+    <Style Selector="StackPanel.dash_control_label_row">
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="svg|Svg.dash_filter_label_icon">
+        <Setter Property="Width" Value="14" />
+        <Setter Property="Height" Value="14" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="TextBlock.dash_control_label">
         <Setter Property="Foreground" Value="#7A7A7A" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Border.dash_segmented">
