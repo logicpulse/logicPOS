@@ -20,7 +20,8 @@ namespace LogicPOS.App.Views;
 
 public partial class BackOfficeWindow : UserControl, IOfficeSurface
 {
-    private const string ClockFormat = "dddd, dd' de 'MMMM' de 'yyyy' || 'HH:mm:ss tt";
+    private const string ClockDateFormat = "dddd, dd' de 'MMMM' de 'yyyy";
+    private const string ClockTimeFormat = "HH:mm:ss tt";
     private const string IconRoot = "avares://LogicPOS.App/Assets/Images/BackOffice/";
 
     private readonly DispatcherTimer _clock = new() { Interval = TimeSpan.FromSeconds(1) };
@@ -72,11 +73,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         AboutCopyright.Text = copyright;
         ApplyBranding(number ?? "1.6.0");
         BuildMenu();
-        _clock.Tick += (_, _) =>
-        {
-            var text = DateTime.Now.ToString(ClockFormat);
-            ClockLabel.Text = text;
-        };
+        _clock.Tick += (_, _) => UpdateClock();
         EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.ArticleSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.FinalConsumerSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
@@ -393,11 +390,18 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     public void RefreshSession()
     {
-        ClockLabel.Text = DateTime.Now.ToString(ClockFormat);
+        UpdateClock();
         _clock.Start();
         // Diferir carregamentos pesados para não bloquear o UI thread (evita ANR no Android).
         Dispatcher.UIThread.Post(() => _ = ApplyMenuAccessAsync(), DispatcherPriority.Background);
         Dispatcher.UIThread.Post(() => _ = RefreshHomeAfterSetupAsync(), DispatcherPriority.Background);
+    }
+
+    private void UpdateClock()
+    {
+        var now = DateTime.Now;
+        ClockDateLabel.Text = now.ToString(ClockDateFormat);
+        ClockTimeLabel.Text = now.ToString(ClockTimeFormat);
     }
 
     private async Task ReloadDashboardSafeAsync()

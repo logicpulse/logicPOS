@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ffffff;
+      }
+    </style>
+  </defs>
+  <!-- Sun disk -->
+  <circle class="cls-1" cx="24" cy="24" r="9"/>
+  <!-- Sun rays -->
+  <rect class="cls-1" x="22.5" y="6" width="3" height="6" rx="1.5"/>
+  <rect class="cls-1" x="22.5" y="36" width="3" height="6" rx="1.5"/>
+  <rect class="cls-1" x="6" y="22.5" width="6" height="3" rx="1.5"/>
+  <rect class="cls-1" x="36" y="22.5" width="6" height="3" rx="1.5"/>
+  <rect class="cls-1" x="10.3" y="10.3" width="3" height="6" rx="1.5" transform="rotate(-45 11.8 13.3)"/>
+  <rect class="cls-1" x="34.7" y="10.3" width="3" height="6" rx="1.5" transform="rotate(45 36.2 13.3)"/>
+  <rect class="cls-1" x="10.3" y="34.7" width="3" height="6" rx="1.5" transform="rotate(45 11.8 37.7)"/>
+  <rect class="cls-1" x="34.7" y="34.7" width="3" height="6" rx="1.5" transform="rotate(-45 36.2 37.7)"/>
+  <!-- Cloud -->
+  <ellipse class="cls-1" cx="36" cy="40" rx="14" ry="9"/>
+  <circle class="cls-1" cx="28" cy="36" r="8"/>
+  <circle class="cls-1" cx="40" cy="34" r="9"/>
+</svg>
