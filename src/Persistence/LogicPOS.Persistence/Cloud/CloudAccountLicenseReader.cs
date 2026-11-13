@@ -33,4 +33,16 @@ public sealed class CloudAccountLicenseReader : ICloudAccountLicenseReader
             ModuleOnlineInvoicing: account.ModuleOnlineInvoicing,
             ModuleSms: account.ModuleSms);
     }
+
+    public void InvalidateCurrentTenant()
+    {
+        if (_settings.UseCloud == false)
+            return;
+
+        var clientId = TenantContext.AmbientClientId;
+        if (string.IsNullOrWhiteSpace(clientId))
+            return;
+
+        _catalog.Invalidate(clientId);
+    }
 }

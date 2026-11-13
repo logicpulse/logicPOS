@@ -38,6 +38,14 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
         return snapshot;
     }
 
+    public void Invalidate(string clientId)
+    {
+        if (string.IsNullOrWhiteSpace(clientId))
+            return;
+
+        _cache.Remove(CacheKeyPrefix + clientId.Trim());
+    }
+
     private CloudAccountSnapshot Query(string clientId)
     {
         if (string.IsNullOrWhiteSpace(_settings.CloudConnectionString))

@@ -4,4 +4,8 @@ namespace LogicPOS.Persistence.Cloud;
 public sealed class NullCloudAccountCatalog : ICloudAccountCatalog
 {
     public CloudAccountSnapshot Find(string clientId) => CloudAccountSnapshot.NotFound;
+
+    public void Invalidate(string clientId)
+    {
+    }
 }
