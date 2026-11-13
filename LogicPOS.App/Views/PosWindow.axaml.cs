@@ -2481,6 +2481,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private void ShowBackOffice() => ShowBackOffice(null);
 
     private BoShellWindow? _boShell;
+    private bool _boShellStateWired;
 
     private void ShowBackOffice(string? page)
     {
@@ -2499,9 +2500,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 {
                     MobileHostView.SetHostedContent(this);
                 }
-                else if (_boShell is not null)
+                else
                 {
-                    _boShell.Hide();
+                    RestoreFrontOfficeShell();
                 }
 
                 IsVisible = true;
@@ -2526,6 +2527,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 _boShell = new BoShellWindow(_backOffice);
             }
 
+            WireBoShellWindowSync(_boShell);
+            // Hide the FO shell so a full-screen black PosShell cannot sit behind a windowed BO.
+            HideFrontOfficeShell();
             _boShell.Show();
             _boShell.Activate();
             _ = _backOffice.ActivateHostedAsync();
@@ -2535,6 +2539,89 @@ public partial class PosWindow : UserControl, IOfficeSurface
         {
             _backOffice.OpenPage(page);
         }
+    }
+
+    private Window? FrontOfficeShell => TopLevel.GetTopLevel(this) as Window;
+
+    private void HideFrontOfficeShell()
+    {
+        if (FrontOfficeShell is not Window posShell)
+        {
+            return;
+        }
+
+        if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+            && _boShell is not null)
+        {
+            desktop.MainWindow = _boShell;
+        }
+
+        posShell.Hide();
+    }
+
+    private void RestoreFrontOfficeShell()
+    {
+        if (_boShell is not null)
+        {
+            _boShell.Hide();
+        }
+
+        if (FrontOfficeShell is not Window posShell)
+        {
+            return;
+        }
+
+        if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow = posShell;
+        }
+
+        // POS returns as the full-screen surface (BO may have been Normal/restored).
+        posShell.WindowDecorations = WindowDecorations.None;
+        posShell.CanResize = false;
+        posShell.WindowState = WindowState.FullScreen;
+        posShell.Show();
+        posShell.Activate();
+    }
+
+    private void WireBoShellWindowSync(BoShellWindow boShell)
+    {
+        if (_boShellStateWired)
+        {
+            return;
+        }
+
+        _boShellStateWired = true;
+        boShell.PropertyChanged += (_, args) =>
+        {
+            if (args.Property != Window.WindowStateProperty
+                || FrontOfficeShell is not Window posShell
+                || ReferenceEquals(posShell, boShell))
+            {
+                return;
+            }
+
+            // Minimize FO with BO; otherwise keep FO hidden so it never paints behind a non-maximized BO.
+            if (boShell.WindowState == WindowState.Minimized)
+            {
+                if (posShell.WindowState != WindowState.Minimized)
+                {
+                    posShell.WindowState = WindowState.Minimized;
+                }
+
+                return;
+            }
+
+            if (posShell.WindowState == WindowState.Minimized)
+            {
+                posShell.WindowState = WindowState.FullScreen;
+            }
+
+            if (posShell.IsVisible)
+            {
+                posShell.Hide();
+            }
+        };
     }
 
     private void RequestHostClose()
