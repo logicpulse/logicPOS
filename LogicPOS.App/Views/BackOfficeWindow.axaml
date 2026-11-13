@@ -36,7 +36,7 @@
                 <TextBlock x:Name="PageTitle" Grid.Column="1" Classes="bo_status_text" />
                 <StackPanel x:Name="ClockPanel" Grid.Column="2" Classes="bo_status_clock">
                     <TextBlock x:Name="ClockDateLabel" Classes="bo_status_text" />
-                    <svg:Svg Classes="bo_status_weather_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/icon_weather_w.svg" />
+                    <svg:Svg Classes="bo_status_clock_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/icon_clock_w.svg" />
                     <TextBlock x:Name="ClockTimeLabel" Classes="bo_status_text" />
                 </StackPanel>
                 <StackPanel x:Name="WindowButtons" Grid.Column="3" Classes="bo_window_buttons">

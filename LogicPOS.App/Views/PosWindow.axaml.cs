@@ -25,7 +25,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
 {
     private const string ClockDateFormat = "dddd, dd' de 'MMMM' de 'yyyy";
     private const string ClockTimeFormat = "HH:mm:ss tt";
-    private const string WeatherIconPath = "avares://LogicPOS.App/Assets/Images/BackOffice/icon_weather_w.svg";
+    private const string ClockIconPath = "avares://LogicPOS.App/Assets/Images/BackOffice/icon_clock_w.svg";
 
     private string _userName;
     private string _terminalName = string.Empty;
@@ -630,10 +630,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
             Grid.SetColumn(_sessionStateLabel, 1);
             _clockDateLabel = new TextBlock { Classes = { "pos_status_text" } };
             _clockTimeLabel = new TextBlock { Classes = { "pos_status_text" } };
-            var weatherIcon = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+            var clockIcon = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
             {
-                Classes = { "pos_status_weather_icon" },
-                Path = WeatherIconPath
+                Classes = { "pos_status_clock_icon" },
+                Path = ClockIconPath
             };
             var clockPanel = new StackPanel
             {
@@ -642,7 +642,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Center,
                 Spacing = 8,
-                Children = { _clockDateLabel, weatherIcon, _clockTimeLabel }
+                Children = { _clockDateLabel, clockIcon, _clockTimeLabel }
             };
             Grid.SetColumn(clockPanel, 2);
             statusGrid.Children.Add(_terminalLabel);
