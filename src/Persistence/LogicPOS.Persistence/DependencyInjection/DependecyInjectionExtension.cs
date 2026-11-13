@@ -7,6 +7,7 @@ using LogicPOS.Persistence.Interceptors;
 using LogicPOS.Persistence.Seeding;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Persistence.Services.DatabaseBackup;
+using LogicPOS.Persistence.Services.DemoData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -48,6 +49,8 @@ public static class DependencyInjectionExtension
         services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
         services.AddScoped<ICustomerOutstandingBalanceService, CustomerOutstandingBalanceService>();
+        services.AddScoped<IDemoSalesDataService, DemoSalesDataService>();
+        services.AddHostedService<DemoSalesDataBackgroundService>();
         return services;
     }
 }

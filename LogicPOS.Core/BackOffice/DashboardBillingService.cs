@@ -4,8 +4,10 @@ using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Persistence.Database;
+using LogicPOS.Persistence.Services.DemoData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace LogicPOS.Core.BackOffice;
 
@@ -59,6 +61,19 @@ public sealed class DashboardBillingService : IDashboardBillingService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+
+        // Local Avalonia / shared Persistence: fill demo sales before reading KPIs (safe: Demo licence + flag).
+        try
+        {
+            var demo = scope.ServiceProvider.GetService<IDemoSalesDataService>();
+            if (demo is not null)
+                await demo.EnsureAsync(force: false, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetService<ILogger<DashboardBillingService>>();
+            logger?.LogDebug(ex, "Demo sales ensure skipped before dashboard overview.");
+        }
 
         var terminalIdsForPlace = await ResolvePlaceTerminalIdsAsync(database, query.PlaceId, cancellationToken);
         var docs = ApplyDocumentFilters(

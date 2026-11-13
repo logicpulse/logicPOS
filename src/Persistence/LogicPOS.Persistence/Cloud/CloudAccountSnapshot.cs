@@ -17,6 +17,9 @@ public sealed class CloudAccountSnapshot
 
     public bool ModuleSms { get; init; }
 
+    /// <summary>Cloud account marked as demo (Accounts.Demo). Unlocks «Usar dados demo».</summary>
+    public bool Demo { get; init; }
+
     /// <summary>Fiscal country from Accounts.idCountry (PT, AO or MZ). Empty when the account has no mapped country.</summary>
     public string? CountryCode2 { get; init; }
 

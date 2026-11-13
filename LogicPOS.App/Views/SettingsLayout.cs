@@ -33,7 +33,8 @@ internal static class SettingsLayout
         [
             new("Documentos e talões", "printer", 2, ["USE_CC_DAILY_TICKET", "USE_POS_PDF_VIEWER", "USE_EUROPEAN_VAT_AUTOCOMPLETE"]),
             new("Divisão de clientes", "user", 3, ["SPLIT_PAYMENT_START_CLIENTS", "SPLIT_PAYMENT_MIN_CLIENTS", "SPLIT_PAYMENT_MAX_CLIENTS"]),
-            new("Idioma e imagens", "gear", 2, ["CULTURE", "USE_CACHED_IMAGES"])
+            new("Idioma e imagens", "gear", 2, ["CULTURE", "USE_CACHED_IMAGES"]),
+            new("Dados demo", "layers", 1, ["DEMO_DATA_ENABLED"])
         ],
         ["Aparência"] =
         [

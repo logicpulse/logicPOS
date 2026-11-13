@@ -21,6 +21,8 @@ public sealed class NullLicenseModule : ILicenseModule
 
     public string Reseller => "LogicPulse";
 
+    public bool Demo => false;
+
     public Task<IReadOnlyList<LicenseCountry>> GetCountriesAsync(CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyList<LicenseCountry>>([new LicenseCountry(168, "Portugal")]);
 

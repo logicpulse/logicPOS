@@ -8,12 +8,14 @@ using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Core.Licensing;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Common;
 using LogicPOS.Domain.Services;
 using LogicPOS.Domain.ValueObjects;
 using LogicPOS.Persistence.Database;
 using LogicPOS.Persistence.Interceptors;
+using LogicPOS.Persistence.Services.DemoData;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -265,18 +267,21 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
     private readonly IPasswordHasher _passwords;
     private readonly ISystemInformationService _system;
     private readonly IAuditingInformationService _auditing;
+    private readonly ILicenseModule _license;
     private readonly PageSpec[] _pages;
 
     public BackOfficeListingService(
         IServiceScopeFactory scopes,
         IPasswordHasher passwords,
         ISystemInformationService system,
-        IAuditingInformationService auditing)
+        IAuditingInformationService auditing,
+        ILicenseModule license)
     {
         _scopes = scopes;
         _passwords = passwords;
         _system = system;
         _auditing = auditing;
+        _license = license;
         _pages = BuildPages();
     }
 
@@ -526,6 +531,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 }
             }
 
+            if (entity is PreferenceParameter demoPref
+                && string.Equals(demoPref.Token, DemoDataParameterTokens.Enabled, StringComparison.OrdinalIgnoreCase))
+            {
+                var enabling = IsTruthyPreference(demoPref.Value);
+                if (enabling && _license.Demo == false)
+                {
+                    return ListingSaveResult.Fail(
+                        "Usar dados demo requer licença local Demo ou conta cloud em modo demo.");
+                }
+            }
+
             PrepareRequired(page.EntityType, entity, database);
             if (entity is User user)
             {
@@ -617,6 +633,23 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             if (saveResult.Succeeded && entity is Customer)
             {
                 AppComposition.Services?.GetService<PosCustomerService>()?.InvalidateSearch();
+            }
+
+            if (saveResult.Succeeded
+                && entity is PreferenceParameter enabledDemo
+                && string.Equals(enabledDemo.Token, DemoDataParameterTokens.Enabled, StringComparison.OrdinalIgnoreCase)
+                && IsTruthyPreference(enabledDemo.Value))
+            {
+                try
+                {
+                    var demo = scope.ServiceProvider.GetService<IDemoSalesDataService>();
+                    if (demo is not null)
+                        await demo.EnsureAsync(force: true, cancellationToken).ConfigureAwait(false);
+                }
+                catch
+                {
+                    // Preference already saved; background/dashboard can retry generation.
+                }
             }
 
             return saveResult;
@@ -832,6 +865,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         {
             await EnsureAgtFeCompanyParametersAsync(database, cancellationToken);
             await EnsureAgtOperationalPreferencesAsync(database, cancellationToken);
+        }
+
+        if (page.Filter == "system" && page.EntityType == typeof(PreferenceParameter))
+        {
+            await DemoDataPreferenceSeeder.EnsureAsync(database, cancellationToken);
         }
 
         // Artigos: Ativo / Inativo / Todos — Disabled maps to soft-delete (IsDeleted).
@@ -2400,11 +2438,28 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return false;
         }
 
+        if (string.Equals(parameter.Token, DemoDataParameterTokens.Enabled, StringComparison.OrdinalIgnoreCase)
+            && _license.Demo == false)
+        {
+            return false;
+        }
+
+        // Hidden bookkeeping token for demo generation — never list in BO.
+        if (string.Equals(parameter.Token, DemoDataParameterTokens.LastGeneratedDate, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
         var company = parameter.Token.StartsWith("COMPANY", StringComparison.OrdinalIgnoreCase)
             || parameter.Token.StartsWith("REPORT", StringComparison.OrdinalIgnoreCase)
             || parameter.Token.StartsWith("AGT_FE", StringComparison.OrdinalIgnoreCase);
         return page.Filter == "company" ? company : company == false;
     }
+
+    private static bool IsTruthyPreference(string? value) =>
+        string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
+        || value == "1"
+        || string.Equals(value, "sim", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// Ensures the AGT-FE private key preference exists so BackOffice company settings can edit it

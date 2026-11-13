@@ -31,7 +31,8 @@ public sealed class CloudAccountLicenseReader : ICloudAccountLicenseReader
             IsActive: true,
             ModuleStocks: account.ModuleStocks,
             ModuleOnlineInvoicing: account.ModuleOnlineInvoicing,
-            ModuleSms: account.ModuleSms);
+            ModuleSms: account.ModuleSms,
+            Demo: account.Demo);
     }
 
     public void InvalidateCurrentTenant()

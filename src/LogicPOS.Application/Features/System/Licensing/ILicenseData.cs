@@ -19,6 +19,8 @@ public interface ILicenseData
     public bool StocksModule { get; }
     public bool AgtFeModule { get; }
     public bool SmsModule { get; }
+    /// <summary>Local <c>logicpos_Demo</c> and/or cloud Accounts.Demo — unlocks «Usar dados demo».</summary>
+    public bool Demo { get; }
     public int NumberSms { get; }
     public DateOnly? AllUpdateExpirationDate { get; }
     public int AllNumberOfDevices { get; }

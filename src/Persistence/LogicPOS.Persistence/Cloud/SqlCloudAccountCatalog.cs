@@ -58,7 +58,7 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
 
             using var command = connection.CreateCommand();
             command.CommandText = """
-                SELECT TOP 1 a.ConnectionString, a.ModuleStocks, a.ModuleOnlineInvoicing, a.ModuleSMS, a.PosOperationMode, c.name AS CountryName
+                SELECT TOP 1 a.ConnectionString, a.ModuleStocks, a.ModuleOnlineInvoicing, a.ModuleSMS, a.Demo, a.PosOperationMode, c.name AS CountryName
                 FROM Accounts a
                 LEFT JOIN Countries c ON c.id = a.idCountry
                 WHERE a.state > 0
@@ -97,6 +97,7 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
                 ModuleStocks = CloudAccountModuleFlag.FromDatabase(reader["ModuleStocks"]),
                 ModuleOnlineInvoicing = CloudAccountModuleFlag.FromDatabase(reader["ModuleOnlineInvoicing"]),
                 ModuleSms = CloudAccountModuleFlag.FromDatabase(reader["ModuleSMS"]),
+                Demo = CloudAccountModuleFlag.FromDatabase(reader["Demo"]),
                 CountryCode2 = countryCode,
                 PosOperationMode = reader["PosOperationMode"]?.ToString()
             };

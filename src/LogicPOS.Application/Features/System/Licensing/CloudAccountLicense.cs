@@ -8,7 +8,8 @@ public sealed record CloudAccountLicense(
     bool IsActive,
     bool ModuleStocks,
     bool ModuleOnlineInvoicing,
-    bool ModuleSms)
+    bool ModuleSms,
+    bool Demo = false)
 {
-    public static CloudAccountLicense Inactive { get; } = new(false, false, false, false);
+    public static CloudAccountLicense Inactive { get; } = new(false, false, false, false, false);
 }

@@ -33,6 +33,11 @@ public interface ILicenseModule
     /// </summary>
     string Reseller { get; }
 
+    /// <summary>
+    /// Local <c>logicpos_Demo</c> and/or cloud Accounts.Demo — unlocks «Usar dados demo».
+    /// </summary>
+    bool Demo { get; }
+
     /// <summary>Countries for the registration combo (from ERP AllCountries when available).</summary>
     Task<IReadOnlyList<LicenseCountry>> GetCountriesAsync(CancellationToken cancellationToken = default);
 
