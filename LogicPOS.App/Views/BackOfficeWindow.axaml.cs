@@ -954,7 +954,6 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             }),
             ("Dispositivos", "Menu/menu_dispositivos.svg", new[]
             {
-                ("Tipos de impressora", "Menu/menu_dispositivos_tipos_impressoras.svg", false),
                 ("Impressoras", "Menu/menu_dispositivos_impressoras.svg", false),
                 ("Dispositivos de Entrada", "Menu/menu_dispositivos_leitores.svg", false),
                 ("Display de Cliente", "Menu/menu_dispositivos_display.svg", false),
@@ -970,7 +969,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
                 ("Unidades de medida", "Menu/menu_outras_tabelas_unidade_medida.svg", false),
                 ("Unidades de tamanho", "Menu/menu_outras_tabelas_unidade_tamanho.svg", false),
                 ("Feriados", "Menu/menu_outras_tabelas_feriados.svg", false),
-                ("Armazém", "Menu/menu_outras_tabelas_armazens.svg", false)
+                ("Armazém", "Menu/menu_outras_tabelas_armazens.svg", false),
+                ("Tipos de impressora", "Menu/menu_dispositivos_tipos_impressoras.svg", false)
             }),
             ("Configuração", "Menu/menu_configuracoes.svg", new[]
             {

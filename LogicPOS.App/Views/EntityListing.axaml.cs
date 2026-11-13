@@ -64,7 +64,6 @@ public partial class EntityListing : UserControl
 
     private static readonly HashSet<string> DeviceTitles = new(StringComparer.Ordinal)
     {
-        "Tipos de impressora",
         "Impressoras",
         "Dispositivos de Entrada",
         "Display de Cliente",
@@ -74,7 +73,6 @@ public partial class EntityListing : UserControl
 
     private static readonly Dictionary<string, string[]> DeviceMetaKeys = new(StringComparer.Ordinal)
     {
-        ["Tipos de impressora"] = ["Designation"],
         ["Impressoras"] = ["PrinterTypeId", "NetworkName"],
         ["Dispositivos de Entrada"] = ["Type", "PortName"],
         ["Display de Cliente"] = ["PortName", "BaudRate"],
