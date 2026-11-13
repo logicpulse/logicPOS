@@ -100,6 +100,15 @@
                              IsVisible="False"
                              SelectionMode="Single"
                              Tapped="OnCardTapped" />
+                    <ScrollViewer x:Name="DeviceCardScroll" IsVisible="False">
+                        <ItemsControl x:Name="DeviceCardGrid" Classes="bo_device_card_grid">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Classes="bo_device_card_wrap" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
                     <DataGrid x:Name="Grid"
                               Classes="bo_doc_grid"
                               AutoGenerateColumns="False"

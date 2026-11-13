@@ -58,6 +58,29 @@ public partial class EntityListing : UserControl
     private ContentControl? _articlePages;
     private readonly SemaphoreSlim _editorBuild = new(1, 1);
     private int _editorGeneration;
+    private bool _isDeviceListing;
+    private bool _deviceCanEdit;
+    private bool _deviceCanDelete;
+
+    private static readonly HashSet<string> DeviceTitles = new(StringComparer.Ordinal)
+    {
+        "Tipos de impressora",
+        "Impressoras",
+        "Dispositivos de Entrada",
+        "Display de Cliente",
+        "Balanças",
+        "Terminais"
+    };
+
+    private static readonly Dictionary<string, string[]> DeviceMetaKeys = new(StringComparer.Ordinal)
+    {
+        ["Tipos de impressora"] = ["Designation"],
+        ["Impressoras"] = ["PrinterTypeId", "NetworkName"],
+        ["Dispositivos de Entrada"] = ["Type", "PortName"],
+        ["Display de Cliente"] = ["PortName", "BaudRate"],
+        ["Balanças"] = ["PortName", "BaudRate"],
+        ["Terminais"] = ["HardwareId"]
+    };
 
     public EntityListing()
     {
@@ -216,7 +239,20 @@ public partial class EntityListing : UserControl
             EnsureCustomerFilter();
         }
 
+        _isDeviceListing = DeviceTitles.Contains(title);
         CatalogImportButton.IsVisible = title is "Artigos" or "Clientes";
+        // Force layout visibility for device card grid.
+        if (_isDeviceListing)
+        {
+            Grid.IsVisible = false;
+            CardList.IsVisible = false;
+            DeviceCardScroll.IsVisible = true;
+        }
+        else
+        {
+            DeviceCardScroll.IsVisible = false;
+        }
+
         await ReloadAsync();
     }
 
@@ -454,6 +490,8 @@ public partial class EntityListing : UserControl
         {
             var snapshot = await service.QueryAsync(_title, null, _mode, customerId: _title == "Recibos" ? ListingFilters.CustomerId(CustomerBox) : null);
             _canEdit = snapshot.CanEdit;
+            _deviceCanEdit = snapshot.CanEdit;
+            _deviceCanDelete = snapshot.CanDelete;
             _notice = snapshot.Notice;
             TitleText.Text = snapshot.Title;
             _rows.Clear();
@@ -758,6 +796,11 @@ public partial class EntityListing : UserControl
             string.IsNullOrEmpty(term) || row.Values.Values.Any(value => TextSearch.Contains(value, term))).ToList();
         Grid.ItemsSource = rows;
         CardList.ItemsSource = rows;
+        if (_isDeviceListing)
+        {
+            PopulateDeviceCards(rows);
+        }
+
         Notice.Text = string.IsNullOrEmpty(term) && rows.Count == _rows.Count && _notice is not null ? _notice : $"{rows.Count} registo(s)";
         RefreshPickAll();
     }
@@ -3143,8 +3186,19 @@ public partial class EntityListing : UserControl
 
         MobileBar.IsVisible = _portrait;
         DesktopTools.IsVisible = _portrait == false;
-        Grid.IsVisible = _portrait == false;
-        CardList.IsVisible = _portrait;
+        if (_isDeviceListing)
+        {
+            Grid.IsVisible = false;
+            CardList.IsVisible = false;
+            DeviceCardScroll.IsVisible = true;
+        }
+        else
+        {
+            Grid.IsVisible = _portrait == false;
+            CardList.IsVisible = _portrait;
+            DeviceCardScroll.IsVisible = false;
+        }
+
         PortraitChrome.FitOverlay(EditorFrame, this, 1080, 720, lockHeight: false);
         if (PromptFrame is not null)
         {
@@ -3167,6 +3221,159 @@ public partial class EntityListing : UserControl
         var subtitle = CardText(row, 1);
         var meta = CardText(row, 2);
         return PortraitChrome.Card(title, subtitle, meta, row);
+    }
+
+    // ── Device card grid ──
+
+    private void PopulateDeviceCards(IReadOnlyList<ListingRow> rows)
+    {
+        DeviceCardGrid.ItemsSource = null;
+        var cards = new List<Control>(rows.Count);
+        foreach (var row in rows)
+        {
+            cards.Add(BuildDeviceCard(row));
+        }
+
+        DeviceCardGrid.ItemsSource = cards;
+    }
+
+    private Control BuildDeviceCard(ListingRow row)
+    {
+        var designation = row["Designation"];
+        if (string.IsNullOrWhiteSpace(designation))
+        {
+            designation = row["Name"];
+        }
+
+        if (string.IsNullOrWhiteSpace(designation))
+        {
+            designation = "(sem nome)";
+        }
+
+        var code = row["Code"];
+        var isDeleted = string.Equals(row["Disabled"], "Sim", StringComparison.OrdinalIgnoreCase);
+
+        // ── Header: status dot + title + #code ──
+        var statusDot = new Border
+        {
+            Classes = { "bo_device_card_status" },
+            Background = isDeleted
+                ? new SolidColorBrush(Color.Parse("#E53E3E"))
+                : new SolidColorBrush(Color.Parse("#8CC63F"))
+        };
+        var titleBlock = new TextBlock
+        {
+            Classes = { "bo_device_card_title" },
+            Text = designation,
+            TextTrimming = TextTrimming.CharacterEllipsis
+        };
+        var codeBlock = new TextBlock
+        {
+            Classes = { "bo_device_card_code" },
+            Text = string.IsNullOrWhiteSpace(code) ? string.Empty : $"#{code}"
+        };
+        var header = new DockPanel { Classes = { "bo_device_card_header" } };
+        DockPanel.SetDock(statusDot, Dock.Left);
+        DockPanel.SetDock(codeBlock, Dock.Right);
+        header.Children.Add(statusDot);
+        header.Children.Add(codeBlock);
+        header.Children.Add(titleBlock);
+
+        // ── Body: large centered SVG illustration ──
+        var iconUri = BackOfficePageIcons.UriFor(_title);
+        var body = new Border { Classes = { "bo_device_card_body" } };
+        if (string.IsNullOrWhiteSpace(iconUri) == false)
+        {
+            body.Child = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+            {
+                Classes = { "bo_device_card_icon" },
+                Path = iconUri
+            };
+        }
+
+        // ── Meta lines ──
+        var metaPanel = new StackPanel { Classes = { "bo_device_card_meta" } };
+        if (DeviceMetaKeys.TryGetValue(_title, out var metaKeys))
+        {
+            foreach (var key in metaKeys)
+            {
+                var value = row[key];
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    continue;
+                }
+
+                metaPanel.Children.Add(new TextBlock
+                {
+                    Classes = { "bo_device_card_meta_line" },
+                    Text = value,
+                    TextTrimming = TextTrimming.CharacterEllipsis
+                });
+            }
+        }
+
+        // ── Footer action row ──
+        var actions = new StackPanel
+        {
+            Classes = { "bo_device_card_actions" },
+            Orientation = Orientation.Horizontal,
+            HorizontalAlignment = HorizontalAlignment.Right
+        };
+
+        if (_deviceCanEdit)
+        {
+            var editButton = new Button { Classes = { "bo_device_card_action" } };
+            editButton.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+            {
+                Classes = { "bo_device_card_action_icon" },
+                Path = "avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg"
+            };
+            ToolTip.SetTip(editButton, "Editar");
+            var editRow = row;
+            editButton.Click += (_, _) => _ = EditAsync(editRow.Id);
+            actions.Children.Add(editButton);
+        }
+
+        if (_deviceCanDelete && row.CanDelete)
+        {
+            var deleteButton = new Button { Classes = { "bo_device_card_action" } };
+            deleteButton.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+            {
+                Classes = { "bo_device_card_action_icon" },
+                Path = "avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg"
+            };
+            ToolTip.SetTip(deleteButton, "Eliminar");
+            var deleteRow = row;
+            deleteButton.Click += (_, _) => _ = DeleteAsync(deleteRow);
+            actions.Children.Add(deleteButton);
+        }
+
+        // ── Assemble card ──
+        var card = new StackPanel { Classes = { "bo_device_card_content" } };
+        card.Children.Add(header);
+        card.Children.Add(body);
+        if (metaPanel.Children.Count > 0)
+        {
+            card.Children.Add(metaPanel);
+        }
+
+        card.Children.Add(actions);
+
+        var border = new Border
+        {
+            Classes = { "bo_device_card" },
+            Child = card,
+            Tag = row
+        };
+        border.PointerPressed += (_, e) =>
+        {
+            if (e.GetCurrentPoint(border).Properties.IsLeftButtonPressed && _deviceCanEdit)
+            {
+                _ = EditAsync(row.Id);
+            }
+        };
+
+        return border;
     }
 
     private string CardText(ListingRow row, int index)
