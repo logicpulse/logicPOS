@@ -1344,10 +1344,6 @@ public partial class NewDocumentWindow : UserControl
                 RefreshOriginClear();
             }
         }
-        else
-        {
-            RefreshPaymentSectionVisibility();
-        }
 
         RefreshOriginPickerState();
         UpdateTransport(openPopup: _filling == false && PosDocumentRules.IsWayBill(type.Acronym));
@@ -1396,12 +1392,12 @@ public partial class NewDocumentWindow : UserControl
         SelectCode(PaymentBox, "PP");
     }
 
+    /// <summary>Silent default payment line for FS/FR/VD/TRV — no UI (mirrors web Novo Documento).</summary>
     private void ResetPaymentMethodsForDocumentType()
     {
         _paymentEntries.Clear();
         if (PosDocumentRules.RequiresPaymentMethods(SelectedType()?.Acronym) == false)
         {
-            RefreshPaymentRows();
             return;
         }
 
@@ -1410,13 +1406,6 @@ public partial class NewDocumentWindow : UserControl
             PaymentMethodId = DefaultPaymentMethodId(),
             Amount = DocumentGrossTotal()
         });
-        RefreshPaymentRows();
-    }
-
-    private void RefreshPaymentSectionVisibility()
-    {
-        PaymentSection.IsVisible = PosDocumentRules.RequiresPaymentMethods(SelectedType()?.Acronym);
-        RefreshPaymentSummary();
     }
 
     private Guid? DefaultPaymentMethodId()
@@ -1435,159 +1424,10 @@ public partial class NewDocumentWindow : UserControl
         if (PosDocumentRules.RequiresPaymentMethods(SelectedType()?.Acronym) == false
             || _paymentEntries.Count != 1)
         {
-            RefreshPaymentSummary();
             return;
         }
 
         _paymentEntries[0].Amount = DocumentGrossTotal();
-        if (PaymentMethodRows.Children.Count == 1
-            && PaymentMethodRows.Children[0] is Grid row
-            && row.Children.OfType<TextBox>().FirstOrDefault() is { } amountBox)
-        {
-            amountBox.Text = MoneyFormat.Format(_paymentEntries[0].Amount);
-        }
-
-        RefreshPaymentSummary();
-    }
-
-    private void RefreshPaymentRows()
-    {
-        PaymentMethodRows.Children.Clear();
-        RefreshPaymentSectionVisibility();
-        if (PaymentSection.IsVisible == false)
-        {
-            return;
-        }
-
-        for (var index = 0; index < _paymentEntries.Count; index++)
-        {
-            var entry = _paymentEntries[index];
-            var lineId = entry.LineId;
-            var row = new Grid { Classes = { "bo_new_doc_payment_row" } };
-            row.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
-            row.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(180)));
-            row.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
-
-            var methodPanel = new StackPanel();
-            methodPanel.Children.Add(new TextBlock
-            {
-                Classes = { "bo_new_doc_caption" },
-                Text = "Método de pagamento",
-                Margin = new Thickness(0, 0, 0, 4)
-            });
-            var methodBox = new ComboBox
-            {
-                Classes = { "bo_new_doc_combo" },
-                ItemsSource = _paymentMethods.ToList(),
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-            methodBox.SelectedItem = _paymentMethods.FirstOrDefault(item => item.Id == entry.PaymentMethodId)
-                ?? _paymentMethods.FirstOrDefault();
-            if (methodBox.SelectedItem is PosLookupItem selected)
-            {
-                entry.PaymentMethodId = selected.Id;
-            }
-
-            methodBox.SelectionChanged += (_, _) =>
-            {
-                if (methodBox.SelectedItem is PosLookupItem item)
-                {
-                    entry.PaymentMethodId = item.Id;
-                }
-            };
-            methodPanel.Children.Add(methodBox);
-            Grid.SetColumn(methodPanel, 0);
-            row.Children.Add(methodPanel);
-
-            var amountPanel = new StackPanel();
-            amountPanel.Children.Add(new TextBlock
-            {
-                Classes = { "bo_new_doc_caption" },
-                Text = "Total entregue",
-                Margin = new Thickness(0, 0, 0, 4)
-            });
-            var amountBox = new TextBox
-            {
-                Classes = { "bo_line_editor_input", "bo_numeric" },
-                Text = MoneyFormat.Format(entry.Amount)
-            };
-            amountBox.LostFocus += (_, _) =>
-            {
-                entry.Amount = ParseDecimal(amountBox.Text).Round();
-                amountBox.Text = MoneyFormat.Format(entry.Amount);
-                RefreshPaymentSummary();
-            };
-            amountPanel.Children.Add(amountBox);
-            Grid.SetColumn(amountPanel, 1);
-            row.Children.Add(amountPanel);
-
-            var actions = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                Spacing = 4,
-                VerticalAlignment = VerticalAlignment.Bottom,
-                Margin = new Thickness(0, 0, 0, 2)
-            };
-            var addButton = new Button
-            {
-                Classes = { "bo_line_icon" },
-                Content = "+",
-            };
-            ToolTip.SetTip(addButton, "Adicionar linha");
-            addButton.Click += (_, _) => AddPaymentMethodEntry();
-            var removeButton = new Button
-            {
-                Classes = { "bo_line_icon" },
-                Content = "×",
-                IsEnabled = _paymentEntries.Count > 1,
-            };
-            ToolTip.SetTip(removeButton, "Remover linha");
-            removeButton.Click += (_, _) => RemovePaymentMethodEntry(lineId);
-            actions.Children.Add(addButton);
-            actions.Children.Add(removeButton);
-            Grid.SetColumn(actions, 2);
-            row.Children.Add(actions);
-
-            PaymentMethodRows.Children.Add(row);
-        }
-
-        RefreshPaymentSummary();
-    }
-
-    private void AddPaymentMethodEntry()
-    {
-        var allocated = _paymentEntries.Sum(item => item.Amount);
-        var remainder = Math.Max(0, DocumentGrossTotal() - allocated).Round();
-        _paymentEntries.Add(new PaymentMethodEntry
-        {
-            PaymentMethodId = DefaultPaymentMethodId(),
-            Amount = remainder
-        });
-        RefreshPaymentRows();
-    }
-
-    private void RemovePaymentMethodEntry(Guid lineId)
-    {
-        if (_paymentEntries.Count <= 1)
-        {
-            return;
-        }
-
-        _paymentEntries.RemoveAll(item => item.LineId == lineId);
-        RefreshPaymentRows();
-    }
-
-    private void RefreshPaymentSummary()
-    {
-        if (PaymentSection.IsVisible == false)
-        {
-            return;
-        }
-
-        var total = DocumentGrossTotal();
-        var sum = _paymentEntries.Sum(item => item.Amount).Round();
-        PaymentSummaryLabel.Text =
-            $"Total documento: {Money(total)} · Soma pagamentos: {Money(sum)}";
     }
 
     private string? ValidatePaymentMethodsForIssue()
@@ -1599,19 +1439,19 @@ public partial class NewDocumentWindow : UserControl
 
         if (_paymentEntries.Count == 0)
         {
-            return "Adicione pelo menos uma linha de pagamento.";
+            return "Não há método de pagamento predefinido. Configure métodos de pagamento.";
         }
 
         foreach (var entry in _paymentEntries)
         {
             if (entry.PaymentMethodId is null || entry.PaymentMethodId == Guid.Empty)
             {
-                return "Seleccione o método de pagamento em cada linha.";
+                return "Não há método de pagamento predefinido. Configure métodos de pagamento.";
             }
 
             if (entry.Amount <= 0)
             {
-                return "Indique o valor entregue em cada linha de pagamento.";
+                return "O total do documento deve ser superior a zero para emitir com pagamento.";
             }
         }
 
@@ -1640,8 +1480,6 @@ public partial class NewDocumentWindow : UserControl
 
     private sealed class PaymentMethodEntry
     {
-        public Guid LineId { get; } = Guid.NewGuid();
-
         public Guid? PaymentMethodId { get; set; }
 
         public decimal Amount { get; set; }
@@ -3255,7 +3093,6 @@ public partial class NewDocumentWindow : UserControl
             if (paymentError is not null)
             {
                 ShowDocumentError(paymentError);
-                PaymentSection.IsVisible = true;
                 return;
             }
         }
