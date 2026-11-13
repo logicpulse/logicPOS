@@ -58,7 +58,7 @@ internal static class BackOfficePageIcons
         ["Configuração"] = "Menu/menu_configuracoes.svg",
         ["Parâmetros da Empresa"] = "Menu/menu_configuracoes_preferencias_empresa.svg",
         ["Parâmetros de Sistema"] = "Menu/menu_configuracoes_preferencias_sistema.svg",
-        ["Terminais"] = "Menu/menu_configuracoes_terminais.svg",
+        ["Terminais"] = "Menu/menu_configuracoes_terminais_b.svg",
         ["SAFT"] = "Menu/menu_exportacao.svg",
         ["SAF-T ano"] = "Menu/menu_exportacao_saft_anual.svg",
         ["SAF-T último mês"] = "Menu/menu_exportacao_saft_ultimo_mes.svg",
@@ -105,10 +105,22 @@ internal static class BackOfficePageIcons
 
         if (ByTitle.TryGetValue(title.Trim(), out var relative) && !string.IsNullOrWhiteSpace(relative))
         {
-            return AssetRoot + relative;
+            // Page headers are on a light surface — prefer the _b variant when registered without it.
+            return AssetRoot + PreferLightSurfaceIcon(relative);
         }
 
         return null;
+    }
+
+    private static string PreferLightSurfaceIcon(string relative)
+    {
+        if (relative.EndsWith("_b.svg", StringComparison.OrdinalIgnoreCase))
+            return relative;
+
+        if (relative.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+            return string.Concat(relative.AsSpan(0, relative.Length - 4), "_b.svg");
+
+        return relative;
     }
 
     public static void Apply(Avalonia.Svg.Skia.Svg? icon, string? title)
