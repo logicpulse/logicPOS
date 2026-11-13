@@ -5229,10 +5229,42 @@
         <Setter Property="BorderBrush" Value="#D7E8A8" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="12,6" />
-        <Setter Property="MinWidth" Value="110" />
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="MinWidth" Value="168" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="8,0,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_totals">
+        <Setter Property="Spacing" Value="2" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_new_doc_totals_row">
+        <Setter Property="LastChildFill" Value="True" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_totals_caption">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="#555555" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,12,0" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_totals_value">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_new_doc_totals_row_grand">
+        <Setter Property="Margin" Value="0,3,0,0" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_new_doc_totals_row_grand TextBlock.bo_new_doc_totals_caption">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#323537" />
     </Style>
 
     <Style Selector="StackPanel.bo_new_doc_empty">
@@ -5500,7 +5532,7 @@
     <Style Selector="TextBlock.bo_new_doc_total">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Foreground" Value="#5A7A12" />

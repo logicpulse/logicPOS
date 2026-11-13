@@ -2183,7 +2183,11 @@ public partial class NewDocumentWindow : UserControl
 
     private void RefreshTotal()
     {
-        TotalLabel.Text = Money(_lines.Sum(line => line.GrossTotal));
+        var net = _lines.Sum(line => line.NetTotal);
+        var gross = _lines.Sum(line => line.GrossTotal);
+        TotalNetLabel.Text = Money(net);
+        TotalTaxLabel.Text = Money(gross - net);
+        TotalLabel.Text = Money(gross);
     }
 
     private PosVatOption? SelectedVat()
@@ -3546,6 +3550,8 @@ public partial class NewDocumentWindow : UserControl
             : Designation + Environment.NewLine + SerialNumber;
 
         public decimal GrossTotal => Totals(PriceIncludesVat, Price, Quantity, Discount, VatPercentage).Gross;
+
+        public decimal NetTotal => Totals(PriceIncludesVat, Price, Quantity, Discount, VatPercentage).Net;
 
         public string QuantityText => Quantity.ToString("0.##");
 

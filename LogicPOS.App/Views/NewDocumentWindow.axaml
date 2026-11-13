@@ -239,7 +239,29 @@
                                         <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg" />
                                     </Button>
                                     <Border Classes="bo_new_doc_total_box">
-                                        <TextBlock x:Name="TotalLabel" Classes="bo_new_doc_total" Text="0,00 €" />
+                                        <StackPanel Classes="bo_new_doc_totals">
+                                            <DockPanel Classes="bo_new_doc_totals_row">
+                                                <TextBlock Classes="bo_new_doc_totals_caption" Text="Total líquido" />
+                                                <TextBlock x:Name="TotalNetLabel"
+                                                           Classes="bo_new_doc_totals_value"
+                                                           DockPanel.Dock="Right"
+                                                           Text="0,00 €" />
+                                            </DockPanel>
+                                            <DockPanel Classes="bo_new_doc_totals_row">
+                                                <TextBlock Classes="bo_new_doc_totals_caption" Text="Total impostos" />
+                                                <TextBlock x:Name="TotalTaxLabel"
+                                                           Classes="bo_new_doc_totals_value"
+                                                           DockPanel.Dock="Right"
+                                                           Text="0,00 €" />
+                                            </DockPanel>
+                                            <DockPanel Classes="bo_new_doc_totals_row bo_new_doc_totals_row_grand">
+                                                <TextBlock Classes="bo_new_doc_totals_caption" Text="Total" />
+                                                <TextBlock x:Name="TotalLabel"
+                                                           Classes="bo_new_doc_total"
+                                                           DockPanel.Dock="Right"
+                                                           Text="0,00 €" />
+                                            </DockPanel>
+                                        </StackPanel>
                                     </Border>
                                 </StackPanel>
                                 <Border Classes="bo_new_doc_search_field">
