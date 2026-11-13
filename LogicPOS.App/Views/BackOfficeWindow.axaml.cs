@@ -187,7 +187,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             Grid.SetColumn(DrawerScrim, 0);
             Grid.SetColumnSpan(DrawerScrim, 1);
             SetDrawerOpen(_drawerOpen);
-            PortraitTitle.Text = string.IsNullOrWhiteSpace(PageTitle.Text) ? AppText.Get("Painel") : PageTitle.Text;
+            PortraitTitle.Text = string.IsNullOrWhiteSpace(PageTitle.Text) ? AppText.Get("Dashboard") : PageTitle.Text;
             PortraitSession.Text = TerminalLabel.Text;
             PortraitChrome.FitToContent(QuitFrame, this, 480, minWidth: 360);
             PortraitChrome.FitToContent(SaftConfirmFrame, this, 520, minWidth: 360);
@@ -245,7 +245,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         }
 
         var text = title ?? PageTitle.Text;
-        PortraitTitle.Text = string.IsNullOrWhiteSpace(text) ? AppText.Get("Painel") : text;
+        PortraitTitle.Text = string.IsNullOrWhiteSpace(text) ? AppText.Get("Dashboard") : text;
         PortraitSession.Text = TerminalLabel.Text;
         if (_portrait)
         {
@@ -555,7 +555,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         ClearOnboardingReturn();
         SelectMenuItem(DashboardButton);
         PageTitle.Text = string.Empty;
-        SyncPortraitChrome(AppText.Get("Painel"));
+        SyncPortraitChrome(AppText.Get("Dashboard"));
         ReportsOverlay.IsVisible = false;
         OnboardingHost.IsVisible = false;
         DashboardHost.IsVisible = true;
@@ -1542,7 +1542,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     /// </summary>
     private void ApplySidebarTexts()
     {
-        var dashLabel = AppText.Get("Painel");
+        var dashLabel = AppText.Get("Dashboard");
         SetMenuButtonText(DashboardButton, dashLabel);
         ToolTip.SetTip(DashboardButton, dashLabel);
 

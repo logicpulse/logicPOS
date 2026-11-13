@@ -21,7 +21,7 @@
                 <TextBlock x:Name="PortraitTitle"
                            Grid.Column="1"
                            Classes="bo_portrait_title"
-                           Text="Painel"
+                           Text="Dashboard"
                            VerticalAlignment="Center" />
                 <TextBlock x:Name="PortraitSession"
                            Grid.Column="2"
@@ -75,7 +75,7 @@
             <DockPanel>
                 <Border Classes="bo_sidebar_header" DockPanel.Dock="Top">
                     <Grid ColumnDefinitions="*,Auto">
-                        <Button Classes="bo_sidebar_brand" Click="OnDashboardClick" ToolTip.Tip="Painel">
+                        <Button Classes="bo_sidebar_brand" Click="OnDashboardClick" ToolTip.Tip="Dashboard">
                             <Image x:Name="SidebarLogo" Classes="bo_sidebar_logo" Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png" />
                         </Button>
                         <Button x:Name="SidebarToggle" Classes="bo_sidebar_toggle" Grid.Column="1" Click="OnSidebarToggleClick" ToolTip.Tip="Recolher menu">
@@ -137,12 +137,12 @@
                                 <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Primeiros passos" />
                             </StackPanel>
                         </Button>
-                        <Button x:Name="DashboardButton" Classes="bo_nav bo_menu_on" Click="OnDashboardClick" ToolTip.Tip="Painel">
+                        <Button x:Name="DashboardButton" Classes="bo_nav bo_menu_on" Click="OnDashboardClick" ToolTip.Tip="Dashboard">
                             <StackPanel Classes="bo_menu_row">
                                 <Border Classes="bo_menu_glyph bo_menu_glyph_svg">
                                     <svg:Svg Classes="bo_menu_glyph_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_dashboard.svg" />
                                 </Border>
-                                <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Painel" />
+                                <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Dashboard" />
                             </StackPanel>
                         </Button>
                         <StackPanel x:Name="MenuHost" />

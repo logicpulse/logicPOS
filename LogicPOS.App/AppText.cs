@@ -28,7 +28,6 @@ internal static class AppText
             ["Séries AGT"] = "AGT series",
             ["Documentos AGT"] = "AGT documents",
             ["Sistema"] = "System",
-            ["Painel"] = "Dashboard",
             ["Primeiros passos"] = "Getting started",
             ["Dashboard"] = "Dashboard",
             ["FrontOffice"] = "Front office",
@@ -88,7 +87,7 @@ internal static class AppText
         },
         ["fr"] = new(StringComparer.Ordinal)
         {
-            ["Painel"] = "Tableau de bord",
+            ["Dashboard"] = "Tableau de bord",
             ["Primeiros passos"] = "Premiers pas",
             ["Documentos"] = "Documents",
             ["Relatórios"] = "Rapports",
@@ -105,7 +104,7 @@ internal static class AppText
         },
         ["es"] = new(StringComparer.Ordinal)
         {
-            ["Painel"] = "Panel",
+            ["Dashboard"] = "Panel",
             ["Primeiros passos"] = "Primeros pasos",
             ["Documentos"] = "Documentos",
             ["Relatórios"] = "Informes",
