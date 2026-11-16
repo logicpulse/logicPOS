@@ -4,7 +4,7 @@
              xmlns:views="using:LogicPOS.App.Views"
              x:Class="LogicPOS.App.Views.ArticleDashboardView"
              Classes="dash_root">
-    <Border Classes="bo_doc_page">
+    <Border Classes="bo_doc_page dash_surface">
         <Panel>
         <ScrollViewer Classes="dash_scroll">
             <StackPanel Classes="dash_page">
@@ -29,42 +29,120 @@
                     </StackPanel>
                 </Grid>
                 <TextBlock x:Name="StockStatus" Classes="dash_status" IsVisible="False" />
-                <Grid Classes="dash_kpis" ColumnDefinitions="*,*,*,*">
+                <UniformGrid Classes="dash_kpis" Columns="6" Rows="1">
                     <Border Classes="dash_kpi dash_kpi_best">
-                        <StackPanel>
-                            <TextBlock Classes="dash_kpi_label" Text="Abaixo do mínimo" />
-                            <TextBlock x:Name="BelowMinimumValue" Classes="dash_kpi_value" Text="0" />
-                            <TextBlock Classes="dash_kpi_hint" Text="Stock atual inferior ao mínimo" />
+                        <StackPanel Classes="dash_kpi_body">
+                            <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_min">
+                                    <TextBlock Classes="dash_kpi_glyph" Text="!" />
+                                </Border>
+                                <StackPanel Classes="dash_kpi_main">
+                                    <TextBlock Classes="dash_kpi_label" Text="Abaixo do mínimo" />
+                                    <TextBlock x:Name="BelowMinimumValue" Classes="dash_kpi_value" Text="0" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Classes="dash_kpi_trend_vs" Text="Stock atual inferior ao mínimo" />
+                            </StackPanel>
                         </StackPanel>
                     </Border>
-                    <Border Grid.Column="1" Classes="dash_kpi dash_kpi_month">
-                        <StackPanel>
-                            <TextBlock Classes="dash_kpi_label" Text="Únicos em stock" />
-                            <TextBlock x:Name="UniqueStockValue" Classes="dash_kpi_value" Text="0" />
-                            <TextBlock Classes="dash_kpi_hint" Text="Números de série por vender" />
+                    <Border Classes="dash_kpi dash_kpi_month">
+                        <StackPanel Classes="dash_kpi_body">
+                            <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_unique">
+                                    <TextBlock Classes="dash_kpi_glyph" Text="#" />
+                                </Border>
+                                <StackPanel Classes="dash_kpi_main">
+                                    <TextBlock Classes="dash_kpi_label" Text="Únicos em stock" />
+                                    <TextBlock x:Name="UniqueStockValue" Classes="dash_kpi_value" Text="0" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Classes="dash_kpi_trend_vs" Text="Números de série por vender" />
+                            </StackPanel>
                         </StackPanel>
                     </Border>
-                    <Border Grid.Column="2" Classes="dash_kpi dash_kpi_docs">
-                        <StackPanel>
-                            <TextBlock Classes="dash_kpi_label" Text="Vendidos no ano" />
-                            <TextBlock x:Name="UniqueSoldValue" Classes="dash_kpi_value" Text="0" />
-                            <TextBlock x:Name="UniqueSoldHint" Classes="dash_kpi_hint" Text="Séries vendidas no ano" />
+                    <Border Classes="dash_kpi dash_kpi_docs">
+                        <StackPanel Classes="dash_kpi_body">
+                            <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_sold">
+                                    <TextBlock Classes="dash_kpi_glyph" Text="↗" />
+                                </Border>
+                                <StackPanel Classes="dash_kpi_main">
+                                    <TextBlock Classes="dash_kpi_label" Text="Vendidos no ano" />
+                                    <TextBlock x:Name="UniqueSoldValue" Classes="dash_kpi_value" Text="0" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock x:Name="UniqueSoldHint" Classes="dash_kpi_trend_vs" Text="Séries vendidas no ano" />
+                            </StackPanel>
                         </StackPanel>
                     </Border>
-                    <Border Grid.Column="3" Classes="dash_kpi dash_kpi_year">
-                        <StackPanel>
-                            <TextBlock Classes="dash_kpi_label" Text="Valor em stock" />
-                            <TextBlock x:Name="StockValue" Classes="dash_kpi_value" Text="0,00 €" />
-                            <TextBlock Classes="dash_kpi_hint" Text="Preço de compra dos únicos em stock" />
+                    <Border Classes="dash_kpi dash_kpi_year">
+                        <StackPanel Classes="dash_kpi_body">
+                            <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_value">
+                                    <TextBlock Classes="dash_kpi_glyph" Text="€" />
+                                </Border>
+                                <StackPanel Classes="dash_kpi_main">
+                                    <TextBlock Classes="dash_kpi_label" Text="Valor em stock" />
+                                    <TextBlock x:Name="StockValue" Classes="dash_kpi_value" Text="0,00 €" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Classes="dash_kpi_trend_vs" Text="Preço de compra dos únicos em stock" />
+                            </StackPanel>
                         </StackPanel>
                     </Border>
-                </Grid>
+                    <Border Classes="dash_kpi">
+                        <StackPanel Classes="dash_kpi_body">
+                            <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_entries">
+                                    <TextBlock Classes="dash_kpi_glyph" Text="+" />
+                                </Border>
+                                <StackPanel Classes="dash_kpi_main">
+                                    <TextBlock Classes="dash_kpi_label" Text="Entradas no ano" />
+                                    <TextBlock x:Name="EntriesValue" Classes="dash_kpi_value" Text="0" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock x:Name="EntriesHint" Classes="dash_kpi_trend_vs" Text="Quantidade entrada no ano" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="dash_kpi dash_kpi_trail">
+                        <StackPanel Classes="dash_kpi_body">
+                            <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_rotation">
+                                    <TextBlock Classes="dash_kpi_glyph" Text="↻" />
+                                </Border>
+                                <StackPanel Classes="dash_kpi_main">
+                                    <TextBlock Classes="dash_kpi_label" Text="Rotação média" />
+                                    <TextBlock x:Name="RotationValue" Classes="dash_kpi_value" Text="—" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Classes="dash_kpi_trend_vs" Text="Relação vendas / stock" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+
                 <Grid ColumnDefinitions="*,*" Classes="dash_charts">
                     <Border Classes="dash_panel">
                         <StackPanel>
-                            <TextBlock Classes="dash_panel_title" Text="Stock por armazém" />
-                            <TextBlock Classes="dash_panel_hint" Text="Quantidade atual" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Classes="dash_panel_title" Text="Stock por armazém" />
+                                    <TextBlock Classes="dash_panel_hint" Text="Quantidade atual" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Classes="dash_panel_total_label" Text="TOTAL EM STOCK" />
+                                    <TextBlock x:Name="WarehouseTotalValue" Classes="dash_panel_total_value" Text="0" />
+                                </StackPanel>
+                            </Grid>
                             <views:ColumnChart x:Name="WarehouseChart" Classes="dash_chart" />
+                            <TextBlock x:Name="WarehouseEmpty" Classes="dash_empty" Text="Sem dados para o gráfico" IsVisible="False" />
                         </StackPanel>
                     </Border>
                     <Border Grid.Column="1" Classes="dash_panel dash_panel_right">
@@ -73,16 +151,68 @@
                             <TextBlock x:Name="UniqueHint" Classes="dash_panel_hint" Text="Em stock, compostos e vendidos no ano" />
                             <views:DonutChart x:Name="UniqueChart" Classes="dash_chart dash_chart_donut" />
                             <StackPanel x:Name="UniqueLegend" Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend" />
+                            <TextBlock x:Name="UniqueEmpty" Classes="dash_empty" Text="Sem dados para o gráfico" IsVisible="False" />
                         </StackPanel>
                     </Border>
                 </Grid>
-                <Border Classes="dash_panel">
-                    <StackPanel>
-                        <TextBlock Classes="dash_panel_title" Text="Produtos mais vendidos" />
-                        <TextBlock x:Name="TopSoldHint" Classes="dash_panel_hint" Text="Saídas do ano" />
-                        <views:ColumnChart x:Name="TopSoldChart" Classes="dash_chart" />
-                    </StackPanel>
-                </Border>
+
+                <Grid ColumnDefinitions="*,*" Classes="dash_charts">
+                    <Border Classes="dash_panel">
+                        <StackPanel>
+                            <TextBlock Classes="dash_panel_title" Text="Produtos mais vendidos" />
+                            <TextBlock x:Name="TopSoldHint" Classes="dash_panel_hint" Text="Saídas do ano" />
+                            <views:ColumnChart x:Name="TopSoldChart" Classes="dash_chart" />
+                            <TextBlock x:Name="TopSoldEmpty" Classes="dash_empty" Text="Sem dados para o gráfico" IsVisible="False" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Classes="dash_panel dash_panel_right">
+                        <StackPanel>
+                            <TextBlock Classes="dash_panel_title" Text="Movimentos de stock por mês" />
+                            <TextBlock x:Name="MonthlyHint" Classes="dash_panel_hint" Text="Entradas e saídas no ano" />
+                            <views:GroupedColumnChart x:Name="MonthlyChart" Classes="dash_chart" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend">
+                                <Ellipse Classes="dash_legend_swatch" Fill="#93C949" />
+                                <TextBlock Classes="dash_legend_text" Text="Entradas" />
+                                <Ellipse Classes="dash_legend_swatch" Fill="#EA843E" />
+                                <TextBlock Classes="dash_legend_text" Text="Saídas" />
+                            </StackPanel>
+                            <TextBlock x:Name="MonthlyEmpty" Classes="dash_empty" Text="Sem dados para o gráfico" IsVisible="False" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Grid ColumnDefinitions="*,*" Classes="dash_charts">
+                    <Border Classes="dash_panel">
+                        <StackPanel>
+                            <TextBlock Classes="dash_panel_title" Text="Top artigos abaixo do mínimo" />
+                            <TextBlock Classes="dash_panel_hint" Text="Stock atual inferior ao mínimo" />
+                            <Grid Classes="dash_stock_table_head" ColumnDefinitions="2*,*,*,*">
+                                <TextBlock Classes="dash_stock_table_th" Text="Artigo" />
+                                <TextBlock Grid.Column="1" Classes="dash_stock_table_th" Text="Stock atual" />
+                                <TextBlock Grid.Column="2" Classes="dash_stock_table_th" Text="Stock mínimo" />
+                                <TextBlock Grid.Column="3" Classes="dash_stock_table_th" Text="Armazém" />
+                            </Grid>
+                            <StackPanel x:Name="BelowMinimumRows" Classes="dash_stock_table_body" />
+                            <TextBlock x:Name="BelowMinimumEmpty" Classes="dash_empty" Text="Nenhum artigo abaixo do mínimo" IsVisible="False" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Classes="dash_panel dash_panel_right">
+                        <StackPanel>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Classes="dash_panel_title" Text="Valor de stock por família" />
+                                    <TextBlock Classes="dash_panel_hint" Text="Estimativa por preço de compra / P1" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Classes="dash_panel_total_label" Text="VALOR TOTAL" />
+                                    <TextBlock x:Name="FamilyTotalValue" Classes="dash_panel_total_value" Text="0,00 €" />
+                                </StackPanel>
+                            </Grid>
+                            <views:ColumnChart x:Name="FamilyChart" Classes="dash_chart" />
+                            <TextBlock x:Name="FamilyEmpty" Classes="dash_empty" Text="Sem dados para o gráfico" IsVisible="False" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
             </StackPanel>
         </ScrollViewer>
         <views:ListingBusy x:Name="Busy" />

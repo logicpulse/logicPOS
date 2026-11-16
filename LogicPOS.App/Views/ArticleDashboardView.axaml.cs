@@ -111,13 +111,58 @@ public partial class ArticleDashboardView : UserControl
         UniqueSoldValue.Text = snapshot.UniqueSoldInYear.ToString("N0", Culture);
         UniqueSoldHint.Text = $"Séries vendidas em {snapshot.Year}";
         StockValue.Text = MoneyFormat.Format(snapshot.StockValue);
+        EntriesValue.Text = snapshot.StockEntriesInYear.ToString("0.##", Culture);
+        EntriesHint.Text = $"Quantidade entrada em {snapshot.Year}";
+        RotationValue.Text = snapshot.RotationLabel;
         StockHint.Text = snapshot.Limited
             ? "Resumo limitado aos registos mais recentes."
             : "Artigos únicos, armazéns e vendas do ano selecionado.";
         UniqueHint.Text = $"Em stock, compostos e vendidos em {snapshot.Year}";
         TopSoldHint.Text = $"Saídas em {snapshot.Year}";
-        WarehouseChart.SetPoints(ChartPoints(snapshot.Warehouses));
-        TopSoldChart.SetPoints(ChartPoints(snapshot.TopSold));
+        MonthlyHint.Text = $"Entradas e saídas em {snapshot.Year}";
+        WarehouseTotalValue.Text = snapshot.WarehouseTotalQuantity.ToString("0.##", Culture);
+        FamilyTotalValue.Text = MoneyFormat.Format(snapshot.FamilyTotalValue);
+
+        var hasWarehouses = snapshot.Warehouses.Count > 0;
+        WarehouseChart.IsVisible = hasWarehouses;
+        WarehouseEmpty.IsVisible = !hasWarehouses;
+        if (hasWarehouses)
+        {
+            WarehouseChart.SetPoints(ChartPoints(snapshot.Warehouses), columnBrush: ChartBrushes.Verde);
+        }
+
+        var hasTopSold = snapshot.TopSold.Count > 0;
+        TopSoldChart.IsVisible = hasTopSold;
+        TopSoldEmpty.IsVisible = !hasTopSold;
+        if (hasTopSold)
+        {
+            TopSoldChart.SetPoints(ChartPoints(snapshot.TopSold), columnBrush: ChartBrushes.Laranja);
+        }
+
+        var hasFamilies = snapshot.FamilyValues.Count > 0;
+        FamilyChart.IsVisible = hasFamilies;
+        FamilyEmpty.IsVisible = !hasFamilies;
+        if (hasFamilies)
+        {
+            FamilyChart.SetPoints(ChartPoints(snapshot.FamilyValues), columnBrush: ChartBrushes.Azul);
+        }
+
+        var monthlyPoints = snapshot.MonthlyMovements
+            .Select(point => new DashboardGroupedChartPoint
+            {
+                Label = point.Label,
+                Primary = point.InQuantity,
+                Secondary = point.OutQuantity
+            })
+            .ToList();
+        var hasMonthly = monthlyPoints.Any(point => point.Primary > 0 || point.Secondary > 0);
+        MonthlyChart.IsVisible = hasMonthly;
+        MonthlyEmpty.IsVisible = !hasMonthly;
+        if (hasMonthly)
+        {
+            MonthlyChart.SetPoints(monthlyPoints, ChartBrushes.Verde, ChartBrushes.Laranja);
+        }
+
         var plainInStock = Math.Max(0, snapshot.UniqueInStock - snapshot.UniqueComposedInStock);
         var slices = new[]
         {
@@ -125,8 +170,21 @@ public partial class ArticleDashboardView : UserControl
             new DashboardChartPoint { Label = "Compostos", Value = snapshot.UniqueComposedInStock, Caption = snapshot.UniqueComposedInStock.ToString("N0", Culture) },
             new DashboardChartPoint { Label = "Vendidos", Value = snapshot.UniqueSoldInYear, Caption = snapshot.UniqueSoldInYear.ToString("N0", Culture) }
         };
-        UniqueChart.SetPoints(slices);
-        FillLegend(slices);
+        var hasUnique = slices.Any(point => point.Value > 0);
+        UniqueChart.IsVisible = hasUnique;
+        UniqueLegend.IsVisible = hasUnique;
+        UniqueEmpty.IsVisible = !hasUnique;
+        if (hasUnique)
+        {
+            UniqueChart.SetPoints(slices);
+            FillLegend(slices);
+        }
+        else
+        {
+            UniqueLegend.Children.Clear();
+        }
+
+        FillBelowMinimum(snapshot.BelowMinimumRows);
     }
 
     private void FillYears(int selected)
@@ -163,5 +221,42 @@ public partial class ArticleDashboardView : UserControl
                 Text = points[index].Label
             });
         }
+    }
+
+    private void FillBelowMinimum(IReadOnlyList<StockDashboardBelowMinimumRow> rows)
+    {
+        BelowMinimumRows.Children.Clear();
+        var empty = rows.Count == 0;
+        BelowMinimumEmpty.IsVisible = empty;
+        if (empty)
+        {
+            return;
+        }
+
+        foreach (var row in rows)
+        {
+            var grid = new Grid
+            {
+                Classes = { "dash_stock_table_row" },
+                ColumnDefinitions = new ColumnDefinitions("2*,*,*,*")
+            };
+            grid.Children.Add(Cell(row.Article, 0));
+            grid.Children.Add(Cell(row.CurrentStock.ToString("0.##", Culture), 1, warn: true));
+            grid.Children.Add(Cell(row.MinimumStock.ToString("0.##", Culture), 2));
+            grid.Children.Add(Cell(row.Warehouse, 3));
+            BelowMinimumRows.Children.Add(grid);
+        }
+    }
+
+    private static TextBlock Cell(string text, int column, bool warn = false)
+    {
+        var block = new TextBlock
+        {
+            Classes = { warn ? "dash_stock_table_warn" : "dash_stock_table_td" },
+            Text = text,
+            TextTrimming = TextTrimming.CharacterEllipsis
+        };
+        Grid.SetColumn(block, column);
+        return block;
     }
 }

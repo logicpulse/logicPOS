@@ -26,6 +26,7 @@ public sealed class LocalStockService : IStockManagementService
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var query = database.Articles.AsNoTracking()
             .Include(item => item.MeasurementUnit)
+            .Include(item => item.Subfamily)!.ThenInclude(sub => sub!.Family)
             .Where(item => item.IsDeleted == false);
         var pageSize = Math.Max(1, request.PageSize);
         var page = Math.Max(1, request.Page);
@@ -71,6 +72,7 @@ public sealed class LocalStockService : IStockManagementService
                 Id = item.Id,
                 Code = item.Code ?? string.Empty,
                 Designation = item.Designation ?? string.Empty,
+                Family = item.Subfamily?.Family?.Designation ?? string.Empty,
                 MinimumStock = item.MinimumStock,
                 TotalStock = byId.TryGetValue(item.Id, out var quantity) ? quantity : 0m,
                 Unit = item.MeasurementUnit?.Designation ?? string.Empty,
@@ -620,8 +622,17 @@ public sealed class LocalStockService : IStockManagementService
             .ToListAsync(cancellationToken);
         var byArticle = totals.ToDictionary(item => item.ArticleId, item => item.Quantity);
         var minimums = await database.Articles.AsNoTracking()
+            .Include(item => item.Subfamily)!.ThenInclude(sub => sub!.Family)
             .Where(item => item.IsDeleted == false && item.MinimumStock > 0)
-            .Select(item => new { item.Id, item.MinimumStock })
+            .Select(item => new
+            {
+                item.Id,
+                item.Designation,
+                item.MinimumStock,
+                Family = item.Subfamily != null && item.Subfamily.Family != null
+                    ? item.Subfamily.Family.Designation
+                    : string.Empty
+            })
             .ToListAsync(cancellationToken);
         var serials = await database.WarehouseArticles.AsNoTracking()
             .Where(item => item.IsDeleted == false && item.SerialNumber != null && item.SerialNumber != "")
@@ -667,6 +678,7 @@ public sealed class LocalStockService : IStockManagementService
             .Where(item => item.IsDeleted == false && item.Quantity != 0)
             .Select(item => new
             {
+                item.ArticleId,
                 Warehouse = item.WarehouseLocation != null && item.WarehouseLocation.Warehouse != null
                     ? item.WarehouseLocation.Warehouse.Designation
                     : string.Empty,
@@ -681,17 +693,90 @@ public sealed class LocalStockService : IStockManagementService
                 Quantity = -item.Quantity
             })
             .ToListAsync(cancellationToken);
+        var yearMovementRows = await database.StockMovements.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Date >= from && item.Date < to)
+            .Select(item => new
+            {
+                item.Date,
+                item.Quantity,
+                Article = item.Article != null ? item.Article.Designation ?? string.Empty : string.Empty
+            })
+            .ToListAsync(cancellationToken);
+        var yearMovements = yearMovementRows
+            .Select(item => new StockMovementRow
+            {
+                Date = item.Date,
+                Quantity = item.Quantity,
+                Article = item.Article
+            })
+            .ToList();
+
+        var warehouseRows = StockDashboard.Rank(positions.Select(item => (Label: item.Warehouse, Value: item.Quantity)), int.MaxValue);
+        var warehouseByArticle = positions
+            .GroupBy(item => item.ArticleId)
+            .ToDictionary(
+                group => group.Key,
+                group => group.OrderByDescending(item => item.Quantity).Select(item => item.Warehouse).FirstOrDefault(w => !string.IsNullOrWhiteSpace(w)) ?? "—");
+
+        var belowRows = minimums
+            .Where(item => byArticle.GetValueOrDefault(item.Id) < item.MinimumStock)
+            .OrderBy(item => byArticle.GetValueOrDefault(item.Id) - item.MinimumStock)
+            .Take(8)
+            .Select(item => new StockDashboardBelowMinimumRow
+            {
+                Article = item.Designation ?? string.Empty,
+                CurrentStock = byArticle.GetValueOrDefault(item.Id),
+                MinimumStock = item.MinimumStock,
+                Warehouse = warehouseByArticle.GetValueOrDefault(item.Id, "—")
+            })
+            .ToList();
+
+        var articleMeta = await database.Articles.AsNoTracking()
+            .Include(item => item.Subfamily)!.ThenInclude(sub => sub!.Family)
+            .Where(item => item.IsDeleted == false)
+            .Select(item => new
+            {
+                item.Id,
+                Family = item.Subfamily != null && item.Subfamily.Family != null
+                    ? item.Subfamily.Family.Designation ?? string.Empty
+                    : string.Empty,
+                Price = item.Price1 != null ? item.Price1.Value : 0m
+            })
+            .ToListAsync(cancellationToken);
+        var familyById = articleMeta.ToDictionary(item => item.Id, item => item.Family);
+        var priceById = articleMeta.ToDictionary(item => item.Id, item => item.Price);
+        var familyValues = StockDashboard.Rank(
+            positions.Select(item =>
+            {
+                var family = familyById.GetValueOrDefault(item.ArticleId);
+                if (string.IsNullOrWhiteSpace(family))
+                    family = "—";
+                return (Label: family!, Value: item.Quantity * priceById.GetValueOrDefault(item.ArticleId));
+            }),
+            8,
+            includeCountSuffix: false);
+
+        var entries = yearMovements.Where(item => item.Quantity > 0).Sum(item => item.Quantity);
 
         return new StockDashboardSnapshot
         {
             Year = year,
-            BelowMinimum = minimums.Count(item => byArticle.GetValueOrDefault(item.Id) < item.MinimumStock),
+            BelowMinimum = belowRows.Count == 0
+                ? minimums.Count(item => byArticle.GetValueOrDefault(item.Id) < item.MinimumStock)
+                : minimums.Count(item => byArticle.GetValueOrDefault(item.Id) < item.MinimumStock),
             UniqueInStock = inStock.Count,
             UniqueSoldInYear = soldInYear,
             UniqueComposedInStock = inStock.Count(item => item.Composed),
             StockValue = stockValue,
-            Warehouses = StockDashboard.Rank(positions.Select(item => (Label: item.Warehouse, Value: item.Quantity)), int.MaxValue),
-            TopSold = StockDashboard.Rank(sales.Select(item => (Label: item.Article, Value: item.Quantity)), 8)
+            StockEntriesInYear = entries,
+            RotationLabel = StockDashboard.RotationLabel(inStock.Count, soldInYear),
+            WarehouseTotalQuantity = (decimal)warehouseRows.Sum(item => item.Value),
+            FamilyTotalValue = (decimal)familyValues.Sum(item => item.Value),
+            Warehouses = warehouseRows,
+            TopSold = StockDashboard.Rank(sales.Select(item => (Label: item.Article, Value: item.Quantity)), 8),
+            MonthlyMovements = StockDashboard.BuildMonthly(yearMovements),
+            BelowMinimumRows = belowRows,
+            FamilyValues = familyValues
         };
     }
 

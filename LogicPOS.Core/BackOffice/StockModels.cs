@@ -51,6 +51,8 @@ public sealed class StockArticleRow
 
     public string Designation { get; init; } = string.Empty;
 
+    public string Family { get; init; } = string.Empty;
+
     public decimal TotalStock { get; init; }
 
     public decimal MinimumStock { get; init; }
@@ -290,6 +292,26 @@ public sealed class StockDashboardPoint
     public double Value { get; init; }
 }
 
+public sealed class StockDashboardMonthPoint
+{
+    public string Label { get; init; } = string.Empty;
+
+    public double InQuantity { get; init; }
+
+    public double OutQuantity { get; init; }
+}
+
+public sealed class StockDashboardBelowMinimumRow
+{
+    public string Article { get; init; } = string.Empty;
+
+    public decimal CurrentStock { get; init; }
+
+    public decimal MinimumStock { get; init; }
+
+    public string Warehouse { get; init; } = string.Empty;
+}
+
 public sealed class StockDashboardSnapshot
 {
     public int Year { get; init; }
@@ -304,11 +326,25 @@ public sealed class StockDashboardSnapshot
 
     public decimal StockValue { get; init; }
 
+    public decimal StockEntriesInYear { get; init; }
+
+    public string RotationLabel { get; init; } = "—";
+
+    public decimal WarehouseTotalQuantity { get; init; }
+
+    public decimal FamilyTotalValue { get; init; }
+
     public bool Limited { get; init; }
 
     public IReadOnlyList<StockDashboardPoint> Warehouses { get; init; } = [];
 
     public IReadOnlyList<StockDashboardPoint> TopSold { get; init; } = [];
+
+    public IReadOnlyList<StockDashboardMonthPoint> MonthlyMovements { get; init; } = [];
+
+    public IReadOnlyList<StockDashboardBelowMinimumRow> BelowMinimumRows { get; init; } = [];
+
+    public IReadOnlyList<StockDashboardPoint> FamilyValues { get; init; } = [];
 }
 
 public static class StockDashboard
@@ -325,42 +361,152 @@ public static class StockDashboard
         IReadOnlyList<StockMovementRow> movements,
         bool limited)
     {
+        var culture = CultureInfo.GetCultureInfo("pt-PT");
         var inStock = history.Where(item => item.IsSold == false).ToList();
+        var uniqueInStock = inStock.Count;
+        var uniqueSold = history.Count(item => item.SaleDate is DateTime sale && sale.Year == year);
+        var yearMovements = movements.Where(item => item.Date.Year == year).ToList();
+        var entries = yearMovements.Where(item => item.Quantity > 0).Sum(item => item.Quantity);
+
+        var warehouseRows = Rank(
+            history.Where(item => item.IsSold == false)
+                .Select(item => (Label: item.Warehouse, Value: 1m))
+                .Concat(warehouses
+                    .Where(item => string.IsNullOrWhiteSpace(item.SerialNumber) && item.Quantity > 0)
+                    .Select(item => (Label: item.Warehouse, Value: item.Quantity))),
+            8);
+
+        var warehouseByArticle = warehouses
+            .Where(item => item.Quantity != 0 || !string.IsNullOrWhiteSpace(item.SerialNumber))
+            .GroupBy(item => item.ArticleId)
+            .ToDictionary(
+                group => group.Key,
+                group => group
+                    .OrderByDescending(item => item.Quantity)
+                    .Select(item => item.Warehouse)
+                    .FirstOrDefault(w => !string.IsNullOrWhiteSpace(w)) ?? "—");
+
+        var belowRows = articles
+            .Where(item => item.MinimumStock > 0 && item.TotalStock < item.MinimumStock)
+            .OrderBy(item => item.TotalStock - item.MinimumStock)
+            .Take(8)
+            .Select(item => new StockDashboardBelowMinimumRow
+            {
+                Article = item.Designation,
+                CurrentStock = item.TotalStock,
+                MinimumStock = item.MinimumStock,
+                Warehouse = warehouseByArticle.GetValueOrDefault(item.Id, "—")
+            })
+            .ToList();
+
+        var articleFamily = articles.ToDictionary(item => item.Id, item => item.Family ?? string.Empty);
+        var articlePrice = inStock
+            .GroupBy(item => item.ArticleId)
+            .ToDictionary(group => group.Key, group => group.Average(item => item.PurchasePrice));
+
+        var familyValueRows = warehouses
+            .Where(item => item.Quantity > 0)
+            .Select(item =>
+            {
+                var family = articleFamily.GetValueOrDefault(item.ArticleId);
+                if (string.IsNullOrWhiteSpace(family))
+                    family = "—";
+                var unitPrice = articlePrice.GetValueOrDefault(item.ArticleId);
+                return (Label: family, Value: item.Quantity * (unitPrice > 0 ? unitPrice : 0m));
+            })
+            .Concat(inStock.Select(item =>
+            {
+                var family = articleFamily.GetValueOrDefault(item.ArticleId);
+                if (string.IsNullOrWhiteSpace(family))
+                    family = "—";
+                return (Label: family, Value: item.PurchasePrice);
+            }));
+
+        var familyValues = Rank(familyValueRows, 8, includeCountSuffix: false);
+        var monthly = BuildMonthly(yearMovements, culture);
+
         return new StockDashboardSnapshot
         {
             Year = year,
             BelowMinimum = articles.Count(item => item.MinimumStock > 0 && item.TotalStock < item.MinimumStock),
-            UniqueInStock = inStock.Count,
-            UniqueSoldInYear = history.Count(item => item.SaleDate is DateTime sale && sale.Year == year),
+            UniqueInStock = uniqueInStock,
+            UniqueSoldInYear = uniqueSold,
             UniqueComposedInStock = inStock.Count(item => item.IsComposed),
             StockValue = inStock.Sum(item => item.PurchasePrice),
+            StockEntriesInYear = entries,
+            RotationLabel = RotationLabel(uniqueInStock, uniqueSold),
+            WarehouseTotalQuantity = (decimal)warehouseRows.Sum(item => item.Value),
+            FamilyTotalValue = (decimal)familyValues.Sum(item => item.Value),
             Limited = limited,
-            Warehouses = Rank(
-                history.Where(item => item.IsSold == false)
-                    .Select(item => (Label: item.Warehouse, Value: 1m))
-                    .Concat(warehouses
-                        .Where(item => string.IsNullOrWhiteSpace(item.SerialNumber) && item.Quantity > 0)
-                        .Select(item => (Label: item.Warehouse, Value: item.Quantity))),
-                8),
+            Warehouses = warehouseRows,
             TopSold = Rank(
                 history.Where(item => item.SaleDate is DateTime sale && sale.Year == year)
                     .Select(item => (Label: item.Article, Value: 1m))
-                    .Concat(movements
+                    .Concat(yearMovements
                         .Where(item => item.Quantity < 0 && string.IsNullOrWhiteSpace(item.SerialNumber))
                         .Select(item => (Label: item.Article, Value: -item.Quantity))),
-                8)
+                8),
+            MonthlyMovements = monthly,
+            BelowMinimumRows = belowRows,
+            FamilyValues = familyValues
         };
     }
 
-    public static IReadOnlyList<StockDashboardPoint> Rank(IEnumerable<(string Label, decimal Value)> rows, int take)
+    public static string RotationLabel(int uniqueInStock, int uniqueSoldInYear)
+    {
+        if (uniqueInStock <= 0 && uniqueSoldInYear <= 0)
+            return "—";
+
+        var ratio = uniqueSoldInYear / (double)Math.Max(1, uniqueInStock + uniqueSoldInYear);
+        if (ratio < 0.33)
+            return "Baixa";
+        if (ratio < 0.66)
+            return "Média";
+        return "Alta";
+    }
+
+    public static IReadOnlyList<StockDashboardMonthPoint> BuildMonthly(
+        IEnumerable<StockMovementRow> yearMovements,
+        CultureInfo? culture = null)
+    {
+        culture ??= CultureInfo.GetCultureInfo("pt-PT");
+        var byMonth = yearMovements
+            .GroupBy(item => item.Date.Month)
+            .ToDictionary(
+                group => group.Key,
+                group => (
+                    In: (double)group.Where(item => item.Quantity > 0).Sum(item => item.Quantity),
+                    Out: (double)group.Where(item => item.Quantity < 0).Sum(item => -item.Quantity)));
+
+        return Enumerable.Range(1, 12)
+            .Select(month =>
+            {
+                byMonth.TryGetValue(month, out var values);
+                return new StockDashboardMonthPoint
+                {
+                    Label = culture.DateTimeFormat.AbbreviatedMonthNames[month - 1].TrimEnd('.'),
+                    InQuantity = values.In,
+                    OutQuantity = values.Out
+                };
+            })
+            .ToList();
+    }
+
+    public static IReadOnlyList<StockDashboardPoint> Rank(
+        IEnumerable<(string Label, decimal Value)> rows,
+        int take,
+        bool includeCountSuffix = true)
         => rows
             .GroupBy(row => string.IsNullOrWhiteSpace(row.Label) ? "—" : row.Label.Trim(), StringComparer.CurrentCultureIgnoreCase)
             .Select(group =>
             {
                 var total = group.Sum(row => row.Value);
+                var label = Short(group.Key);
+                if (includeCountSuffix)
+                    label += " (" + total.ToString("0", CultureInfo.CurrentCulture) + ")";
                 return new StockDashboardPoint
                 {
-                    Label = Short(group.Key) + " (" + total.ToString("0", CultureInfo.CurrentCulture) + ")",
+                    Label = label,
                     Value = (double)total
                 };
             })

@@ -258,14 +258,15 @@ public partial class DashboardView : UserControl
 
         var kpis = _overview.Kpis;
         TodayValue.Text = Money(Pick(kpis.TodayTotal, kpis.TodayNetTotal));
-        TodayHint.Text = FormatDelta(Pick(kpis.TodayTotal, kpis.TodayNetTotal), Pick(kpis.YesterdayTotal, kpis.YesterdayNetTotal), "vs ontem");
+        ApplyDeltaTrend(TodayDelta, TodayVs, TodayArrow, Pick(kpis.TodayTotal, kpis.TodayNetTotal), Pick(kpis.YesterdayTotal, kpis.YesterdayNetTotal), "vs ontem");
         MonthValue.Text = Money(Pick(kpis.MonthTotal, kpis.MonthNetTotal));
-        MonthHint.Text = FormatDelta(Pick(kpis.MonthTotal, kpis.MonthNetTotal), Pick(kpis.PreviousMonthTotal, kpis.PreviousMonthNetTotal), "vs mês ant.");
+        ApplyDeltaTrend(MonthDelta, MonthVs, MonthArrow, Pick(kpis.MonthTotal, kpis.MonthNetTotal), Pick(kpis.PreviousMonthTotal, kpis.PreviousMonthNetTotal), "vs mês ant.");
         YearValue.Text = Money(Pick(kpis.YearTotal, kpis.YearNetTotal));
-        YearHint.Text = FormatDelta(Pick(kpis.YearTotal, kpis.YearNetTotal), Pick(kpis.PreviousYearTotal, kpis.PreviousYearNetTotal), "vs ano ant.");
+        ApplyDeltaTrend(YearDelta, YearVs, YearArrow, Pick(kpis.YearTotal, kpis.YearNetTotal), Pick(kpis.PreviousYearTotal, kpis.PreviousYearNetTotal), "vs ano ant.");
         DocumentsValue.Text = kpis.DocumentCount.ToString("N0", Culture);
         TicketValue.Text = Money(Pick(kpis.AverageTicket, kpis.AverageTicketNet));
         EvolutionValue.Text = FormatEvolution(Pick(kpis.PeriodTotal, kpis.PeriodNetTotal), Pick(kpis.PreviousPeriodTotal, kpis.PreviousPeriodNetTotal));
+        ApplyEvolutionTrend(EvolutionVs, EvolutionArrow, Pick(kpis.PeriodTotal, kpis.PeriodNetTotal), Pick(kpis.PreviousPeriodTotal, kpis.PreviousPeriodNetTotal));
 
         DailyHint.Text = _dailyDays switch
         {
@@ -281,7 +282,8 @@ public partial class DashboardView : UserControl
         var hasDaily = dailyPoints.Any(point => point.Value != 0);
         DailyEmpty.IsVisible = !hasDaily;
         DailyChart.IsVisible = hasDaily;
-        DailyChart.SetPoints(dailyPoints, showTrend: true);
+        // Match web Syncfusion fills: daily=Verde, annual=Laranja, hourly=Roxo.
+        DailyChart.SetPoints(dailyPoints, showTrend: true, ChartBrushes.Verde);
 
         var monthlyPoints = BuildMonthlyPoints(_overview.Monthly);
         var yearTotal = _overview.Monthly.Sum(month => Pick(month.Total, month.NetTotal));
@@ -289,7 +291,7 @@ public partial class DashboardView : UserControl
         var hasMonthly = monthlyPoints.Any(point => point.Value != 0);
         AnnualEmpty.IsVisible = !hasMonthly;
         AnnualChart.IsVisible = hasMonthly;
-        AnnualChart.SetPoints(monthlyPoints);
+        AnnualChart.SetPoints(monthlyPoints, columnBrush: ChartBrushes.Laranja);
 
         var quarters = BuildQuarterPoints(_overview.Monthly);
         var hasQuarter = quarters.Any(point => point.Value != 0);
@@ -329,7 +331,7 @@ public partial class DashboardView : UserControl
         var hasHourly = hourlyPoints.Any(point => point.Value != 0);
         HourlyEmpty.IsVisible = !hasHourly;
         HourlyChart.IsVisible = hasHourly;
-        HourlyChart.SetPoints(hourlyPoints);
+        HourlyChart.SetPoints(hourlyPoints, columnBrush: ChartBrushes.Roxo);
 
         var families = _overview.Families
             .Select(family => new BarItem(family.Name, (double)Pick(family.Total, family.NetTotal)))
@@ -574,16 +576,48 @@ public partial class DashboardView : UserControl
 
     private static string Money(decimal value) => MoneyFormat.Format(value);
 
-    private static string FormatDelta(decimal current, decimal previous, string vsLabel)
+    private static void ApplyDeltaTrend(TextBlock delta, TextBlock vs, TextBlock arrow, decimal current, decimal previous, string vsLabel)
     {
+        ClearTrendTone(delta);
+        ClearTrendTone(arrow);
         var pct = PercentChange(current, previous);
         if (pct is null)
         {
-            return "—";
+            delta.Text = "—";
+            vs.Text = string.Empty;
+            arrow.Text = string.Empty;
+            return;
         }
 
-        var sign = pct >= 0 ? "+" : string.Empty;
-        return $"{sign}{pct.Value.ToString("0", Culture)}% {vsLabel}";
+        var up = pct >= 0;
+        var sign = up ? "+" : string.Empty;
+        delta.Text = $"{sign}{pct.Value.ToString("0", Culture)}%";
+        vs.Text = $" {vsLabel}";
+        arrow.Text = up ? "▲" : "▼";
+        delta.Classes.Add(up ? "up" : "down");
+        arrow.Classes.Add(up ? "up" : "down");
+    }
+
+    private static void ApplyEvolutionTrend(TextBlock vs, TextBlock arrow, decimal current, decimal previous)
+    {
+        ClearTrendTone(arrow);
+        vs.Text = "Vs período anterior";
+        var pct = PercentChange(current, previous);
+        if (pct is null)
+        {
+            arrow.Text = string.Empty;
+            return;
+        }
+
+        var up = pct >= 0;
+        arrow.Text = up ? "▲" : "▼";
+        arrow.Classes.Add(up ? "up" : "down");
+    }
+
+    private static void ClearTrendTone(TextBlock target)
+    {
+        target.Classes.Remove("up");
+        target.Classes.Remove("down");
     }
 
     private static string FormatEvolution(decimal current, decimal previous)

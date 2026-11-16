@@ -4,7 +4,7 @@
              xmlns:views="using:LogicPOS.App.Views"
              x:Class="LogicPOS.App.Views.DashboardView"
              Classes="dash_root">
-    <Border Classes="bo_doc_page">
+    <Border Classes="bo_doc_page dash_surface">
     <Panel>
     <ScrollViewer Classes="dash_scroll">
         <StackPanel Classes="dash_page">
@@ -73,47 +73,108 @@
 
             <TextBlock x:Name="StatusText" Classes="dash_status" IsVisible="False" />
 
-            <UniformGrid Classes="dash_kpis" Columns="3" Rows="2">
+            <UniformGrid Classes="dash_kpis" Columns="6" Rows="1">
                 <Border Classes="dash_kpi dash_kpi_today" PointerPressed="OnDocumentsStubClick">
-                    <StackPanel>
-                        <TextBlock Classes="dash_kpi_label" Text="Faturação de hoje" />
-                        <TextBlock x:Name="TodayValue" Classes="dash_kpi_value" Text="0,00 €" />
-                        <TextBlock x:Name="TodayHint" Classes="dash_kpi_hint" Text="—" />
+                    <StackPanel Classes="dash_kpi_body">
+                        <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                            <Border Classes="dash_kpi_icon dash_kpi_icon_today">
+                                <TextBlock Classes="dash_kpi_glyph" Text="€" />
+                            </Border>
+                            <StackPanel Classes="dash_kpi_main">
+                                <TextBlock Classes="dash_kpi_label" Text="Faturação de hoje" />
+                                <TextBlock x:Name="TodayValue" Classes="dash_kpi_value" Text="0,00 €" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock x:Name="TodayDelta" Classes="dash_kpi_delta" Text="—" />
+                            <TextBlock x:Name="TodayVs" Classes="dash_kpi_trend_vs" Text="" />
+                            <TextBlock x:Name="TodayArrow" Classes="dash_kpi_arrow" Text="" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Border Classes="dash_kpi dash_kpi_month" PointerPressed="OnDocumentsStubClick">
-                    <StackPanel>
-                        <TextBlock Classes="dash_kpi_label" Text="Faturação do mês" />
-                        <TextBlock x:Name="MonthValue" Classes="dash_kpi_value" Text="0,00 €" />
-                        <TextBlock x:Name="MonthHint" Classes="dash_kpi_hint" Text="—" />
+                    <StackPanel Classes="dash_kpi_body">
+                        <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                            <Border Classes="dash_kpi_icon dash_kpi_icon_month">
+                                <TextBlock Classes="dash_kpi_glyph" Text="M" />
+                            </Border>
+                            <StackPanel Classes="dash_kpi_main">
+                                <TextBlock Classes="dash_kpi_label" Text="Faturação do mês" />
+                                <TextBlock x:Name="MonthValue" Classes="dash_kpi_value" Text="0,00 €" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock x:Name="MonthDelta" Classes="dash_kpi_delta" Text="—" />
+                            <TextBlock x:Name="MonthVs" Classes="dash_kpi_trend_vs" Text="" />
+                            <TextBlock x:Name="MonthArrow" Classes="dash_kpi_arrow" Text="" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Border Classes="dash_kpi dash_kpi_year" PointerPressed="OnDocumentsStubClick">
-                    <StackPanel>
-                        <TextBlock Classes="dash_kpi_label" Text="Faturação do ano" />
-                        <TextBlock x:Name="YearValue" Classes="dash_kpi_value" Text="0,00 €" />
-                        <TextBlock x:Name="YearHint" Classes="dash_kpi_hint" Text="—" />
+                    <StackPanel Classes="dash_kpi_body">
+                        <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                            <Border Classes="dash_kpi_icon dash_kpi_icon_year">
+                                <TextBlock Classes="dash_kpi_glyph" Text="A" />
+                            </Border>
+                            <StackPanel Classes="dash_kpi_main">
+                                <TextBlock Classes="dash_kpi_label" Text="Faturação do ano" />
+                                <TextBlock x:Name="YearValue" Classes="dash_kpi_value" Text="0,00 €" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock x:Name="YearDelta" Classes="dash_kpi_delta" Text="—" />
+                            <TextBlock x:Name="YearVs" Classes="dash_kpi_trend_vs" Text="" />
+                            <TextBlock x:Name="YearArrow" Classes="dash_kpi_arrow" Text="" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Border Classes="dash_kpi dash_kpi_docs" PointerPressed="OnDocumentsStubClick">
-                    <StackPanel>
-                        <TextBlock Classes="dash_kpi_label" Text="Documentos" />
-                        <TextBlock x:Name="DocumentsValue" Classes="dash_kpi_value" Text="0" />
-                        <TextBlock Classes="dash_kpi_hint" Text="No período selecionado" />
+                    <StackPanel Classes="dash_kpi_body">
+                        <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                            <Border Classes="dash_kpi_icon dash_kpi_icon_docs">
+                                <TextBlock Classes="dash_kpi_glyph" Text="☰" />
+                            </Border>
+                            <StackPanel Classes="dash_kpi_main">
+                                <TextBlock Classes="dash_kpi_label" Text="Documentos" />
+                                <TextBlock x:Name="DocumentsValue" Classes="dash_kpi_value" Text="0" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Classes="dash_kpi_trend_vs" Text="No período selecionado" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Border Classes="dash_kpi dash_kpi_ticket">
-                    <StackPanel>
-                        <TextBlock Classes="dash_kpi_label" Text="Ticket médio" />
-                        <TextBlock x:Name="TicketValue" Classes="dash_kpi_value" Text="0,00 €" />
-                        <TextBlock Classes="dash_kpi_hint" Text="Por documento no período" />
+                    <StackPanel Classes="dash_kpi_body">
+                        <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                            <Border Classes="dash_kpi_icon dash_kpi_icon_ticket">
+                                <TextBlock Classes="dash_kpi_glyph" Text="⌀" />
+                            </Border>
+                            <StackPanel Classes="dash_kpi_main">
+                                <TextBlock Classes="dash_kpi_label" Text="Ticket médio" />
+                                <TextBlock x:Name="TicketValue" Classes="dash_kpi_value" Text="0,00 €" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Classes="dash_kpi_trend_vs" Text="Por documento no período" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border Classes="dash_kpi dash_kpi_best">
-                    <StackPanel>
-                        <TextBlock Classes="dash_kpi_label" Text="Evolução" />
-                        <TextBlock x:Name="EvolutionValue" Classes="dash_kpi_value" Text="—" />
-                        <TextBlock Classes="dash_kpi_hint" Text="Vs período anterior" />
+                <Border Classes="dash_kpi dash_kpi_best dash_kpi_trail">
+                    <StackPanel Classes="dash_kpi_body">
+                        <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
+                            <Border Classes="dash_kpi_icon dash_kpi_icon_best">
+                                <TextBlock Classes="dash_kpi_glyph" Text="↗" />
+                            </Border>
+                            <StackPanel Classes="dash_kpi_main">
+                                <TextBlock Classes="dash_kpi_label" Text="Evolução" />
+                                <TextBlock x:Name="EvolutionValue" Classes="dash_kpi_value" Text="—" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Classes="dash_kpi_trend" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock x:Name="EvolutionVs" Classes="dash_kpi_trend_vs" Text="Vs período anterior" />
+                            <TextBlock x:Name="EvolutionArrow" Classes="dash_kpi_arrow" Text="" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
             </UniformGrid>

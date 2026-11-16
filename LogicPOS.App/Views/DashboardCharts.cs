@@ -23,7 +23,8 @@ public abstract class DashboardChartControl : Control
     }
 }
 
-/// <summary>Green column chart used by the billing dashboard (optional dashed trend line).</summary>
+/// <summary>Column chart used by the billing dashboard (optional dashed trend line).
+/// Matches web: one fixed series colour per chart, not per-bar rainbow.</summary>
 public sealed class ColumnChart : DashboardChartControl
 {
     public ColumnChart()
@@ -33,11 +34,13 @@ public sealed class ColumnChart : DashboardChartControl
 
     private IReadOnlyList<DashboardChartPoint> _points = [];
     private bool _showTrend;
+    private IBrush _columnBrush = ChartBrushes.Verde;
 
-    public void SetPoints(IReadOnlyList<DashboardChartPoint> points, bool showTrend = false)
+    public void SetPoints(IReadOnlyList<DashboardChartPoint> points, bool showTrend = false, IBrush? columnBrush = null)
     {
         _points = points;
         _showTrend = showTrend;
+        _columnBrush = columnBrush ?? ChartBrushes.Verde;
         InvalidateVisual();
     }
 
@@ -62,7 +65,7 @@ public sealed class ColumnChart : DashboardChartControl
             var height = plot.Height * (point.Value / max);
             var x = plot.X + (slot * index) + ((slot - barWidth) / 2);
             var y = plot.Bottom - height;
-            context.DrawRectangle(ChartBrushes.SeriesAt(index), null, new Rect(x, y, barWidth, Math.Max(height, 0)), 5, 5);
+            context.DrawRectangle(_columnBrush, null, new Rect(x, y, barWidth, Math.Max(height, 0)), 5, 5);
             var label = _points.Count > 15 && index % 2 == 1 ? string.Empty : point.Label;
             if (label.Length > 0)
             {
@@ -317,6 +320,92 @@ public sealed class DonutChart : DashboardChartControl
     }
 }
 
+/// <summary>Grouped columns (e.g. monthly entradas/saídas) with two fixed series colours.</summary>
+public sealed class GroupedColumnChart : DashboardChartControl
+{
+    public GroupedColumnChart()
+        : base(220)
+    {
+    }
+
+    private IReadOnlyList<DashboardGroupedChartPoint> _points = [];
+    private IBrush _primaryBrush = ChartBrushes.Verde;
+    private IBrush _secondaryBrush = ChartBrushes.Laranja;
+
+    public void SetPoints(
+        IReadOnlyList<DashboardGroupedChartPoint> points,
+        IBrush? primaryBrush = null,
+        IBrush? secondaryBrush = null)
+    {
+        _points = points;
+        _primaryBrush = primaryBrush ?? ChartBrushes.Verde;
+        _secondaryBrush = secondaryBrush ?? ChartBrushes.Laranja;
+        InvalidateVisual();
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        var bounds = new Rect(Bounds.Size);
+        if (bounds.Width < 40 || bounds.Height < 40 || _points.Count == 0)
+        {
+            return;
+        }
+
+        var plot = new Rect(36, 8, Math.Max(10, bounds.Width - 44), Math.Max(10, bounds.Height - 32));
+        var maxValue = _points.Max(point => Math.Max(point.Primary, point.Secondary));
+        var max = Math.Max(1d, maxValue * 1.15);
+        DrawGrid(context, plot, max);
+        var slot = plot.Width / _points.Count;
+        var pairWidth = Math.Max(8, slot * 0.7);
+        var barWidth = Math.Max(4, (pairWidth - 2) / 2);
+        for (var index = 0; index < _points.Count; index++)
+        {
+            var point = _points[index];
+            var groupX = plot.X + (slot * index) + ((slot - pairWidth) / 2);
+            var primaryHeight = plot.Height * (point.Primary / max);
+            var secondaryHeight = plot.Height * (point.Secondary / max);
+            context.DrawRectangle(
+                _primaryBrush,
+                null,
+                new Rect(groupX, plot.Bottom - primaryHeight, barWidth, Math.Max(primaryHeight, 0)),
+                4,
+                4);
+            context.DrawRectangle(
+                _secondaryBrush,
+                null,
+                new Rect(groupX + barWidth + 2, plot.Bottom - secondaryHeight, barWidth, Math.Max(secondaryHeight, 0)),
+                4,
+                4);
+            DrawLabel(
+                context,
+                point.Label,
+                new Point(plot.X + (slot * index) + (slot / 2), plot.Bottom + 4),
+                10,
+                ChartBrushes.Axis,
+                center: true);
+        }
+    }
+
+    private void DrawGrid(DrawingContext context, Rect plot, double max)
+    {
+        var pen = new Pen(ChartBrushes.Grid, 1);
+        for (var step = 0; step <= 4; step++)
+        {
+            var y = plot.Bottom - (plot.Height * step / 4);
+            context.DrawLine(pen, new Point(plot.X, y), new Point(plot.Right, y));
+            var value = max * step / 4;
+            DrawLabel(context, value.ToString("0.00", CultureInfo.GetCultureInfo("pt-PT")), new Point(0, y - 7), 10, ChartBrushes.Axis, center: false);
+        }
+    }
+
+    private void DrawLabel(DrawingContext context, string text, Point origin, double size, IBrush brush, bool center)
+    {
+        var formatted = new FormattedText(text, CultureInfo.GetCultureInfo("pt-PT"), FlowDirection.LeftToRight, Typeface.Default, size, brush);
+        var x = center ? origin.X - (formatted.Width / 2) : origin.X;
+        context.DrawText(formatted, new Point(x, origin.Y));
+    }
+}
+
 public sealed class DashboardChartPoint
 {
     public string Label { get; init; } = string.Empty;
@@ -326,6 +415,15 @@ public sealed class DashboardChartPoint
     public double Value { get; init; }
 
     public double Trend { get; init; }
+}
+
+public sealed class DashboardGroupedChartPoint
+{
+    public string Label { get; init; } = string.Empty;
+
+    public double Primary { get; init; }
+
+    public double Secondary { get; init; }
 }
 
 internal static class ChartBrushes
@@ -347,11 +445,20 @@ internal static class ChartBrushes
 
     public static IBrush SeriesAt(int index) => Series[index % Series.Length];
 
-    public static IBrush Column { get; } = Series[0];
+    // Named series brushes — same mapping as web DashboardPalette.
+    public static IBrush Verde => Series[0];
+    public static IBrush Vermelho => Series[1];
+    public static IBrush Laranja => Series[2];
+    public static IBrush Rosa => Series[3];
+    public static IBrush Amarelo => Series[4];
+    public static IBrush Azul => Series[5];
+    public static IBrush Roxo => Series[6];
+
+    public static IBrush Column { get; } = Verde;
 
     public static IBrush Area { get; } = new SolidColorBrush(Color.Parse("#5993C949"));
 
-    public static IBrush Line { get; } = Series[5]; // Azul trend / line
+    public static IBrush Line { get; } = Azul; // trend / line
 
     public static IBrush Grid { get; } = new SolidColorBrush(Color.Parse("#EDEDED"));
 

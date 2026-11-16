@@ -32,4 +32,13 @@
     </None>
   </ItemGroup>
 
+  <!-- Seed JSON used by DatabaseStartup.ResolveSeedPath (must sit beside the published exe). -->
+  <ItemGroup>
+    <Content Include="..\db_seeds\**\*">
+      <Link>db_seeds\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

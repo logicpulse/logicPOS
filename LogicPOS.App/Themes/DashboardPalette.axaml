@@ -9,4 +9,23 @@
     <Color x:Key="DashAzul">#7C92CA</Color>
     <Color x:Key="DashRoxo">#B063A8</Color>
     <Color x:Key="DashCinzento">#EDEDED</Color>
+
+    <!-- qtrack home KPI chrome (sync with web dashboard-palette.css / qtrack DashboardChartColors) -->
+    <Color x:Key="DashSurface">#F4F6FA</Color>
+    <Color x:Key="DashNavy">#1F2A37</Color>
+    <Color x:Key="DashValue">#111827</Color>
+    <Color x:Key="DashHint">#6B7280</Color>
+    <Color x:Key="DashHintUp">#4A6425</Color>
+    <Color x:Key="DashHintDown">#E74E34</Color>
+    <Color x:Key="DashCardBorder">#EEF1F6</Color>
+    <Color x:Key="KpiIcon1">#7C92CA</Color>
+    <Color x:Key="KpiIcon2">#EAD84F</Color>
+    <Color x:Key="KpiIcon3">#EA843E</Color>
+    <Color x:Key="KpiIcon4">#93C949</Color>
+    <Color x:Key="KpiIcon5">#E57797</Color>
+    <Color x:Key="KpiIcon6">#B063A8</Color>
+    <Color x:Key="KpiIcon7">#B063A8</Color>
+    <Color x:Key="KpiIcon8">#7C92CA</Color>
+    <Color x:Key="KpiIcon9">#E74E34</Color>
+    <Color x:Key="KpiIcon10">#EA843E</Color>
 </ResourceDictionary>
