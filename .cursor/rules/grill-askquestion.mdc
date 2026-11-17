@@ -1,0 +1,13 @@
+---
+description: Grill / grill-with-docs must use AskQuestion clickable UI
+alwaysApply: true
+---
+
+# Grill — clickable multiple choice
+
+When using **grilling**, **grill-me**, or **grill-with-docs**:
+
+1. Ask each frontier round via the Cursor **AskQuestion** tool (mouse-selectable options), not markdown-only Q lists.
+2. One AskQuestion call per round; one question per frontier decision; 2–4 options; recommended option first.
+3. If AskQuestion is unavailable in the session, say so once and fall back to the grilling markdown format.
+4. Confirm shared understanding before implementing.

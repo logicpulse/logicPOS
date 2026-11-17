@@ -79,3 +79,15 @@ _Avoid_: ProgramData, pasta da API
 **Email (vários endereços)**:
 No campo Email de Clientes/Utilizadores (e no envio de documentos) podem ir vários endereços na mesma string, separados por `;` ou `,` (com ou sem espaços). Ex.: `a@b.com; c@d.com`.
 _Avoid_: um campo por email, só um endereço válido
+
+**Cliente**:
+A entidade comercial ligada a um documento: identificação, NIF, morada e contactos.
+_Avoid_: account, buyer, client genérico
+
+**Consumidor final**:
+O cliente de sistema usado quando não há cliente comercial específico; não se edita nem apaga na listagem nem no documento.
+_Avoid_: anónimo, cliente vazio
+
+**Documento novo**:
+O ecrã de emissão de um documento (Avalonia NewDocument / portal Novo Doc.).
+_Avoid_: invoice wizard, formulário de fatura genérico
