@@ -5,9 +5,11 @@ alwaysApply: true
 
 # Grill — clickable multiple choice
 
-When using **grilling**, **grill-me**, or **grill-with-docs**:
+When using **grilling**, **grill-me**, **grill-with-docs**, or `/grill`:
 
-1. Ask each frontier round via the Cursor **AskQuestion** tool (mouse-selectable options), not markdown-only Q lists.
-2. One AskQuestion call per round; one question per frontier decision; 2–4 options; recommended option first.
-3. If AskQuestion is unavailable in the session, say so once and fall back to the grilling markdown format.
+1. **MUST** use the Cursor **AskQuestion** tool (mouse-selectable options). Never ask for typed `"1"` / `"sim a todos"` when AskQuestion exists.
+2. One AskQuestion call per round; one question per frontier decision; 2–4 options; recommended first (`(recomendado)` when helpful).
+3. If AskQuestion is unavailable: one-line notice, try SwitchMode→Plan if it unlocks AskQuestion, then markdown fallback only.
 4. Confirm shared understanding before implementing.
+
+User-level rule + `~/.cursor/rules/grill-askquestion.mdc` also apply in every workspace.
