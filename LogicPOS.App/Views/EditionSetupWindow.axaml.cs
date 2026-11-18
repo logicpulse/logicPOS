@@ -22,6 +22,16 @@ public partial class EditionSetupWindow : Window
 
     public string? SoftwareKey { get; private set; }
 
+    public string? RegistrationName { get; private set; }
+
+    public string? RegistrationCompany { get; private set; }
+
+    public string? RegistrationFiscalNumber { get; private set; }
+
+    public string? RegistrationEmail { get; private set; }
+
+    public CloudClientSurface CloudSurface { get; private set; } = CloudClientSurface.Avalonia;
+
     private bool _busy;
 
     public EditionSetupWindow()
@@ -151,19 +161,36 @@ public partial class EditionSetupWindow : Window
                 ApiAddress = CloudClientIdProbe.ProductionApiBase;
                 ClientId = cloudClientId;
                 SoftwareKey = null;
+                CloudSurface = RbCloudWebapp.IsChecked == true
+                    ? CloudClientSurface.Webapp
+                    : RbCloudBoth.IsChecked == true
+                        ? CloudClientSurface.Both
+                        : CloudClientSurface.Avalonia;
             }
             else if (SelectedEdition == ProductEdition.Business)
             {
                 var key = TxtSoftwareKey.Text?.Trim();
-                if (string.IsNullOrWhiteSpace(key))
+                var name = TxtRegName.Text?.Trim();
+                var company = TxtRegCompany.Text?.Trim();
+                var fiscal = TxtRegFiscal.Text?.Trim();
+                var email = TxtRegEmail.Text?.Trim();
+                if (string.IsNullOrWhiteSpace(key)
+                    || string.IsNullOrWhiteSpace(name)
+                    || string.IsNullOrWhiteSpace(company)
+                    || string.IsNullOrWhiteSpace(fiscal)
+                    || string.IsNullOrWhiteSpace(email))
                 {
-                    LblStatus.Text = "Introduza a chave de software para activar o Business.";
+                    LblStatus.Text = "Preencha a chave, o nome, a empresa, o NIF e o email.";
                     PanelBusinessHosting.IsVisible = true;
                     TxtSoftwareKey.Focus();
                     return;
                 }
 
                 SoftwareKey = key;
+                RegistrationName = name;
+                RegistrationCompany = company;
+                RegistrationFiscalNumber = fiscal;
+                RegistrationEmail = email;
 
                 if (RbRemoteApi.IsChecked == true)
                 {
@@ -178,7 +205,8 @@ public partial class EditionSetupWindow : Window
                         return;
                     }
 
-                    ClientId = TxtClientId.Text?.Trim();
+                    // Modo API: no Client ID.
+                    ClientId = null;
                 }
                 else
                 {
@@ -194,6 +222,10 @@ public partial class EditionSetupWindow : Window
                 ApiAddress = null;
                 ClientId = null;
                 SoftwareKey = null;
+                RegistrationName = null;
+                RegistrationCompany = null;
+                RegistrationFiscalNumber = null;
+                RegistrationEmail = null;
             }
 
             Completed = true;

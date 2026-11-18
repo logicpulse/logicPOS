@@ -1,6 +1,6 @@
 namespace LogicPOS.Core;
 
-/// <summary>LogicPOS 2.0 product edition chosen at first run (or inferred on upgrade).</summary>
+/// <summary>LogicPOS 2.0 product edition chosen at first run. Upgrades leave this unset until then.</summary>
 public enum ProductEdition
 {
     Community,
@@ -105,5 +105,51 @@ public static class ProductHostingNames
         ProductHosting.RemoteApi => RemoteApi,
         ProductHosting.Cloud => Cloud,
         _ => Local,
+    };
+}
+
+/// <summary>Which clients a Cloud account uses on this PC. Local API is never installed.</summary>
+public enum CloudClientSurface
+{
+    Avalonia,
+    Webapp,
+    Both,
+}
+
+public static class CloudClientSurfaceNames
+{
+    public const string Avalonia = "Avalonia";
+    public const string Webapp = "Webapp";
+    public const string Both = "Both";
+
+    public static bool TryParse(string? value, out CloudClientSurface surface)
+    {
+        if (string.Equals(value, Webapp, StringComparison.OrdinalIgnoreCase))
+        {
+            surface = CloudClientSurface.Webapp;
+            return true;
+        }
+
+        if (string.Equals(value, Both, StringComparison.OrdinalIgnoreCase))
+        {
+            surface = CloudClientSurface.Both;
+            return true;
+        }
+
+        if (string.Equals(value, Avalonia, StringComparison.OrdinalIgnoreCase))
+        {
+            surface = CloudClientSurface.Avalonia;
+            return true;
+        }
+
+        surface = CloudClientSurface.Avalonia;
+        return false;
+    }
+
+    public static string ToConfig(CloudClientSurface surface) => surface switch
+    {
+        CloudClientSurface.Webapp => Webapp,
+        CloudClientSurface.Both => Both,
+        _ => Avalonia,
     };
 }

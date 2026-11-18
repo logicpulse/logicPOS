@@ -28,37 +28,15 @@ public static class ProductEditionSettings
     }
 
     /// <summary>
-    /// Infers edition for a 1.6 keep-config upgrade when LogicPOS:Edition is still missing.
+    /// Upgrades of 1.4 / 1.5 / 1.6 leave Edition empty so the choice page appears.
+    /// Never invent Business or Cloud from an old licence file or API folder.
     /// </summary>
     public static (ProductEdition Edition, ProductHosting Hosting) InferLegacy(
         IConfiguration configuration,
         string baseDirectory)
     {
-        var useCloud = bool.TryParse(configuration["DatabaseSettings:UseCloud"], out var cloud) && cloud;
-        var api = configuration["LogicPOS:Api:BaseAddress"] ?? string.Empty;
-        if (useCloud
-            && api.Contains("api.logic-pos.com", StringComparison.OrdinalIgnoreCase))
-        {
-            return (ProductEdition.Cloud, ProductHosting.Cloud);
-        }
-
-        var licencePath = Path.Combine(baseDirectory, "logicpos.licence");
-        var legacyLicence = Path.Combine(baseDirectory, "logicpos.license");
-        if (File.Exists(licencePath) || File.Exists(legacyLicence))
-        {
-            return (ProductEdition.Business, ProductHosting.Local);
-        }
-
-        if (useCloud)
-            return (ProductEdition.Business, ProductHosting.RemoteApi);
-
-        var apiFolder = Path.Combine(baseDirectory, "API");
-        if (Directory.Exists(apiFolder)
-            && File.Exists(Path.Combine(apiFolder, "logicposapi.exe")))
-        {
-            return (ProductEdition.Business, ProductHosting.LocalServer);
-        }
-
+        _ = configuration;
+        _ = baseDirectory;
         return (ProductEdition.Community, ProductHosting.Local);
     }
 
@@ -69,7 +47,8 @@ public static class ProductEditionSettings
         bool useCloud,
         string? apiBaseAddress = null,
         string? clientId = null,
-        string? softwareKey = null)
+        string? softwareKey = null,
+        CloudClientSurface? cloudSurface = null)
     {
         var path = Path.Combine(baseDirectory, "appsettings.json");
         JsonNode root = File.Exists(path)
@@ -85,6 +64,11 @@ public static class ProductEditionSettings
             logicPos["SoftwareKey"] = softwareKey.Trim();
         else if (edition != ProductEdition.Business)
             logicPos.Remove("SoftwareKey");
+
+        if (edition == ProductEdition.Cloud && cloudSurface is not null)
+            logicPos["CloudSurface"] = CloudClientSurfaceNames.ToConfig(cloudSurface.Value);
+        else
+            logicPos.Remove("CloudSurface");
 
         var database = root["DatabaseSettings"] as JsonObject ?? new JsonObject();
         root["DatabaseSettings"] = database;

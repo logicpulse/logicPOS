@@ -19,9 +19,16 @@ public partial class App : global::Avalonia.Application
     public static Action? Bootstrap { get; set; }
 
     /// <summary>
-    /// Host applies first-run edition (writes appsettings, may ADDLOCAL API/portal, re-composes DI).
+    /// Host applies first-run edition (writes appsettings, may download API/webapp, re-composes DI).
     /// </summary>
-    public static Func<ProductEdition, ProductHosting, string?, string?, string?, Task<string?>>? ApplyProductEditionAsync { get; set; }
+    public static Func<ProductEdition, ProductHosting, string?, string?, string?, CloudClientSurface?, LicenseRegistrationFields?, Task<string?>>? ApplyProductEditionAsync { get; set; }
+
+    public sealed record LicenseRegistrationFields(
+        string Name,
+        string Company,
+        string FiscalNumber,
+        string Email,
+        string SoftwareKey);
 
     /// <summary>
     /// Android: MainActivity define esta acção para chamar FinishAffinity + kill.
@@ -141,12 +148,30 @@ public partial class App : global::Avalonia.Application
                 return;
             }
 
+            LicenseRegistrationFields? registration = null;
+            if (wizard.SelectedEdition == ProductEdition.Business
+                && string.IsNullOrWhiteSpace(wizard.SoftwareKey) == false
+                && string.IsNullOrWhiteSpace(wizard.RegistrationName) == false
+                && string.IsNullOrWhiteSpace(wizard.RegistrationCompany) == false
+                && string.IsNullOrWhiteSpace(wizard.RegistrationFiscalNumber) == false
+                && string.IsNullOrWhiteSpace(wizard.RegistrationEmail) == false)
+            {
+                registration = new LicenseRegistrationFields(
+                    wizard.RegistrationName!,
+                    wizard.RegistrationCompany!,
+                    wizard.RegistrationFiscalNumber!,
+                    wizard.RegistrationEmail!,
+                    wizard.SoftwareKey!);
+            }
+
             var error = await ApplyProductEditionAsync!(
                 wizard.SelectedEdition,
                 wizard.SelectedHosting,
                 wizard.ApiAddress,
                 wizard.ClientId,
-                wizard.SoftwareKey).ConfigureAwait(true);
+                wizard.SoftwareKey,
+                wizard.SelectedEdition == ProductEdition.Cloud ? wizard.CloudSurface : null,
+                registration).ConfigureAwait(true);
             if (string.IsNullOrWhiteSpace(error) == false)
             {
                 // Still continue — Business server without licence works as local until activated.

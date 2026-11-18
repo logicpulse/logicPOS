@@ -29,16 +29,24 @@ O instalador Windows da edição LogicPulse, com certificação. A edição púb
 _Avoid_: setup opensource, instalador do GitHub
 
 **Atualização da 1.6**:
-Substituir os programas e as seeds de uma 1.6 já instalada, mantendo o appsettings, o `logicpos.licence`, a base SQLite dessa pasta e os Logs. O assistente não volta a perguntar.
+Substituir os programas e as seeds de uma 1.6 já instalada, mantendo o appsettings, o `logicpos.licence`, a base SQLite dessa pasta e os Logs. A edição não é inventada; a página de escolha aparece se ainda não existir.
 _Avoid_: migração da 1.4
 
 **Modo local**:
 A instalação LogicPulse com base de dados direta e certificação neste posto.
 _Avoid_: edição pública, sem certificação, API local
 
+**Cloud**:
+A ligação à API de produção da LogicPulse (`https://api.logic-pos.com/`) com Client ID. Não instala API local.
+_Avoid_: modo API, API no PC do cliente
+
+**Modo API**:
+O posto Avalonia ligado a uma API local que já existe, sem Client ID. Não descarrega API nem webapp neste PC.
+_Avoid_: Cloud, API de produção
+
 **Modo LogicPulse**:
-A instalação LogicPulse ligada à API de produção. A certificação fica nessa API.
-_Avoid_: cloud, API local, catálogo SQL de contas
+Termo antigo para a ligação à API de produção. Preferir Cloud.
+_Avoid_: usar em texto novo; ver Cloud
 
 **Modo de operação**:
 O ramo de negócio da instalação local, como restauração, café ou padaria. No modo LogicPulse vem da API e o instalador não pergunta.

@@ -206,16 +206,20 @@
             </Border>
             <StackPanel Spacing="8" Margin="16,12,16,14">
               <TextBlock Classes="edition_hint"
-                         Text="Introduza a chave de software recebida da LogicPulse. Sem chave não é possível activar o Business." />
+                         Text="Introduza a chave e os dados da empresa. A API e a webapp só descarregam com o ficheiro de licença válido neste PC." />
               <TextBox x:Name="TxtSoftwareKey" Classes="bo_entity_input" PlaceholderText="Chave de software" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
+              <TextBox x:Name="TxtRegName" Classes="bo_entity_input" PlaceholderText="Nome" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
+              <TextBox x:Name="TxtRegCompany" Classes="bo_entity_input" PlaceholderText="Empresa" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
+              <TextBox x:Name="TxtRegFiscal" Classes="bo_entity_input" PlaceholderText="NIF" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
+              <TextBox x:Name="TxtRegEmail" Classes="bo_entity_input" PlaceholderText="Email" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
               <Button Classes="edition_link" Content="Não tem chave? Mais informações em logic-pos.com" Click="OnPayBusinessClick" />
               <TextBlock Classes="edition_tagline" Margin="0,6,0,0" Text="Alojamento" />
               <RadioButton x:Name="RbLocalServer" GroupName="Hosting" IsChecked="True"
-                           Content="Este computador é o servidor (API e portal quando a licença estiver activa)" />
+                           Content="Este computador é o servidor (API e webapp quando a licença estiver activa)" />
               <RadioButton x:Name="RbRemoteApi" GroupName="Hosting"
-                           Content="Ligar a uma API já existente" />
+                           Content="Ligar a uma API já existente (modo API, sem Client ID)" />
               <TextBox x:Name="TxtApiAddress" Classes="bo_entity_input" PlaceholderText="https://servidor:5001/" IsVisible="False" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
-              <TextBox x:Name="TxtClientId" Classes="bo_entity_input" PlaceholderText="Client ID (opcional)" IsVisible="False" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
+              <TextBox x:Name="TxtClientId" Classes="bo_entity_input" PlaceholderText="Client ID (não usado no modo API)" IsVisible="False" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
             </StackPanel>
           </StackPanel>
         </Border>
@@ -230,7 +234,14 @@
             </Border>
             <StackPanel Spacing="8" Margin="16,12,16,14">
               <TextBlock Classes="edition_hint"
-                         Text="Indique o Client ID de uma conta Cloud já criada. Só continua se a conta existir e estiver activa." />
+                         Text="Indique o Client ID de uma conta Cloud já criada. Não é instalada API local." />
+              <TextBlock Classes="edition_tagline" Text="O que usar neste posto" />
+              <RadioButton x:Name="RbCloudAvalonia" GroupName="CloudSurface" IsChecked="True"
+                           Content="Avalonia (posto Windows)" />
+              <RadioButton x:Name="RbCloudWebapp" GroupName="CloudSurface"
+                           Content="Webapp" />
+              <RadioButton x:Name="RbCloudBoth" GroupName="CloudSurface"
+                           Content="Avalonia e Webapp" />
               <TextBox x:Name="TxtCloudClientId" Classes="bo_entity_input" PlaceholderText="Client ID" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
               <Button Classes="edition_link" Content="Não tem conta? Mais informações em logic-pos.com" Click="OnPayCloudClick" />
             </StackPanel>
