@@ -4145,46 +4145,29 @@
         <Setter Property="Width" Value="40" />
         <Setter Property="Height" Value="40" />
         <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="ClipToBounds" Value="True" />
     </Style>
 
-    <Style Selector="Border.dash_kpi_icon_today">
-        <Setter Property="Background" Value="#7C92CA" />
+    <Style Selector="Image.dash_kpi_image">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Stretch" Value="Uniform" />
     </Style>
-    <Style Selector="Border.dash_kpi_icon_month">
-        <Setter Property="Background" Value="#EAD84F" />
+
+    <Style Selector="Image.dash_panel_title_icon">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
-    <Style Selector="Border.dash_kpi_icon_year">
-        <Setter Property="Background" Value="#EA843E" />
-    </Style>
-    <Style Selector="Border.dash_kpi_icon_docs">
-        <Setter Property="Background" Value="#93C949" />
-    </Style>
-    <Style Selector="Border.dash_kpi_icon_ticket">
-        <Setter Property="Background" Value="#E57797" />
-    </Style>
-    <Style Selector="Border.dash_kpi_icon_best">
-        <Setter Property="Background" Value="#B063A8" />
-    </Style>
-    <Style Selector="Border.dash_kpi_icon_stock_min">
-        <Setter Property="Background" Value="#E74E34" />
-    </Style>
-    <Style Selector="Border.dash_kpi_icon_stock_unique">
-        <Setter Property="Background" Value="#7C92CA" />
-    </Style>
-    <Style Selector="Border.dash_kpi_icon_stock_sold">
-        <Setter Property="Background" Value="#EA843E" />
-    </Style>
-    <Style Selector="Border.dash_kpi_icon_stock_value">
-        <Setter Property="Background" Value="#B063A8" />
-    </Style>
-    <Style Selector="Border.dash_kpi_icon_stock_entries">
-        <Setter Property="Background" Value="#93C949" />
-    </Style>
-    <Style Selector="Border.dash_kpi_icon_stock_rotation">
-        <Setter Property="Background" Value="#E57797" />
+
+    <Style Selector="StackPanel.dash_panel_title_row">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="0" />
     </Style>
 
     <Style Selector="TextBlock.dash_panel_total_label">

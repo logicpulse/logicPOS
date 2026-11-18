@@ -33,8 +33,8 @@
                     <Border Classes="dash_kpi dash_kpi_best">
                         <StackPanel Classes="dash_kpi_body">
                             <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_min">
-                                    <TextBlock Classes="dash_kpi_glyph" Text="!" />
+                                <Border Classes="dash_kpi_icon">
+                                    <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_abaixo_do_minimo_b.png" />
                                 </Border>
                                 <StackPanel Classes="dash_kpi_main">
                                     <TextBlock Classes="dash_kpi_label" Text="Abaixo do mínimo" />
@@ -49,8 +49,8 @@
                     <Border Classes="dash_kpi dash_kpi_month">
                         <StackPanel Classes="dash_kpi_body">
                             <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_unique">
-                                    <TextBlock Classes="dash_kpi_glyph" Text="#" />
+                                <Border Classes="dash_kpi_icon">
+                                    <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_unicos_em_stock_b.png" />
                                 </Border>
                                 <StackPanel Classes="dash_kpi_main">
                                     <TextBlock Classes="dash_kpi_label" Text="Únicos em stock" />
@@ -65,8 +65,8 @@
                     <Border Classes="dash_kpi dash_kpi_docs">
                         <StackPanel Classes="dash_kpi_body">
                             <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_sold">
-                                    <TextBlock Classes="dash_kpi_glyph" Text="↗" />
+                                <Border Classes="dash_kpi_icon">
+                                    <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_vendidos_no_ano_b.png" />
                                 </Border>
                                 <StackPanel Classes="dash_kpi_main">
                                     <TextBlock Classes="dash_kpi_label" Text="Vendidos no ano" />
@@ -81,8 +81,8 @@
                     <Border Classes="dash_kpi dash_kpi_year">
                         <StackPanel Classes="dash_kpi_body">
                             <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_value">
-                                    <TextBlock Classes="dash_kpi_glyph" Text="€" />
+                                <Border Classes="dash_kpi_icon">
+                                    <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_valor_em_stock_b.png" />
                                 </Border>
                                 <StackPanel Classes="dash_kpi_main">
                                     <TextBlock Classes="dash_kpi_label" Text="Valor em stock" />
@@ -97,8 +97,8 @@
                     <Border Classes="dash_kpi">
                         <StackPanel Classes="dash_kpi_body">
                             <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_entries">
-                                    <TextBlock Classes="dash_kpi_glyph" Text="+" />
+                                <Border Classes="dash_kpi_icon">
+                                    <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_entradas_no_ano_b.png" />
                                 </Border>
                                 <StackPanel Classes="dash_kpi_main">
                                     <TextBlock Classes="dash_kpi_label" Text="Entradas no ano" />
@@ -113,8 +113,8 @@
                     <Border Classes="dash_kpi dash_kpi_trail">
                         <StackPanel Classes="dash_kpi_body">
                             <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                                <Border Classes="dash_kpi_icon dash_kpi_icon_stock_rotation">
-                                    <TextBlock Classes="dash_kpi_glyph" Text="↻" />
+                                <Border Classes="dash_kpi_icon">
+                                    <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_rotacao_media_b.png" />
                                 </Border>
                                 <StackPanel Classes="dash_kpi_main">
                                     <TextBlock Classes="dash_kpi_label" Text="Rotação média" />
@@ -133,7 +133,10 @@
                         <StackPanel>
                             <Grid ColumnDefinitions="*,Auto">
                                 <StackPanel>
-                                    <TextBlock Classes="dash_panel_title" Text="Stock por armazém" />
+                                    <StackPanel Classes="dash_panel_title_row">
+                                        <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_stock_por_armazem_b.png" />
+                                        <TextBlock Classes="dash_panel_title" Text="Stock por armazém" />
+                                    </StackPanel>
                                     <TextBlock Classes="dash_panel_hint" Text="Quantidade atual" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" HorizontalAlignment="Right">
@@ -147,7 +150,10 @@
                     </Border>
                     <Border Grid.Column="1" Classes="dash_panel dash_panel_right">
                         <StackPanel>
-                            <TextBlock Classes="dash_panel_title" Text="Artigos únicos" />
+                            <StackPanel Classes="dash_panel_title_row">
+                                <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_artigos_unicos_b.png" />
+                                <TextBlock Classes="dash_panel_title" Text="Artigos únicos" />
+                            </StackPanel>
                             <TextBlock x:Name="UniqueHint" Classes="dash_panel_hint" Text="Em stock, compostos e vendidos no ano" />
                             <views:DonutChart x:Name="UniqueChart" Classes="dash_chart dash_chart_donut" />
                             <StackPanel x:Name="UniqueLegend" Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend" />
@@ -159,7 +165,10 @@
                 <Grid ColumnDefinitions="*,*" Classes="dash_charts">
                     <Border Classes="dash_panel">
                         <StackPanel>
-                            <TextBlock Classes="dash_panel_title" Text="Produtos mais vendidos" />
+                            <StackPanel Classes="dash_panel_title_row">
+                                <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_produtos_mais_vendidos_b.png" />
+                                <TextBlock Classes="dash_panel_title" Text="Produtos mais vendidos" />
+                            </StackPanel>
                             <TextBlock x:Name="TopSoldHint" Classes="dash_panel_hint" Text="Saídas do ano" />
                             <views:ColumnChart x:Name="TopSoldChart" Classes="dash_chart" />
                             <TextBlock x:Name="TopSoldEmpty" Classes="dash_empty" Text="Sem dados para o gráfico" IsVisible="False" />
@@ -167,7 +176,10 @@
                     </Border>
                     <Border Grid.Column="1" Classes="dash_panel dash_panel_right">
                         <StackPanel>
-                            <TextBlock Classes="dash_panel_title" Text="Movimentos de stock por mês" />
+                            <StackPanel Classes="dash_panel_title_row">
+                                <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_movimento_de_stock_por_mes_b.png" />
+                                <TextBlock Classes="dash_panel_title" Text="Movimentos de stock por mês" />
+                            </StackPanel>
                             <TextBlock x:Name="MonthlyHint" Classes="dash_panel_hint" Text="Entradas e saídas no ano" />
                             <views:GroupedColumnChart x:Name="MonthlyChart" Classes="dash_chart" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend">
@@ -184,7 +196,10 @@
                 <Grid ColumnDefinitions="*,*" Classes="dash_charts">
                     <Border Classes="dash_panel">
                         <StackPanel>
-                            <TextBlock Classes="dash_panel_title" Text="Top artigos abaixo do mínimo" />
+                            <StackPanel Classes="dash_panel_title_row">
+                                <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_top_artigos_baixos_do_minimo_b.png" />
+                                <TextBlock Classes="dash_panel_title" Text="Top artigos abaixo do mínimo" />
+                            </StackPanel>
                             <TextBlock Classes="dash_panel_hint" Text="Stock atual inferior ao mínimo" />
                             <Grid Classes="dash_stock_table_head" ColumnDefinitions="2*,*,*,*">
                                 <TextBlock Classes="dash_stock_table_th" Text="Artigo" />
@@ -200,7 +215,10 @@
                         <StackPanel>
                             <Grid ColumnDefinitions="*,Auto">
                                 <StackPanel>
-                                    <TextBlock Classes="dash_panel_title" Text="Valor de stock por família" />
+                                    <StackPanel Classes="dash_panel_title_row">
+                                        <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_valor_de_stock_por_familia_b.png" />
+                                        <TextBlock Classes="dash_panel_title" Text="Valor de stock por família" />
+                                    </StackPanel>
                                     <TextBlock Classes="dash_panel_hint" Text="Estimativa por preço de compra / P1" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" HorizontalAlignment="Right">

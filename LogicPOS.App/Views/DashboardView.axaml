@@ -77,8 +77,8 @@
                 <Border Classes="dash_kpi dash_kpi_today" PointerPressed="OnDocumentsStubClick">
                     <StackPanel Classes="dash_kpi_body">
                         <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                            <Border Classes="dash_kpi_icon dash_kpi_icon_today">
-                                <TextBlock Classes="dash_kpi_glyph" Text="€" />
+                            <Border Classes="dash_kpi_icon">
+                                <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_vendas_de_hoje_b.png" />
                             </Border>
                             <StackPanel Classes="dash_kpi_main">
                                 <TextBlock Classes="dash_kpi_label" Text="Faturação de hoje" />
@@ -95,8 +95,8 @@
                 <Border Classes="dash_kpi dash_kpi_month" PointerPressed="OnDocumentsStubClick">
                     <StackPanel Classes="dash_kpi_body">
                         <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                            <Border Classes="dash_kpi_icon dash_kpi_icon_month">
-                                <TextBlock Classes="dash_kpi_glyph" Text="M" />
+                            <Border Classes="dash_kpi_icon">
+                                <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_vendas_do_mes_b.png" />
                             </Border>
                             <StackPanel Classes="dash_kpi_main">
                                 <TextBlock Classes="dash_kpi_label" Text="Faturação do mês" />
@@ -113,8 +113,8 @@
                 <Border Classes="dash_kpi dash_kpi_year" PointerPressed="OnDocumentsStubClick">
                     <StackPanel Classes="dash_kpi_body">
                         <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                            <Border Classes="dash_kpi_icon dash_kpi_icon_year">
-                                <TextBlock Classes="dash_kpi_glyph" Text="A" />
+                            <Border Classes="dash_kpi_icon">
+                                <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_vendas_do_ano_b.png" />
                             </Border>
                             <StackPanel Classes="dash_kpi_main">
                                 <TextBlock Classes="dash_kpi_label" Text="Faturação do ano" />
@@ -131,8 +131,8 @@
                 <Border Classes="dash_kpi dash_kpi_docs" PointerPressed="OnDocumentsStubClick">
                     <StackPanel Classes="dash_kpi_body">
                         <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                            <Border Classes="dash_kpi_icon dash_kpi_icon_docs">
-                                <TextBlock Classes="dash_kpi_glyph" Text="☰" />
+                            <Border Classes="dash_kpi_icon">
+                                <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_numero_de_documentos_b.png" />
                             </Border>
                             <StackPanel Classes="dash_kpi_main">
                                 <TextBlock Classes="dash_kpi_label" Text="Documentos" />
@@ -147,8 +147,8 @@
                 <Border Classes="dash_kpi dash_kpi_ticket">
                     <StackPanel Classes="dash_kpi_body">
                         <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                            <Border Classes="dash_kpi_icon dash_kpi_icon_ticket">
-                                <TextBlock Classes="dash_kpi_glyph" Text="⌀" />
+                            <Border Classes="dash_kpi_icon">
+                                <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_ticket_medio_b.png" />
                             </Border>
                             <StackPanel Classes="dash_kpi_main">
                                 <TextBlock Classes="dash_kpi_label" Text="Ticket médio" />
@@ -163,8 +163,8 @@
                 <Border Classes="dash_kpi dash_kpi_best dash_kpi_trail">
                     <StackPanel Classes="dash_kpi_body">
                         <StackPanel Classes="dash_kpi_top" Orientation="Horizontal">
-                            <Border Classes="dash_kpi_icon dash_kpi_icon_best">
-                                <TextBlock Classes="dash_kpi_glyph" Text="↗" />
+                            <Border Classes="dash_kpi_icon">
+                                <Image Classes="dash_kpi_image" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_evolucao_de_vendas.png" />
                             </Border>
                             <StackPanel Classes="dash_kpi_main">
                                 <TextBlock Classes="dash_kpi_label" Text="Evolução" />
@@ -184,7 +184,10 @@
                     <StackPanel>
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel>
-                                <TextBlock Classes="dash_panel_title" Text="Faturação diária" />
+                                <StackPanel Classes="dash_panel_title_row">
+                                    <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_faturacao_diaria_b.png" />
+                                    <TextBlock Classes="dash_panel_title" Text="Faturação diária" />
+                                </StackPanel>
                                 <TextBlock x:Name="DailyHint" Classes="dash_panel_hint" Text="Últimos 7 dias" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" Classes="dash_mini_chips">
@@ -208,7 +211,10 @@
                     <Grid RowDefinitions="Auto,*">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel>
-                                <TextBlock Classes="dash_panel_title" Text="Faturação anual" />
+                                <StackPanel Classes="dash_panel_title_row">
+                                    <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_faturacao_mensal_b.png" />
+                                    <TextBlock Classes="dash_panel_title" Text="Faturação anual" />
+                                </StackPanel>
                                 <TextBlock x:Name="AnnualHint" Classes="dash_panel_hint" Text="Evolução mensal" />
                             </StackPanel>
                             <StackPanel Grid.Column="1">
@@ -225,7 +231,10 @@
 
                 <Border Grid.Column="2" Classes="dash_panel dash_panel_right">
                     <StackPanel>
-                        <TextBlock Classes="dash_panel_title" Text="Faturação trimestral" />
+                        <StackPanel Classes="dash_panel_title_row">
+                            <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_faturacao_trimestral_b.png" />
+                            <TextBlock Classes="dash_panel_title" Text="Faturação trimestral" />
+                        </StackPanel>
                         <TextBlock x:Name="QuarterHint" Classes="dash_panel_hint" Text="Distribuição por trimestre" />
                         <TextBlock x:Name="QuarterEmpty" Classes="dash_empty" Text="Sem dados para este gráfico." IsVisible="False" />
                         <ItemsControl x:Name="QuarterBars" Classes="dash_bar_list" />
@@ -236,7 +245,10 @@
             <Grid Classes="dash_charts dash_charts_secondary" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto">
                 <Border Classes="dash_panel">
                     <StackPanel>
-                        <TextBlock Classes="dash_panel_title" Text="Top 10 artigos" />
+                        <StackPanel Classes="dash_panel_title_row">
+                            <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_top_10_artigos_mais_vendidos_b.png" />
+                            <TextBlock Classes="dash_panel_title" Text="Top 10 artigos" />
+                        </StackPanel>
                         <TextBlock Classes="dash_panel_hint" Text="Mais faturados no período" />
                         <TextBlock x:Name="ArticlesEmpty" Classes="dash_empty" Text="Sem artigos no período." IsVisible="False" />
                         <ItemsControl x:Name="TopArticlesList" Classes="dash_articles" />
@@ -248,7 +260,10 @@
                     <StackPanel>
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel>
-                                <TextBlock Classes="dash_panel_title" Text="Métodos de pagamento" />
+                                <StackPanel Classes="dash_panel_title_row">
+                                    <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_vendas_por_metodo_de_pagamento_b.png" />
+                                    <TextBlock Classes="dash_panel_title" Text="Métodos de pagamento" />
+                                </StackPanel>
                                 <TextBlock Classes="dash_panel_hint" Text="Distribuição no período" />
                             </StackPanel>
                             <StackPanel Grid.Column="1">
@@ -264,7 +279,10 @@
 
                 <Border Grid.Column="2" Classes="dash_panel dash_panel_mid">
                     <StackPanel>
-                        <TextBlock Classes="dash_panel_title" Text="Faturação por hora" />
+                        <StackPanel Classes="dash_panel_title_row">
+                            <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_faturacao_por_hora_b.png" />
+                            <TextBlock Classes="dash_panel_title" Text="Faturação por hora" />
+                        </StackPanel>
                         <TextBlock x:Name="HourlyHint" Classes="dash_panel_hint" Text="Ao longo do dia" />
                         <TextBlock x:Name="HourlyEmpty" Classes="dash_empty" Text="Sem dados para este gráfico." IsVisible="False" />
                         <views:ColumnChart x:Name="HourlyChart" Classes="dash_chart" />
@@ -273,7 +291,10 @@
 
                 <Border Grid.Column="3" Classes="dash_panel dash_panel_right">
                     <StackPanel>
-                        <TextBlock Classes="dash_panel_title" Text="Faturação por família" />
+                        <StackPanel Classes="dash_panel_title_row">
+                            <Image Classes="dash_panel_title_icon" Source="avares://LogicPOS.App/Assets/Images/Dashboard/dashboard_faturacao_por_familia_b.png" />
+                            <TextBlock Classes="dash_panel_title" Text="Faturação por família" />
+                        </StackPanel>
                         <TextBlock Classes="dash_panel_hint" Text="Top famílias no período" />
                         <TextBlock x:Name="FamilyEmpty" Classes="dash_empty" Text="Sem dados para este gráfico." IsVisible="False" />
                         <ItemsControl x:Name="FamilyBars" Classes="dash_bar_list" />
