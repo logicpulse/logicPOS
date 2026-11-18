@@ -480,7 +480,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         var bottomReserve = OverlayBottomReserve();
         var sessionW = SessionCash.IsVisible ? 680.0 : 428.0;
         var sessionH = SessionCash.IsVisible ? 360.0 : 165.0;
-        var listW = TablesBar.IsVisible ? 760.0 : 560.0;
+        var listW = TablesBar.IsVisible ? 880.0 : 560.0;
         var listH = TablesBar.IsVisible ? 520.0 : 360.0;
         PortraitChrome.FitOverlay(DocumentsFrame, this, 1100, 700, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(ReceiptFrame, this, 1100, 700, bottomReserve: bottomReserve);
@@ -774,10 +774,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
             // Compacto 6×3 (ícones só) — inclui os botões que o landscape já tinha.
             AddPadButton("Anterior", "icon_pos_ticketpad_prev.png", 0, 0, 1, "pos_pad_button_grey", SelectPreviousLine);
             AddPadButton("Aumentar", "icon_pos_ticketpad_increase.png", 1, 0, 1, "pos_pad_button_grey", IncreaseSelected);
-            AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 2, 0, 1, "pos_pad_button_green", FinishTicket);
-            AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 3, 0, 1, "pos_pad_button_green", RequestPayments);
-            AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 4, 0, 1, "pos_pad_button_green", ShowOrders);
-            AddPadButton("Eliminar", "icon_pos_ticketpad_delete.png", 5, 0, 1, "pos_pad_button_grey", RequestDeleteTicket);
+            AddPadButton("Eliminar", "icon_pos_ticketpad_delete.png", 2, 0, 1, "pos_pad_button_grey", RequestDeleteTicket);
+            AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 3, 0, 1, "pos_pad_button_green", FinishTicket);
+            AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 4, 0, 1, "pos_pad_button_green", RequestPayments);
+            AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 5, 0, 1, "pos_pad_button_green", ShowOrders);
             AddPadButton("Próximo", "icon_pos_ticketpad_next.png", 0, 1, 1, "pos_pad_button_grey", SelectNextLine);
             AddPadButton("Diminuir", "icon_pos_ticketpad_decrease.png", 1, 1, 1, "pos_pad_button_grey", DecreaseSelected);
             AddPadButton("Quantidade", "icon_pos_ticketpad_change_quantity.png", 2, 1, 1, "pos_pad_button_grey", RequestQuantity);
@@ -800,12 +800,13 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Diminuir", "icon_pos_ticketpad_decrease.png", 1, 1, 1, "pos_pad_button_grey", DecreaseSelected);
             AddPadButton("Alt. lista", "icon_pos_ticketpad_list_mode.png", 1, 2, 1, "pos_pad_button_grey", ToggleListMode);
             AddPadButton("Preço", "icon_pos_ticketpad_change_price.png", 1, 3, 1, "pos_pad_button_grey", RequestPrice);
-            AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 2, 0, 1, "pos_pad_button_green", FinishTicket);
-            AddPadButton("Dividir", "icon_pos_ticketpad_split_payments.png", 3, 0, 1, "pos_pad_button_grey", RequestSplit);
-            AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_green", RequestPayments);
-            AddPadButton("Reemb. Volta", "icon_pos_ticketpad_payments.png", 3, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
-            AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 2, 2, 1, "pos_pad_button_green", ShowOrders);
-            AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 3, 2, 1, "pos_pad_button_grey", RequestCard);
+            // Greens on the right column (like FO primary actions in 1.4 preference).
+            AddPadButton("Dividir", "icon_pos_ticketpad_split_payments.png", 2, 0, 1, "pos_pad_button_grey", RequestSplit);
+            AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 3, 0, 1, "pos_pad_button_green", FinishTicket);
+            AddPadButton("Reemb. Volta", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
+            AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 3, 1, 1, "pos_pad_button_green", RequestPayments);
+            AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 2, 2, 1, "pos_pad_button_grey", RequestCard);
+            AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 3, 2, 1, "pos_pad_button_green", ShowOrders);
             AddPadButton("Cód.Barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 3, 1, "pos_pad_button_grey", RequestBarcode);
             AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 3, 1, "pos_pad_button_grey", RequestWeight, half: 0);
             AddPadButton("Desconto", "icon_pos_ticketpad_change_price.png", 3, 3, 1, "pos_pad_button_grey", RequestDiscount, half: 1);
@@ -3572,13 +3573,19 @@ public partial class PosWindow : UserControl, IOfficeSurface
             {
                 child.IsVisible = true;
             }
+
+            foreach (var filter in tablesActions.Children.OfType<Button>().Where(item => item.Tag is string))
+            {
+                filter.Classes.Set("selected", string.Equals(filter.Tag as string, _tableFilter, StringComparison.Ordinal));
+            }
         }
 
         TablesChangeButton.IsVisible = _openOrderId is not null;
         TablesMoveButton.IsVisible = _orderListMode && SelectedOrderLine is not null;
+        UpdateTablesActions();
         ListTitleIcon.IsVisible = true;
         ListTitleIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_tables_retail.png");
-        ListFrame.Width = 760;
+        ListFrame.Width = 880;
         ListFrame.Height = 520;
         ListFrame.MaxHeight = double.PositiveInfinity;
         TablesBar.IsVisible = true;
@@ -4039,8 +4046,20 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         var services = AppComposition.Services;
         var table = _tableSlots.FirstOrDefault(item => item.Id.ToString() == _pickedTableKey);
-        if (services is null || table is null || table.Id == _currentTable?.Id)
+        if (services is null || table is null)
         {
+            return;
+        }
+
+        if (table.State is not (PosTableState.Free or PosTableState.Reserved))
+        {
+            ShowQuestion(
+                TicketPrompt.Notice,
+                TablesDialogTitle,
+                "Só pode reservar uma mesa livre ou libertar uma mesa reservada.",
+                question: false,
+                confirmText: "Ok",
+                showCancel: false);
             return;
         }
 
@@ -4048,7 +4067,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         PosDocumentResult result;
         try
         {
-            // GTK: free table -> reserve; reserved or orphan open table -> release
+            // 1.4 / GTK: free → reserve; reserved → release. Works on any selected table, including current.
             result = table.State == PosTableState.Free
                 ? await orderService.ReserveTableAsync(table.Id)
                 : await orderService.FreeTableAsync(table.Id);
@@ -4072,7 +4091,14 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private void UpdateTablesActions()
     {
         var table = _tableSlots.FirstOrDefault(item => item.Id.ToString() == _pickedTableKey);
-        TablesReserveButton.IsEnabled = table is not null && table.Id != _currentTable?.Id;
+        var canReserveOrFree = table is not null
+            && table.State is PosTableState.Free or PosTableState.Reserved;
+        TablesReserveButton.IsEnabled = canReserveOrFree;
+        if (TablesReserveText is not null)
+        {
+            TablesReserveText.Text = table?.State == PosTableState.Reserved ? "Libertar" : "Reservar";
+        }
+
         TablesOkButton.IsEnabled = table is not null && table.State != PosTableState.Reserved;
     }
 

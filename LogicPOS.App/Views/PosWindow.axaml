@@ -26,8 +26,28 @@
                             </Button>
                         </Grid>
                     </Border>
-                    <Border x:Name="TablesBar" Classes="login_alert_actions" DockPanel.Dock="Bottom" IsVisible="False">
-                        <StackPanel Classes="login_alert_action_buttons">
+                    <Border x:Name="TablesBar" Classes="login_alert_actions" DockPanel.Dock="Bottom" IsVisible="False"
+                            Padding="16,12,28,14">
+                        <!-- Greens (filters) stay on the right, before Ok/Cancel — matches Avalonia FO pad. -->
+                        <StackPanel Classes="login_alert_action_buttons" Margin="0,0,4,0">
+                            <Button Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnTablesOrdersClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_table_view_order.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ver pedidos" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="TablesChangeButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnChangeTableClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Mudar ordem" />
+                            </Button>
+                            <Button x:Name="TablesMoveButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnMoveLineClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Mover linha" />
+                            </Button>
+                            <Button x:Name="TablesReserveButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnTablesReserveClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_table_reservation.png" />
+                                    <TextBlock x:Name="TablesReserveText" Classes="login_alert_action_text" Text="Reservar" />
+                                </StackPanel>
+                            </Button>
                             <Button Classes="pos_doc_menu pos_tables_action" IsVisible="False" Click="OnTablesFilterClick" Tag="all">
                                 <StackPanel>
                                     <Image Classes="pos_tables_filter_icon" Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_table_filter_all.png" />
@@ -50,24 +70,6 @@
                                 <StackPanel>
                                     <Image Classes="pos_tables_filter_icon" Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_table_filter_reserved.png" />
                                     <TextBlock Classes="pos_doc_menu_caption" Text="Reservadas" />
-                                </StackPanel>
-                            </Button>
-                            <Button Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnTablesOrdersClick">
-                                <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_table_view_order.png" />
-                                    <TextBlock Classes="login_alert_action_text" Text="Ver pedidos" />
-                                </StackPanel>
-                            </Button>
-                            <Button x:Name="TablesChangeButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnChangeTableClick">
-                                <TextBlock Classes="login_alert_action_text" Text="Mudar ordem" />
-                            </Button>
-                            <Button x:Name="TablesMoveButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnMoveLineClick">
-                                <TextBlock Classes="login_alert_action_text" Text="Mover linha" />
-                            </Button>
-                            <Button x:Name="TablesReserveButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnTablesReserveClick">
-                                <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_table_reservation.png" />
-                                    <TextBlock Classes="login_alert_action_text" Text="Reservar" />
                                 </StackPanel>
                             </Button>
                             <Button x:Name="TablesOkButton" Classes="login_alert_action pos_tables_action" Click="OnTablesOkClick">
