@@ -252,4 +252,7 @@ public interface IPosOrderService
     Task<PosCashReport?> GetDayCashReportAsync(CancellationToken cancellationToken = default);
 
     Task CloseAsync(Guid orderId, CancellationToken cancellationToken = default);
+
+    /// <summary>Cancels an open kitchen order (not a fiscal document).</summary>
+    Task<PosDocumentResult> DeleteOpenOrderAsync(Guid orderId, CancellationToken cancellationToken = default);
 }

@@ -99,3 +99,23 @@ _Avoid_: anónimo, cliente vazio
 **Documento novo**:
 O ecrã de emissão de um documento (Avalonia NewDocument / portal Novo Doc.).
 _Avoid_: invoice wizard, formulário de fatura genérico
+
+**Ordem aberta / Pedido de mesa**:
+O ticket de cozinha (ou retalho) gravado numa mesa enquanto o serviço corre: linhas finalizadas com Fin.pedido, ainda sem documento fiscal. Em “Ver pedidos” lista-se e pode eliminar-se uma ou todas as ordens abertas da mesa.
+_Avoid_: fatura, FS/FT, conta paga, documento fiscal
+
+**Documento fiscal**:
+O documento emitido no pagamento (FS, FT, etc.), com série e efeitos fiscais. Não é a ordem aberta da mesa.
+_Avoid_: pedido de mesa, ticket de cozinha, Fin.pedido
+
+**Portal**:
+A interface web do logicPOS no posto (pasta Portal). Corre como serviço Windows, não como consola. Em Cloud pode existir sem API local.
+_Avoid_: webapp como nome de produto; consola do Portal
+
+**Serviço Windows (API / Portal)**:
+O processo em segundo plano que mantém a API local e/ou o Portal sempre disponíveis após o download pós-instalação. A desinstalação do produto remove estes serviços e as pastas correspondentes.
+_Avoid_: consola visível, serviço de mesa (hospitalidade), um único serviço “stack”
+
+**API local**:
+A API instalada na pasta API do posto (Business servidor). Distinta da API de produção Cloud.
+_Avoid_: Cloud, modo API (posto ligado a API que já existe noutro sítio)

@@ -118,13 +118,22 @@
                         </Grid>
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                        <Button Classes="login_alert_action action_secondary" Click="OnOrdersDismissClick">
-                            <StackPanel Classes="login_alert_action_content">
-                                <Image Classes="login_alert_action_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
-                            </StackPanel>
-                        </Button>
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button x:Name="OrdersDeleteAllButton" Classes="login_alert_action" Click="OnOrdersDeleteAllClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_ticketpad_delete.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Eliminar todas" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action action_secondary" Click="OnOrdersDismissClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
                     </Border>
                     <ScrollViewer>
                         <StackPanel x:Name="OrdersHost" />

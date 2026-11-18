@@ -408,6 +408,23 @@ public static class PosDocumentRules
         => string.IsNullOrWhiteSpace(acronym) == false
             && new DocumentTypeAnalyzer(acronym).RequiresPaymentCondition();
 
+    /// <summary>
+    /// FrontOffice "Fatura" / paid sale: default to Pronto Pagamento (PP) when the type requires a condition.
+    /// </summary>
+    public static Guid? ResolveImmediatePaymentConditionId(IEnumerable<PosLookupItem> conditions)
+    {
+        var list = conditions as IList<PosLookupItem> ?? conditions.ToList();
+        if (list.Count == 0)
+        {
+            return null;
+        }
+
+        var pronto = list.FirstOrDefault(item =>
+            string.Equals(item.Code, "PP", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(item.Label, "Pronto Pagamento", StringComparison.OrdinalIgnoreCase));
+        return (pronto ?? list[0]).Id;
+    }
+
     public static bool RequireFullPayment(string? acronym)
         => string.IsNullOrWhiteSpace(acronym) == false
             && new DocumentTypeAnalyzer(acronym).RequireFullPayment();
@@ -884,10 +901,27 @@ public sealed class PosDocumentService : IPosDocumentService
         var useAgtRounding = UseAgtRoundingForDocuments();
         var details = lines.Select(line => ToCreateDetail(line, country, useAgtRounding)).ToList();
 
+        Guid? paymentConditionId = null;
+        if (PosDocumentRules.RequiresPaymentCondition(documentType))
+        {
+            var conditions = await database.PaymentConditions
+                .AsNoTracking()
+                .Where(item => item.IsDeleted == false)
+                .OrderBy(item => item.Order)
+                .ThenBy(item => item.Designation)
+                .Select(item => new PosLookupItem(item.Id, item.Designation, item.Acronym))
+                .ToListAsync(cancellationToken);
+            paymentConditionId = PosDocumentRules.ResolveImmediatePaymentConditionId(conditions);
+            if (paymentConditionId is null)
+            {
+                return PosDocumentResult.Fail("A condição de pagamento é obrigatória para este tipo de documento.");
+            }
+        }
+
         var dto = new CreateDocumentDto(
             Type: documentType,
             CustomerId: customerId,
-            PaymentConditionId: null,
+            PaymentConditionId: paymentConditionId,
             CurrencyId: null,
             ParentId: null,
             ShipToAddress: null,

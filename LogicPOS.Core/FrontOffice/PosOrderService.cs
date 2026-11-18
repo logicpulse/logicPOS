@@ -56,15 +56,18 @@ public sealed class PosStoredLine
 
 public sealed class PosOpenOrder
 {
-    public PosOpenOrder(Guid id, string label)
+    public PosOpenOrder(Guid id, string label, Guid? tableId = null)
     {
         Id = id;
         Label = label;
+        TableId = tableId;
     }
 
     public Guid Id { get; }
 
     public string Label { get; }
+
+    public Guid? TableId { get; }
 }
 
 public enum PosTableState
@@ -245,7 +248,7 @@ public sealed class PosOrderService : IPosOrderService
         {
             var total = order.Tickets?.SelectMany(ticket => ticket.Details ?? Array.Empty<OrderDetail>()).Sum(detail => detail.TotalFinal) ?? 0m;
             var table = string.IsNullOrWhiteSpace(order.Table?.Designation) ? "Mesa" : order.Table!.Designation;
-            return new PosOpenOrder(order.Id, $"{table}   {order.CreatedAt:dd/MM HH:mm}   {total:C}");
+            return new PosOpenOrder(order.Id, $"{table}   {order.CreatedAt:dd/MM HH:mm}   {total:C}", order.TableId);
         }).ToList();
     }
 
@@ -673,6 +676,49 @@ public sealed class PosOrderService : IPosOrderService
 
         order.OrderStatus = OrderStatus.Closed;
         await database.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<PosDocumentResult> DeleteOpenOrderAsync(Guid orderId, CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var order = await database.Orders
+            .Include(item => item.Table)
+            .FirstOrDefaultAsync(item => item.Id == orderId && item.IsDeleted == false, cancellationToken);
+        if (order is null)
+        {
+            return PosDocumentResult.Fail("Ordem não encontrada.");
+        }
+
+        if (order.OrderStatus != OrderStatus.Open)
+        {
+            return PosDocumentResult.Fail("Só é possível eliminar ordens abertas.");
+        }
+
+        var tableId = order.TableId;
+        order.IsDeleted = true;
+        order.DeletedAt = DateTime.Now;
+        order.OrderStatus = OrderStatus.Closed;
+
+        if (tableId is Guid tid)
+        {
+            var stillOpen = await database.Orders.AnyAsync(
+                item => item.IsDeleted == false
+                    && item.Id != orderId
+                    && item.TableId == tid
+                    && item.OrderStatus == OrderStatus.Open,
+                cancellationToken);
+            if (stillOpen == false)
+            {
+                var table = await database.Tables.FirstOrDefaultAsync(
+                    item => item.Id == tid && item.IsDeleted == false,
+                    cancellationToken);
+                table?.Close();
+            }
+        }
+
+        await database.SaveChangesAsync(cancellationToken);
+        return PosDocumentResult.Ok(string.Empty);
     }
 
     private static async Task<Guid> CurrentTerminalIdAsync(LogicPOSDbContext database, CancellationToken cancellationToken)

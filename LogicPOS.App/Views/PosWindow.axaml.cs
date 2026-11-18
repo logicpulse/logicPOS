@@ -99,6 +99,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private string _tableFilter = "all";
     private Guid? _tablePlaceId;
     private string? _pickedTableKey;
+    private Guid? _ordersViewTableId;
+    private IReadOnlyList<PosOpenOrder> _ordersViewItems = Array.Empty<PosOpenOrder>();
     private int _tablesPage;
     private int _tablesPlacesPage;
     private const int TablesPerPage = 15;
@@ -133,6 +135,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         None,
         Delete,
         DeleteOrderLine,
+        DeleteOpenOrdersAll,
         Quantity,
         Price,
         Weight,
@@ -3780,6 +3783,12 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private async void OnTablesOrdersClick(object? sender, RoutedEventArgs e)
     {
+        var picked = _tableSlots.FirstOrDefault(item => item.Id.ToString() == _pickedTableKey);
+        await ShowOpenOrdersAsync(picked?.Id, picked?.Name).ConfigureAwait(true);
+    }
+
+    private async Task ShowOpenOrdersAsync(Guid? tableId, string? tableName)
+    {
         var services = AppComposition.Services;
         if (services is null)
         {
@@ -3787,40 +3796,143 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         var orders = await services.GetRequiredService<IPosOrderService>().ListOpenAsync();
-        var picked = _tableSlots.FirstOrDefault(item => item.Id.ToString() == _pickedTableKey);
-        if (picked is not null)
+        if (tableId is Guid tid)
         {
-            orders = orders.Where(order => order.Id == picked.OrderId).ToList();
+            orders = orders.Where(order => order.TableId == tid || order.Id == _tableSlots.FirstOrDefault(t => t.Id == tid)?.OrderId)
+                .ToList();
         }
 
-        OrdersTitle.Text = picked is null
+        _ordersViewTableId = tableId;
+        _ordersViewItems = orders;
+        OrdersTitle.Text = tableId is null || string.IsNullOrWhiteSpace(tableName)
             ? TablesDialogTitle
-            : $"{TablesDialogTitle} :: {TableSingularLabel} {picked.Name}";
-        OrdersHost.Children.Clear();
-        if (orders.Count == 0)
+            : $"{TablesDialogTitle} :: {TableSingularLabel} {tableName}";
+        RenderOpenOrdersList();
+        if (OrdersDeleteAllButton is not null)
         {
-            OrdersHost.Children.Add(new TextBlock { Classes = { "pos_list_empty" }, Text = "Não existem ordens abertas." });
-        }
-
-        foreach (var order in orders)
-        {
-            var key = order.Id.ToString();
-            var button = new Button { Classes = { "pos_list_item" }, Content = order.Label };
-            button.Click += async (_, _) =>
-            {
-                OrdersOverlay.IsVisible = false;
-                await OpenOrderAsync(key);
-            };
-            OrdersHost.Children.Add(button);
+            OrdersDeleteAllButton.IsEnabled = orders.Count > 0;
+            OrdersDeleteAllButton.IsVisible = tableId is not null;
         }
 
         OrdersOverlay.IsVisible = true;
         FitHostedOverlays();
     }
 
+    private void RenderOpenOrdersList()
+    {
+        OrdersHost.Children.Clear();
+        if (_ordersViewItems.Count == 0)
+        {
+            OrdersHost.Children.Add(new TextBlock { Classes = { "pos_list_empty" }, Text = "Não existem ordens abertas." });
+            return;
+        }
+
+        foreach (var order in _ordersViewItems)
+        {
+            var row = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto"), Margin = new Thickness(0, 0, 0, 6) };
+            var open = new Button { Classes = { "pos_list_item" }, Content = order.Label, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
+            var orderId = order.Id;
+            open.Click += async (_, _) =>
+            {
+                OrdersOverlay.IsVisible = false;
+                await OpenOrderAsync(orderId.ToString());
+            };
+            var delete = new Button
+            {
+                Classes = { "login_alert_action" },
+                Width = 72,
+                Height = 44,
+                Margin = new Thickness(8, 0, 0, 0),
+                Content = new TextBlock { Classes = { "login_alert_action_text" }, Text = "Eliminar", TextWrapping = TextWrapping.NoWrap }
+            };
+            delete.Click += async (_, _) => await DeleteOpenOrderAsync(orderId).ConfigureAwait(true);
+            Grid.SetColumn(delete, 1);
+            row.Children.Add(open);
+            row.Children.Add(delete);
+            OrdersHost.Children.Add(row);
+        }
+    }
+
+    private void OnOrdersDeleteAllClick(object? sender, RoutedEventArgs e)
+    {
+        if (_ordersViewTableId is null || _ordersViewItems.Count == 0)
+        {
+            return;
+        }
+
+        ShowQuestion(
+            TicketPrompt.DeleteOpenOrdersAll,
+            "Eliminar todas",
+            $"Eliminar todas as {_ordersViewItems.Count} ordens abertas desta {TableSingularLabel.ToLowerInvariant()}?",
+            question: true,
+            confirmText: "Eliminar",
+            showCancel: true);
+    }
+
+    private async Task ConfirmDeleteAllOpenOrdersAsync()
+    {
+        foreach (var order in _ordersViewItems.ToList())
+        {
+            await DeleteOpenOrderAsync(order.Id, reloadUi: false).ConfigureAwait(true);
+        }
+
+        var table = _tableSlots.FirstOrDefault(item => item.Id == _ordersViewTableId);
+        await ShowOpenOrdersAsync(_ordersViewTableId, table?.Name).ConfigureAwait(true);
+        await ReloadTablesAfterOrderChangeAsync().ConfigureAwait(true);
+    }
+
+    private async Task DeleteOpenOrderAsync(Guid orderId, bool reloadUi = true)
+    {
+        var services = AppComposition.Services;
+        if (services is null)
+        {
+            return;
+        }
+
+        var result = await services.GetRequiredService<IPosOrderService>().DeleteOpenOrderAsync(orderId);
+        if (result.Succeeded == false)
+        {
+            ShowQuestion(TicketPrompt.Notice, TablesDialogTitle, result.Error ?? "Não foi possível eliminar a ordem.", question: false, confirmText: "Ok", showCancel: false);
+            return;
+        }
+
+        if (reloadUi == false)
+        {
+            return;
+        }
+
+        var table = _tableSlots.FirstOrDefault(item => item.Id == _ordersViewTableId);
+        await ShowOpenOrdersAsync(_ordersViewTableId, table?.Name).ConfigureAwait(true);
+        await ReloadTablesAfterOrderChangeAsync().ConfigureAwait(true);
+    }
+
+    private async Task ReloadTablesAfterOrderChangeAsync()
+    {
+        var services = AppComposition.Services;
+        if (services is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _tableSlots = (await services.GetRequiredService<IPosOrderService>().ListTablesAsync()).ToList();
+            if (TablesBar.IsVisible)
+            {
+                RenderTables();
+            }
+        }
+        catch
+        {
+            // Best-effort refresh after delete.
+        }
+    }
+
     private void OnOrdersDismissClick(object? sender, RoutedEventArgs e)
     {
         OrdersOverlay.IsVisible = false;
+        _ordersViewItems = Array.Empty<PosOpenOrder>();
+        _ordersViewTableId = null;
     }
 
     private const string VoltaTitleBase = "Talão Reembolso Volta";
@@ -5476,6 +5588,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 _orderListMode = true;
                 RefreshTicket();
                 break;
+            case TicketPrompt.DeleteOpenOrdersAll:
+                CloseTicketDialog();
+                await ConfirmDeleteAllOpenOrdersAsync();
+                return;
             case TicketPrompt.DeleteOrderLine:
                 if (SelectedOrderLine is { } removedLine)
                 {
