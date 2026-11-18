@@ -4,9 +4,9 @@
         x:Class="LogicPOS.App.Views.EditionSetupWindow"
         Title="LogicPOS 2.0"
         Width="1120"
-        Height="720"
         MinWidth="960"
-        MinHeight="640"
+        MaxHeight="920"
+        SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
         CanResize="False"
         Background="#3D3D3D"
@@ -56,7 +56,7 @@
     </Style>
   </Window.Styles>
 
-  <DockPanel Classes="login_alert_inner">
+  <DockPanel Classes="login_alert_inner" LastChildFill="False">
     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top" CornerRadius="0">
       <StackPanel Classes="login_alert_title_row">
         <svg:Svg Classes="login_alert_title_icon"
@@ -81,7 +81,11 @@
       </DockPanel>
     </Border>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <!-- Size to content: do not fill leftover height (avoids blank gap under the cards). -->
+    <ScrollViewer DockPanel.Dock="Top"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto"
+                  MaxHeight="780">
       <StackPanel Spacing="14" Margin="20,16,20,16">
         <StackPanel Spacing="4">
           <TextBlock FontSize="18" FontWeight="Bold" Foreground="#15202B" TextWrapping="Wrap"
@@ -237,11 +241,11 @@
                          Text="Indique o Client ID de uma conta Cloud já criada. Não é instalada API local." />
               <TextBlock Classes="edition_tagline" Text="O que usar neste posto" />
               <RadioButton x:Name="RbCloudAvalonia" GroupName="CloudSurface" IsChecked="True"
-                           Content="Avalonia (posto Windows)" />
+                           Content="versão windows" />
               <RadioButton x:Name="RbCloudWebapp" GroupName="CloudSurface"
-                           Content="Webapp" />
+                           Content="versão web (webapp)" />
               <RadioButton x:Name="RbCloudBoth" GroupName="CloudSurface"
-                           Content="Avalonia e Webapp" />
+                           Content="versão windows e versão web (webapp)" />
               <TextBox x:Name="TxtCloudClientId" Classes="bo_entity_input" PlaceholderText="Client ID" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />
               <Button Classes="edition_link" Content="Não tem conta? Mais informações em logic-pos.com" Click="OnPayCloudClick" />
             </StackPanel>

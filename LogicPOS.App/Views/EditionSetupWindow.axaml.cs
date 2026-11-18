@@ -93,6 +93,7 @@ public partial class EditionSetupWindow : Window
         PanelCloudClient.IsVisible = edition == ProductEdition.Cloud;
         RefreshApiFields();
         RefreshContinueButton(edition);
+        FitWindowToContent();
 
         if (edition == ProductEdition.Business)
             TxtSoftwareKey.Focus();
@@ -101,6 +102,14 @@ public partial class EditionSetupWindow : Window
 
         if (closeImmediately)
             _ = TryCompleteAndCloseAsync();
+    }
+
+    private void FitWindowToContent()
+    {
+        SizeToContent = SizeToContent.Manual;
+        SizeToContent = SizeToContent.Height;
+        InvalidateMeasure();
+        InvalidateArrange();
     }
 
     private void RefreshContinueButton(ProductEdition edition)
