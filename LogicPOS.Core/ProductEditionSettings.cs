@@ -74,6 +74,40 @@ public static class ProductEditionSettings
         root["DatabaseSettings"] = database;
         database["UseCloud"] = useCloud;
 
+        // Community / local Business: first-run edition write must not leave ConnectionString empty
+        // (MSI ships UseCloud=true without a connection string; flipping to local would soft-lock login).
+        if (useCloud == false)
+        {
+            if (database["ConnectionString"] is null
+                || string.IsNullOrWhiteSpace(database["ConnectionString"]?.GetValue<string>()))
+            {
+                database["ConnectionString"] = "Data Source=logicpos.db";
+            }
+
+            if (database["DatabaseType"] is null
+                || string.IsNullOrWhiteSpace(database["DatabaseType"]?.GetValue<string>()))
+            {
+                database["DatabaseType"] = "Sqlite";
+            }
+
+            if (database["SeedPath"] is null
+                || string.IsNullOrWhiteSpace(database["SeedPath"]?.GetValue<string>()))
+            {
+                database["SeedPath"] = "db_seeds";
+            }
+
+            if (database["UseSeed"] is null)
+            {
+                database["UseSeed"] = false;
+            }
+
+            if (database["Module"] is null
+                || string.IsNullOrWhiteSpace(database["Module"]?.GetValue<string>()))
+            {
+                database["Module"] = "default";
+            }
+        }
+
         if (string.IsNullOrWhiteSpace(apiBaseAddress) == false || string.IsNullOrWhiteSpace(clientId) == false)
         {
             var api = logicPos["Api"] as JsonObject ?? new JsonObject();
