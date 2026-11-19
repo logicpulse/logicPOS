@@ -2,6 +2,7 @@
 using LogicPOS.Domain.Entities.POS.Orders.Orders.Common;
 using LogicPOS.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -21,6 +22,10 @@ public class LogicPOSDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.AddInterceptors(_auditingInterceptor);
+        // Hand-written migrations update the database; the snapshot is kept in step afterwards.
+        // EF 9 throws on any snapshot drift and that blocks login before Migrate() runs.
+        optionsBuilder.ConfigureWarnings(warnings =>
+            warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,6 +59,7 @@ public class LogicPOSDbContext : DbContext
     public DbSet<MeasurementUnit> MeasurementUnits { get; private set; } = null!;
     public DbSet<SizeUnit> SizeUnits { get; private set; } = null!;
     public DbSet<Country> Countries { get; private set; } = null!;
+    public DbSet<PostalLocality> PostalLocalities { get; private set; } = null!;
     public DbSet<Currency> Currencies { get; private set; } = null!;
     public DbSet<Holiday> Holidays { get; private set; } = null!;
     public DbSet<Place> Places { get; private set; } = null!;

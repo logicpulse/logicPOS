@@ -98,7 +98,7 @@
                             <StackPanel x:Name="TerminalsStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
                                 <Border Classes="bo_article_section_header bo_wizard_card_header">
                                     <StackPanel Classes="bo_article_section_title_row">
-                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_printer_g.svg" />
+                                        <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_configuracoes_terminais_b.svg" />
                                         <TextBlock Classes="bo_article_section_title" Text="Terminais" />
                                     </StackPanel>
                                 </Border>

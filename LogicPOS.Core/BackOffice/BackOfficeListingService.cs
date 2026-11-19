@@ -14,6 +14,7 @@ using LogicPOS.Domain.Entities.Common;
 using LogicPOS.Domain.Services;
 using LogicPOS.Domain.ValueObjects;
 using LogicPOS.Persistence.Database;
+using LogicPOS.Persistence.Entities.Finance.Countries.PostalLocalities;
 using LogicPOS.Persistence.Interceptors;
 using LogicPOS.Persistence.Services.DemoData;
 using Microsoft.Data.Sqlite;
@@ -75,6 +76,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Address"] = "Morada",
         ["City"] = "Cidade",
         ["ZipCode"] = "Código-Postal",
+        ["Street"] = "Rua",
         ["Locality"] = "Localidade",
         ["RefNo"] = "Número",
         ["Number"] = "Número",
@@ -318,7 +320,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             PageKind.Notice => NoticePage(page),
             _ => page.EntityType == typeof(Receipt)
                 ? await QueryReceiptsAsync(database, customerId, cancellationToken)
-                : await QueryEntitiesAsync(database, page, mode, cancellationToken)
+                : await QueryEntitiesAsync(database, page, mode, search, cancellationToken)
         };
 
         var rows = snapshot.Rows;
@@ -383,6 +385,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         entity ??= Activator.CreateInstance(page.EntityType)!;
+        // Novo cliente: país da empresa (COMPANY_COUNTRY_OID / origem fiscal da BD), não o 1.º da lista.
+        if (id is null && entity is Customer newCustomer && newCustomer.CountryId == Guid.Empty)
+        {
+            var preferred = await CompanyCountryResolver.ResolveAsync(database, cancellationToken);
+            if (preferred is { } companyCountrySeed)
+            {
+                newCustomer.CountryId = companyCountrySeed.Id;
+            }
+        }
+
         var fields = Describe(page, entity, id is null);
         if (entity is PreferenceParameter companyCountry && companyCountry.Token == "COMPANY_COUNTRY")
         {
@@ -437,6 +449,24 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 .ToList();
         }
 
+        if (type == typeof(PostalLocality))
+        {
+            var localities = await database.PostalLocalities.AsNoTracking()
+                .Where(item => item.IsDeleted == false)
+                .OrderBy(item => item.ZipCode)
+                .Select(item => new { item.Id, item.ZipCode, item.Locality, item.City })
+                .ToListAsync(cancellationToken);
+            return localities
+                .Select(item => new LookupOption
+                {
+                    Id = item.Id,
+                    Label = item.ZipCode + " — " + item.Locality,
+                    Meta = item.ZipCode,
+                    Search = item.ZipCode + " " + item.Locality + " " + item.City
+                })
+                .ToList();
+        }
+
         var rows = await MaterializeAsync(database, type, cancellationToken);
         var articles = type.Name == "Article";
         return rows
@@ -479,6 +509,61 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         var code = type.GetProperty("Code2")?.GetValue(item)?.ToString();
         return string.IsNullOrWhiteSpace(code) ? null : code;
+    }
+
+    public async Task<IReadOnlyList<PostalLocalityMatch>> SearchPostalLocalitiesAsync(
+        Guid countryId,
+        string search,
+        int take = 25,
+        CancellationToken cancellationToken = default)
+    {
+        if (countryId == Guid.Empty)
+        {
+            return [];
+        }
+
+        take = take <= 0 ? 25 : Math.Min(take, 50);
+        var term = (search ?? string.Empty).Trim();
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var code = await database.Countries.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Id == countryId)
+            .Select(item => item.Code2)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return [];
+        }
+
+        var settings = scope.ServiceProvider.GetRequiredService<DatabaseSettings>();
+        var entries = await Task.Run(
+            () => PostalCatalog.Take(settings.SeedPath ?? "db_seeds", code, term, take, out _),
+            cancellationToken);
+        return entries
+            .Select(item => new PostalLocalityMatch
+            {
+                ZipCode = item.ZipCode,
+                Street = item.Street,
+                Locality = item.Locality,
+                City = item.City
+            })
+            .ToList();
+    }
+
+    public async Task<IReadOnlyList<PostalLocalityMatch>> SearchCompanyPostalLocalitiesAsync(
+        string search,
+        int take = 25,
+        CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var country = await CompanyCountryResolver.ResolveAsync(database, cancellationToken);
+        if (country is null)
+        {
+            return [];
+        }
+
+        return await SearchPostalLocalitiesAsync(country.Value.Id, search, take, cancellationToken);
     }
 
     public async Task<ListingSaveResult> SaveAsync(string title, Guid? id, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken = default)
@@ -858,8 +943,70 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return allowed;
     }
 
-    private async Task<ListingSnapshot> QueryEntitiesAsync(LogicPOSDbContext database, PageSpec page, string? mode, CancellationToken cancellationToken)
+    private async Task<ListingSnapshot> QueryPostalLocalitiesPageAsync(
+        LogicPOSDbContext database,
+        PageSpec page,
+        string? search,
+        CancellationToken cancellationToken)
     {
+        var term = (search ?? string.Empty).Trim();
+        var code = _system.GetCountryCode2();
+        var countryId = await database.Countries.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Code2.ToUpper() == code.ToUpper())
+            .Select(item => item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        await using var settingsScope = _scopes.CreateAsyncScope();
+        var settings = settingsScope.ServiceProvider.GetRequiredService<DatabaseSettings>();
+        var seedPath = settings.SeedPath ?? "db_seeds";
+        const int postalLimit = 1000;
+        var entries = await Task.Run(
+            () => PostalCatalog.Take(seedPath, code, term, postalLimit + 1, out _),
+            cancellationToken);
+        var capped = entries.Count > postalLimit;
+        if (capped)
+        {
+            entries = entries.Take(postalLimit).ToList();
+        }
+
+        var updatedAt = PostalCatalog.UpdatedAt(seedPath, code);
+        var loaded = entries
+            .Select(item => new PostalLocality
+            {
+                CountryId = countryId,
+                ZipCode = item.ZipCode,
+                Street = item.Street,
+                Locality = item.Locality,
+                City = item.City,
+                UpdatedAt = updatedAt
+            })
+            .ToList();
+
+        var rows = loaded.Cast<object>().ToList();
+        var fields = rows.Count == 0
+            ? Describe(page, new PostalLocality(), true)
+            : Describe(page, rows[0], false);
+        var availableKeys = fields.Select(field => field.Key).Append("UpdatedAt");
+        var columns = ListingColumns.For(page.Title, availableKeys);
+        var lookups = await LoadLookupsAsync(database, page.EntityType!, columns, cancellationToken);
+        return new ListingSnapshot
+        {
+            Columns = columns,
+            Rows = rows.Select(row => ToRow(page, row, columns, lookups)).ToList(),
+            Notice = capped
+                ? term.Length == 0
+                    ? "A mostrar os primeiros 1000. Escreva para procurar."
+                    : "Há mais resultados. Continue a escrever para filtrar."
+                : null
+        };
+    }
+
+    private async Task<ListingSnapshot> QueryEntitiesAsync(LogicPOSDbContext database, PageSpec page, string? mode, string? search, CancellationToken cancellationToken)
+    {
+        if (page.EntityType == typeof(PostalLocality))
+        {
+            return await QueryPostalLocalitiesPageAsync(database, page, search, cancellationToken);
+        }
+
         if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter)
             && FiscalFeatures.ShowsAgt(_system.Country))
         {
@@ -3715,11 +3862,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private static string DisplayLabel(object row)
     {
-        foreach (var name in new[] { "Designation", "Name", "Token", "Acronym", "Code", "Message" })
+        foreach (var name in new[] { "Designation", "Name", "Token", "Acronym", "Code", "ZipCode", "Message" })
         {
             var value = ReadString(row, name);
             if (string.IsNullOrWhiteSpace(value) == false)
             {
+                if (name == "ZipCode")
+                {
+                    var locality = ReadString(row, "Locality");
+                    return string.IsNullOrWhiteSpace(locality) ? value : value + " — " + locality;
+                }
+
                 return value;
             }
         }
@@ -3798,6 +3951,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Entity("Display de Cliente", typeof(PoleDisplay)),
             Entity("Balanças", typeof(WeighingMachine)),
             Entity("País", typeof(Country)),
+            Entity("Códigos-postais", typeof(PostalLocality), create: false, edit: false, delete: false),
             Entity("Moeda", typeof(Currency)),
             Entity("Locais", typeof(Place)),
             Entity("Mesas", typeof(Table)),

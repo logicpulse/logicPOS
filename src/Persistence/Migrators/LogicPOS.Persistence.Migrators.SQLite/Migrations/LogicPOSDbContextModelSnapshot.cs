@@ -5435,6 +5435,36 @@ namespace LogicPOS.Persistence.Migrations
                     b.ToTable("LicenseSessions");
                 });
 
+            modelBuilder.Entity("LogicPOS.Domain.Entities.PostalLocality", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("City").IsRequired().HasMaxLength(128).HasColumnType("TEXT");
+                    b.Property<Guid>("CountryId").HasColumnType("TEXT");
+                    b.Property<DateTime>("CreatedAt").HasColumnType("TEXT");
+                    b.Property<Guid>("CreatedBy").HasColumnType("TEXT");
+                    b.Property<Guid>("CreatedWhere").HasColumnType("TEXT");
+                    b.Property<DateTime>("DeletedAt").HasColumnType("TEXT");
+                    b.Property<bool>("IsDeleted").HasColumnType("INTEGER");
+                    b.Property<string>("Locality").IsRequired().HasMaxLength(128).HasColumnType("TEXT");
+                    b.Property<string>("Notes").HasColumnType("TEXT");
+                    b.Property<DateTime>("UpdatedAt").HasColumnType("TEXT");
+                    b.Property<Guid>("UpdatedBy").HasColumnType("TEXT");
+                    b.Property<Guid>("UpdatedWhere").HasColumnType("TEXT");
+                    b.Property<string>("ZipCode").IsRequired().HasMaxLength(32).HasColumnType("TEXT");
+                    b.HasKey("Id");
+                    b.HasIndex("CountryId", "ZipCode");
+                    b.ToTable("PostalLocalities");
+                    b.HasOne("LogicPOS.Domain.Entities.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                    b.Navigation("Country");
+                });
+
 #pragma warning restore 612, 618
         }
     }

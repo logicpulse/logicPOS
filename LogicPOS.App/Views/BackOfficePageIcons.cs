@@ -47,6 +47,7 @@ internal static class BackOfficePageIcons
         ["Balanças"] = "Menu/menu_dispositivos_balancas.svg",
         ["Outras Tabelas"] = "Menu/menu_outras_tabelas.svg",
         ["País"] = "Menu/menu_outras_tabelas_menu_dispositivos_paises.svg",
+        ["Códigos-postais"] = "Menu/menu_outras_tabelas_menu_dispositivos_paises.svg",
         ["Moeda"] = "Menu/menu_outras_tabelas_moedas.svg",
         ["Locais"] = "Menu/menu_outras_tabelas_locais.svg",
         ["Mesas"] = "Menu/menu_outras_tabelas_mesas.svg",

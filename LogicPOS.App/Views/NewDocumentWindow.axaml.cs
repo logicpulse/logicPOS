@@ -100,6 +100,28 @@ public partial class NewDocumentWindow : UserControl
     {
         InitializeComponent();
         CustomerSuggest.PlacementTarget = CustomerName;
+        if (EditorZip.Parent is Control zipParent && zipParent.Parent is Panel zipHost)
+        {
+            PostalZipSuggest.Attach(EditorZip, zipHost, SearchEditorPostalAsync, ApplyEditorPostal);
+        }
+
+        if (EditorAddress.Parent is Panel addressHost)
+        {
+            PostalZipSuggest.Attach(EditorAddress, addressHost, SearchEditorPostalAsync, ApplyEditorPostal);
+        }
+
+        if (EditorLocality.Parent is Panel localityHost)
+        {
+            PostalZipSuggest.Attach(EditorLocality, localityHost, SearchEditorPostalAsync, ApplyEditorPostal);
+        }
+
+        if (EditorCity.Parent is Panel cityHost)
+        {
+            PostalZipSuggest.Attach(EditorCity, cityHost, SearchEditorPostalAsync, ApplyEditorPostal);
+        }
+
+        AttachCompanyPostal(FromPostal, FromAddress, FromCity, FromRegion);
+        AttachCompanyPostal(ToPostal, ToAddress, ToCity, ToRegion);
         TouchFields.Attach(this);
         Busy.UseTransparentScrim();
         _load = new ListingLoad(Busy);
@@ -2755,7 +2777,12 @@ public partial class NewDocumentWindow : UserControl
         EditorNotes.Text = customer?.Notes ?? string.Empty;
         SelectLookup(EditorType, _customerTypes, customer?.CustomerTypeId);
         SelectLookup(EditorPrice, _priceTypes, customer?.PriceTypeId);
-        SelectLookup(EditorCountry, _countries, customer?.CountryId, customer?.Country ?? "Portugal");
+        // Novo: país da empresa (origem da BD), não hardcoded Portugal.
+        SelectLookup(
+            EditorCountry,
+            _countries,
+            customer?.CountryId,
+            customer?.Country ?? _company.Country);
         EditorError.Text = string.Empty;
         _filling = false;
         ClearDocumentError();
@@ -2778,15 +2805,23 @@ public partial class NewDocumentWindow : UserControl
 
     private static void SelectLookup(ComboBox box, IReadOnlyList<LookupOption> items, Guid? id, string? label = null)
     {
+        var list = items.ToList();
         var index = id is Guid value && value != Guid.Empty
-            ? items.ToList().FindIndex(item => item.Id == value)
+            ? list.FindIndex(item => item.Id == value)
             : -1;
         if (index < 0 && string.IsNullOrWhiteSpace(label) == false)
         {
-            index = items.ToList().FindIndex(item => item.Label.Contains(label, StringComparison.OrdinalIgnoreCase));
+            // Meta = ISO Code2 (ex. AO) quando GetCompanyAddress devolve o código em vez do nome.
+            index = list.FindIndex(item =>
+                string.Equals(item.Meta, label, StringComparison.OrdinalIgnoreCase));
+            if (index < 0)
+            {
+                index = list.FindIndex(item =>
+                    item.Label.Contains(label, StringComparison.OrdinalIgnoreCase));
+            }
         }
 
-        box.SelectedIndex = index >= 0 ? index : (items.Count > 0 ? 0 : -1);
+        box.SelectedIndex = index >= 0 ? index : (list.Count > 0 ? 0 : -1);
     }
 
     private void OnCustomerEditorCancel(object? sender, RoutedEventArgs e) => CustomerEditor.IsVisible = false;
@@ -2795,9 +2830,154 @@ public partial class NewDocumentWindow : UserControl
 
     private async void OnCustomerFiscalLostFocus(object? sender, RoutedEventArgs e) => await CompleteCustomerVatAsync(force: false);
 
+    private async void OnCustomerPostalClick(object? sender, RoutedEventArgs e) => await CompleteCustomerPostalAsync(force: true);
+
+    private async void OnCustomerPostalLostFocus(object? sender, RoutedEventArgs e) => await CompleteCustomerPostalAsync(force: false);
+
+    private async Task<IReadOnlyList<PostalLocalityMatch>> SearchEditorPostalAsync(string term)
+    {
+        var countryId = LookupId(EditorCountry, _countries);
+        if (countryId is null || countryId == Guid.Empty)
+        {
+            return [];
+        }
+
+        var listing = AppComposition.Services?.GetService<IBackOfficeListingService>();
+        if (listing is null)
+        {
+            return [];
+        }
+
+        return await listing.SearchPostalLocalitiesAsync(countryId.Value, term, 12);
+    }
+
+    private void ApplyEditorPostal(PostalLocalityMatch match)
+    {
+        var wasFilling = _filling;
+        _filling = true;
+        PostalZipSuggest.Apply(match, EditorZip, EditorAddress, EditorLocality, EditorCity);
+        EditorError.Text = string.Empty;
+        _filling = wasFilling;
+    }
+
+    private void AttachCompanyPostal(TextBox postal, TextBox? address, TextBox? city = null, TextBox? region = null)
+    {
+        if (postal.Parent is not Panel host)
+        {
+            return;
+        }
+
+        void ApplyMatch(PostalLocalityMatch match) => PostalZipSuggest.Apply(match, postal, address, null, city, region);
+        PostalZipSuggest.Attach(postal, host, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
+        if (address?.Parent is Panel addressHost)
+        {
+            PostalZipSuggest.Attach(address, addressHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
+        }
+
+        if (city?.Parent is Panel cityHost)
+        {
+            PostalZipSuggest.Attach(city, cityHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
+        }
+    }
+
+    private async Task CompleteCustomerPostalAsync(bool force)
+    {
+        if (CustomerEditor.IsVisible == false || _filling || PostalZipSuggest.IgnoreLostFocus)
+        {
+            return;
+        }
+
+        var zip = EditorZip.Text?.Trim() ?? string.Empty;
+        if (zip.Length < 2)
+        {
+            if (force)
+            {
+                EditorError.Text = "Indique o código-postal.";
+            }
+
+            return;
+        }
+
+        var countryId = LookupId(EditorCountry, _countries);
+        if (countryId is null || countryId == Guid.Empty)
+        {
+            if (force)
+            {
+                EditorError.Text = "Seleccione o país antes de procurar o código-postal.";
+            }
+
+            return;
+        }
+
+        var services = AppComposition.Services;
+        var listing = services?.GetService<IBackOfficeListingService>();
+        if (listing is null)
+        {
+            return;
+        }
+
+        var matches = await listing.SearchPostalLocalitiesAsync(countryId.Value, zip);
+        var exact = matches
+            .Where(item => string.Equals(item.ZipCode, zip, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var streets = exact
+            .Where(item => string.IsNullOrWhiteSpace(item.Street) == false)
+            .GroupBy(item => item.Street, StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.First())
+            .ToList();
+        PostalLocalityMatch? match = streets.Count == 1
+            ? streets[0]
+            : exact.FirstOrDefault(item => string.IsNullOrWhiteSpace(item.Street)) ?? exact.FirstOrDefault();
+        if (match is not null && streets.Count != 1 && force == false)
+        {
+            match = new PostalLocalityMatch { ZipCode = match.ZipCode, Locality = match.Locality, City = match.City };
+        }
+
+        if (match is null && force && matches.Count > 0)
+        {
+            match = matches[0];
+        }
+
+        if (match is null)
+        {
+            if (force)
+            {
+                EditorError.Text = "Código-postal não encontrado.";
+            }
+
+            return;
+        }
+
+        ApplyEditorPostal(match);
+        if (force)
+        {
+            EditorError.Text = "Localidade preenchida a partir do código-postal.";
+        }
+    }
+
     private async Task CompleteCustomerVatAsync(bool force)
     {
-        if (_vatBusy || CustomerEditor.IsVisible == false || _filling)
+        if (CustomerEditor.IsVisible == false || _filling)
+        {
+            return;
+        }
+
+        // Same lock order as EntityListing.CompleteVatAsync: never hold _vatBusy while
+        // awaiting the preference check, or the lupa Click is swallowed by LostFocus.
+        if (force == false)
+        {
+            if (_vatBusy)
+            {
+                return;
+            }
+
+            if (await CustomerVatAutocompleteEnabledAsync() == false)
+            {
+                return;
+            }
+        }
+
+        if (_vatBusy)
         {
             return;
         }
@@ -2805,11 +2985,6 @@ public partial class NewDocumentWindow : UserControl
         _vatBusy = true;
         try
         {
-            if (force == false && await CustomerVatAutocompleteEnabledAsync() == false)
-            {
-                return;
-            }
-
             var fiscalNumber = EditorFiscal.Text?.Trim() ?? string.Empty;
             if (fiscalNumber.Length < 3)
             {

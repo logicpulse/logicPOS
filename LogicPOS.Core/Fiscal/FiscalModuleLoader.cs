@@ -94,7 +94,17 @@ public static class FiscalModuleLoader
                 continue;
             }
 
-            method.Invoke(null, [services]);
+            try
+            {
+                method.Invoke(null, [services]);
+            }
+            catch (Exception exception)
+            {
+                var detail = exception.InnerException ?? exception;
+                LogicPOS.Core.AppLogging.Error(detail, "Plugin fiscal {Path} falhou ao registar", path);
+                return false;
+            }
+
             return true;
         }
 

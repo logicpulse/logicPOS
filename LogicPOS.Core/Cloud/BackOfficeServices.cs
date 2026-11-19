@@ -23,6 +23,21 @@ public interface IBackOfficeListingService
 
     Task<IReadOnlyList<LookupOption>> LookupAsync(string typeName, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Código-postal auxiliar search for address prefill (ZipCode / Locality / City text).
+    /// </summary>
+    Task<IReadOnlyList<PostalLocalityMatch>> SearchPostalLocalitiesAsync(
+        Guid countryId,
+        string search,
+        int take = 25,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Same search, using the company country from the database.</summary>
+    Task<IReadOnlyList<PostalLocalityMatch>> SearchCompanyPostalLocalitiesAsync(
+        string search,
+        int take = 25,
+        CancellationToken cancellationToken = default);
+
     Task<ListingSaveResult> SaveAsync(string title, Guid? id, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken = default);
 
     Task<ListingSaveResult> DeleteAsync(string title, Guid id, CancellationToken cancellationToken = default);

@@ -5440,6 +5440,36 @@ namespace LogicPOS.Persistence.Migrations
                     b.ToTable("LicenseSessions");
                 });
 
+            modelBuilder.Entity("LogicPOS.Domain.Entities.PostalLocality", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("City").IsRequired().HasMaxLength(128).HasColumnType("nvarchar(128)");
+                    b.Property<Guid>("CountryId").HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("CreatedAt").HasColumnType("datetime2");
+                    b.Property<Guid>("CreatedBy").HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("CreatedWhere").HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("DeletedAt").HasColumnType("datetime2");
+                    b.Property<bool>("IsDeleted").HasColumnType("bit");
+                    b.Property<string>("Locality").IsRequired().HasMaxLength(128).HasColumnType("nvarchar(128)");
+                    b.Property<string>("Notes").HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("UpdatedAt").HasColumnType("datetime2");
+                    b.Property<Guid>("UpdatedBy").HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("UpdatedWhere").HasColumnType("uniqueidentifier");
+                    b.Property<string>("ZipCode").IsRequired().HasMaxLength(32).HasColumnType("nvarchar(32)");
+                    b.HasKey("Id");
+                    b.HasIndex("CountryId", "ZipCode");
+                    b.ToTable("PostalLocalities");
+                    b.HasOne("LogicPOS.Domain.Entities.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                    b.Navigation("Country");
+                });
+
 #pragma warning restore 612, 618
         }
     }

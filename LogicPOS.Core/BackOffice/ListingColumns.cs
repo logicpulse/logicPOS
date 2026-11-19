@@ -30,6 +30,15 @@ public static class ListingColumns
         ["Unidades de tamanho"] = CodeDesignationUpdated,
         ["Armazém"] = CodeDesignationUpdated,
         ["País"] = CodeDesignationUpdated,
+        ["Códigos-postais"] =
+        [
+            ("Street", "Morada"),
+            ("ZipCode", "Código-Postal"),
+            ("City", "Cidade"),
+            ("Locality", "Localidade"),
+            ("CountryId", "País"),
+            ("UpdatedAt", "Atualizado em")
+        ],
         ["Tipo de clientes"] = CodeDesignationUpdated,
         ["Grupo de descontos"] = CodeDesignationUpdated,
         ["Tipo de Movimento"] = CodeDesignationUpdated,

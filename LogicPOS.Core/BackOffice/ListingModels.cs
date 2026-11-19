@@ -167,6 +167,35 @@ public static class LookupChoice
     }
 }
 
+public sealed class PostalLocalityMatch
+{
+    public string ZipCode { get; init; } = string.Empty;
+
+    public string Street { get; init; } = string.Empty;
+
+    public string Locality { get; init; } = string.Empty;
+
+    public string City { get; init; } = string.Empty;
+
+    public string Label
+    {
+        get
+        {
+            var place = string.IsNullOrWhiteSpace(Locality) ? City : Locality;
+            if (string.IsNullOrWhiteSpace(Street) == false)
+            {
+                return string.IsNullOrWhiteSpace(place)
+                    ? ZipCode + " — " + Street
+                    : ZipCode + " — " + Street + ", " + place;
+            }
+
+            return string.IsNullOrWhiteSpace(place)
+                ? ZipCode
+                : ZipCode + " — " + place + (string.IsNullOrWhiteSpace(City) || City == Locality ? string.Empty : " (" + City + ")");
+        }
+    }
+}
+
 public sealed class LookupOption
 {
     public Guid Id { get; init; }

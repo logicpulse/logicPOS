@@ -12,6 +12,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
@@ -43,6 +44,8 @@ public partial class EntityListing : UserControl
     private string? _notice;
     private string _columnSignature = string.Empty;
     private readonly List<ListingRow> _rows = new();
+    private DispatcherTimer? _postalSearchTimer;
+    private int _postalQuery;
     private ListingLoad _load = null!;
     private readonly Dictionary<string, string> _columnKeys = new(StringComparer.Ordinal);
     private readonly Dictionary<string, bool> _defaultVisible = new(StringComparer.Ordinal);
@@ -266,9 +269,48 @@ public partial class EntityListing : UserControl
 
     private IBackOfficeListingService? Service => AppComposition.Services?.GetService<IBackOfficeListingService>();
 
-    private void OnSearchClick(object? sender, RoutedEventArgs e) => ApplyFilter();
+    private void OnSearchClick(object? sender, RoutedEventArgs e)
+    {
+        if (_title == "Códigos-postais")
+        {
+            ReloadPostalNow();
+            return;
+        }
 
-    private void OnSearchChanged(object? sender, TextChangedEventArgs e) => ApplyFilter();
+        ApplyFilter();
+    }
+
+    private void OnSearchChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (_title == "Códigos-postais")
+        {
+            SchedulePostalSearch();
+            return;
+        }
+
+        ApplyFilter();
+    }
+
+    private void SchedulePostalSearch()
+    {
+        _postalSearchTimer ??= new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(280) };
+        _postalSearchTimer.Stop();
+        _postalSearchTimer.Tick -= OnPostalSearchTick;
+        _postalSearchTimer.Tick += OnPostalSearchTick;
+        _postalSearchTimer.Start();
+    }
+
+    private async void OnPostalSearchTick(object? sender, EventArgs e)
+    {
+        _postalSearchTimer?.Stop();
+        await ReloadAsync();
+    }
+
+    private void ReloadPostalNow()
+    {
+        _postalSearchTimer?.Stop();
+        _ = ReloadAsync();
+    }
 
     private async void OnClearFilterClick(object? sender, RoutedEventArgs e)
     {
@@ -278,6 +320,11 @@ public partial class EntityListing : UserControl
         {
             ResetCustomerFilter();
             await ReloadAsync();
+            return;
+        }
+
+        if (_title == "Códigos-postais")
+        {
             return;
         }
 
@@ -491,7 +538,17 @@ public partial class EntityListing : UserControl
 
         try
         {
-            var snapshot = await service.QueryAsync(_title, null, _mode, customerId: _title == "Recibos" ? ListingFilters.CustomerId(CustomerBox) : null);
+            var postal = _title == "Códigos-postais";
+            var generation = postal ? ++_postalQuery : 0;
+            var snapshot = await service.QueryAsync(
+                _title,
+                postal ? SearchBox.Text : null,
+                _mode,
+                customerId: _title == "Recibos" ? ListingFilters.CustomerId(CustomerBox) : null);
+            if (postal && generation != _postalQuery)
+            {
+                return;
+            }
             _canEdit = snapshot.CanEdit;
             _deviceCanEdit = snapshot.CanEdit;
             _deviceCanDelete = snapshot.CanDelete;
@@ -804,7 +861,9 @@ public partial class EntityListing : UserControl
             PopulateDeviceCards(rows);
         }
 
-        Notice.Text = string.IsNullOrEmpty(term) && rows.Count == _rows.Count && _notice is not null ? _notice : $"{rows.Count} registo(s)";
+        var keepNotice = _notice is not null && rows.Count == _rows.Count
+            && (string.IsNullOrEmpty(term) || _title == "Códigos-postais");
+        Notice.Text = keepNotice ? _notice! : $"{rows.Count} registo(s)";
         RefreshPickAll();
     }
 
@@ -1785,11 +1844,49 @@ public partial class EntityListing : UserControl
 
         if (_title == "Clientes" && field.Key == "FiscalNumber" && field.ReadOnly == false && input is DockPanel dock)
         {
-            var vies = new Button { Classes = { "bo_doc_page_button" }, Content = "VIES" };
+            // Same lupa as Novo documento → Novo cliente (EditorVies); tooltip keeps "Consultar VIES".
+            var vies = new Button
+            {
+                Classes = { "bo_line_icon" },
+                Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+                {
+                    Classes = { "bo_line_icon_image" },
+                    Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg"
+                }
+            };
+            ToolTip.SetTip(vies, "Consultar VIES");
             vies.Click += async (_, _) => await CompleteVatAsync(true);
             DockPanel.SetDock(vies, Dock.Right);
             dock.Children.Insert(0, vies);
             box.LostFocus += async (_, _) => await CompleteVatAsync(false);
+        }
+
+        if (field.Key is "Address" or "Residence" or "Locality" or "City" && field.ReadOnly == false && input is DockPanel addressDock)
+        {
+            var addressBox = addressDock.Children.OfType<TextBox>().FirstOrDefault();
+            if (addressBox is not null)
+            {
+                PostalZipSuggest.Attach(addressBox, addressDock, SearchFormPostalAsync, ApplyFormPostal);
+            }
+        }
+
+        if (field.Key is "ZipCode" or "ZipCpde" && field.ReadOnly == false && input is DockPanel zipDock)
+        {
+            var postal = new Button
+            {
+                Classes = { "bo_line_icon" },
+                Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+                {
+                    Classes = { "bo_line_icon_image" },
+                    Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg"
+                }
+            };
+            ToolTip.SetTip(postal, "Procurar código-postal");
+            postal.Click += async (_, _) => await CompletePostalAsync(true);
+            DockPanel.SetDock(postal, Dock.Right);
+            zipDock.Children.Insert(0, postal);
+            PostalZipSuggest.Attach(box, zipDock, SearchFormPostalAsync, ApplyFormPostal);
+            box.LostFocus += async (_, _) => await CompletePostalAsync(false);
         }
 
         if (_title == "Terminais" && field.Key == "HardwareId" && field.ReadOnly == false && input is DockPanel hardwareDock)
@@ -1913,7 +2010,27 @@ public partial class EntityListing : UserControl
 
     private async Task CompleteVatAsync(bool force)
     {
-        if (_vatBusy || _title != "Clientes")
+        if (_title != "Clientes")
+        {
+            return;
+        }
+
+        // Preference / busy checks must run before taking the lock. Otherwise LostFocus
+        // (clicking the lupa) holds _vatBusy during await and the forced click is dropped.
+        if (force == false)
+        {
+            if (_vatBusy)
+            {
+                return;
+            }
+
+            if (await VatAutocompleteEnabledAsync() == false)
+            {
+                return;
+            }
+        }
+
+        if (_vatBusy)
         {
             return;
         }
@@ -1921,11 +2038,6 @@ public partial class EntityListing : UserControl
         _vatBusy = true;
         try
         {
-            if (force == false && await VatAutocompleteEnabledAsync() == false)
-            {
-                return;
-            }
-
             var fiscal = _inputs.FirstOrDefault(item => item.Key == "FiscalNumber");
             if (fiscal.Input is null)
             {
@@ -1955,6 +2067,140 @@ public partial class EntityListing : UserControl
         finally
         {
             _vatBusy = false;
+        }
+    }
+
+    private async Task CompletePostalAsync(bool force)
+    {
+        if (Service is null || PostalZipSuggest.IgnoreLostFocus)
+        {
+            return;
+        }
+
+        var zipInput = _inputs.FirstOrDefault(item => item.Key is "ZipCode" or "ZipCpde").Input;
+        if (zipInput is null)
+        {
+            return;
+        }
+
+        var zip = ReadInput(zipInput).Trim();
+        if (zip.Length < 2)
+        {
+            if (force)
+            {
+                EditorNotice.Text = "Indique o código-postal.";
+            }
+
+            return;
+        }
+
+        var hasCountry = _inputs.Any(item => item.Key == "CountryId");
+        var country = ChosenLookup(_inputs.FirstOrDefault(item => item.Key == "CountryId").Input);
+        var countryId = country?.Id ?? Guid.Empty;
+        if (hasCountry && countryId == Guid.Empty)
+        {
+            if (force)
+            {
+                EditorNotice.Text = "Seleccione o país antes de procurar o código-postal.";
+            }
+
+            return;
+        }
+
+        var matches = countryId == Guid.Empty
+            ? await Service.SearchCompanyPostalLocalitiesAsync(zip)
+            : await Service.SearchPostalLocalitiesAsync(countryId, zip);
+        var exact = matches
+            .Where(item => string.Equals(item.ZipCode, zip, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var streets = exact
+            .Where(item => string.IsNullOrWhiteSpace(item.Street) == false)
+            .GroupBy(item => item.Street, StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.First())
+            .ToList();
+        PostalLocalityMatch? match = streets.Count == 1
+            ? streets[0]
+            : exact.FirstOrDefault(item => string.IsNullOrWhiteSpace(item.Street)) ?? exact.FirstOrDefault();
+        if (match is not null && streets.Count != 1 && force == false)
+        {
+            match = new PostalLocalityMatch
+            {
+                ZipCode = match.ZipCode,
+                Locality = match.Locality,
+                City = match.City
+            };
+        }
+
+        if (match is null && force && matches.Count > 0)
+        {
+            match = matches[0];
+        }
+
+        if (match is null)
+        {
+            if (force)
+            {
+                EditorNotice.Text = "Código-postal não encontrado.";
+            }
+
+            return;
+        }
+
+        ApplyFormPostal(match);
+        if (force)
+        {
+            EditorNotice.Text = "Localidade preenchida a partir do código-postal.";
+        }
+    }
+
+    private async Task<IReadOnlyList<PostalLocalityMatch>> SearchFormPostalAsync(string term)
+    {
+        if (Service is null)
+        {
+            return [];
+        }
+
+        var country = ChosenLookup(_inputs.FirstOrDefault(item => item.Key == "CountryId").Input);
+        if (country is not null && country.Id != Guid.Empty)
+        {
+            return await Service.SearchPostalLocalitiesAsync(country.Id, term, 12);
+        }
+
+        return await Service.SearchCompanyPostalLocalitiesAsync(term, 12);
+    }
+
+    private void ApplyFormPostal(PostalLocalityMatch match)
+    {
+        PostalZipSuggest.RunWithoutSearch(() => ApplyFormPostalCore(match));
+    }
+
+    private void ApplyFormPostalCore(PostalLocalityMatch match)
+    {
+        if (_inputs.Any(item => item.Key == "ZipCode"))
+        {
+            SetText("ZipCode", match.ZipCode);
+        }
+
+        if (_inputs.Any(item => item.Key == "ZipCpde"))
+        {
+            SetText("ZipCpde", match.ZipCode);
+        }
+
+        SetText("Locality", match.Locality);
+        SetText("City", match.City);
+        if (string.IsNullOrWhiteSpace(match.Street))
+        {
+            return;
+        }
+
+        if (_inputs.Any(item => item.Key == "Address"))
+        {
+            SetText("Address", match.Street);
+        }
+
+        if (_inputs.Any(item => item.Key == "Residence"))
+        {
+            SetText("Residence", match.Street);
         }
     }
 
@@ -3427,15 +3673,26 @@ public partial class EntityListing : UserControl
     private void OnMobileSearchChanged(object? sender, TextChangedEventArgs e)
     {
         SearchBox.Text = MobileSearchBox.Text;
-        ApplyFilter();
+        if (_title != "Códigos-postais")
+        {
+            ApplyFilter();
+        }
     }
 
     private void OnSearchKeyUp(object? sender, Avalonia.Input.KeyEventArgs e)
     {
-        if (e.Key == Avalonia.Input.Key.Enter)
+        if (e.Key != Avalonia.Input.Key.Enter)
         {
-            ApplyFilter();
+            return;
         }
+
+        if (_title == "Códigos-postais")
+        {
+            ReloadPostalNow();
+            return;
+        }
+
+        ApplyFilter();
     }
 
     private void OnMobileFilterClick(object? sender, RoutedEventArgs e)

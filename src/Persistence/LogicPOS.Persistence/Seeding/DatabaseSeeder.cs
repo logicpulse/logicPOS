@@ -12,6 +12,7 @@ using LogicPOS.Persistence.Entities.Articles.Types;
 using LogicPOS.Persistence.Entities.Articles.Units.Measurement;
 using LogicPOS.Persistence.Entities.Articles.Units.Size;
 using LogicPOS.Persistence.Entities.Finance.Countries;
+using LogicPOS.Persistence.Entities.Finance.Countries.PostalLocalities;
 using LogicPOS.Persistence.Entities.Finance.Currencies;
 using LogicPOS.Persistence.Entities.Finance.Customers.Customers;
 using LogicPOS.Persistence.Entities.Finance.Customers.Types;
@@ -105,6 +106,7 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
         TablesSeeder.SeedData(_database, _dbSettings, _logger);
         CustomerTypesSeeder.SeedData(_database, _dbSettings, _logger);
         CustomersSeeder.SeedData(_database, _dbSettings, _systemCountryCode2, _logger);
+        PostalLocalitiesSeeder.SeedData(_database, _dbSettings, _systemCountryCode2, _logger);
 
         _logger.LogInformation("Additional data seeded successfully");
     }
@@ -201,6 +203,11 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
         if (documentTypes == false)
         {
             _logger.LogCritical("New document types seeding failed. Skipping seeding process.");
+        }
+
+        if (PostalLocalitiesSeeder.SeedData(_database, _dbSettings!, _systemCountryCode2!, _logger) == false)
+        {
+            _logger.LogCritical("Postal localities seeding failed. Skipping seeding process.");
         }
     }
 

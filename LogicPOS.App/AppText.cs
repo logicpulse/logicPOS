@@ -61,6 +61,7 @@ internal static class AppText
             ["Display de Cliente"] = "Customer display",
             ["Balanças"] = "Scales",
             ["País"] = "Country",
+            ["Códigos-postais"] = "Postal codes",
             ["Moeda"] = "Currency",
             ["Locais"] = "Places",
             ["Mesas"] = "Tables",

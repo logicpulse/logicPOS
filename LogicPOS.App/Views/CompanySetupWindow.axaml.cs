@@ -150,7 +150,30 @@ public partial class CompanySetupWindow : Window
         }
 
         TouchFields.Attach(FieldsHost);
+        AttachCompanyPostal();
         RefreshValidation();
+    }
+
+    private void AttachCompanyPostal()
+    {
+        if (_inputs.TryGetValue("COMPANY_POSTALCODE", out var postal) == false || postal.Parent is not Panel postalHost)
+        {
+            return;
+        }
+
+        _inputs.TryGetValue("COMPANY_ADDRESS", out var address);
+        _inputs.TryGetValue("COMPANY_CITY", out var city);
+        void ApplyMatch(PostalLocalityMatch match) => PostalZipSuggest.Apply(match, postal, address, null, city);
+        PostalZipSuggest.Attach(postal, postalHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
+        if (address?.Parent is Panel addressHost)
+        {
+            PostalZipSuggest.Attach(address, addressHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
+        }
+
+        if (city?.Parent is Panel cityHost)
+        {
+            PostalZipSuggest.Attach(city, cityHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
+        }
     }
 
     private static ComboBox CreateCombo(IReadOnlyList<CompanySetupChoice> options, Guid? selectedId)

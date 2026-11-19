@@ -579,9 +579,19 @@
                         <StackPanel Grid.Row="3">
                             <StackPanel Classes="bo_new_doc_label">
                                 <Image Classes="bo_new_doc_label_icon" Source="{x:Static views:CustomerFieldIcons.ZipCode}" />
-                                <TextBlock Classes="bo_new_doc_caption" Text="Código-postal" />
+                                <TextBlock Classes="bo_new_doc_caption" Text="Código-Postal" />
                             </StackPanel>
-                            <TextBox x:Name="EditorZip" Classes="bo_line_editor_input bo_numeric" />
+                            <DockPanel Classes="bo_touch_row">
+                                <Button Classes="bo_line_icon"
+                                        DockPanel.Dock="Right"
+                                        Click="OnCustomerPostalClick"
+                                        ToolTip.Tip="Procurar código-postal">
+                                    <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                                </Button>
+                                <TextBox x:Name="EditorZip"
+                                         Classes="bo_line_editor_input bo_numeric"
+                                         LostFocus="OnCustomerPostalLostFocus" />
+                            </DockPanel>
                         </StackPanel>
                         <StackPanel Grid.Row="3" Grid.Column="1">
                             <StackPanel Classes="bo_new_doc_label">

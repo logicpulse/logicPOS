@@ -65,6 +65,25 @@ public partial class PaymentWindow : Window
         _orderTotal = lines.Sum(line => line.Total);
         InitializeComponent();
         CustomerSuggest.PlacementTarget = CustomerName;
+        if (ZipCode.Parent is Panel zipHost)
+        {
+            PostalZipSuggest.Attach(ZipCode, zipHost, PostalZipSuggest.SearchCompanyAsync, ApplyPaymentPostal);
+        }
+
+        if (Address.Parent is Panel addressHost)
+        {
+            PostalZipSuggest.Attach(Address, addressHost, PostalZipSuggest.SearchCompanyAsync, ApplyPaymentPostal);
+        }
+
+        if (Locality.Parent is Panel localityHost)
+        {
+            PostalZipSuggest.Attach(Locality, localityHost, PostalZipSuggest.SearchCompanyAsync, ApplyPaymentPostal);
+        }
+
+        if (City.Parent is Panel cityHost)
+        {
+            PostalZipSuggest.Attach(City, cityHost, PostalZipSuggest.SearchCompanyAsync, ApplyPaymentPostal);
+        }
         ListingNotice.BindToast(CustomerSearchNotice, this);
         ApplySaleDocumentType();
         BuildMethods();
@@ -74,6 +93,9 @@ public partial class PaymentWindow : Window
         Opened += async (_, _) => await LoadCustomerAsync();
         RefreshTotals();
     }
+
+    private void ApplyPaymentPostal(PostalLocalityMatch match)
+        => PostalZipSuggest.Apply(match, ZipCode, Address, Locality, City);
 
     private void CoverOwner()
     {

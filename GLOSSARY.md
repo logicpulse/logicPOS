@@ -5,15 +5,19 @@ O produto de ponto de venda e back-office. A edição pública é o que o GitHub
 ## Language
 
 **Edição pública**:
-A edição publicada no GitHub `logicPOS`: só base de dados direta, sem ligação à API, sem certificação e sem registo de licença, com um encaixe para uma certificação de terceiros.
-_Avoid_: versão free, versão GitHub, open source
+A edição publicada no GitHub `logicPOS`: só base de dados direta, sem ligação à API, sem certificação e sem registo de licença, com um encaixe para uma certificação de terceiros. A build develop da lista 2.0.31 é esta edição: sem a DLL, séries por comunicar à AT e a faixa de módulo em falta são o estado esperado. O cartão de primeiro arranque não promete faturação certificada.
+_Avoid_: versão free, versão GitHub, open source, Community
 
 **Edição LogicPulse**:
-O anfitrião fechado em `logicPOS-internal` que referencia a Avalonia pública e acrescenta a composição própria: modo local (licença + fiscal) ou modo LogicPulse (API). O instalador 1.6 publica este anfitrião.
+O anfitrião fechado em `logicPOS-internal` que referencia a Avalonia pública e acrescenta a composição própria: modo local (licença + fiscal) ou modo LogicPulse (API). O instalador publica este anfitrião, com certificação em Community, Business e Cloud.
 _Avoid_: versão paga, a mesma app com um DLL de cloud, edição pública
 
+**Community**:
+A escolha de primeiro arranque que deixa o posto em base local, sem download, sem Client ID e sem ficheiro de licença. Na edição pública não tem certificação. Na edição LogicPulse tem, porque a DLL fiscal vem com a app.
+_Avoid_: edição pública, versão GitHub, versão grátis
+
 **Certificação**:
-A comunicação com a AT e a AGT, e o que só existe por causa dela: ATCUD, séries certificadas, SAF-T, hash, QR e a linha do programa certificado no documento.
+A comunicação com a AT e a AGT, e o que só existe por causa dela: ATCUD, séries certificadas, SAF-T, hash, QR e a linha do programa certificado no documento. Está em todas as escolhas da edição LogicPulse. Não está na edição pública.
 _Avoid_: licença, cloud, ligação à API, registo
 
 **Encaixe de certificação**:
@@ -92,6 +96,22 @@ _Avoid_: um campo por email, só um endereço válido
 A entidade comercial ligada a um documento: identificação, NIF, morada e contactos.
 _Avoid_: account, buyer, client genérico
 
+**PIN**:
+O segredo numérico de entrada no posto.
+_Avoid_: palavra-passe, password
+
+**Palavra-passe do portal**:
+O segredo do portal, distinto do PIN do posto.
+_Avoid_: password, PIN
+
+**Código-postal (auxiliar)**:
+Registo de referência Código-postal → Localidade/Cidade dum País; serve para preencher a morada do Cliente, não substitui a linha de rua.
+_Avoid_: catálogo de moradas, CTT completo, street directory
+
+**Localidade (campo)**:
+Texto da localidade na morada do Cliente; pode ser preenchido a partir do Código-postal auxiliar.
+_Avoid_: cidade como sinónimo exclusivo; tabela de ruas
+
 **Consumidor final**:
 O cliente de sistema usado quando não há cliente comercial específico; não se edita nem apaga na listagem nem no documento.
 _Avoid_: anónimo, cliente vazio
@@ -102,11 +122,51 @@ _Avoid_: invoice wizard, formulário de fatura genérico
 
 **Ordem aberta / Pedido de mesa**:
 O ticket de cozinha (ou retalho) gravado numa mesa enquanto o serviço corre: linhas finalizadas com Fin.pedido, ainda sem documento fiscal. Em “Ver pedidos” lista-se e pode eliminar-se uma ou todas as ordens abertas da mesa.
-_Avoid_: fatura, FS/FT, conta paga, documento fiscal
+_Avoid_: fatura, FS, FR, FT, conta paga, documento fiscal
 
 **Documento fiscal**:
-O documento emitido no pagamento (FS, FT, etc.), com série e efeitos fiscais. Não é a ordem aberta da mesa.
-_Avoid_: pedido de mesa, ticket de cozinha, Fin.pedido
+O documento com série que substitui a ordem aberta: fatura simplificada (FS), fatura-recibo (FR) ou fatura (FT). Não é a ordem aberta da mesa.
+_Avoid_: pedido de mesa, ticket de cozinha, Fin.pedido, pagamento (a FT não é um pagamento)
+
+**Fatura simplificada (FS)**:
+Documento fiscal de venda imediata ao consumidor final, liquidado na emissão.
+_Avoid_: fatura, fatura-recibo, conta corrente
+
+**Fatura-recibo (FR)**:
+Documento fiscal de venda imediata a um cliente com nome e NIF, liquidado na emissão.
+_Avoid_: fatura, fatura simplificada, recibo à parte, conta corrente
+
+**Fatura (FT)**:
+Documento fiscal emitido sem liquidação. Fica em dívida até um recibo.
+_Avoid_: fatura-recibo, fatura simplificada, pagamento efetuado
+
+**Dívida**:
+O valor que o cliente ainda deve numa fatura (FT) por liquidar.
+_Avoid_: valor em débito, nota de crédito, troco
+
+**Liquidação**:
+O estado em que o documento fiscal fica pago. A FS e a FR nascem liquidadas. A FT só se liquida com um recibo.
+_Avoid_: pagamento efetuado numa FT, valor pago a zero numa FS ou FR
+
+**Pagamento parcial**:
+A liquidação de só algumas quantidades da ordem aberta. O resto continua na ordem aberta. O documento é uma FS ou uma FR.
+_Avoid_: adiantamento, fatura com dívida parcial
+
+**Pagamento misto**:
+Uma liquidação em que o mesmo documento fiscal soma mais do que um método de pagamento.
+_Avoid_: um documento por método, vários recibos
+
+**MB Way**:
+Método de pagamento. Pode liquidar sozinho ou entrar num pagamento misto.
+_Avoid_: referência multibanco, transferência
+
+**Nota de crédito**:
+Documento fiscal que reduz ou anula uma venda já emitida. Na liquidação entra como crédito e baixa a dívida da fatura. Na grelha de documentos não é dívida do cliente. A sigla de tipo é NC; o nome visível é nota de crédito.
+_Avoid_: NC como único nome, valor em dívida na linha da nota, fatura, recibo
+
+**Recibo**:
+O documento que liquida uma fatura (FT). O número é a sigla da série e o sequencial. O método de pagamento por omissão é Numerário.
+_Avoid_: carimbo de data/hora, cartão cliente por omissão, RG em Portugal
 
 **Portal**:
 A interface web do logicPOS no posto (pasta Portal). Corre como serviço Windows, não como consola. Em Cloud pode existir sem API local.

@@ -86,7 +86,28 @@ if (Test-Path -LiteralPath $fiscalProject) {
             exit 1
         }
 
-        Copy-Item -LiteralPath $fiscalDll -Destination (Join-Path $OutputDir "LogicPOS.Fiscal.dll") -Force
+        # AddFiscal pulls LogicPOS.Infrastructure and its packages. The host does not
+        # reference them, so copy every fiscal output that is not already beside the exe.
+        # Use the same FullName form for the root and the children (TEMP can be 8.3).
+        $fiscalRoot = (Get-Item -LiteralPath $fiscalOut).FullName.TrimEnd('\')
+        $copied = 0
+        foreach ($file in (Get-ChildItem -LiteralPath $fiscalRoot -Recurse -File)) {
+            $relative = $file.FullName.Substring($fiscalRoot.Length).TrimStart('\')
+            $destination = Join-Path $OutputDir $relative
+            if (Test-Path -LiteralPath $destination) {
+                continue
+            }
+
+            $parent = Split-Path -Parent $destination
+            if (-not (Test-Path -LiteralPath $parent)) {
+                New-Item -ItemType Directory -Path $parent | Out-Null
+            }
+
+            Copy-Item -LiteralPath $file.FullName -Destination $destination
+            $copied++
+        }
+
+        Write-Host "[INFO] Fiscal plugin files added: $copied"
     }
     finally {
         Remove-Item -LiteralPath $fiscalOut -Recurse -Force -ErrorAction SilentlyContinue
@@ -115,6 +136,7 @@ $required = @(
     (Join-Path $OutputDir "LogicPOS.App.dll"),
     (Join-Path $OutputDir "Avalonia.dll"),
     (Join-Path $OutputDir "LogicPOS.Fiscal.dll"),
+    (Join-Path $OutputDir "LogicPOS.Infrastructure.dll"),
     (Join-Path $OutputDir "LogicPOS.Cloud.dll"),
     (Join-Path $OutputDir "LogicPOS.ApiClient.dll"),
     (Join-Path $OutputDir "LogicPOS.Licence.dll"),

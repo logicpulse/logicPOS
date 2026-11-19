@@ -962,6 +962,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             ("Outras Tabelas", "Menu/menu_outras_tabelas.svg", new[]
             {
                 ("País", "Menu/menu_outras_tabelas_menu_dispositivos_paises.svg", false),
+                ("Códigos-postais", "Menu/menu_outras_tabelas_menu_dispositivos_paises.svg", false),
                 ("Moeda", "Menu/menu_outras_tabelas_moedas.svg", false),
                 ("Locais", "Menu/menu_outras_tabelas_locais.svg", false),
                 ("Mesas", "Menu/menu_outras_tabelas_mesas.svg", false),

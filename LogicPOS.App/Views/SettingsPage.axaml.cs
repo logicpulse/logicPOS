@@ -111,6 +111,30 @@ public partial class SettingsPage : UserControl
 
         BuildTabs(tabs);
         TouchFields.Attach(FieldsHost);
+        AttachCompanyPostal();
+    }
+
+    private void AttachCompanyPostal()
+    {
+        if (_byToken.TryGetValue("COMPANY_POSTALCODE", out var postal) == false || postal is not TextBox postalBox || postalBox.Parent is not Panel postalHost)
+        {
+            return;
+        }
+
+        var address = _byToken.TryGetValue("COMPANY_ADDRESS", out var addressInput) ? addressInput as TextBox : null;
+        var city = _byToken.TryGetValue("COMPANY_CITY", out var cityInput) ? cityInput as TextBox : null;
+        var region = _byToken.TryGetValue("COMPANY_REGION", out var regionInput) ? regionInput as TextBox : null;
+        void ApplyMatch(PostalLocalityMatch match) => PostalZipSuggest.Apply(match, postalBox, address, null, city, region);
+        PostalZipSuggest.Attach(postalBox, postalHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
+        if (address?.Parent is Panel addressHost)
+        {
+            PostalZipSuggest.Attach(address, addressHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
+        }
+
+        if (city?.Parent is Panel cityHost)
+        {
+            PostalZipSuggest.Attach(city, cityHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
+        }
     }
 
     /// <summary>One tab as section cards from <see cref="SettingsLayout"/>: a field grid, then the Sim/Não toggles.</summary>

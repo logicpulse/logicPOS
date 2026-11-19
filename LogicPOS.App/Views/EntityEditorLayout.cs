@@ -63,6 +63,7 @@ internal static class EntityEditorLayout
         ["Display de Cliente"] = ("display de cliente", false),
         ["Balanças"] = ("balança", true),
         ["País"] = ("país", false),
+        ["Códigos-postais"] = ("código-postal", false),
         ["Moeda"] = ("moeda", true),
         ["Locais"] = ("local", false),
         ["Mesas"] = ("mesa", true),
@@ -231,6 +232,14 @@ internal static class EntityEditorLayout
                 BasicIdentity,
                 new("Dados do país", "pin", 3, ["Code2", "Code3", "TLD", "Capital", "Currency", "CurrencyCode"]),
                 new("Validação", "gear", 2, ["FiscalNumberRegex", "ZipCodeRegex"]),
+                Notes
+            ]
+        },
+        ["Códigos-postais"] = new()
+        {
+            [""] =
+            [
+                new("Código-postal", "pin", 2, ["ZipCode", "CountryId", "Locality", "City"]),
                 Notes
             ]
         },

@@ -37,6 +37,10 @@ public static class GtkFormRules
                 ?? Optional(fields, "ZipCode", "o código postal", ZipPattern, required: false),
             "País" => Optional(fields, "Code2", "o código de país", Country2Pattern, required: true)
                 ?? Optional(fields, "Code3", "o código de país", Country3Pattern, required: false),
+            "Códigos-postais" => Optional(fields, "ZipCode", "o código postal", ForeignZipPattern, required: true)
+                ?? RequiredLookup(fields, "CountryId", "o país")
+                ?? Optional(fields, "Locality", "a localidade", AddressPattern, required: true)
+                ?? Optional(fields, "City", "a cidade", AddressPattern, required: true),
             "Séries" => Optional(fields, "Designation", "a designação", NamePattern, required: true),
             "Balanças" => Optional(fields, "PortName", "a porta", PortPattern, required: true)
                 ?? Optional(fields, "BaudRate", "o baud", BaudPattern, required: true)
