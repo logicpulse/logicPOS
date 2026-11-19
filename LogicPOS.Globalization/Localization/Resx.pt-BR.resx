@@ -2870,7 +2870,7 @@ Por motivos de segurança, para prosseguir, é necessário alterar a senha.</val
     <value>Insira a senha anterior</value>
   </data>
   <data name="pos_pinpad_message_type_password" xml:space="preserve">
-    <value>Introduza a senha</value>
+    <value>Digite o PIN</value>
   </data>
   <data name="pos_ticketlist_label_designation" xml:space="preserve">
     <value>Designação</value>

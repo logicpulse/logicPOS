@@ -5462,7 +5462,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             Classes = { "pos_price_entry" },
             IsReadOnly = true,
             PasswordChar = '*',
-            Watermark = "Introduza a palavra-passe",
+            Watermark = "Introduza o PIN",
             HorizontalContentAlignment = HorizontalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             Margin = new Avalonia.Thickness(8, 4, 8, 8),

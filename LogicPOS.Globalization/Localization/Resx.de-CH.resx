@@ -5024,7 +5024,7 @@ Um fortzufahren, müssen Sie das alte Passwort ändern!</value>
     <value>Altes Passwort eingeben</value>
   </data>
   <data name="pos_pinpad_message_type_password" xml:space="preserve">
-    <value>Geben Sie das Benutzerpasswort ein</value>
+    <value>Geben Sie die PIN ein</value>
   </data>
   <data name="pos_pinpad_message_type_password1" xml:space="preserve">
     <value>Geben Sie das Benutzerkennwort ein</value>

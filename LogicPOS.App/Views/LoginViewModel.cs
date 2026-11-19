@@ -7,7 +7,7 @@ namespace LogicPOS.App.Views;
 
 public sealed class LoginViewModel : INotifyPropertyChanged
 {
-    private const string PromptPassword = "Introduza a palavra-passe";
+    private const string PromptPassword = "Introduza o PIN";
     private const string PromptNewPassword = "Introduza a nova palavra-passe";
     private const string PromptConfirmPassword = "Confirme a nova palavra-passe";
     private const string WrongPinText = "Palavra-passe errada!";

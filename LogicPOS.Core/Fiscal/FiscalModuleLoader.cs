@@ -41,11 +41,38 @@ public static class FiscalModuleLoader
         }
     }
 
+    private static readonly HashSet<string> ProbedDirectories = new(StringComparer.OrdinalIgnoreCase);
+
+    // Plugin dependencies are not in the host deps.json; resolve them from the plugin folder.
+    private static void ProbeDependenciesBeside(string path)
+    {
+        var directory = Path.GetDirectoryName(path);
+        if (string.IsNullOrEmpty(directory))
+        {
+            return;
+        }
+
+        lock (ProbedDirectories)
+        {
+            if (ProbedDirectories.Add(directory) == false)
+            {
+                return;
+            }
+        }
+
+        AssemblyLoadContext.Default.Resolving += (context, name) =>
+        {
+            var candidate = Path.Combine(directory, name.Name + ".dll");
+            return File.Exists(candidate) ? context.LoadFromAssemblyPath(candidate) : null;
+        };
+    }
+
     private static bool TryLoad(IServiceCollection services, string path)
     {
         Assembly assembly;
         try
         {
+            ProbeDependenciesBeside(path);
             assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
         }
         catch (Exception)

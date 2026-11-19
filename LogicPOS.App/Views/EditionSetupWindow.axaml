@@ -18,6 +18,33 @@
     </Style>
     <Style Selector="Border.edition_card.selected">
       <Setter Property="BorderBrush" Value="#4477A4" />
+      <Setter Property="BorderThickness" Value="3" />
+      <Setter Property="Background" Value="#F3F8FD" />
+      <Setter Property="BoxShadow" Value="0 4 16 0 #664477A4" />
+    </Style>
+    <Style Selector="Border.edition_card.selected Border.bo_article_section_header">
+      <Setter Property="Background" Value="#DCE9F5" />
+    </Style>
+    <Style Selector="Border.edition_badge">
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="Padding" Value="8,2" />
+      <Setter Property="Margin" Value="8,0,0,0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Border.edition_badge TextBlock">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Border.edition_badge.free">
+      <Setter Property="Background" Value="#7FA013" />
+    </Style>
+    <Style Selector="Border.edition_badge.selected_mark">
+      <Setter Property="Background" Value="#4477A4" />
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="Border.edition_card.selected Border.edition_badge.selected_mark">
+      <Setter Property="IsVisible" Value="True" />
     </Style>
     <Style Selector="Border.edition_card Path.edition_icon">
       <Setter Property="Width" Value="18" />
@@ -104,6 +131,12 @@
                   <Path Classes="edition_icon"
                         Data="M12,5A3.5 3.5 0 1 1 8.5,8.5A3.5 3.5 0 0 1 12,5M5,8A3.5 3.5 0 1 1 1.5,4.5A3.5 3.5 0 0 1 5,8M19,8A3.5 3.5 0 1 1 15.5,4.5A3.5 3.5 0 0 1 19,8M12,14C9.33,14 4,15.33 4,18V20H20V18C20,15.33 14.67,14 12,14M6.5,13C4.5,13.3 2,14.3 2,16.5V20H0V16.5C0,13.9 3.1,12.7 6.5,12.1M17.5,13C20.9,12.7 24,13.9 24,16.5V20H22V16.5C22,14.3 19.5,13.3 17.5,13Z" />
                   <TextBlock Classes="bo_article_section_title" Text="Community Edition" />
+                  <Border Classes="edition_badge free">
+                    <TextBlock Text="GRATUITA" />
+                  </Border>
+                  <Border Classes="edition_badge selected_mark">
+                    <TextBlock Text="✓ Selecionada" />
+                  </Border>
                 </StackPanel>
               </Border>
               <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="16,0,16,14">
@@ -138,6 +171,9 @@
                   <Path Classes="edition_icon"
                         Data="M3,21V7H11V3H21V21H3M5,19H9V17H5V19M5,15H9V13H5V15M5,11H9V9H5V11M11,19H19V5H13V9H11V19M13,19V17H15V19H13M17,19V17H19V19H17M13,15V13H15V15H13M17,15V13H19V15H17M13,11V9H15V11H13M17,11V9H19V11H17Z" />
                   <TextBlock Classes="bo_article_section_title" Text="Business Edition" />
+                  <Border Classes="edition_badge selected_mark">
+                    <TextBlock Text="✓ Selecionada" />
+                  </Border>
                 </StackPanel>
               </Border>
               <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="16,0,16,14">
@@ -173,6 +209,9 @@
                   <Path Classes="edition_icon"
                         Data="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0 0 6,20H19A5,5 0 0 0 24,15C24,12.36 21.95,10.22 19.35,10.04Z" />
                   <TextBlock Classes="bo_article_section_title" Text="Cloud" />
+                  <Border Classes="edition_badge selected_mark">
+                    <TextBlock Text="✓ Selecionada" />
+                  </Border>
                 </StackPanel>
               </Border>
               <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="16,0,16,14">

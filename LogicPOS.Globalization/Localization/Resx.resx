@@ -2870,7 +2870,7 @@ To proceed you must change the old password!</value>
     <value>Type old password</value>
   </data>
   <data name="pos_pinpad_message_type_password" xml:space="preserve">
-    <value>Type user password</value>
+    <value>Enter PIN</value>
   </data>
   <data name="pos_ticketlist_label_designation" xml:space="preserve">
     <value>Designation</value>

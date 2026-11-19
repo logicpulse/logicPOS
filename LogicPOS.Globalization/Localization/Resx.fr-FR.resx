@@ -2870,7 +2870,7 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
     <value>Type d'ancien mot de passe</value>
   </data>
   <data name="pos_pinpad_message_type_password" xml:space="preserve">
-    <value>Type de mot de passe utilisateur</value>
+    <value>Saisissez le code PIN</value>
   </data>
   <data name="pos_ticketlist_label_designation" xml:space="preserve">
     <value>Désignation</value>

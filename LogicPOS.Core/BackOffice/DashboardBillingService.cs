@@ -161,7 +161,8 @@ public sealed class DashboardBillingService : IDashboardBillingService
             })
             .ToList();
 
-        var topArticles = await details
+        // SQLite cannot ORDER BY decimal: sort the grouped rows in memory.
+        var topArticles = (await details
             .ApplyDateFilter(periodStart, periodEnd)
             .GroupBy(detail => new
             {
@@ -178,11 +179,12 @@ public sealed class DashboardBillingService : IDashboardBillingService
                 Total = group.Sum(item => item.TotalFinal * (item.Document!.Type == "NC" ? -1 : 1)),
                 NetTotal = group.Sum(item => item.TotalNet * (item.Document!.Type == "NC" ? -1 : 1))
             })
+            .ToListAsync(cancellationToken))
             .OrderByDescending(item => item.Total)
             .Take(10)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
-        var paymentRows = await payments
+        var paymentRows = (await payments
             .ApplyDateFilter(periodStart, periodEnd)
             .GroupBy(payment => payment.PaymentMethod!.Designation)
             .Select(group => new
@@ -191,8 +193,9 @@ public sealed class DashboardBillingService : IDashboardBillingService
                 Total = group.Sum(payment => payment.Amount * (payment.Document!.Type == "NC" ? -1 : 1)),
                 NetTotal = group.Sum(payment => payment.Amount * (payment.Document!.Type == "NC" ? -1 : 1))
             })
+            .ToListAsync(cancellationToken))
             .OrderByDescending(item => item.Total)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         var paymentSum = paymentRows.Sum(item => item.Total);
         var paymentMethods = paymentRows
@@ -253,7 +256,7 @@ public sealed class DashboardBillingService : IDashboardBillingService
                 .ToList();
         }
 
-        var familyRows = await details
+        var familyRows = (await details
             .ApplyDateFilter(periodStart, periodEnd)
             .GroupBy(detail => detail.Article!.Subfamily!.Family!.Designation)
             .Select(group => new
@@ -262,9 +265,10 @@ public sealed class DashboardBillingService : IDashboardBillingService
                 Total = group.Sum(item => item.TotalFinal * (item.Document!.Type == "NC" ? -1 : 1)),
                 NetTotal = group.Sum(item => item.TotalNet * (item.Document!.Type == "NC" ? -1 : 1))
             })
+            .ToListAsync(cancellationToken))
             .OrderByDescending(item => item.Total)
             .Take(8)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         var familySum = familyRows.Sum(item => item.Total);
         var families = familyRows
