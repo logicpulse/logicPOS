@@ -1,8 +1,8 @@
-﻿using System.Globalization;
-using LogicPOS.Application.Features.Finance.Documents;
+﻿using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 using LogicPOS.Persistence.Database;
@@ -107,7 +107,8 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var methods = await database.PaymentMethods.AsNoTracking()
             .Where(item => item.IsDeleted == false)
-            .OrderBy(item => item.Designation)
+            .OrderBy(item => item.Order)
+            .ThenBy(item => item.Designation)
             .Select(item => new ReceiptPayOption { Id = item.Id, Name = item.Designation, ExchangeRate = 1m })
             .ToListAsync(cancellationToken);
         var currencies = await database.Currencies.AsNoTracking()
@@ -177,16 +178,32 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         var taxPayable = DocumentSettlementService.SumTaxPayable(allocations);
         var withholding = DocumentSettlementService.SumWithholding(allocations, country);
 
+        var series = await database.DocumentSeries
+            .Include(item => item.DocumentType)
+            .Include(item => item.FiscalYear)
+            .Where(item => item.IsDeleted == false
+                && item.FiscalYear!.IsDeleted == false
+                && item.DocumentType!.SaftDocumentType == SaftDocumentType.Payments)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (series is null)
+        {
+            return ReceiptPayResult.Fail("Nenhuma série activa para emissão de recibos foi encontrada.");
+        }
+
+        var refNo = ReceiptEmissionDefaults.TakeNextReceiptNumber(series);
+        var paymentMethod = await database.PaymentMethods.AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Id == request.PaymentMethodId, cancellationToken);
+
         var currency = await database.Currencies.AsNoTracking()
             .FirstOrDefaultAsync(item => item.Id == request.CurrencyId, cancellationToken);
         var receipt = new Receipt
         {
             PaymentMethodId = request.PaymentMethodId,
             DocumentType = documentType,
-            RefNo = documentType + " " + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture),
+            RefNo = refNo,
             Status = "N",
             SourcePayment = "P",
-            Mechanism = "NU",
+            Mechanism = paymentMethod?.Acronym ?? "NU",
             Amount = receiptAmount,
             TaxPayable = taxPayable,
             WithholdingTaxAmount = withholding,
@@ -199,6 +216,12 @@ public sealed class LocalReceiptEmission : IReceiptEmission
                 ? string.Join(",", documents.Select(item => item.Id))
                 : request.Notes
         };
+        if (_systemInformation.IsPortugal()
+            && string.IsNullOrWhiteSpace(series.ATDocCodeValidationSeries) == false)
+        {
+            receipt.Atcud = $"{series.ATDocCodeValidationSeries}-{series.NextNumber - 1}";
+        }
+
         database.Receipts.Add(receipt);
         foreach (var allocation in allocations)
         {
