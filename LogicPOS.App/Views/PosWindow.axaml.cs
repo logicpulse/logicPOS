@@ -505,7 +505,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
         else if (_pinPad?.IsVisible == true)
         {
-            PortraitChrome.FitOverlay(TicketFrame, this, 340, 420, lockHeight: false, bottomReserve: bottomReserve);
+            PortraitChrome.FitOverlay(TicketFrame, this, 340, 460, lockHeight: false, bottomReserve: bottomReserve);
         }
         else if (TicketKeypad.IsVisible)
         {
