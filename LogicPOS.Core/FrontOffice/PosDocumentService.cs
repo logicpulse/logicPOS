@@ -1462,8 +1462,40 @@ public sealed class PosDocumentService : IPosDocumentService
             return null;
         }
 
+        var hasReceipt = false;
+        var hasCreditNote = false;
+        if (InvoiceCancellationGuard.IsSalesInvoiceFamily(document.Type))
+        {
+            hasReceipt = await database.Payments
+                .AnyAsync(
+                    payment => payment.DocumentId == document.Id
+                        && payment.Receipt != null
+                        && payment.Receipt.IsDeleted == false
+                        && payment.Receipt.Status == "N",
+                    cancellationToken);
+            hasCreditNote = await database.Documents
+                .AnyAsync(
+                    item => item.IsDeleted == false
+                        && item.Type == "NC"
+                        && item.Status == "N"
+                        && item.ParentId == document.Id,
+                    cancellationToken);
+        }
+
+        var refusal = InvoiceCancellationGuard.Validate(
+            document.Type,
+            document.Status,
+            document.IsDraft,
+            hasReceipt,
+            hasCreditNote,
+            reason);
+        if (refusal is not null)
+        {
+            return refusal;
+        }
+
         document.Status = "A";
-        document.StatusReason = string.IsNullOrWhiteSpace(reason) ? "Anulação" : reason.Trim();
+        document.StatusReason = reason.Trim();
         document.StatusDate = DateTime.Now.ToString("yyyy-MM-dd");
         var stockMode = await ResolveStockModeAsync(database, document.Type, cancellationToken);
         if (stockMode != ProcessArticleStockMode.None)
