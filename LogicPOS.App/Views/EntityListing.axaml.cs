@@ -1760,10 +1760,11 @@ public partial class EntityListing : UserControl
                 IsEnabled = field.ReadOnly == false
             };
             ListingFilters.EnableLookupSearch(search);
+            var hasStoredId = Guid.TryParse(field.Value, out var storedId) && storedId != Guid.Empty;
             var current = options.FirstOrDefault(option => option.Id.ToString() == field.Value);
-            if (current is null && options.Count <= 40)
+            if (current is null && hasStoredId && options.Count <= 40)
             {
-                current = options.FirstOrDefault();
+                current = options.FirstOrDefault(option => option.Id != Guid.Empty);
             }
 
             if (current is not null)
@@ -1858,7 +1859,6 @@ public partial class EntityListing : UserControl
             vies.Click += async (_, _) => await CompleteVatAsync(true);
             DockPanel.SetDock(vies, Dock.Right);
             dock.Children.Insert(0, vies);
-            box.LostFocus += async (_, _) => await CompleteVatAsync(false);
         }
 
         if (field.Key is "Address" or "Residence" or "Locality" or "City" && field.ReadOnly == false && input is DockPanel addressDock)
