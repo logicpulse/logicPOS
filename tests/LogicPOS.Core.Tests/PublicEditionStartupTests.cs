@@ -340,7 +340,7 @@ public sealed class PublicEditionStartupTests
                 customer.Id,
                 [new PosSaleLine(article.Id, 1, article.CatalogPrice, 0, article.VatRateId)],
                 new PosDocumentHeader { PaymentToken = "MONEY" },
-                CancellationToken.None);
+                cancellationToken: CancellationToken.None);
             Assert.Null(issued.Error);
 
             var dashboard = services.GetRequiredService<IDashboardBillingService>();
@@ -371,7 +371,7 @@ public sealed class PublicEditionStartupTests
                 customer.Id,
                 [new PosSaleLine(article.Id, 1, article.CatalogPrice, 0, article.VatRateId)],
                 new PosDocumentHeader { PaymentToken = "MONEY" },
-                CancellationToken.None);
+                cancellationToken: CancellationToken.None);
             Assert.Null(issued.Error);
 
             var reports = services.GetRequiredService<IReportService>();
