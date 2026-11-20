@@ -2099,6 +2099,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
+            if (type == typeof(User) && property.Name == "ProfileId")
+            {
+                return "Indique o perfil.";
+            }
+
             var target = LookupType(type, property.Name);
             if (target is null)
             {

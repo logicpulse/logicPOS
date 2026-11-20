@@ -30,6 +30,7 @@ public static class GtkFormRules
         {
             "Clientes" => Customer(fields),
             "Utilizadores" => Optional(fields, "Name", "o nome", NamePattern, required: true)
+                ?? RequiredLookup(fields, "ProfileId", "o perfil")
                 ?? Email(fields, required: false)
                 ?? Optional(fields, "Phone", "o telefone", PhonePattern, required: false)
                 ?? Optional(fields, "MobilePhone", "o telemóvel", PhonePattern, required: false)

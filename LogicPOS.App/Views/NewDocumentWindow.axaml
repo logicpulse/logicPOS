@@ -544,8 +544,7 @@
                                     <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
                                 </Button>
                                 <TextBox x:Name="EditorFiscal"
-                                         Classes="bo_line_editor_input bo_numeric"
-                                         LostFocus="OnCustomerFiscalLostFocus" />
+                                         Classes="bo_line_editor_input bo_numeric" />
                             </DockPanel>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="1">

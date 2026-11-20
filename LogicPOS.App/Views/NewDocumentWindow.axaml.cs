@@ -2833,8 +2833,6 @@ public partial class NewDocumentWindow : UserControl
 
     private async void OnCustomerViesClick(object? sender, RoutedEventArgs e) => await CompleteCustomerVatAsync(force: true);
 
-    private async void OnCustomerFiscalLostFocus(object? sender, RoutedEventArgs e) => await CompleteCustomerVatAsync(force: false);
-
     private async void OnCustomerPostalClick(object? sender, RoutedEventArgs e) => await CompleteCustomerPostalAsync(force: true);
 
     private async void OnCustomerPostalLostFocus(object? sender, RoutedEventArgs e) => await CompleteCustomerPostalAsync(force: false);
