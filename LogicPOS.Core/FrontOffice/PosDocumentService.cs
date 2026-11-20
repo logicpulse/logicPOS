@@ -897,6 +897,15 @@ public sealed class PosDocumentService : IPosDocumentService
             return seriesResult;
         }
 
+        var atSeriesRefusal = await RefuseMissingSeriesAtCodeAsync(
+            scope.ServiceProvider,
+            documentType,
+            cancellationToken);
+        if (atSeriesRefusal is not null)
+        {
+            return PosDocumentResult.Fail(Explain(atSeriesRefusal));
+        }
+
         var country = SystemCountry;
         var useAgtRounding = UseAgtRoundingForDocuments();
         var details = lines.Select(line => ToCreateDetail(line, country, useAgtRounding)).ToList();
@@ -2029,6 +2038,18 @@ public sealed class PosDocumentService : IPosDocumentService
             scope.ServiceProvider.GetRequiredService<IVatRateRepository>(),
             scope.ServiceProvider.GetRequiredService<IVatExemptionReasonRepository>());
 
+        if (isDraft == false)
+        {
+            var atSeriesRefusal = await RefuseMissingSeriesAtCodeAsync(
+                scope.ServiceProvider,
+                documentType,
+                cancellationToken);
+            if (atSeriesRefusal is not null)
+            {
+                return PosDocumentResult.Fail(Explain(atSeriesRefusal));
+            }
+        }
+
         var created = await Document.CreateAsync(
             dto,
             references.DocumentRepository,
@@ -2368,6 +2389,22 @@ public sealed class PosDocumentService : IPosDocumentService
             TicketFinalLine2 = Value("TICKET_FOOTER_LINE2"),
             CurrencyCode = Value("SYSTEM_CURRENCY")
         };
+    }
+
+    private async Task<string?> RefuseMissingSeriesAtCodeAsync(
+        IServiceProvider services,
+        string documentType,
+        CancellationToken cancellationToken)
+    {
+        var fiscal = services.GetService<IFiscalModule>();
+        var fiscalAvailable = fiscal?.IsAvailable == true;
+        var series = await services.GetRequiredService<IDocumentSeriesRepository>()
+            .GetActiveSeriesByDocumentTypeForDocumentCreationAsync(documentType, null, cancellationToken);
+        return FiscalSeriesAtRules.RefusalMessageIfMissing(
+            documentType,
+            series?.ATDocCodeValidationSeries,
+            SystemCountry,
+            fiscalAvailable);
     }
 
     private FiscalCountry SystemCountry => _systemInformation.Country;

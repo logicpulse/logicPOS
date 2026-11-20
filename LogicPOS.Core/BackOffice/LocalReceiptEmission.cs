@@ -2,7 +2,9 @@
 using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
+using LogicPOS.Core.Fiscal;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Repositories;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 using LogicPOS.Persistence.Database;
@@ -132,6 +134,19 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         if (seriesError is not null)
         {
             return ReceiptPayResult.Fail(seriesError);
+        }
+
+        var fiscal = scope.ServiceProvider.GetService<IFiscalModule>();
+        var receiptSeries = await scope.ServiceProvider.GetRequiredService<IDocumentSeriesRepository>()
+            .GetActiveSeriesForReceiptCreationAsync(null, cancellationToken);
+        var atRefusal = FiscalSeriesAtRules.RefusalMessageIfMissing(
+            documentType,
+            receiptSeries?.ATDocCodeValidationSeries,
+            _systemInformation.Country,
+            fiscal?.IsAvailable == true);
+        if (atRefusal is not null)
+        {
+            return ReceiptPayResult.Fail(atRefusal);
         }
 
         var documents = await database.Documents
