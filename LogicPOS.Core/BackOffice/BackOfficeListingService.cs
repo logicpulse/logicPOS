@@ -65,7 +65,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Date"] = "Data",
         ["NextNumber"] = "Próximo número",
         ["HardwareId"] = "Hardware ID",
-        ["IsDefault"] = "Por padrão",
+        ["IsDefault"] = "Predefinido",
         ["Favorite"] = "Favorito",
         ["Discount"] = "Desconto",
         ["Price1"] = "Preço 1",
@@ -91,8 +91,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Path"] = "Caminho",
         ["Login"] = "Login",
         ["Pin"] = "PIN",
-        ["PortalPassword"] = "Password do portal",
-        ["PortalPasswordConfirm"] = "Confirmar password do portal",
+        ["PortalPassword"] = "Palavra-passe do portal",
+        ["PortalPasswordConfirm"] = "Confirmar palavra-passe do portal",
         ["Month"] = "Mês",
         ["Day"] = "Dia",
         ["Fixed"] = "Fixo",
@@ -175,7 +175,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["StopBits"] = "Bits de Paragem",
         ["COMPort"] = "Porta",
         ["NetworkName"] = "Network Share ou Parâmetros porta Usb",
-        ["Code2"] = "Código do País (2 Caracteres)",
+        ["Code2"] = "Código do país",
         ["Code3"] = "Código do País (3 Caracteres)",
         ["Capital"] = "Capital",
         ["MinimumStock"] = "Stock mínimo",
@@ -197,7 +197,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["ATDocCodeValidationSeries"] = "Código de validação AT",
         ["AtValidationCode"] = "Código de validação AT",
         ["CharactersPerLine"] = "Num.Caracteres Linha",
-        ["ThermalCutCommand"] = "Commando de Corte",
+        ["ThermalCutCommand"] = "Comando de Corte",
         ["ThermalEncoding"] = "Encoding",
         ["ThermalImageCompanyLogo"] = "Ficheiro de Imagem de Logotipo",
         ["ThermalMaxCharsPerLineNormal"] = "Máximo de Caracteres por Linha Letra Normal",
@@ -213,7 +213,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["BarcodeReaderId"] = "Leitor de Código de Barras",
         ["CardReaderId"] = "Leitor de Cartões",
         ["ReaderSizes"] = "Tamanhos Válidos do Leitor",
-        ["AssignedSeating"] = "Assentos atribuído",
+        ["AssignedSeating"] = "Assentos atribuídos",
         ["Locations"] = "Localizações",
         ["ExchangeRate"] = "Câmbio",
         ["Symbol"] = "Símbolo",
@@ -2139,7 +2139,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         {
             if (creating)
             {
-                return "Indique a password do portal (mínimo 8 caracteres).";
+                return "Indique a palavra-passe do portal (mínimo 8 caracteres).";
             }
 
             return null;
@@ -2147,17 +2147,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         if (password.Length == 0 || confirm.Length == 0)
         {
-            return "Preencha a password do portal e a confirmação, ou deixe ambas em branco.";
+            return "Preencha a palavra-passe do portal e a confirmação, ou deixe ambas em branco.";
         }
 
         if (PortalPasswordRules.IsStrongEnough(password) == false)
         {
-            return $"A password do portal tem de ter pelo menos {PortalPasswordRules.MinimumLength} caracteres.";
+            return $"A palavra-passe do portal tem de ter pelo menos {PortalPasswordRules.MinimumLength} caracteres.";
         }
 
         if (string.Equals(password, confirm, StringComparison.Ordinal) == false)
         {
-            return "A confirmação da password do portal não coincide.";
+            return "A confirmação da palavra-passe do portal não coincide.";
         }
 
         user.Password = _passwords.HashPassword(password);

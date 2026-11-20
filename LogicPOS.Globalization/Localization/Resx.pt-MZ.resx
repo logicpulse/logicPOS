@@ -592,7 +592,7 @@ Contacte o suporte técnico!</value>
 Tente mais tarde!</value>
   </data>
   <data name="dialog_message_low_resolution_detected" xml:space="preserve">
-    <value>Erro! Baixa resolução detectada!
+    <value>Erro! Baixa resolução detetada!
 
 Esta aplicação apenas corre em monitores com resolução de {0} x {1} ou superiores!
 A aplicação será encerrada.</value>
@@ -882,7 +882,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Tipo de artigos</value>
   </data>
   <data name="global_assigned_seating" xml:space="preserve">
-    <value>Assentos atribuído</value>
+    <value>Assentos atribuídos</value>
   </data>
   <data name="global_attended_by" xml:space="preserve">
     <value>Atendido por</value>
@@ -1257,7 +1257,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Dia(s)</value>
   </data>
   <data name="global_debit" xml:space="preserve">
-    <value>Valor em Débito</value>
+    <value>Valor em Dívida</value>
   </data>
   <data name="global_description" xml:space="preserve">
     <value>Descrição</value>
@@ -1864,7 +1864,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Impressoras</value>
   </data>
   <data name="global_printer_thermal_cut_command" xml:space="preserve">
-    <value>Commando de Corte</value>
+    <value>Comando de Corte</value>
   </data>
   <data name="global_printer_thermal_encoding" xml:space="preserve">
     <value>Encoding</value>
@@ -2256,7 +2256,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Total Débito</value>
   </data>
   <data name="global_total_deliver" xml:space="preserve">
-    <value>Total entregue</value>
+    <value>Valor entregue</value>
   </data>
   <data name="global_total_discount_acronym" xml:space="preserve">
     <value>T.Dsc</value>
@@ -2771,7 +2771,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>MB</value>
   </data>
   <data name="pos_button_label_payment_type_credit_card" xml:space="preserve">
-    <value>Cartão Crédito</value>
+    <value>Cartão de Crédito</value>
   </data>
   <data name="pos_button_label_payment_type_current_account" xml:space="preserve">
     <value>Conta Corrente</value>
@@ -2780,7 +2780,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Cartão Cliente</value>
   </data>
   <data name="pos_button_label_payment_type_debit_card" xml:space="preserve">
-    <value>Cartão Débito</value>
+    <value>Cartão de Débito</value>
     <comment>Label for POS Payment Method button</comment>
   </data>
   <data name="pos_button_label_payment_type_money" xml:space="preserve">
@@ -3939,7 +3939,7 @@ Por favor, insira outro número e tente novamente.</value>
     <value>Movimento interno</value>
   </data>
   <data name="global_by_default" xml:space="preserve">
-    <value>Por padrão</value>
+    <value>Predefinido</value>
   </data>
   <data name="global_locations" xml:space="preserve">
     <value>Localizações</value>

@@ -100,7 +100,7 @@
                                         </Grid>
                                     </Border>
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <TextBlock Classes="pos_pay_caption" Text="Total entregue" VerticalAlignment="Center" />
+                                        <TextBlock Classes="pos_pay_caption" Text="Valor entregue" VerticalAlignment="Center" />
                                         <TextBlock x:Name="DeliveryValue" Grid.Column="1" Classes="pos_pay_amount" Text="0" />
                                     </Grid>
                                     <Grid ColumnDefinitions="*,Auto">

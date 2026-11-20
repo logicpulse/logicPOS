@@ -126,7 +126,7 @@
                         <DataGridTextColumn Header="NIF" Binding="{Binding FiscalNumber}" Width="120" MinWidth="80" IsReadOnly="True" />
                         <DataGridTextColumn Header="Total Final" Binding="{Binding TotalFinalText}" Width="140" MinWidth="140" IsReadOnly="True" />
                         <DataGridTextColumn Header="Valor Pago" Binding="{Binding TotalPaidText}" Width="140" MinWidth="140" IsReadOnly="True" />
-                        <DataGridTextColumn Header="Valor em Débito" Binding="{Binding TotalToPayText}" Width="170" MinWidth="170" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Valor em Dívida" Binding="{Binding TotalToPayText}" Width="170" MinWidth="170" IsReadOnly="True" />
                         <DataGridTextColumn Header="Documentos Associados" Binding="{Binding RelatedDocuments}" Width="230" MinWidth="230" IsReadOnly="True" />
                         <DataGridTemplateColumn Header="" Width="72" MinWidth="72" MaxWidth="72" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
@@ -220,7 +220,7 @@
                                 <TextBlock Classes="bo_new_doc_caption" Text="Total (sistema)" />
                                 <TextBox x:Name="SystemAmount" Classes="bo_entity_input" IsReadOnly="True" />
                             </StackPanel>
-                            <TextBlock Classes="bo_new_doc_caption" Text="Total entregue" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Valor entregue" />
                             <TextBox x:Name="TotalPaid" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
                             <TextBlock Classes="bo_new_doc_caption" Text="Data" />
                             <CalendarDatePicker x:Name="PayDate" Classes="bo_entity_input" HorizontalAlignment="Stretch" />

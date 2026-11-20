@@ -733,7 +733,7 @@ public partial class EntityListing : UserControl
                 TextTrimming = TextTrimming.CharacterEllipsis,
                 TextWrapping = TextWrapping.NoWrap
             };
-            ToolTip.SetTip(headerBlock, title);
+            ToolTip.SetTip(headerBlock, ListingLabelTips.Tooltip(title));
             Grid.Columns.Add(new DataGridTextColumn
             {
                 Header = headerBlock,
@@ -761,18 +761,18 @@ public partial class EntityListing : UserControl
 
         if (ShowsDocument)
         {
-            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg", row => _ = OpenListedDocumentAsync(row), _ => true));
-            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_b.svg", row => _ = PrintListedDocumentAsync(row), _ => true));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg", "Ver", row => _ = OpenListedDocumentAsync(row), _ => true));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_b.svg", "Imprimir", row => _ = PrintListedDocumentAsync(row), _ => true));
         }
 
         if (snapshot.CanEdit)
         {
-            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg", row => _ = EditAsync(row.Id), _ => true));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg", "Editar", row => _ = EditAsync(row.Id), _ => true));
         }
 
         if (snapshot.CanDelete)
         {
-            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg", row => _ = DeleteAsync(row), row => row.CanDelete));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg", "Eliminar", row => _ = DeleteAsync(row), row => row.CanDelete));
         }
     }
 
@@ -815,7 +815,7 @@ public partial class EntityListing : UserControl
         };
     }
 
-    private static DataGridTemplateColumn ActionColumn(string icon, Action<ListingRow> click, Func<ListingRow, bool> enabled)
+    private static DataGridTemplateColumn ActionColumn(string icon, string tip, Action<ListingRow> click, Func<ListingRow, bool> enabled)
     {
         return new DataGridTemplateColumn
         {
@@ -829,6 +829,7 @@ public partial class EntityListing : UserControl
             CellTemplate = new FuncDataTemplate<ListingRow>((row, _) =>
             {
                 var button = new Button { Classes = { "bo_doc_icon_button" }, IsEnabled = enabled(row) };
+                ToolTip.SetTip(button, ListingLabelTips.Tooltip(tip));
                 button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
                 {
                     Classes = { "bo_doc_row_icon" },
@@ -2631,7 +2632,9 @@ public partial class EntityListing : UserControl
     private static TextBlock FieldCaption(ListingField field)
     {
         var caption = new TextBlock { Classes = { "bo_new_doc_caption" } };
-        caption.Inlines.Add(new Avalonia.Controls.Documents.Run(field.Label ?? string.Empty));
+        var label = field.Label ?? string.Empty;
+        ToolTip.SetTip(caption, ListingLabelTips.Tooltip(label));
+        caption.Inlines.Add(new Avalonia.Controls.Documents.Run(label));
         if (field.Required)
         {
             caption.Inlines.Add(new Avalonia.Controls.Documents.Run(" *")
