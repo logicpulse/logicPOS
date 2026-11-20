@@ -62,13 +62,14 @@ public interface IPosDocumentService
 {
     Task<PosDocumentResult> IssueSimplifiedInvoiceAsync(
         Guid customerId,
-        string paymentToken,
+        string? paymentToken,
         decimal discountPercent,
         decimal? amountDelivered,
         string? notes,
         IReadOnlyList<PosSaleLine> lines,
         string documentType = "FS",
         bool createMissingSeries = false,
+        IReadOnlyList<PosDocumentPaymentMethod>? paymentMethods = null,
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<string>> ListRecentAsync(CancellationToken cancellationToken = default);
