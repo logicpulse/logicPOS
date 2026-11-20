@@ -2227,6 +2227,20 @@ public sealed class PosDocumentService : IPosDocumentService
         var details = lines.Select(line => ToCreateDetail(line, country, useAgtRounding)).ToList();
         var postalRules = await ListCountryPostalRulesAsync(cancellationToken);
 
+        if (_systemInformation.IsPortugal() && typeRules.IsWayBill())
+        {
+            var obligation = await TransportGuideCirculationGate.ReadObligationMarkedAsync(database, cancellationToken);
+            var offlineRefusal = TransportGuideCirculationRules.IssueRefusalWhenOffline(
+                obligation,
+                documentType,
+                isDraft,
+                DatabaseStartup.UsesCloud());
+            if (offlineRefusal is not null)
+            {
+                return PosDocumentResult.Fail(offlineRefusal);
+            }
+        }
+
         var dto = new CreateDocumentDto(
             Type: documentType,
             CustomerId: customerId,

@@ -2956,6 +2956,9 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="prefparam_company_website" xml:space="preserve">
     <value>Página de Internet</value>
   </data>
+  <data name="prefparam_company_communicate_transport_documents" xml:space="preserve">
+    <value>Obrigação de comunicar guias de transporte (volume de negócios superior a 100 000 €)</value>
+  </data>
   <data name="prefparam_culture" xml:space="preserve">
     <value>Aplicação :: Idioma</value>
   </data>

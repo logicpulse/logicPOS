@@ -1010,6 +1010,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter))
         {
             await EnsureLeiPtCompanyFiscalMarksAsync(database, cancellationToken);
+            if (FiscalFeatures.ShowsAtCommunication(_system.Country))
+            {
+                await EnsureCompanyTransportObligationParameterAsync(database, cancellationToken);
+            }
+
             if (FiscalFeatures.ShowsAgt(_system.Country))
             {
                 await EnsureAgtFeCompanyParametersAsync(database, cancellationToken);
@@ -2655,6 +2660,38 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         Add(new Guid("a1b2c3d4-e5f6-4789-a012-3456789ab901"), tokens[0], "Regime de isenção (art.º 53.º)", 112);
         Add(new Guid("b2c3d4e5-f6a7-4890-b123-456789abcdef"), tokens[1], "Vendedor ambulante", 113);
+        await database.SaveChangesAsync(cancellationToken);
+    }
+
+    private static async Task EnsureCompanyTransportObligationParameterAsync(
+        LogicPOSDbContext database,
+        CancellationToken cancellationToken)
+    {
+        const string token = CompanyFiscalMarkTokens.CommunicateTransportDocuments;
+        var exists = await database.PreferenceParameters
+            .AnyAsync(item => item.IsDeleted == false && item.Token == token, cancellationToken);
+        if (exists)
+        {
+            return;
+        }
+
+        var now = DateTime.Now;
+        database.PreferenceParameters.Add(new PreferenceParameter
+        {
+            Id = new Guid("b4e8c2a1-7f3d-4e91-9c6a-2d8f5e0b1a43"),
+            Token = token,
+            Value = "False",
+            Required = false,
+            RegEx = "RegexBoolean",
+            ResourceString = "prefparam_company_communicate_transport_documents",
+            FormType = 1,
+            FormPageNo = 1,
+            InputType = LogicPOS.Domain.Enums.PreferenceParameterInputType.CheckButton,
+            Order = 115,
+            Code = "115",
+            CreatedAt = now,
+            UpdatedAt = now
+        });
         await database.SaveChangesAsync(cancellationToken);
     }
 
