@@ -11,6 +11,7 @@ using LogicPOS.Core.FrontOffice;
 using LogicPOS.Core.Finance.Postal;
 using LogicPOS.Core.Licensing;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Common;
 using LogicPOS.Domain.Services;
 using LogicPOS.Domain.ValueObjects;
@@ -1143,7 +1144,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             ("Number", document.Number),
             ("Type", document.Type),
             ("Name", document.Customer.Name),
-            ("TotalFinal", document.TotalFinal.ToString("0.00", CultureInfo.CurrentCulture)),
+            ("TotalFinal", DocumentMoneyTotal.FormatFixed(document.TotalFinal, CultureInfo.CurrentCulture)),
             ("Date", document.CreatedAt.ToString("yyyy-MM-dd HH:mm")))).ToList();
         return Grid("Número", "Number", rows,
             ("Tipo", "Type"),

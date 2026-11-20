@@ -1,4 +1,6 @@
-﻿namespace LogicPOS.Core.FrontOffice;
+﻿using LogicPOS.Domain.Entities.Finance.Calculations;
+
+namespace LogicPOS.Core.FrontOffice;
 
 public sealed class PosDocumentPage
 {
@@ -37,15 +39,15 @@ public sealed class PosDocumentRow
 
     public decimal FinalTotal { get; init; }
 
-    public string FinalTotalText => FinalTotal.ToString("N2");
+    public string FinalTotalText => DocumentMoneyTotal.Format(FinalTotal);
 
     public decimal PaidAmount { get; init; }
 
-    public string PaidAmountText => PaidAmount.ToString("N2");
+    public string PaidAmountText => DocumentMoneyTotal.Format(PaidAmount);
 
     public decimal DebitAmount { get; init; }
 
-    public string DebitAmountText => DebitAmount.ToString("N2");
+    public string DebitAmountText => DocumentMoneyTotal.Format(DebitAmount);
 
     public string AssociatedDocuments { get; init; } = string.Empty;
 
