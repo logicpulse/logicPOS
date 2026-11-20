@@ -13,6 +13,8 @@ public partial class ReportsWindow : UserControl
 {
     private const string IconRoot = "avares://LogicPOS.App/Assets/Images/BackOffice/";
 
+    private static readonly LookupOption AllOption = new() { Id = Guid.Empty, Label = "Todos" };
+
     private readonly List<ReportDefinition> _catalog = new();
     private readonly List<Button> _rows = new();
     private ReportDefinition? _selected;
@@ -295,15 +297,47 @@ public partial class ReportsWindow : UserControl
             box.ItemTemplate = template;
         }
 
-        CustomerBox.ItemsSource = await listing.LookupAsync("Clientes");
-        ArticleBox.ItemsSource = await listing.LookupAsync("Artigos");
-        DocumentTypeBox.ItemsSource = await listing.LookupAsync("Tipo de documento");
-        TerminalBox.ItemsSource = await listing.LookupAsync("Terminais");
-        VatBox.ItemsSource = await listing.LookupAsync("Taxas de imposto");
-        WarehouseBox.ItemsSource = await listing.LookupAsync("Armazém");
-        FamilyBox.ItemsSource = await listing.LookupAsync("Famílias");
-        SubfamilyBox.ItemsSource = await listing.LookupAsync("Subfamílias");
+        CustomerBox.ItemsSource = WithAllOption(await listing.LookupAsync("Clientes"));
+        ArticleBox.ItemsSource = WithAllOption(await listing.LookupAsync("Artigos"));
+        DocumentTypeBox.ItemsSource = WithAllOption(await listing.LookupAsync("Tipo de documento"));
+        TerminalBox.ItemsSource = WithAllOption(await listing.LookupAsync("Terminais"));
+        VatBox.ItemsSource = WithAllOption(await listing.LookupAsync("Taxas de imposto"));
+        WarehouseBox.ItemsSource = WithAllOption(await listing.LookupAsync("Armazém"));
+        FamilyBox.ItemsSource = WithAllOption(await listing.LookupAsync("Famílias"));
+        SubfamilyBox.ItemsSource = WithAllOption(await listing.LookupAsync("Subfamílias"));
+        ResetFilterDefaults();
         _lookupsLoaded = true;
+    }
+
+    private static IReadOnlyList<LookupOption> WithAllOption(IReadOnlyList<LookupOption> items)
+    {
+        var list = new List<LookupOption>(items.Count + 1) { AllOption };
+        list.AddRange(items);
+        return list;
+    }
+
+    private void ResetFilterDefaults()
+    {
+        Period.SetRange(
+            new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
+            DateTime.Today.AddDays(1).AddSeconds(-1));
+        foreach (var box in new[]
+                 {
+                     CustomerBox, ArticleBox, DocumentTypeBox, TerminalBox, VatBox, WarehouseBox, FamilyBox, SubfamilyBox
+                 })
+        {
+            if (box.ItemCount > 0)
+            {
+                box.SelectedIndex = 0;
+            }
+            else
+            {
+                box.SelectedItem = null;
+            }
+        }
+
+        SerialBox.Text = string.Empty;
+        DocumentNumberBox.Text = string.Empty;
     }
 
     private async void OnGenerateClick(object? sender, RoutedEventArgs e)
@@ -336,6 +370,7 @@ public partial class ReportsWindow : UserControl
         FiltersTitle.Text = "Filtros";
         FiltersReportName.Text = report.Name;
         ApplyFilterVisibility(report);
+        ResetFilterDefaults();
         FiltersOverlay.IsVisible = true;
         RelayoutForViewport();
     }
