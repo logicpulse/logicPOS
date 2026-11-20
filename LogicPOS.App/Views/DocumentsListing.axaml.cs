@@ -7,7 +7,9 @@ using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using LogicPOS.App;
 using LogicPOS.App.Hardware;
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
+using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -1037,8 +1039,23 @@ public partial class DocumentsListing : UserControl
             var backOfficeOnly = await IsBackOfficeOnlyAsync();
             var useThermal = backOfficeOnly == false
                 && (string.IsNullOrWhiteSpace(printer) || await IsTerminalThermalPrinterAsync(printer));
+            var scopes = AppComposition.Services?.GetService<IServiceScopeFactory>();
+            var system = AppComposition.Services?.GetService<ISystemInformationService>();
             foreach (var row in rows)
             {
+                if (scopes is not null)
+                {
+                    var circulation = await TransportGuideCirculationGate.TryGetRefusalForPortugalAsync(
+                        scopes,
+                        system,
+                        row.Id);
+                    if (circulation is not null)
+                    {
+                        printError ??= circulation;
+                        continue;
+                    }
+                }
+
                 if (useThermal)
                 {
                     var (handled, error) = await PrintThermalDocumentAsync(row.Id);

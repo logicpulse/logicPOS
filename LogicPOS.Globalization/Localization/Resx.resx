@@ -2956,6 +2956,9 @@ To proceed you must change the old password!</value>
   <data name="prefparam_company_website" xml:space="preserve">
     <value>Web Site</value>
   </data>
+  <data name="prefparam_company_communicate_transport_documents" xml:space="preserve">
+    <value>Obligation to communicate transport guides (turnover above EUR 100,000)</value>
+  </data>
   <data name="prefparam_culture" xml:space="preserve">
     <value>Application :: Language</value>
   </data>

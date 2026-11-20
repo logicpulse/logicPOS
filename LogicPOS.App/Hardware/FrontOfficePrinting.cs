@@ -1,5 +1,7 @@
 using System.Text;
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
+using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Core.Licensing;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,6 +55,12 @@ internal static class FrontOfficePrinting
         if (blocked is not null)
         {
             return (false, blocked);
+        }
+
+        var circulation = await TryTransportCirculationBlockAsync(documentId);
+        if (circulation is not null)
+        {
+            return (true, circulation);
         }
 
         if (await IsBackOfficeOnlyAsync())
@@ -117,6 +125,12 @@ internal static class FrontOfficePrinting
         if (blocked is not null)
         {
             return (false, blocked);
+        }
+
+        var circulation = await TryTransportCirculationBlockAsync(documentId);
+        if (circulation is not null)
+        {
+            return (true, circulation);
         }
 
         if (await IsBackOfficeOnlyAsync())
@@ -408,6 +422,23 @@ internal static class FrontOfficePrinting
         payload.AddRange(Cp860.GetBytes(text.ToString()));
         payload.AddRange([0x1B, 0x64, 0x04, 0x1D, 0x56, 0x00]);
         return payload.ToArray();
+    }
+
+    private static async Task<string?> TryTransportCirculationBlockAsync(Guid documentId)
+    {
+        if (documentId == Guid.Empty)
+        {
+            return null;
+        }
+
+        var scopes = AppComposition.Services?.GetService<IServiceScopeFactory>();
+        if (scopes is null)
+        {
+            return null;
+        }
+
+        var system = AppComposition.Services?.GetService<ISystemInformationService>();
+        return await TransportGuideCirculationGate.TryGetRefusalForPortugalAsync(scopes, system, documentId);
     }
 
     private static string Pair(string left, string right, int width)

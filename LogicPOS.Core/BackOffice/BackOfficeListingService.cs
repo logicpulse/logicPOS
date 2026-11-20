@@ -1007,11 +1007,18 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return await QueryPostalLocalitiesPageAsync(database, page, search, cancellationToken);
         }
 
-        if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter)
-            && FiscalFeatures.ShowsAgt(_system.Country))
+        if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter))
         {
-            await EnsureAgtFeCompanyParametersAsync(database, cancellationToken);
-            await EnsureAgtOperationalPreferencesAsync(database, cancellationToken);
+            if (FiscalFeatures.ShowsAtCommunication(_system.Country))
+            {
+                await EnsureCompanyTransportObligationParameterAsync(database, cancellationToken);
+            }
+
+            if (FiscalFeatures.ShowsAgt(_system.Country))
+            {
+                await EnsureAgtFeCompanyParametersAsync(database, cancellationToken);
+                await EnsureAgtOperationalPreferencesAsync(database, cancellationToken);
+            }
         }
 
         if (page.Filter == "system" && page.EntityType == typeof(PreferenceParameter))
@@ -2607,6 +2614,38 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
         || value == "1"
         || string.Equals(value, "sim", StringComparison.OrdinalIgnoreCase);
+
+    private static async Task EnsureCompanyTransportObligationParameterAsync(
+        LogicPOSDbContext database,
+        CancellationToken cancellationToken)
+    {
+        const string token = CompanyFiscalMarkTokens.CommunicateTransportDocuments;
+        var exists = await database.PreferenceParameters
+            .AnyAsync(item => item.IsDeleted == false && item.Token == token, cancellationToken);
+        if (exists)
+        {
+            return;
+        }
+
+        var now = DateTime.Now;
+        database.PreferenceParameters.Add(new PreferenceParameter
+        {
+            Id = new Guid("b4e8c2a1-7f3d-4e91-9c6a-2d8f5e0b1a43"),
+            Token = token,
+            Value = "False",
+            Required = false,
+            RegEx = "RegexBoolean",
+            ResourceString = "prefparam_company_communicate_transport_documents",
+            FormType = 1,
+            FormPageNo = 1,
+            InputType = LogicPOS.Domain.Enums.PreferenceParameterInputType.CheckButton,
+            Order = 115,
+            Code = "115",
+            CreatedAt = now,
+            UpdatedAt = now
+        });
+        await database.SaveChangesAsync(cancellationToken);
+    }
 
     /// <summary>
     /// Ensures the AGT-FE private key preference exists so BackOffice company settings can edit it
