@@ -1007,11 +1007,14 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return await QueryPostalLocalitiesPageAsync(database, page, search, cancellationToken);
         }
 
-        if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter)
-            && FiscalFeatures.ShowsAgt(_system.Country))
+        if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter))
         {
-            await EnsureAgtFeCompanyParametersAsync(database, cancellationToken);
-            await EnsureAgtOperationalPreferencesAsync(database, cancellationToken);
+            await EnsureLeiPtCompanyFiscalMarksAsync(database, cancellationToken);
+            if (FiscalFeatures.ShowsAgt(_system.Country))
+            {
+                await EnsureAgtFeCompanyParametersAsync(database, cancellationToken);
+                await EnsureAgtOperationalPreferencesAsync(database, cancellationToken);
+            }
         }
 
         if (page.Filter == "system" && page.EntityType == typeof(PreferenceParameter))
@@ -2607,6 +2610,53 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
         || value == "1"
         || string.Equals(value, "sim", StringComparison.OrdinalIgnoreCase);
+
+    private static async Task EnsureLeiPtCompanyFiscalMarksAsync(LogicPOSDbContext database, CancellationToken cancellationToken)
+    {
+        var tokens = new[]
+        {
+            LogicPOS.Core.Fiscal.CompanyFiscalMarkTokens.RegimeArtigo53,
+            LogicPOS.Core.Fiscal.CompanyFiscalMarkTokens.VendedorAmbulante
+        };
+        var existing = await database.PreferenceParameters
+            .Where(item => item.IsDeleted == false && tokens.Contains(item.Token))
+            .Select(item => item.Token)
+            .ToListAsync(cancellationToken);
+        if (existing.Count == tokens.Length)
+        {
+            return;
+        }
+
+        var now = DateTime.Now;
+        void Add(Guid id, string token, string label, uint order)
+        {
+            if (existing.Contains(token))
+            {
+                return;
+            }
+
+            database.PreferenceParameters.Add(new PreferenceParameter
+            {
+                Id = id,
+                Token = token,
+                Value = "False",
+                Required = false,
+                RegEx = "RegexBoolean",
+                ResourceString = label,
+                FormType = 1,
+                FormPageNo = 1,
+                InputType = LogicPOS.Domain.Enums.PreferenceParameterInputType.CheckButton,
+                Order = order,
+                Code = order.ToString(),
+                CreatedAt = now,
+                UpdatedAt = now
+            });
+        }
+
+        Add(new Guid("a1b2c3d4-e5f6-4789-a012-3456789ab901"), tokens[0], "Regime de isenção (art.º 53.º)", 112);
+        Add(new Guid("b2c3d4e5-f6a7-4890-b123-456789abcdef"), tokens[1], "Vendedor ambulante", 113);
+        await database.SaveChangesAsync(cancellationToken);
+    }
 
     /// <summary>
     /// Ensures the AGT-FE private key preference exists so BackOffice company settings can edit it

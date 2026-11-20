@@ -8,7 +8,9 @@ using Avalonia.Layout;
 using Avalonia.Threading;
 using LogicPOS.App;
 using LogicPOS.Core;
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,6 +54,7 @@ public partial class NewDocumentWindow : UserControl
     private int _articleSearch;
     private readonly List<PosCustomer> _customerMatches = new();
     private int _customerSearch;
+    private CompanyFiscalMarkState _companyMarks = CompanyFiscalMarkState.None;
     private int _serialSearch;
     private PosCatalog _posCatalog = PosCatalog.Empty;
     private Guid? _padFamilyId;
@@ -181,6 +184,7 @@ public partial class NewDocumentWindow : UserControl
         _customer = null;
         CustomerName.Text = string.Empty;
         CustomerFiscal.Text = string.Empty;
+        _ = LoadCompanyMarksAsync();
         DateLabel.Text = DateTime.Now.ToString("dd/MM/yyyy");
         RefreshTotal();
         CreatedPdfPath = null;
@@ -3189,6 +3193,24 @@ public partial class NewDocumentWindow : UserControl
         return index >= 0 && index < items.Count ? items[index].Id : null;
     }
 
+    private async Task LoadCompanyMarksAsync()
+    {
+        var services = AppComposition.Services;
+        if (services is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _companyMarks = await services.GetRequiredService<ICompanyFiscalMarkService>().LoadAsync();
+        }
+        catch
+        {
+            _companyMarks = CompanyFiscalMarkState.None;
+        }
+    }
+
     private async void OnIssueClick(object? sender, RoutedEventArgs e)
     {
         try
@@ -3281,6 +3303,45 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
+        var paymentMethods = BuildPaymentMethods();
+        if (draft == false && paymentMethods.Count > 0)
+        {
+            var configuration = services.GetService<Microsoft.Extensions.Configuration.IConfiguration>();
+            var module = configuration?["DatabaseSettings:Module"];
+            var angola = services.GetService<ISystemInformationService>()?.IsAngola() == true;
+            var total = _lines.Sum(line => line.GrossTotal);
+            var context = new PosDocumentRules.SettledSaleContext(
+                module,
+                total,
+                angola,
+                _companyMarks.RegimeArtigo53,
+                _companyMarks.VendedorAmbulante,
+                PosDocumentRules.AllLinesAreProducts(_lines.Select(line => line.ClassAcronym)),
+                PosDocumentRules.ResolveBuyerFiscalNumberForCap(
+                    CustomerFiscal.Text,
+                    _customerIsFinal,
+                    _customerIsFinal ? null : CustomerFiscal.Text));
+            if (string.Equals(type.Acronym, "FS", StringComparison.OrdinalIgnoreCase)
+                && PosDocumentRules.CanIssueSimplifiedInvoice(context) == false)
+            {
+                ShowDocumentError("A fatura simplificada não cabe neste total para o modo e o cliente indicados.");
+                return;
+            }
+
+            var buyerError = PosDocumentRules.ValidateCompanyBuyerForSettledSale(
+                context,
+                CustomerName.Text,
+                _customer?.Address,
+                CustomerFiscal.Text,
+                _customerIsFinal);
+            if (buyerError is not null
+                && string.Equals(PosDocumentRules.ResolveSettledSaleDocumentType(context), "FR", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowDocumentError(buyerError);
+                return;
+            }
+        }
+
         var documents = services.GetRequiredService<IPosDocumentService>();
         if (close == false && _previewDraftId is Guid previous)
         {
@@ -3299,7 +3360,6 @@ public partial class NewDocumentWindow : UserControl
             line.Price,
             line.PriceIncludesVat,
             line.VatExemptionId)).ToList();
-        var paymentMethods = BuildPaymentMethods();
         var header = new PosDocumentHeader
         {
             PaymentConditionId = SelectedId(PaymentBox),
@@ -3767,6 +3827,7 @@ public partial class NewDocumentWindow : UserControl
     {
         public NewDocumentLine(PosArticle article, string family)
         {
+            ClassAcronym = article.ClassAcronym;
             ArticleId = article.Id;
             VatRateId = article.VatRateId;
             VatExemptionId = article.VatPercentage == 0m ? article.VatExemptionReasonId : null;
@@ -3790,6 +3851,7 @@ public partial class NewDocumentWindow : UserControl
 
         private NewDocumentLine(PosCopiedLine line, string family, decimal documentDiscount, Guid? articleExemptionId)
         {
+            ClassAcronym = PosDocumentRules.ProductsClassAcronym;
             ArticleId = line.ArticleId;
             VatRateId = line.VatRateId;
             // Se o rascunho não trouxer o motivo, usa o motivo do artigo quando o IVA é 0%.
@@ -3814,6 +3876,8 @@ public partial class NewDocumentWindow : UserControl
         }
 
         public Guid ArticleId { get; }
+
+        public string ClassAcronym { get; }
 
         public Guid VatRateId { get; private set; }
 

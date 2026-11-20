@@ -204,6 +204,55 @@ internal static class FrontOfficePrinting
         }
     }
 
+    public static async Task<string?> PrintParkingPaymentTicketAsync(decimal total, string paymentToken)
+    {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return blocked;
+        }
+
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        if (source is null)
+        {
+            return null;
+        }
+
+        var printer = await source.GetTerminalPrinterAsync();
+        if (printer is null)
+        {
+            return "Impressora térmica do terminal não configurada.";
+        }
+
+        try
+        {
+            var payload = RenderParkingPaymentTicket(total, paymentToken, printer.ColumnsNormal);
+            await ThermalPrinterOutput.SendAsync(printer, "Pagamento", payload);
+            return null;
+        }
+        catch (Exception exception)
+        {
+            return exception.Message;
+        }
+    }
+
+    private static byte[] RenderParkingPaymentTicket(decimal total, string paymentToken, int columns)
+    {
+        var width = Math.Max(16, columns);
+        var text = new StringBuilder();
+        text.AppendLine("TALÃO DE PAGAMENTO");
+        text.AppendLine(new string('-', width));
+        text.AppendLine(DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+        text.AppendLine($"Total: {MoneyFormat.Format(total)}");
+        text.AppendLine($"Método: {paymentToken}");
+        text.AppendLine(new string('-', width));
+        text.AppendLine();
+        var payload = new List<byte> { 0x1B, 0x40, 0x1B, 0x74, 0x03 };
+        payload.AddRange(Cp860.GetBytes(text.ToString()));
+        payload.AddRange([0x1B, 0x64, 0x04, 0x1D, 0x56, 0x00]);
+        return payload.ToArray();
+    }
+
     private static byte[] RenderOrderTicket(string table, IReadOnlyList<PosTicketLine> lines, int columns)
     {
         var width = Math.Max(16, columns);

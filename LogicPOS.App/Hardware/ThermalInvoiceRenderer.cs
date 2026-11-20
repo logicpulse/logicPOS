@@ -145,9 +145,10 @@ internal sealed class ThermalInvoiceRenderer
         Line($"{L("global_address", "Morada")}: {document.CustomerAddress}");
         var place = string.Join(" ", new[] { document.CustomerZipCode, document.CustomerCity }.Where(item => string.IsNullOrWhiteSpace(item) == false));
         Line(string.IsNullOrWhiteSpace(place) ? document.CustomerCountry : $"{place} - {document.CustomerCountry}");
-        if (string.IsNullOrWhiteSpace(document.CustomerFiscalNumber) == false)
+        var faceNif = PosDocumentRules.ThermalCustomerFiscalNumber(document.CustomerFiscalNumber);
+        if (string.IsNullOrWhiteSpace(faceNif) == false)
         {
-            Line($"{L("global_fiscal_number", "NIF")}: {document.CustomerFiscalNumber}");
+            Line($"{L("global_fiscal_number", "NIF")}: {faceNif}");
         }
 
         Feed();

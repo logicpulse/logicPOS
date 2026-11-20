@@ -9,9 +9,12 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using LogicPOS.App.Hardware;
 using LogicPOS.Application.Features.System;
+using LogicPOS.App.Hardware;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
@@ -44,7 +47,10 @@ public partial class PaymentWindow : Window
     private string? _pendingSeriesDocumentType;
     private IReadOnlyList<PosTicketLine>? _pendingSeriesLines;
     private IReadOnlyList<PartialPaidLine>? _pendingSeriesPartial;
+    private bool _pendingSettledSale = true;
     private readonly List<PartialRow> _partialRows = new();
+    private CompanyFiscalMarkState _companyMarks = CompanyFiscalMarkState.None;
+    private bool _parkingInvoiceRequested;
 
     public bool PartialPayment { get; private set; }
 
@@ -91,7 +97,26 @@ public partial class PaymentWindow : Window
         TouchFields.Attach(this);
         Opened += (_, _) => CoverOwner();
         Opened += async (_, _) => await LoadCustomerAsync();
+        Opened += async (_, _) => await LoadCompanyMarksAsync();
         RefreshTotals();
+    }
+
+    private async Task LoadCompanyMarksAsync()
+    {
+        var services = AppComposition.Services;
+        if (services is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _companyMarks = await services.GetRequiredService<ICompanyFiscalMarkService>().LoadAsync();
+        }
+        catch
+        {
+            _companyMarks = CompanyFiscalMarkState.None;
+        }
     }
 
     private void ApplyPaymentPostal(PostalLocalityMatch match)
@@ -298,6 +323,14 @@ public partial class PaymentWindow : Window
 
     private async void OnInvoiceClick(object? sender, RoutedEventArgs e)
     {
+        if (PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule()))
+        {
+            _parkingInvoiceRequested = true;
+            ApplySaleDocumentType();
+            ShowNotice("Pagamento", "Confirme com Ok para emitir a fatura pedida.", error: false);
+            return;
+        }
+
         if (_finalConsumer || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(FiscalNumber.Text))
         {
             ShowNotice(
@@ -307,7 +340,7 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        await IssueAsync("FT", _lines, partial: null);
+        await IssueAsync("FT", _lines, partial: null, settledSale: false);
     }
 
     private void OnPartialPaymentClick(object? sender, RoutedEventArgs e)
@@ -413,6 +446,13 @@ public partial class PaymentWindow : Window
         }
 
         PartialOverlay.IsVisible = false;
+        ApplySaleDocumentType(lines);
+        if (PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule()) && _parkingInvoiceRequested == false)
+        {
+            await CloseParkingWithPaymentTicketAsync(lines, selected);
+            return;
+        }
+
         await IssueAsync(_saleDocumentType, lines, selected);
     }
 
@@ -426,16 +466,35 @@ public partial class PaymentWindow : Window
 
     private void OnPartialCancelClick(object? sender, RoutedEventArgs e) => PartialOverlay.IsVisible = false;
 
-    private void ApplySaleDocumentType()
+    private PosDocumentRules.SettledSaleContext BuildSettledSaleContext(IReadOnlyList<PosTicketLine> lines, decimal invoiceTotal)
+        => new(
+            CurrentModule(),
+            invoiceTotal,
+            IsAngolaSystem(),
+            _companyMarks.RegimeArtigo53,
+            _companyMarks.VendedorAmbulante,
+            PosDocumentRules.AllLinesAreProducts(lines.Select(line => line.ClassAcronym)),
+            PosDocumentRules.ResolveBuyerFiscalNumberForCap(
+                FiscalNumber.Text,
+                _finalConsumer,
+                _finalConsumer ? null : FiscalNumber.Text));
+
+    private void ApplySaleDocumentType(IReadOnlyList<PosTicketLine>? lines = null)
     {
-        _saleDocumentType = ResolveSaleDocumentType();
+        var basis = lines ?? _lines;
+        var total = basis.Sum(line => line.Total);
+        var payable = total - (total * DiscountPercent() / 100m);
+        var context = BuildSettledSaleContext(basis, payable);
+        _saleDocumentType = _parkingInvoiceRequested
+            ? PosDocumentRules.ResolveSettledSaleDocumentType(context)
+            : PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule())
+                ? "Talão"
+                : PosDocumentRules.ResolveSettledSaleDocumentType(context);
         DocumentTypeValue.Text = _saleDocumentType;
     }
 
-    /// <summary>
-    /// Portugal issues FS; Angola issues FR. Other countries keep FS as the FrontOffice default.
-    /// </summary>
-    private static string ResolveSaleDocumentType() => IsAngolaSystem() ? "FR" : "FS";
+    private static string? CurrentModule()
+        => AppComposition.Services?.GetService<IConfiguration>()?["DatabaseSettings:Module"];
 
     private static bool IsAngolaSystem()
         => AppComposition.Services?.GetService<ISystemInformationService>()?.IsAngola() == true;
@@ -590,12 +649,23 @@ public partial class PaymentWindow : Window
 
     private async void OnConfirmClick(object? sender, RoutedEventArgs e)
     {
+        ApplySaleDocumentType();
+        if (PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule()) && _parkingInvoiceRequested == false)
+        {
+            await CloseParkingWithPaymentTicketAsync(_lines, partial: null);
+            return;
+        }
+
         await IssueAsync(_saleDocumentType, _lines, partial: null);
     }
 
-    private async Task IssueAsync(string documentType, IReadOnlyList<PosTicketLine> lines, IReadOnlyList<PartialPaidLine>? partial)
+    private async Task IssueAsync(
+        string documentType,
+        IReadOnlyList<PosTicketLine> lines,
+        IReadOnlyList<PartialPaidLine>? partial,
+        bool settledSale = true)
     {
-        if (_methodToken is null)
+        if (settledSale && _methodToken is null)
         {
             ShowNotice("Aviso", "Selecione um Método de Pagamento", error: true);
             return;
@@ -607,22 +677,56 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        // Angola has no FS on the direct sale: FR may use Consumidor Final.
-        if (documentType == "FR"
-            && IsAngolaSystem() == false
-            && (_finalConsumer || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(FiscalNumber.Text)))
-        {
-            ShowNotice("Aviso", "A fatura-recibo exige um cliente com nome e NIF.", error: true);
-            return;
-        }
-
         if (AppComposition.Services is null)
         {
             ShowNotice("Aviso", "A aplicação não está pronta para gravar o documento.", error: true);
             return;
         }
 
-        await IssueWithSeriesAsync(documentType, lines, partial, createMissingSeries: false);
+        if (settledSale)
+        {
+            var total = lines.Sum(line => line.Total);
+            var payable = total - (total * DiscountPercent() / 100m);
+            var context = BuildSettledSaleContext(lines, payable);
+            var buyerError = PosDocumentRules.ValidateCompanyBuyerForSettledSale(
+                context,
+                CustomerName.Text,
+                Address.Text,
+                FiscalNumber.Text,
+                _finalConsumer);
+            if (buyerError is not null)
+            {
+                ShowNotice("Aviso", buyerError, error: true);
+                return;
+            }
+        }
+
+        await IssueWithSeriesAsync(documentType, lines, partial, createMissingSeries: false, settledSale);
+    }
+
+    private async Task CloseParkingWithPaymentTicketAsync(
+        IReadOnlyList<PosTicketLine> lines,
+        IReadOnlyList<PartialPaidLine>? partial)
+    {
+        if (_methodToken is null)
+        {
+            ShowNotice("Aviso", "Selecione um Método de Pagamento", error: true);
+            return;
+        }
+
+        var total = lines.Sum(line => line.Total);
+        var payable = total - (total * DiscountPercent() / 100m);
+        var printError = await FrontOfficePrinting.PrintParkingPaymentTicketAsync(payable, _methodToken!);
+        PartialPayment = partial is not null;
+        PaidLines = partial ?? [];
+        _confirmPayment = true;
+        var message = $"Pagamento registado.{Environment.NewLine}Total: {MoneyFormat.Format(payable)}";
+        if (printError is not null)
+        {
+            message += $"{Environment.NewLine}{Environment.NewLine}Erro ao imprimir: {printError}";
+        }
+
+        ShowNotice("Pagamento", message, error: false);
     }
 
     private void OnCancelClick(object? sender, RoutedEventArgs e)
@@ -636,6 +740,7 @@ public partial class PaymentWindow : Window
         _pendingSeriesDocumentType = null;
         _pendingSeriesLines = null;
         _pendingSeriesPartial = null;
+        _pendingSettledSale = true;
         SetNoticeButtons(confirm: false);
         if (_confirmPayment)
         {
@@ -653,7 +758,9 @@ public partial class PaymentWindow : Window
         _pendingSeriesDocumentType = null;
         _pendingSeriesLines = null;
         _pendingSeriesPartial = null;
-        await IssueWithSeriesAsync(documentType, lines, partial, createMissingSeries: true);
+        var settledSale = _pendingSettledSale;
+        _pendingSettledSale = true;
+        await IssueWithSeriesAsync(documentType, lines, partial, createMissingSeries: true, settledSale);
     }
 
     private void ShowNotice(string title, string message, bool error)
@@ -688,9 +795,15 @@ public partial class PaymentWindow : Window
         string documentType,
         IReadOnlyList<PosTicketLine> lines,
         IReadOnlyList<PartialPaidLine>? partial,
-        bool createMissingSeries)
+        bool createMissingSeries,
+        bool settledSale = true)
     {
-        if (_methodToken is null || _customerId is null || AppComposition.Services is null)
+        if (_customerId is null || AppComposition.Services is null)
+        {
+            return;
+        }
+
+        if (settledSale && _methodToken is null)
         {
             return;
         }
@@ -699,28 +812,50 @@ public partial class PaymentWindow : Window
         {
             var total = lines.Sum(line => line.Total);
             var payable = total - (total * DiscountPercent() / 100m);
-            var result = await AppComposition.Services.GetRequiredService<IPosDocumentService>().IssueSimplifiedInvoiceAsync(
-                _customerId.Value,
-                _methodToken,
-                DiscountPercent(),
-                _cash ? _delivered : payable,
-                Notes.Text,
-                lines.Select(line => new PosSaleLine(
-                    line.ArticleId,
-                    line.Quantity,
-                    line.NetUnitPrice,
-                    line.Discount,
-                    line.VatRateId,
-                    unitPrice: line.DisplayUnitPrice,
-                    priceWithVat: line.PriceIncludesVat)).ToList(),
-                documentType,
-                createMissingSeries);
+            var saleLines = lines.Select(line => new PosSaleLine(
+                line.ArticleId,
+                line.Quantity,
+                line.NetUnitPrice,
+                line.Discount,
+                line.VatRateId,
+                unitPrice: line.DisplayUnitPrice,
+                priceWithVat: line.PriceIncludesVat)).ToList();
+            var documents = AppComposition.Services.GetRequiredService<IPosDocumentService>();
+            PosDocumentResult result;
+            if (settledSale)
+            {
+                result = await documents.IssueSimplifiedInvoiceAsync(
+                    _customerId.Value,
+                    _methodToken!,
+                    DiscountPercent(),
+                    _cash ? _delivered : payable,
+                    Notes.Text,
+                    saleLines,
+                    documentType,
+                    createMissingSeries,
+                    PosDocumentRules.ResolveInvoiceFaceFiscalNumber(FiscalNumber.Text, _finalConsumer, FiscalNumber.Text));
+            }
+            else
+            {
+                var header = new PosDocumentHeader
+                {
+                    Notes = Notes.Text,
+                    DiscountPercent = DiscountPercent(),
+                };
+                result = await documents.IssueDocumentAsync(
+                    documentType,
+                    _customerId.Value,
+                    saleLines,
+                    header,
+                    createMissingSeries);
+            }
 
             if (createMissingSeries == false && result.NeedsSeriesConfirmation)
             {
                 _pendingSeriesDocumentType = result.MissingSeriesDocumentType ?? documentType;
                 _pendingSeriesLines = lines;
                 _pendingSeriesPartial = partial;
+                _pendingSettledSale = settledSale;
                 ShowConfirm(
                     "Série fiscal",
                     $"Não existe série activa para «{_pendingSeriesDocumentType}».{Environment.NewLine}{Environment.NewLine}Deseja criar o ano fiscal e a série automaticamente?");
@@ -735,15 +870,27 @@ public partial class PaymentWindow : Window
 
             PartialPayment = partial is not null;
             PaidLines = partial ?? [];
-            var message = $"Pagamento efetuado.{Environment.NewLine}{result.Number}{Environment.NewLine}Total: {MoneyFormat.Format(payable)}";
-            if (string.IsNullOrWhiteSpace(_shareLabel) == false)
+            string message;
+            string title;
+            if (settledSale)
             {
-                message = $"{_shareLabel}{Environment.NewLine}{message}";
-            }
+                message = $"Pagamento efetuado.{Environment.NewLine}{result.Number}{Environment.NewLine}Total: {MoneyFormat.Format(payable)}";
+                if (string.IsNullOrWhiteSpace(_shareLabel) == false)
+                {
+                    message = $"{_shareLabel}{Environment.NewLine}{message}";
+                }
 
-            if (_cash)
+                if (_cash)
+                {
+                    message += $"{Environment.NewLine}Troco: {MoneyFormat.Format(_delivered - payable)}";
+                }
+
+                title = "Pagamento";
+            }
+            else
             {
-                message += $"{Environment.NewLine}Troco: {MoneyFormat.Format(_delivered - payable)}";
+                message = $"{result.Number}{Environment.NewLine}Total: {MoneyFormat.Format(payable)}";
+                title = "Fatura";
             }
 
             var printError = await FrontOfficePrinting.PrintInvoiceAsync(result.DocumentId);
@@ -752,8 +899,8 @@ public partial class PaymentWindow : Window
                 message += $"{Environment.NewLine}{Environment.NewLine}Erro ao imprimir: {printError}";
             }
 
-            _confirmPayment = true;
-            ShowNotice("Pagamento", message, error: false);
+            _confirmPayment = settledSale;
+            ShowNotice(title, message, error: false);
         }
         catch (Exception exception)
         {
@@ -874,6 +1021,7 @@ public partial class PaymentWindow : Window
         TotalValue.Text = MoneyFormat.Format(Payable);
         DeliveryValue.Text = MoneyFormat.Format(_delivered);
         ChangeValue.Text = MoneyFormat.Format(change);
+        ApplySaleDocumentType();
     }
 
     private bool HasCard()

@@ -207,6 +207,9 @@ public sealed class PosDocumentHeader
 
     public string? Notes { get; init; }
 
+    /// <summary>Desconto global em percentagem (ecrã de pagamento).</summary>
+    public decimal DiscountPercent { get; init; }
+
     public bool IsDraft { get; init; }
 
     public PosShipAddress? ShipTo { get; init; }
@@ -395,13 +398,219 @@ public static class PosDocumentRules
 
     public static bool RequiresNamedCustomer(string? acronym, bool isAngola = false)
     {
-        // Angola has no FS on the direct sale: FR may use Consumidor Final.
-        if (isAngola && string.Equals(acronym, "FR", StringComparison.OrdinalIgnoreCase))
+        _ = isAngola;
+        // FR may use consumidor final (CIVA art. 40.º). Credit notes keep the origin customer.
+        return acronym is "FT" or "NC" or "ND";
+    }
+
+    public const decimal ServiceSimplifiedInvoiceCap = 100m;
+
+    public const decimal RetailSimplifiedInvoiceCap = 1000m;
+
+    public const string ProductsClassAcronym = "P";
+
+    public const string FinalConsumerFiscalNumber = "999999990";
+
+    public sealed record SettledSaleContext(
+        string? Module,
+        decimal InvoiceTotal,
+        bool IsAngola,
+        bool RegimeArtigo53,
+        bool VendedorAmbulante,
+        bool AllLinesAreProducts,
+        string? BuyerFiscalNumber);
+
+    /// <summary>Restauração, café e estacionamento — teto de 100 €.</summary>
+    public static bool UsesServiceHundredCap(string? module) => UsesServiceModeCap(module);
+
+    public static bool UsesServiceModeCap(string? module)
+    {
+        var token = NormalizeModule(module);
+        return token is "restaurant" or "cafe" or "parking";
+    }
+
+    public static bool UsesRetailMode(string? module)
+    {
+        var token = NormalizeModule(module);
+        return token is "default" or "retail" or "bakery" or "butchery" or "clothingstore" or "hardwarestore"
+            or "seafoodstore" or "shoestore";
+    }
+
+    public static bool ClosesWithPaymentTicketOnly(string? module) => NormalizeModule(module) == "parking";
+
+    public static bool IsSujeitoPassivo(string? fiscalNumber)
+    {
+        var digits = NormalizeFiscalDigits(fiscalNumber);
+        return digits.Length > 0 && (digits[0] is '5' or '6');
+    }
+
+    /// <summary>NIF impresso na face; vazio ou consumidor final genérico ficam fora do talão.</summary>
+    public static string? ThermalCustomerFiscalNumber(string? storedFiscalNumber)
+    {
+        if (string.IsNullOrWhiteSpace(storedFiscalNumber))
+        {
+            return null;
+        }
+
+        var trimmed = storedFiscalNumber.Trim();
+        return string.Equals(trimmed, FinalConsumerFiscalNumber, StringComparison.OrdinalIgnoreCase) ? null : trimmed;
+    }
+
+    public static string? ResolveInvoiceFaceFiscalNumber(string? typedNif, bool isFinalConsumer, string? customerFiscalNumber)
+    {
+        var typed = NormalizeFiscalDigits(typedNif);
+        if (typed.Length > 0)
+        {
+            return string.Equals(typed, FinalConsumerFiscalNumber, StringComparison.OrdinalIgnoreCase) ? null : typedNif!.Trim();
+        }
+
+        if (isFinalConsumer)
+        {
+            return null;
+        }
+
+        return ThermalCustomerFiscalNumber(customerFiscalNumber);
+    }
+
+    public static string? ResolveBuyerFiscalNumberForCap(string? typedNif, bool isFinalConsumer, string? customerFiscalNumber)
+    {
+        var typed = NormalizeFiscalDigits(typedNif);
+        if (typed.Length > 0)
+        {
+            return string.Equals(typed, FinalConsumerFiscalNumber, StringComparison.OrdinalIgnoreCase) ? null : typed;
+        }
+
+        if (isFinalConsumer)
+        {
+            return null;
+        }
+
+        return string.IsNullOrWhiteSpace(customerFiscalNumber) ? null : customerFiscalNumber.Trim();
+    }
+
+    public static decimal? ResolveSimplifiedInvoiceCap(SettledSaleContext context)
+    {
+        if (context.IsAngola)
+        {
+            return null;
+        }
+
+        if (context.RegimeArtigo53)
+        {
+            return null;
+        }
+
+        if (UsesServiceModeCap(context.Module))
+        {
+            return ServiceSimplifiedInvoiceCap;
+        }
+
+        var thousandPath = context.AllLinesAreProducts && IsSujeitoPassivo(context.BuyerFiscalNumber) == false
+            && (UsesRetailMode(context.Module) || (context.VendedorAmbulante && UsesServiceModeCap(context.Module) == false));
+        return thousandPath ? RetailSimplifiedInvoiceCap : ServiceSimplifiedInvoiceCap;
+    }
+
+    public static string ResolveSettledSaleDocumentType(SettledSaleContext context)
+    {
+        if (context.IsAngola)
+        {
+            return "FR";
+        }
+
+        var cap = ResolveSimplifiedInvoiceCap(context);
+        if (cap is null || context.InvoiceTotal <= cap.Value)
+        {
+            return "FS";
+        }
+
+        return "FR";
+    }
+
+    /// <summary>Documento para venda liquidada no pagamento (Ok), por modo e total.</summary>
+    public static string ResolveSettledSaleDocumentType(string? module, decimal invoiceTotal, bool isAngola)
+        => ResolveSettledSaleDocumentType(new SettledSaleContext(module, invoiceTotal, isAngola, false, false, true, null));
+
+    public static bool CanIssueSimplifiedInvoice(SettledSaleContext context)
+    {
+        var cap = ResolveSimplifiedInvoiceCap(context);
+        return cap is null || context.InvoiceTotal <= cap.Value;
+    }
+
+    public static string? ValidateCompanyBuyerForSettledSale(
+        SettledSaleContext context,
+        string? customerName,
+        string? customerAddress,
+        string? customerFiscalNumber,
+        bool isFinalConsumer)
+    {
+        if (context.IsAngola || context.RegimeArtigo53)
+        {
+            return null;
+        }
+
+        if (IsSujeitoPassivo(context.BuyerFiscalNumber) == false)
+        {
+            return null;
+        }
+
+        var cap = ResolveSimplifiedInvoiceCap(context);
+        if (cap is null || context.InvoiceTotal <= cap.Value)
+        {
+            return null;
+        }
+
+        if (isFinalConsumer
+            || string.IsNullOrWhiteSpace(customerName)
+            || string.IsNullOrWhiteSpace(customerAddress)
+            || string.IsNullOrWhiteSpace(customerFiscalNumber))
+        {
+            return "Acima do teto, a fatura-recibo exige um cliente com nome, morada e o mesmo NIF.";
+        }
+
+        var buyer = NormalizeFiscalDigits(context.BuyerFiscalNumber);
+        var customer = NormalizeFiscalDigits(customerFiscalNumber);
+        return string.Equals(buyer, customer, StringComparison.OrdinalIgnoreCase)
+            ? null
+            : "Acima do teto, a fatura-recibo exige um cliente com nome, morada e o mesmo NIF.";
+    }
+
+    public static bool AllLinesAreProducts(IEnumerable<string?>? classAcronyms)
+    {
+        if (classAcronyms is null)
         {
             return false;
         }
 
-        return acronym is "FT" or "FR" or "NC" or "ND";
+        var list = classAcronyms as IReadOnlyList<string?> ?? classAcronyms.ToList();
+        if (list.Count == 0)
+        {
+            return false;
+        }
+
+        return list.All(item => string.Equals(item, ProductsClassAcronym, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string? NormalizeModule(string? module)
+    {
+        if (string.IsNullOrWhiteSpace(module))
+        {
+            return null;
+        }
+
+        return module.Trim().Replace(" ", string.Empty).Replace("-", string.Empty).Replace("_", string.Empty)
+            .Replace("é", "e", StringComparison.OrdinalIgnoreCase)
+            .ToLowerInvariant();
+    }
+
+    private static string NormalizeFiscalDigits(string? fiscalNumber)
+    {
+        if (string.IsNullOrWhiteSpace(fiscalNumber))
+        {
+            return string.Empty;
+        }
+
+        var chars = fiscalNumber.Where(char.IsLetterOrDigit).ToArray();
+        return new string(chars).ToUpperInvariant();
     }
 
     public static bool RequiresPaymentCondition(string? acronym)
@@ -844,6 +1053,7 @@ public sealed class PosDocumentService : IPosDocumentService
         IReadOnlyList<PosSaleLine> lines,
         string documentType = "FS",
         bool createMissingSeries = false,
+        string? invoiceFaceFiscalNumber = null,
         CancellationToken cancellationToken = default)
     {
         if (_license.DocumentsEnabled == false)
@@ -865,25 +1075,6 @@ public sealed class PosDocumentService : IPosDocumentService
         if (paymentMethod is null)
         {
             return PosDocumentResult.Fail("Método de pagamento não encontrado.");
-        }
-
-        // Angola has no FS on the direct sale: FR may use Consumidor Final (same as DocumentTypeAnalyzer.AllowsFinalConsumer).
-        if (string.Equals(documentType, "FR", StringComparison.OrdinalIgnoreCase)
-            && _systemInformation.IsAngola() == false)
-        {
-            var buyer = await database.Customers.AsNoTracking()
-                .Where(item => item.Id == customerId && item.IsDeleted == false)
-                .Select(item => new { item.Id, item.Name, item.FiscalNumber })
-                .FirstOrDefaultAsync(cancellationToken);
-            var named = buyer is not null
-                && buyer.Id != CustomerWellKnownIds.FinalConsumer
-                && string.Equals(buyer.Name, "Consumidor Final", StringComparison.OrdinalIgnoreCase) == false
-                && string.IsNullOrWhiteSpace(buyer.Name) == false
-                && string.IsNullOrWhiteSpace(buyer.FiscalNumber) == false;
-            if (named == false)
-            {
-                return PosDocumentResult.Fail("A fatura-recibo exige um cliente com nome e NIF.");
-            }
         }
 
         var seriesResult = await EnsureSeriesAsync(
@@ -946,6 +1137,13 @@ public sealed class PosDocumentService : IPosDocumentService
             scope.ServiceProvider.GetRequiredService<IVatRateRepository>(),
             scope.ServiceProvider.GetRequiredService<IVatExemptionReasonRepository>());
 
+        var buyer = await database.Customers.AsNoTracking()
+            .Where(item => item.Id == customerId && item.IsDeleted == false)
+            .Select(item => new { item.Name, item.FiscalNumber })
+            .FirstOrDefaultAsync(cancellationToken);
+        var buyerIsFinalConsumer = buyer is not null
+            && string.Equals(buyer.Name, "Consumidor Final", StringComparison.OrdinalIgnoreCase);
+
         var created = await Document.CreateAsync(
             dto,
             references.DocumentRepository,
@@ -961,6 +1159,22 @@ public sealed class PosDocumentService : IPosDocumentService
         }
 
         var document = created.Value!;
+        if (document.Customer is not null)
+        {
+            var face = PosDocumentRules.ResolveInvoiceFaceFiscalNumber(
+                invoiceFaceFiscalNumber,
+                buyerIsFinalConsumer,
+                buyer?.FiscalNumber);
+            if (string.IsNullOrWhiteSpace(face) == false)
+            {
+                document.Customer.FiscalNumber = face;
+            }
+            else if (buyerIsFinalConsumer)
+            {
+                document.Customer.FiscalNumber = PosDocumentRules.FinalConsumerFiscalNumber;
+            }
+        }
+
         await database.Documents.AddAsync(document, cancellationToken);
         await ApplyDocumentStockAsync(database, document, isDraft: false, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
@@ -1923,6 +2137,7 @@ public sealed class PosDocumentService : IPosDocumentService
         Guid customerId,
         IReadOnlyList<PosSaleLine> lines,
         PosDocumentHeader? header = null,
+        bool createMissingSeries = false,
         CancellationToken cancellationToken = default)
     {
         if (_license.DocumentsEnabled == false)
@@ -1937,6 +2152,17 @@ public sealed class PosDocumentService : IPosDocumentService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+
+        var seriesResult = await EnsureSeriesAsync(
+            scope.ServiceProvider,
+            database,
+            documentType,
+            createMissingSeries,
+            cancellationToken);
+        if (seriesResult.Succeeded == false)
+        {
+            return seriesResult;
+        }
         var isDraft = header?.IsDraft == true;
         var typeRules = new DocumentTypeAnalyzer(documentType);
         // FT/orçamento/etc.: sem liquidação no emit — não forçar NU/MONEY. FS/FR exigem método.
@@ -2009,7 +2235,7 @@ public sealed class PosDocumentService : IPosDocumentService
             ParentId: header?.ParentDocumentId is Guid parent && parent != Guid.Empty ? parent : null,
             ShipToAddress: header?.ShipTo is null ? null : PosDocumentRules.ToAddress(header.ShipTo, postalRules),
             ShipFromAddress: header?.ShipFrom is null ? null : PosDocumentRules.ToAddress(header.ShipFrom, postalRules),
-            Discount: 0,
+            Discount: header?.DiscountPercent ?? 0,
             Customer: null,
             ExchangeRate: exchangeRate,
             TotalDelivery: null,

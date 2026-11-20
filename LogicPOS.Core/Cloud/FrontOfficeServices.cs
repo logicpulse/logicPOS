@@ -69,6 +69,7 @@ public interface IPosDocumentService
         IReadOnlyList<PosSaleLine> lines,
         string documentType = "FS",
         bool createMissingSeries = false,
+        string? invoiceFaceFiscalNumber = null,
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<string>> ListRecentAsync(CancellationToken cancellationToken = default);
@@ -133,6 +134,7 @@ public interface IPosDocumentService
         Guid customerId,
         IReadOnlyList<PosSaleLine> lines,
         PosDocumentHeader? header = null,
+        bool createMissingSeries = false,
         CancellationToken cancellationToken = default);
 
     Task<string?> CreateA4FileAsync(Guid documentId, CancellationToken cancellationToken = default);
