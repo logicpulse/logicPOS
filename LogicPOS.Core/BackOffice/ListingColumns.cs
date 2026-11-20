@@ -144,7 +144,7 @@ public static class ListingColumns
         [
             ("Code", "Código"),
             ("Designation", "Designação"),
-            ("IsDefault", "Por padrão"),
+            ("IsDefault", "Predefinido"),
             ("HardwareId", "Hardware ID"),
             ("UpdatedAt", "Atualizado em")
         ],

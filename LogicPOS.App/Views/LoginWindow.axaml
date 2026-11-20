@@ -335,7 +335,7 @@
                     <Grid ColumnDefinitions="72,*,88,2*,168" DockPanel.Dock="Top" Margin="24,8,24,0">
                         <TextBlock Classes="pos_pay_label" Text="Código" />
                         <TextBlock Classes="pos_pay_label" Grid.Column="1" Text="Designação" />
-                        <TextBlock Classes="pos_pay_label" Grid.Column="2" Text="Por padrão" />
+                        <TextBlock Classes="pos_pay_label" Grid.Column="2" Text="Predefinido" />
                         <TextBlock Classes="pos_pay_label" Grid.Column="3" Text="Hardware ID" />
                         <TextBlock Classes="pos_pay_label" Grid.Column="4" Text="Atualizado em" />
                     </Grid>

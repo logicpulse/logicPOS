@@ -1250,7 +1250,7 @@
   },
   {
     "Token": "SEND_MAIL_SMTP_USERNAME",
-    "Value": "YOUR-EMAIL@gmail.com",
+    "Value": "exemplo@empresa.pt",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",
@@ -1274,7 +1274,7 @@
   },
   {
     "Token": "SEND_MAIL_SMTP_PASSWORD",
-    "Value": "YOUR-PASSWORD",
+    "Value": "",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",

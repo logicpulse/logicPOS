@@ -47,7 +47,7 @@
                                         <TextBlock Classes="bo_doc_action_text" Text="Cod. barras" />
                                     </StackPanel>
                                 </Button>
-                                <Button x:Name="BtnLocation" Classes="bo_page_action" Click="OnChangeLocationClick" ToolTip.Tip="Modif. Loc.">
+                                <Button x:Name="BtnLocation" Classes="bo_page_action" Click="OnChangeLocationClick" ToolTip.Tip="Modificar localização">
                                     <StackPanel Classes="bo_doc_action_content">
                                         <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_repor_b.svg" />
                                         <TextBlock Classes="bo_doc_action_text" Text="Modif. Loc." />

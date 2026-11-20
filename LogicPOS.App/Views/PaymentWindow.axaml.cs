@@ -152,9 +152,9 @@ public partial class PaymentWindow : Window
     {
         AddMethod("MONEY", "Numerário", "icon_pos_payment_type_money.png", 0, 0, 1);
         AddMethod("CASH_MACHINE", "MB Way", "icon_pos_payment_type_cash_machine.png", 1, 0, 1);
-        AddMethod("DEBIT_CARD", "Cartão Débito", "icon_pos_payment_type_debit_card.png", 2, 0, 1);
+        AddMethod("DEBIT_CARD", "Cartão de Débito", "icon_pos_payment_type_debit_card.png", 2, 0, 1);
         AddMethod("BANK_CHECK", "Cheque", "icon_pos_payment_type_bank_check.png", 0, 1, 1);
-        AddMethod("CREDIT_CARD", "Cartão Crédito", "icon_pos_payment_type_credit_card.png", 1, 1, 1);
+        AddMethod("CREDIT_CARD", "Cartão de Crédito", "icon_pos_payment_type_credit_card.png", 1, 1, 1);
         AddMethod("CURRENT_ACCOUNT", "Conta Corrente", "icon_pos_payment_type_current_account.png", 2, 1, 1);
         _customerCard = AddMethod("CUSTOMER_CARD", "Cartão Cliente", "icon_pos_payment_type_customer_card.png", 0, 2, 3);
         _customerCard.Classes.Add("pos_pay_method_wide");

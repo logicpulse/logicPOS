@@ -873,7 +873,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         {
             var button = CreateToolbarButton(item.Text, item.Icon, item.Style, item.Click, iconSize, iconOnly: true);
             button.Classes.Add("pos_toolbar_float_button");
-            ToolTip.SetTip(button, item.Text);
+            ToolTip.SetTip(button, ListingLabelTips.Tooltip(item.Text));
             FloatingToolbarButtons.Children.Add(button);
             _toolbarButtons[item.Text] = button;
         }
@@ -2008,7 +2008,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         };
         if (iconOnly)
         {
-            ToolTip.SetTip(button, text);
+            ToolTip.SetTip(button, ListingLabelTips.Tooltip(text));
             button.Classes.Add("pos_pad_button_compact");
         }
 
