@@ -49,6 +49,15 @@ public sealed class ListingField
 
     /// <summary>Fixed values for Kind "choice".</summary>
     public IReadOnlyList<string>? Options { get; init; }
+
+    /// <summary>Enum / choice pairs: Value is persisted, Label is shown.</summary>
+    public IReadOnlyList<ListingChoice>? Choices { get; init; }
+}
+
+/// <summary>Combo option where the stored value differs from the visible label.</summary>
+public sealed record ListingChoice(string Value, string Label)
+{
+    public override string ToString() => Label;
 }
 
 public sealed class ListingSnapshot

@@ -1786,7 +1786,15 @@ public partial class EntityListing : UserControl
 
         if (field.Kind == "enum")
         {
-            return new TextBox { Classes = { "bo_entity_input" }, Text = field.Value, IsReadOnly = field.ReadOnly };
+            var items = LocalizedEnumChoices(field);
+            return new ComboBox
+            {
+                Classes = { "bo_entity_input" },
+                ItemsSource = items,
+                SelectedItem = items.FirstOrDefault(item => string.Equals(item.Value, field.Value, StringComparison.OrdinalIgnoreCase))
+                    ?? items.FirstOrDefault(),
+                IsEnabled = field.ReadOnly == false
+            };
         }
 
         var box = new TextBox
@@ -2293,6 +2301,11 @@ public partial class EntityListing : UserControl
 
         if (input is ComboBox choice)
         {
+            if (choice.SelectedItem is ListingChoice listed)
+            {
+                return listed.Value;
+            }
+
             if (choice.SelectedItem is string selectedChoice && string.IsNullOrWhiteSpace(selectedChoice) == false)
             {
                 return selectedChoice;
@@ -2608,7 +2621,7 @@ public partial class EntityListing : UserControl
     private static TextBlock FieldCaption(ListingField field)
     {
         var caption = new TextBlock { Classes = { "bo_new_doc_caption" } };
-        var label = field.Label ?? string.Empty;
+        var label = LocalizedFieldLabel(field);
         ToolTip.SetTip(caption, ListingLabelTips.Tooltip(label));
         caption.Inlines.Add(new Avalonia.Controls.Documents.Run(label));
         if (field.Required)
@@ -2620,6 +2633,33 @@ public partial class EntityListing : UserControl
         }
 
         return caption;
+    }
+
+    private static string LocalizedFieldLabel(ListingField field)
+    {
+        var fallback = field.Label ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(field.Key))
+        {
+            return fallback;
+        }
+
+        return PreferenceLabels.Text("bo_field_" + field.Key, fallback);
+    }
+
+    private static IReadOnlyList<ListingChoice> LocalizedEnumChoices(ListingField field)
+    {
+        IEnumerable<string> names = field.Choices is { Count: > 0 } listed
+            ? listed.Select(item => item.Value)
+            : field.Options is { Count: > 0 } options
+                ? options
+                : string.IsNullOrWhiteSpace(field.Value) ? Array.Empty<string>() : [field.Value];
+
+        return names
+            .Where(name => string.IsNullOrWhiteSpace(name) == false)
+            .Select(name => new ListingChoice(
+                name,
+                PreferenceLabels.Text("enum_" + field.Key + "_" + name, name)))
+            .ToList();
     }
 
     private void ApplyArticleTabs()

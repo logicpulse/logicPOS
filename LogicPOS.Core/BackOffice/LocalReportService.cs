@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Application.Features.Finance.Customers;
 using LogicPOS.Application.Features.Finance.Documents;
+using LogicPOS.Application.Features.Reports;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Persistence.Database;
@@ -50,18 +51,67 @@ public sealed class LocalReportService : IReportService
         }
 
         await using var scope = _scopes.CreateAsyncScope();
-        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var balances = scope.ServiceProvider.GetRequiredService<ICustomerOutstandingBalanceService>();
-        List<Dictionary<string, string>> rows;
+        byte[] bytes;
         try
         {
-            rows = await ReadRowsAsync(database, balances, report, filters, cancellationToken);
+            var branded = scope.ServiceProvider.GetService<ILocalQuestPdfReportService>();
+            if (branded is not null)
+            {
+                var brandedBytes = await branded.TryGenerateAsync(
+                    new LocalReportPdfRequest
+                    {
+                        Key = report.Key,
+                        Start = start,
+                        End = end,
+                        DocumentTypeAcronym = filters.DocumentTypeAcronym,
+                        TerminalId = filters.TerminalId,
+                        CustomerId = filters.CustomerId,
+                        ArticleId = filters.ArticleId,
+                        WarehouseId = filters.WarehouseId,
+                        VatRateId = filters.VatRateId,
+                        FamilyId = filters.FamilyId,
+                        SubfamilyId = filters.SubfamilyId,
+                        SerialNumber = string.IsNullOrWhiteSpace(filters.SerialNumber)
+                            ? null
+                            : filters.SerialNumber.Trim(),
+                        DocumentNumber = string.IsNullOrWhiteSpace(filters.DocumentNumber)
+                            ? null
+                            : filters.DocumentNumber.Trim()
+                    },
+                    cancellationToken);
+                if (brandedBytes is not null)
+                {
+                    bytes = brandedBytes;
+                }
+                else
+                {
+                    bytes = await BuildTablePdfAsync(scope.ServiceProvider, report, filters, cancellationToken);
+                }
+            }
+            else
+            {
+                bytes = await BuildTablePdfAsync(scope.ServiceProvider, report, filters, cancellationToken);
+            }
         }
         catch (Exception exception)
         {
             return ListingSaveResult.Fail(exception.Message);
         }
 
+        var path = Path.Combine(Path.GetTempPath(), $"logicpos-report-{report.Key}-{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        await File.WriteAllBytesAsync(path, bytes, cancellationToken);
+        return ListingSaveResult.Ok(Guid.Empty, path);
+    }
+
+    private static async Task<byte[]> BuildTablePdfAsync(
+        IServiceProvider services,
+        ReportDefinition report,
+        ReportFilterRequest filters,
+        CancellationToken cancellationToken)
+    {
+        var database = services.GetRequiredService<LogicPOSDbContext>();
+        var balances = services.GetRequiredService<ICustomerOutstandingBalanceService>();
+        var rows = await ReadRowsAsync(database, balances, report, filters, cancellationToken);
         if (rows.Count == 0)
         {
             rows.Add(Row(("Informação", "Sem dados no intervalo indicado.")));
@@ -69,10 +119,7 @@ public sealed class LocalReportService : IReportService
 
         var headers = rows[0].Keys.ToList();
         var table = rows.Select(row => (IReadOnlyList<string>)headers.Select(header => row[header]).ToList()).ToList();
-        var bytes = ListingTableExport.ToPdf(report.Name, headers, table);
-        var path = Path.Combine(Path.GetTempPath(), $"logicpos-report-{report.Key}-{DateTime.Now:yyyyMMddHHmmss}.pdf");
-        await File.WriteAllBytesAsync(path, bytes, cancellationToken);
-        return ListingSaveResult.Ok(Guid.Empty, path);
+        return ListingTableExport.ToPdf(report.Name, headers, table);
     }
 
     private static async Task<List<Dictionary<string, string>>> ReadRowsAsync(

@@ -1336,6 +1336,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
+            var enumType = kind == "enum"
+                ? (Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType)
+                : null;
             fields.Add(new ListingField
             {
                 Key = property.Name,
@@ -1343,6 +1346,10 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 Kind = property.Name is "Notes" or "Message" or "Value" ? "multiline" : kind,
                 Value = ReadRaw(entity, property),
                 Lookup = lookup,
+                Options = enumType is { IsEnum: true } ? Enum.GetNames(enumType) : null,
+                Choices = enumType is { IsEnum: true }
+                    ? Enum.GetNames(enumType).Select(name => new ListingChoice(name, name)).ToList()
+                    : null,
                 ReadOnly = readOnly,
                 Required = kind is not ("lookup") && IsRequired(property) || (lookup is not null && IsRequired(property)),
                 Group = FieldGroup(page.EntityType, property.Name),

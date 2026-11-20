@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -3974,5 +3974,35 @@ Note: You can only open documents issued on A4 printer or Export to PDF</value>
   </data>
   <data name="global_warehouse_location" xml:space="preserve">
     <value>Location</value>
+  </data>
+  <data name="bo_field_SaftDocumentType" xml:space="preserve">
+    <value>SAFT document type</value>
+  </data>
+  <data name="bo_field_StockMode" xml:space="preserve">
+    <value>Stock movement</value>
+  </data>
+  <data name="enum_SaftDocumentType_None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="enum_SaftDocumentType_SalesInvoices" xml:space="preserve">
+    <value>Sales invoices</value>
+  </data>
+  <data name="enum_SaftDocumentType_MovementOfGoods" xml:space="preserve">
+    <value>Movement of goods</value>
+  </data>
+  <data name="enum_SaftDocumentType_WorkingDocuments" xml:space="preserve">
+    <value>Working documents</value>
+  </data>
+  <data name="enum_SaftDocumentType_Payments" xml:space="preserve">
+    <value>Payments</value>
+  </data>
+  <data name="enum_StockMode_None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="enum_StockMode_Out" xml:space="preserve">
+    <value>Out</value>
+  </data>
+  <data name="enum_StockMode_In" xml:space="preserve">
+    <value>In</value>
   </data>
 </root>
