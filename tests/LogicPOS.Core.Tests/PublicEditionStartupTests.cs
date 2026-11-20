@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.Licensing;
@@ -313,6 +314,87 @@ public sealed class PublicEditionStartupTests
     }
 
     [Fact]
+    public void Edition_setup_community_copy_does_not_promise_certified_invoicing()
+    {
+        var path = ResolveEditionSetupAxamlPath();
+        Assert.True(File.Exists(path), $"Missing {path}");
+        var axaml = File.ReadAllText(path);
+        Assert.DoesNotContain("Faturação certificada", axaml, StringComparison.Ordinal);
+        Assert.DoesNotContain("certificado. Para começar", axaml, StringComparison.Ordinal);
+        Assert.DoesNotContain("faturação certificada está em todas as edições", axaml, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Dashboard_billing_loads_on_sqlite_after_a_sale()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-dashboard-");
+        try
+        {
+            var services = await ConfigurePublicEditionReadyToIssueAsync(root);
+            var customer = await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync(CancellationToken.None);
+            Assert.NotNull(customer);
+            var catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync(CancellationToken.None);
+            var article = catalog.Articles.First();
+            var issued = await services.GetRequiredService<IPosDocumentService>().IssueDocumentAsync(
+                "FS",
+                customer.Id,
+                [new PosSaleLine(article.Id, 1, article.CatalogPrice, 0, article.VatRateId)],
+                new PosDocumentHeader { PaymentToken = "MONEY" },
+                CancellationToken.None);
+            Assert.Null(issued.Error);
+
+            var dashboard = services.GetRequiredService<IDashboardBillingService>();
+            var overview = await dashboard.GetOverviewAsync(
+                new DashboardBillingQuery("month", DateTime.Today.Year, 7, null, null, null),
+                CancellationToken.None);
+            Assert.NotNull(overview.Kpis);
+        }
+        finally
+        {
+            CleanupPublicEdition(root, null);
+        }
+    }
+
+    [Fact]
+    public async Task Company_billing_and_sales_by_payment_method_reports_generate_on_sqlite()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-reports-");
+        try
+        {
+            var services = await ConfigurePublicEditionReadyToIssueAsync(root);
+            var customer = await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync(CancellationToken.None);
+            Assert.NotNull(customer);
+            var catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync(CancellationToken.None);
+            var article = catalog.Articles.First();
+            var issued = await services.GetRequiredService<IPosDocumentService>().IssueDocumentAsync(
+                "FS",
+                customer.Id,
+                [new PosSaleLine(article.Id, 1, article.CatalogPrice, 0, article.VatRateId)],
+                new PosDocumentHeader { PaymentToken = "MONEY" },
+                CancellationToken.None);
+            Assert.Null(issued.Error);
+
+            var reports = services.GetRequiredService<IReportService>();
+            var filters = new ReportFilterRequest
+            {
+                Start = DateTime.Today.AddMonths(-1),
+                End = DateTime.Today
+            };
+            foreach (var key in new[] { "company-billing", "sales-payment-method" })
+            {
+                var result = await reports.GenerateAsync(key, filters);
+                Assert.True(result.Succeeded, result.Error);
+                Assert.False(string.IsNullOrWhiteSpace(result.Message));
+                Assert.True(File.Exists(result.Message), result.Message);
+            }
+        }
+        finally
+        {
+            CleanupPublicEdition(root, null);
+        }
+    }
+
+    [Fact]
     public async Task Issued_document_pdf_prints_atcud_when_document_has_valid_atcud()
     {
         var root = Directory.CreateTempSubdirectory("logicpos-atcud-");
@@ -420,8 +502,26 @@ public sealed class PublicEditionStartupTests
             disposable.Dispose();
         }
 
+        AppLogging.CloseAndFlush();
         SqliteConnection.ClearAllPools();
-        root.Delete(recursive: true);
+        CleanupTestDirectory(root);
+    }
+
+    private static string ResolveEditionSetupAxamlPath()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, "LogicPOS.App", "Views", "EditionSetupWindow.axaml");
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new InvalidOperationException("EditionSetupWindow.axaml not found from test base directory.");
     }
 
     private static string ReadPdfText(string path)
