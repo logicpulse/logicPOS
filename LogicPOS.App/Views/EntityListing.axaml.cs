@@ -242,17 +242,7 @@ public partial class EntityListing : UserControl
 
         _isDeviceListing = DeviceTitles.Contains(title);
         CatalogImportButton.IsVisible = title is "Artigos" or "Clientes";
-        // Force layout visibility for device card grid.
-        if (_isDeviceListing)
-        {
-            Grid.IsVisible = false;
-            CardList.IsVisible = false;
-            DeviceCardScroll.IsVisible = true;
-        }
-        else
-        {
-            DeviceCardScroll.IsVisible = false;
-        }
+        ApplyListingChromeVisibility();
 
         await ReloadAsync();
     }
@@ -3422,6 +3412,22 @@ public partial class EntityListing : UserControl
         Notice.Text = notice;
     }
 
+    private void ApplyListingChromeVisibility()
+    {
+        if (_isDeviceListing)
+        {
+            Grid.IsVisible = false;
+            CardList.IsVisible = false;
+            DeviceCardScroll.IsVisible = true;
+        }
+        else
+        {
+            Grid.IsVisible = _portrait == false;
+            CardList.IsVisible = _portrait;
+            DeviceCardScroll.IsVisible = false;
+        }
+    }
+
     // ── Portrait layout ──
 
     private void OnListingLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
@@ -3435,18 +3441,7 @@ public partial class EntityListing : UserControl
 
         MobileBar.IsVisible = _portrait;
         DesktopTools.IsVisible = _portrait == false;
-        if (_isDeviceListing)
-        {
-            Grid.IsVisible = false;
-            CardList.IsVisible = false;
-            DeviceCardScroll.IsVisible = true;
-        }
-        else
-        {
-            Grid.IsVisible = _portrait == false;
-            CardList.IsVisible = _portrait;
-            DeviceCardScroll.IsVisible = false;
-        }
+        ApplyListingChromeVisibility();
 
         PortraitChrome.FitOverlay(EditorFrame, this, 1080, 720, lockHeight: false);
         if (PromptFrame is not null)

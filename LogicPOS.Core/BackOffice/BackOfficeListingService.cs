@@ -1035,6 +1035,14 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .Take(RowLimit)
             .ToList();
 
+        if (page.EntityType == typeof(PreferenceParameter))
+        {
+            foreach (var row in rows.OfType<PreferenceParameter>())
+            {
+                PreferenceParameterFieldMetadata.Apply(row);
+            }
+        }
+
         var fields = rows.Count == 0
             ? Describe(page, Activator.CreateInstance(page.EntityType!)!, true)
             : Describe(page, rows[0], false);

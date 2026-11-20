@@ -340,7 +340,7 @@ public partial class SettingsPage : UserControl
             IsReadOnly = token.Equals("COMPANY_COUNTRY_CODE2", StringComparison.OrdinalIgnoreCase)
                 || token.Equals("COMPANY_COUNTRY_OID", StringComparison.OrdinalIgnoreCase)
         };
-        if (kind.Contains("Password", StringComparison.OrdinalIgnoreCase))
+        if (PreferenceParameterFieldMetadata.IsPasswordToken(token) || kind.Contains("Password", StringComparison.OrdinalIgnoreCase))
         {
             box.PasswordChar = '*';
         }
