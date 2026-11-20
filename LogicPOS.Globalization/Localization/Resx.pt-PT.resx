@@ -2769,7 +2769,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Cheque</value>
   </data>
   <data name="pos_button_label_payment_type_cash_machine" xml:space="preserve">
-    <value>MB</value>
+    <value>MB Way</value>
   </data>
   <data name="pos_button_label_payment_type_credit_card" xml:space="preserve">
     <value>Cartão Crédito</value>

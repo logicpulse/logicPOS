@@ -27,7 +27,7 @@
                 </Border>
 
                 <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">
-                    <UniformGrid Classes="pos_pay_actions" Columns="7" Rows="1">
+                    <UniformGrid Classes="pos_pay_actions" Columns="8" Rows="1">
                         <Button Classes="login_alert_action pos_pay_action" Click="OnInvoiceClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
@@ -61,6 +61,13 @@
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_partial.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Pag. Parcial" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="MixedPaymentButton" Classes="login_alert_action pos_pay_action" Click="OnMixedPaymentClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_ticketpad_split_payments.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Pag. Misto" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action pos_pay_action pos_pay_action_ok" Click="OnConfirmClick">
@@ -221,6 +228,48 @@
                         <Image x:Name="NoticeSymbol" Classes="login_alert_symbol" />
                         <TextBlock x:Name="NoticeMessage" Classes="login_alert_message" TextWrapping="Wrap" />
                     </Grid>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="MixedOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame" MinWidth="420" MaxWidth="560" Width="NaN" Height="NaN" MaxHeight="420">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <TextBlock Classes="login_alert_title" Text="Pagamento misto" />
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnMixedAddRowClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <TextBlock Classes="login_alert_action_text" Text="Adicionar" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action" Click="OnMixedConfirmClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action action_secondary" Click="OnMixedCancelClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Spacing="8" Margin="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="pos_pay_caption" Text="Em falta" VerticalAlignment="Center" />
+                            <TextBlock x:Name="MixedRemainingValue" Grid.Column="1" Classes="pos_pay_amount" Text="0" />
+                        </Grid>
+                        <ScrollViewer MaxHeight="220">
+                            <StackPanel x:Name="MixedLines" Classes="bo_entity_form" />
+                        </ScrollViewer>
+                    </StackPanel>
                 </DockPanel>
             </Border>
         </Panel>

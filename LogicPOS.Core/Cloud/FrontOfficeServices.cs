@@ -62,7 +62,7 @@ public interface IPosDocumentService
 {
     Task<PosDocumentResult> IssueSimplifiedInvoiceAsync(
         Guid customerId,
-        string paymentToken,
+        string? paymentToken,
         decimal discountPercent,
         decimal? amountDelivered,
         string? notes,
@@ -70,6 +70,7 @@ public interface IPosDocumentService
         string documentType = "FS",
         bool createMissingSeries = false,
         string? invoiceFaceFiscalNumber = null,
+        IReadOnlyList<PosDocumentPaymentMethod>? paymentMethods = null,
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<string>> ListRecentAsync(CancellationToken cancellationToken = default);

@@ -1046,7 +1046,7 @@ public sealed class PosDocumentService : IPosDocumentService
 
     public async Task<PosDocumentResult> IssueSimplifiedInvoiceAsync(
         Guid customerId,
-        string paymentToken,
+        string? paymentToken,
         decimal discountPercent,
         decimal? amountDelivered,
         string? notes,
@@ -1054,6 +1054,7 @@ public sealed class PosDocumentService : IPosDocumentService
         string documentType = "FS",
         bool createMissingSeries = false,
         string? invoiceFaceFiscalNumber = null,
+        IReadOnlyList<PosDocumentPaymentMethod>? paymentMethods = null,
         CancellationToken cancellationToken = default)
     {
         if (_license.DocumentsEnabled == false)
@@ -1068,13 +1069,53 @@ public sealed class PosDocumentService : IPosDocumentService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var paymentMethod = await database.PaymentMethods
-            .AsNoTracking()
-            .FirstOrDefaultAsync(method => method.IsDeleted == false && method.Token == paymentToken, cancellationToken);
-
-        if (paymentMethod is null)
+        var useMixedPayments = paymentMethods is { Count: > 1 };
+        if (useMixedPayments == false && string.IsNullOrWhiteSpace(paymentToken))
         {
-            return PosDocumentResult.Fail("Método de pagamento não encontrado.");
+            return PosDocumentResult.Fail("Selecione um Método de Pagamento");
+        }
+
+        PaymentMethod? paymentMethod = null;
+        CreateDocumentPaymentMethodDto[] paymentMethodDtos;
+        if (useMixedPayments)
+        {
+            foreach (var portion in paymentMethods!)
+            {
+                if (portion.PaymentMethodId == Guid.Empty || portion.Amount <= 0)
+                {
+                    return PosDocumentResult.Fail("Indique o método de pagamento e o valor entregue.");
+                }
+            }
+
+            var ids = paymentMethods.Select(item => item.PaymentMethodId).Distinct().ToList();
+            var rows = await database.PaymentMethods
+                .AsNoTracking()
+                .Where(method => method.IsDeleted == false && ids.Contains(method.Id))
+                .Select(method => new { method.Id, method.Token })
+                .ToListAsync(cancellationToken);
+            if (rows.Count != ids.Count)
+            {
+                return PosDocumentResult.Fail("Método de pagamento não encontrado.");
+            }
+
+            paymentMethodDtos = paymentMethods
+                .Select(item => new CreateDocumentPaymentMethodDto(item.PaymentMethodId, item.Amount.Round()))
+                .ToArray();
+        }
+        else
+        {
+            paymentMethod = await database.PaymentMethods
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    method => method.IsDeleted == false && method.Token == paymentToken,
+                    cancellationToken);
+
+            if (paymentMethod is null)
+            {
+                return PosDocumentResult.Fail("Método de pagamento não encontrado.");
+            }
+
+            paymentMethodDtos = [new CreateDocumentPaymentMethodDto(paymentMethod.Id, 0)];
         }
 
         var seriesResult = await EnsureSeriesAsync(
@@ -1129,10 +1170,10 @@ public sealed class PosDocumentService : IPosDocumentService
             Discount: discountPercent,
             Customer: null,
             ExchangeRate: 1,
-            TotalDelivery: amountDelivered,
+            TotalDelivery: useMixedPayments ? null : amountDelivered,
             Notes: string.IsNullOrWhiteSpace(notes) ? null : notes.Trim(),
             Details: details,
-            PaymentMethods: new[] { new CreateDocumentPaymentMethodDto(paymentMethod.Id, 0) },
+            PaymentMethods: paymentMethodDtos,
             IsDraft: false);
 
         var references = new DocumentReferences(
@@ -1181,6 +1222,18 @@ public sealed class PosDocumentService : IPosDocumentService
             else if (buyerIsFinalConsumer)
             {
                 document.Customer.FiscalNumber = PosDocumentRules.FinalConsumerFiscalNumber;
+            }
+        }
+
+        if (useMixedPayments
+            && document.PaymentMethods is { Count: > 1 })
+        {
+            var mixedError = PosMixedPaymentValidation.ValidatePortions(
+                document.TotalFinal,
+                document.PaymentMethods.Select(item => item.Amount).ToList());
+            if (mixedError is not null)
+            {
+                return PosDocumentResult.Fail(mixedError);
             }
         }
 

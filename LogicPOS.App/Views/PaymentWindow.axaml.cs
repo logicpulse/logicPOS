@@ -51,6 +51,19 @@ public partial class PaymentWindow : Window
     private readonly List<PartialRow> _partialRows = new();
     private CompanyFiscalMarkState _companyMarks = CompanyFiscalMarkState.None;
     private bool _parkingInvoiceRequested;
+    private readonly List<MixedPaymentRow> _mixedRows = new();
+    private readonly List<(string Token, string Label)> _posPaymentMethods =
+    [
+        ("MONEY", "Numerário"),
+        ("CASH_MACHINE", "MB Way"),
+        ("DEBIT_CARD", "Cartão Débito"),
+        ("BANK_CHECK", "Cheque"),
+        ("CREDIT_CARD", "Cartão Crédito"),
+        ("CURRENT_ACCOUNT", "Conta Corrente")
+    ];
+
+    private bool _mixedPayment;
+    private Dictionary<string, Guid> _paymentMethodIds = new(StringComparer.OrdinalIgnoreCase);
 
     public bool PartialPayment { get; private set; }
 
@@ -138,7 +151,7 @@ public partial class PaymentWindow : Window
     private void BuildMethods()
     {
         AddMethod("MONEY", "Numerário", "icon_pos_payment_type_money.png", 0, 0, 1);
-        AddMethod("CASH_MACHINE", "MB", "icon_pos_payment_type_cash_machine.png", 1, 0, 1);
+        AddMethod("CASH_MACHINE", "MB Way", "icon_pos_payment_type_cash_machine.png", 1, 0, 1);
         AddMethod("DEBIT_CARD", "Cartão Débito", "icon_pos_payment_type_debit_card.png", 2, 0, 1);
         AddMethod("BANK_CHECK", "Cheque", "icon_pos_payment_type_bank_check.png", 0, 1, 1);
         AddMethod("CREDIT_CARD", "Cartão Crédito", "icon_pos_payment_type_credit_card.png", 1, 1, 1);
@@ -193,6 +206,8 @@ public partial class PaymentWindow : Window
 
         button.Classes.Add("selected");
         _methodToken = token;
+        _mixedPayment = false;
+        _mixedRows.Clear();
         _cash = token == CashToken;
 
         if (_cash)
@@ -318,6 +333,9 @@ public partial class PaymentWindow : Window
     private void OnFullPaymentClick(object? sender, RoutedEventArgs e)
     {
         PartialOverlay.IsVisible = false;
+        MixedOverlay.IsVisible = false;
+        _mixedPayment = false;
+        _mixedRows.Clear();
         FullPaymentButton.Classes.Add("selected");
     }
 
@@ -665,10 +683,29 @@ public partial class PaymentWindow : Window
         IReadOnlyList<PartialPaidLine>? partial,
         bool settledSale = true)
     {
-        if (settledSale && _methodToken is null)
+        if (settledSale && _mixedPayment == false && _methodToken is null)
         {
             ShowNotice("Aviso", "Selecione um Método de Pagamento", error: true);
             return;
+        }
+
+        if (_mixedPayment)
+        {
+            var payable = SettlementTotal(lines);
+            var mixedError = PosMixedPaymentValidation.ValidatePortions(
+                payable,
+                _mixedRows.Select(row => row.Amount).ToList());
+            if (mixedError is not null)
+            {
+                ShowNotice("Aviso", mixedError, error: true);
+                return;
+            }
+
+            if (_mixedRows.Count < 2)
+            {
+                ShowNotice("Aviso", "Indique pelo menos dois métodos de pagamento.", error: true);
+                return;
+            }
         }
 
         if (_customerId is null)
@@ -803,15 +840,14 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        if (settledSale && _methodToken is null)
+        if (settledSale && _mixedPayment == false && _methodToken is null)
         {
             return;
         }
 
         try
         {
-            var total = lines.Sum(line => line.Total);
-            var payable = total - (total * DiscountPercent() / 100m);
+            var payable = SettlementTotal(lines);
             var saleLines = lines.Select(line => new PosSaleLine(
                 line.ArticleId,
                 line.Quantity,
@@ -824,16 +860,28 @@ public partial class PaymentWindow : Window
             PosDocumentResult result;
             if (settledSale)
             {
+                IReadOnlyList<PosDocumentPaymentMethod>? mixedPayments = null;
+                if (_mixedPayment)
+                {
+                    await EnsurePaymentMethodCatalogAsync();
+                    mixedPayments = _mixedRows
+                        .Select(row => new PosDocumentPaymentMethod(
+                            _paymentMethodIds[row.Token],
+                            row.Amount))
+                        .ToList();
+                }
+
                 result = await documents.IssueSimplifiedInvoiceAsync(
                     _customerId.Value,
-                    _methodToken!,
+                    _mixedPayment ? null : _methodToken,
                     DiscountPercent(),
-                    _cash ? _delivered : payable,
+                    _mixedPayment ? null : _cash ? _delivered : payable,
                     Notes.Text,
                     saleLines,
                     documentType,
                     createMissingSeries,
-                    PosDocumentRules.ResolveInvoiceFaceFiscalNumber(FiscalNumber.Text, _finalConsumer, FiscalNumber.Text));
+                    PosDocumentRules.ResolveInvoiceFaceFiscalNumber(FiscalNumber.Text, _finalConsumer, FiscalNumber.Text),
+                    mixedPayments);
             }
             else
             {
@@ -1002,22 +1050,154 @@ public partial class PaymentWindow : Window
         return discount;
     }
 
-    private decimal Payable
+    private decimal Payable => SettlementTotal(_lines);
+
+    private decimal SettlementTotal(IReadOnlyList<PosTicketLine> lines)
     {
-        get
+        var total = lines.Sum(line => line.Total);
+        return total - (total * DiscountPercent() / 100m);
+    }
+
+    private void OnMixedPaymentClick(object? sender, RoutedEventArgs e)
+    {
+        FullPaymentButton.Classes.Remove("selected");
+        BuildMixedPaymentOverlay();
+        MixedOverlay.IsVisible = true;
+    }
+
+    private void BuildMixedPaymentOverlay()
+    {
+        MixedLines.Children.Clear();
+        _mixedRows.Clear();
+        AddMixedRow(_methodToken ?? "MONEY", Payable);
+        AddMixedRow("DEBIT_CARD", 0);
+        UpdateMixedRemaining();
+    }
+
+    private void AddMixedRow(string token, decimal amount)
+    {
+        var label = _posPaymentMethods.FirstOrDefault(item => item.Token == token).Label ?? token;
+        var combo = new ComboBox
         {
-            return _orderTotal - (_orderTotal * DiscountPercent() / 100m);
+            ItemsSource = _posPaymentMethods.Select(item => item.Label).ToList(),
+            SelectedItem = label,
+            Width = 140,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        var amountBox = new TextBox
+        {
+            Classes = { "pos_split_amount", "bo_touch_ready" },
+            Width = 90,
+            Text = amount > 0 ? amount.ToString("0.00", CultureInfo.CurrentCulture) : string.Empty,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        amountBox.TextChanged += (_, _) => UpdateMixedRemaining();
+        combo.SelectionChanged += (_, _) =>
+        {
+            if (combo.SelectedIndex < 0)
+            {
+                return;
+            }
+
+            var row = _mixedRows.FirstOrDefault(item => ReferenceEquals(item.AmountBox, amountBox));
+            if (row is not null)
+            {
+                row.Token = _posPaymentMethods[combo.SelectedIndex].Token;
+            }
+        };
+        var rowGrid = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("150,*,100"),
+            Margin = new Avalonia.Thickness(0, 4)
+        };
+        Grid.SetColumn(combo, 0);
+        Grid.SetColumn(amountBox, 2);
+        rowGrid.Children.Add(combo);
+        rowGrid.Children.Add(amountBox);
+        MixedLines.Children.Add(rowGrid);
+        _mixedRows.Add(new MixedPaymentRow(token, amountBox));
+    }
+
+    private void OnMixedAddRowClick(object? sender, RoutedEventArgs e)
+    {
+        AddMixedRow("MONEY", 0);
+        UpdateMixedRemaining();
+    }
+
+    private void UpdateMixedRemaining()
+    {
+        decimal entered = 0;
+        foreach (var row in _mixedRows)
+        {
+            if (MoneyFormat.TryParse(row.AmountBox.Text, out var value))
+            {
+                row.Amount = value;
+                entered += value;
+            }
         }
+
+        MixedRemainingValue.Text = MoneyFormat.Format(Math.Max(0, Payable - entered));
+    }
+
+    private void OnMixedConfirmClick(object? sender, RoutedEventArgs e)
+    {
+        UpdateMixedRemaining();
+        if (_mixedRows.Count < 2)
+        {
+            ShowNotice("Aviso", "Indique pelo menos dois métodos de pagamento.", error: true);
+            return;
+        }
+
+        var error = PosMixedPaymentValidation.ValidatePortions(
+            Payable,
+            _mixedRows.Select(row => row.Amount).ToList());
+        if (error is not null)
+        {
+            ShowNotice("Aviso", error, error: true);
+            return;
+        }
+
+        _mixedPayment = true;
+        _methodToken = null;
+        _cash = false;
+        foreach (var method in _methodButtons)
+        {
+            method.Classes.Remove("selected");
+        }
+
+        MixedPaymentButton.Classes.Add("selected");
+        MixedOverlay.IsVisible = false;
+        RefreshTotals();
+    }
+
+    private void OnMixedCancelClick(object? sender, RoutedEventArgs e)
+    {
+        MixedOverlay.IsVisible = false;
+        _mixedRows.Clear();
+        _mixedPayment = false;
+    }
+
+    private async Task EnsurePaymentMethodCatalogAsync()
+    {
+        if (_paymentMethodIds.Count > 0 || AppComposition.Services is null)
+        {
+            return;
+        }
+
+        var methods = await AppComposition.Services.GetRequiredService<IPosDocumentService>().ListPaymentMethodsAsync();
+        _paymentMethodIds = methods
+            .Where(item => string.IsNullOrWhiteSpace(item.Code) == false)
+            .ToDictionary(item => item.Code, item => item.Id, StringComparer.OrdinalIgnoreCase);
     }
 
     private void RefreshTotals()
     {
-        if (_cash == false)
+        if (_cash == false || _mixedPayment)
         {
             _delivered = Payable;
         }
 
-        var change = _cash ? _delivered - Payable : 0;
+        var change = _cash && _mixedPayment == false ? _delivered - Payable : 0;
         TotalValue.Text = MoneyFormat.Format(Payable);
         DeliveryValue.Text = MoneyFormat.Format(_delivered);
         ChangeValue.Text = MoneyFormat.Format(change);
@@ -1053,6 +1233,21 @@ public partial class PaymentWindow : Window
         var bitmap = new Bitmap(AssetLoader.Open(new Uri(uri)));
         _bitmaps[uri] = bitmap;
         return bitmap;
+    }
+
+    private sealed class MixedPaymentRow
+    {
+        public MixedPaymentRow(string token, TextBox amountBox)
+        {
+            Token = token;
+            AmountBox = amountBox;
+        }
+
+        public string Token { get; set; }
+
+        public TextBox AmountBox { get; }
+
+        public decimal Amount { get; set; }
     }
 
     private sealed class PartialRow
