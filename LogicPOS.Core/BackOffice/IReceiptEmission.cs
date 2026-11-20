@@ -1,3 +1,4 @@
+using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 
@@ -140,6 +141,16 @@ public static class ReceiptPayDefaults
 }
 
 public readonly record struct ReceiptPaySetup(ReceiptPayOption? Currency, decimal Rate, decimal Delivered);
+
+public static class ReceiptEmissionDefaults
+{
+    public static string TakeNextReceiptNumber(DocumentSeries series)
+    {
+        var number = $"{series.Acronym}/{series.NextNumber}";
+        series.NextNumber++;
+        return number;
+    }
+}
 
 public static class ReceiptSettlement
 {
