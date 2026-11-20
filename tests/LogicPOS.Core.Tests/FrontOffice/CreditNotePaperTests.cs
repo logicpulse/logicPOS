@@ -8,7 +8,8 @@ public class CreditNotePaperTests
     [InlineData("NC", false)]
     [InlineData("nc", false)]
     [InlineData("FT", true)]
-    [InlineData("FR", true)]
+    [InlineData("FR", false)]
+    [InlineData("ND", true)]
     [InlineData("FS", false)]
     public void Named_customer_is_not_required_for_a_credit_note(string acronym, bool required)
     {
