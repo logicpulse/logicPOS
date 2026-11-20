@@ -714,6 +714,7 @@ public sealed class PosCopiedLine
         decimal discount,
         Guid vatRateId,
         decimal vatPercentage,
+        bool priceIncludesVat = false,
         string? serialNumber = null,
         string? notes = null,
         Guid? vatExemptionId = null)
@@ -726,6 +727,7 @@ public sealed class PosCopiedLine
         Discount = discount;
         VatRateId = vatRateId;
         VatPercentage = vatPercentage;
+        PriceIncludesVat = priceIncludesVat;
         SerialNumber = string.IsNullOrWhiteSpace(serialNumber) ? null : serialNumber.Trim();
         Notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
         VatExemptionId = vatExemptionId;
@@ -746,6 +748,8 @@ public sealed class PosCopiedLine
     public Guid VatRateId { get; }
 
     public decimal VatPercentage { get; }
+
+    public bool PriceIncludesVat { get; }
 
     public string? SerialNumber { get; }
 
@@ -1294,7 +1298,8 @@ public sealed class PosDocumentService : IPosDocumentService
 
         var rows = documents.Select(document =>
         {
-            var paid = document.Paid ? document.TotalFinal : 0m;
+            var finalMoney = DocumentMoneyTotal.Canonical(document.TotalFinal);
+            var paid = document.Paid ? finalMoney : 0m;
             var associated = document.ParentId is Guid parentId && parentNumbers.TryGetValue(parentId, out var number)
                 ? number
                 : string.Empty;
@@ -1309,9 +1314,9 @@ public sealed class PosDocumentService : IPosDocumentService
                 Status = DescribeStatus(document.IsDraft, document.Status),
                 EntityName = document.EntityName,
                 TaxId = document.TaxId,
-                FinalTotal = document.TotalFinal,
+                FinalTotal = finalMoney,
                 PaidAmount = paid,
-                DebitAmount = document.TotalFinal - paid,
+                DebitAmount = finalMoney - paid,
                 AssociatedDocuments = associated
             };
         }).ToList();
@@ -1819,7 +1824,8 @@ public sealed class PosDocumentService : IPosDocumentService
                 item.SerialNumber,
                 item.Notes,
                 item.VatExemptionCode,
-                item.VatExemptionReason
+                item.VatExemptionReason,
+                PriceIncludesVat = item.Article != null && item.Article.PriceWithVat
             })
             .ToListAsync(cancellationToken);
         var exemptionLookup = await database.VatExemptionReasons
@@ -1856,6 +1862,7 @@ public sealed class PosDocumentService : IPosDocumentService
                     item.Discount,
                     item.VatRateId,
                     item.VatPercentage,
+                    item.PriceIncludesVat,
                     item.SerialNumber,
                     item.Notes,
                     PosDocumentRules.MatchVatExemptionId(exemptions, item.VatExemptionCode, item.VatExemptionReason)))

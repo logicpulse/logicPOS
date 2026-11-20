@@ -94,9 +94,9 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             CustomerName = document.Customer.Name ?? string.Empty,
             FiscalNumber = document.Customer.FiscalNumber ?? string.Empty,
             Currency = document.Currency?.Designation ?? string.Empty,
-            TotalFinal = document.TotalFinal,
+            TotalFinal = DocumentMoneyTotal.Canonical(document.TotalFinal),
             TotalPaid = 0m,
-            TotalToPay = document.Type == "NC" ? 0m : document.TotalFinal
+            TotalToPay = document.Type == "NC" ? 0m : DocumentMoneyTotal.Canonical(document.TotalFinal)
         }).ToList()
         };
     }

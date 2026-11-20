@@ -3429,10 +3429,11 @@ public partial class NewDocumentWindow : UserControl
                 Code = line.Code,
                 Designation = line.Designation,
                 Quantity = line.Quantity,
-                Price = line.Price,
+                Price = line.NetUnitPrice,
                 Discount = line.Discount,
                 VatRateId = line.VatRateId,
                 VatPercentage = line.VatPercentage,
+                PriceIncludesVat = line.PriceIncludesVat,
                 VatExemptionId = line.VatExemptionId,
                 Notes = line.Notes,
                 SerialNumber = line.SerialNumber
@@ -3799,13 +3800,14 @@ public partial class NewDocumentWindow : UserControl
             Designation = line.Designation;
             Family = family;
             Quantity = line.Quantity;
-            Price = line.Price;
             Discount = DocumentLineCalculator.ExtractLineDiscount(line.Discount, documentDiscount);
-            PriceIncludesVat = false;
             VatPercentage = line.VatPercentage;
             SerialNumber = line.SerialNumber;
             Notes = line.Notes;
-            RecalculateNet();
+            var prices = DocumentReopenedLinePrice.FromStoredNet(line.Price, line.VatPercentage, line.PriceIncludesVat);
+            PriceIncludesVat = prices.PriceIncludesVat;
+            Price = prices.UnitPrice;
+            NetUnitPrice = prices.NetUnitPrice;
         }
 
         public static NewDocumentLine FromCopy(PosCopiedLine line, string family, decimal documentDiscount, Guid? articleExemptionId = null)

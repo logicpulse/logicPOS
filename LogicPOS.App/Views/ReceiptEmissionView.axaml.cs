@@ -855,11 +855,11 @@ public sealed class ReceiptGridRow : INotifyPropertyChanged
 
     public string DateText => Source.CreatedAt.ToString("dd/MM/yyyy HH:mm", CultureInfo.CurrentCulture);
 
-    public string TotalFinalText => Source.TotalFinal.ToString("0.00", CultureInfo.CurrentCulture);
+    public string TotalFinalText => DocumentMoneyTotal.FormatFixed(Source.TotalFinal, CultureInfo.CurrentCulture);
 
-    public string TotalPaidText => Source.TotalPaid.ToString("0.00", CultureInfo.CurrentCulture);
+    public string TotalPaidText => DocumentMoneyTotal.FormatFixed(Source.TotalPaid, CultureInfo.CurrentCulture);
 
-    public string TotalToPayText => Source.TotalToPay.ToString("0.00", CultureInfo.CurrentCulture);
+    public string TotalToPayText => DocumentMoneyTotal.FormatFixed(Source.TotalToPay, CultureInfo.CurrentCulture);
 
     public bool IsSelected
     {

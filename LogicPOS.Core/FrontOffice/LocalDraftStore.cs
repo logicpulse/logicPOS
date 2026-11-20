@@ -56,6 +56,8 @@ public sealed class StoredDraftLine
     public string? Notes { get; set; }
 
     public string? SerialNumber { get; set; }
+
+    public bool PriceIncludesVat { get; set; }
 }
 
 public static class LocalDraftStore
@@ -135,6 +137,7 @@ public static class LocalDraftStore
             line.Discount,
             line.VatRateId,
             line.VatPercentage,
+            line.PriceIncludesVat,
             line.SerialNumber,
             line.Notes,
             line.VatExemptionId)).ToList();

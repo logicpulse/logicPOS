@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +13,9 @@ namespace LogicPOS.Core;
 /// </summary>
 public static class MoneyFormat
 {
-    public static string Format(decimal value) => value.ToString("C", Culture());
+    public static string Format(decimal value) => value.Round().ToString("C", Culture());
 
-    public static string Format(decimal value, string format) => value.ToString(format, Culture());
+    public static string Format(decimal value, string format) => value.Round().ToString(format, Culture());
 
     /// <summary>
     /// Portuguese grouping (1.234,56) and a dot decimal (1234.56 or 1.50).
