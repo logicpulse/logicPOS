@@ -3,6 +3,7 @@ using LogicPOS.Application.Features.Articles.Stocks;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Core.Finance.Postal;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.Licensing;
 using LogicPOS.Core.FrontOffice;
@@ -101,6 +102,8 @@ public static class AppComposition
             services.AddSingleton<IPosDocumentService>(provider => provider.GetRequiredService<PosDocumentService>());
             services.AddSingleton<PosOrderService>();
             services.AddSingleton<IPosOrderService>(provider => provider.GetRequiredService<PosOrderService>());
+            services.AddSingleton<IPortugalGeoApiClient, PortugalGeoApiClient>();
+            services.AddSingleton<PortugalPostalSearch>();
             services.AddSingleton<BackOfficeListingService>();
             services.AddSingleton<IBackOfficeListingService>(provider => provider.GetRequiredService<BackOfficeListingService>());
             services.AddSingleton<IBulkEditService, BulkEditService>();
