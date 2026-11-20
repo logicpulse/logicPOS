@@ -111,6 +111,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
                 TotalNet = doc.TotalNet,
                 TotalTax = doc.TotalTax,
                 TotalFinal = doc.TotalFinal,
+                Notes = doc.Notes,
                 Atcud = doc.ATCUD,
                 AtQrCode = doc.ATQRCode
             })
@@ -126,6 +127,24 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             .Select(item => item.Series!.ATDocCodeValidationSeries)
             .FirstOrDefaultAsync(cancellationToken);
         document.Atcud = AtcudFormat.OrFallback(document.Atcud, seriesValidation, document.Number);
+        if (PosDocumentRules.IsCreditNote(document.Type))
+        {
+            var parentId = await database.Documents
+                .AsNoTracking()
+                .Where(item => item.Id == documentId)
+                .Select(item => item.ParentId)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (parentId is Guid id && id != Guid.Empty)
+            {
+                document.OriginNumber = await database.Documents
+                    .AsNoTracking()
+                    .Where(item => item.Id == id)
+                    .Select(item => item.Number)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+
+            ApplyCreditNotePaperAmounts(document);
+        }
 
         var mark = FiscalMarks.Read(scope.ServiceProvider.GetService<IFiscalModule>(), new FiscalDocument
         {
@@ -155,9 +174,10 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             .ToListAsync(cancellationToken);
         string? Value(string token) => parameters.FirstOrDefault(item => item.Token == token)?.Value;
 
-        var openDrawer = await database.DocumentTypes
-            .AsNoTracking()
-            .AnyAsync(item => item.IsDeleted == false && item.Acronym == document.Type && item.PrintOpenDrawer, cancellationToken);
+        var openDrawer = PosDocumentRules.IsCreditNote(document.Type) == false
+            && await database.DocumentTypes
+                .AsNoTracking()
+                .AnyAsync(item => item.IsDeleted == false && item.Acronym == document.Type && item.PrintOpenDrawer, cancellationToken);
 
         var qrMethod = int.TryParse(Value("QRCODE_METHOD"), out var parsedMethod) ? parsedMethod : 1;
 
@@ -258,6 +278,21 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             StandByLine1 = display.StandByLine1,
             StandByLine2 = display.StandByLine2
         };
+    }
+
+    private static void ApplyCreditNotePaperAmounts(ThermalDocument document)
+    {
+        document.TotalNet = PosDocumentRules.CreditNotePaperAmount(document.TotalNet);
+        document.TotalTax = PosDocumentRules.CreditNotePaperAmount(document.TotalTax);
+        document.TotalFinal = PosDocumentRules.CreditNotePaperAmount(document.TotalFinal);
+        foreach (var line in document.Lines)
+        {
+            line.Quantity = PosDocumentRules.CreditNotePaperAmount(line.Quantity);
+            line.UnitPrice = PosDocumentRules.CreditNotePaperAmount(line.UnitPrice);
+            line.TotalNet = PosDocumentRules.CreditNotePaperAmount(line.TotalNet);
+            line.TotalTax = PosDocumentRules.CreditNotePaperAmount(line.TotalTax);
+            line.TotalFinal = PosDocumentRules.CreditNotePaperAmount(line.TotalFinal);
+        }
     }
 
     public async Task<bool> IsOrderTicketEnabledAsync(CancellationToken cancellationToken = default)

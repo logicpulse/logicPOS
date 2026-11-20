@@ -10,7 +10,7 @@ namespace LogicPOS.App.Hardware;
 internal sealed class ThermalInvoiceRenderer
 {
     private const int TablePadding = 2;
-    private static readonly HashSet<string> InvoiceTypes = new(StringComparer.OrdinalIgnoreCase) { "FT", "FS", "FR", "FC" };
+    private static readonly HashSet<string> InvoiceTypes = new(StringComparer.OrdinalIgnoreCase) { "FT", "FS", "FR", "FC", "NC" };
 
     private readonly List<byte> _buffer = [];
     private readonly Encoding _encoding;
@@ -60,6 +60,7 @@ internal sealed class ThermalInvoiceRenderer
         PrintTotals();
         PrintTaxResume();
         PrintPayments();
+        PrintCreditNote();
         PrintTypeFooter();
         PrintQrCode();
         PrintFooterExtended();
@@ -331,6 +332,27 @@ internal sealed class ThermalInvoiceRenderer
         Line($"{label.Trim().TrimEnd(':').Trim()}: {value}");
     }
 
+    private void PrintCreditNote()
+    {
+        var document = _job.Document;
+        if (PosDocumentRules.IsCreditNote(document.Type) == false)
+        {
+            return;
+        }
+
+        Line($"Documento de origem: {document.OriginNumber}");
+        Line($"Motivo: {document.Notes}");
+        if (_isSecondCopy)
+        {
+            Feed();
+            Line("Assinatura do cliente");
+            Feed();
+            Line("______________________________");
+        }
+
+        Feed();
+    }
+
     private void PrintTypeFooter()
     {
         var key = InvoiceTypes.Contains(_job.Document.Type)
@@ -449,7 +471,7 @@ internal sealed class ThermalInvoiceRenderer
         Line(_job.TerminalName);
         Line($"{L("global_printed_on_date", "Impresso em")}: {DateTime.Now.ToString(CultureInfo.CurrentCulture)}");
         Line("LogicPOS");
-        if (_isSecondCopy)
+        if (_isSecondCopy && PosDocumentRules.IsCreditNote(_job.Document.Type) == false)
         {
             Bold("2ª Via — conteúdo idêntico ao original");
         }

@@ -5,8 +5,8 @@ O produto de ponto de venda e back-office. A edição pública é o que o GitHub
 ## Language
 
 **Edição pública**:
-A edição publicada no GitHub `logicPOS`: só base de dados direta, sem ligação à API, sem certificação e sem registo de licença, com um encaixe para uma certificação de terceiros. A build develop da lista 2.0.31 é esta edição: sem a DLL, séries por comunicar à AT e a faixa de módulo em falta são o estado esperado. O cartão de primeiro arranque não promete faturação certificada.
-_Avoid_: versão free, versão GitHub, open source, Community
+O repositório `logicPOS` publicado no GitHub, sozinho: não tem instalador e não inclui `logicPOS-internal`. Só base de dados direta, sem ligação à API, sem certificação e sem registo de licença, com um encaixe para uma certificação de terceiros. A build develop da lista 2.0.31 é esta edição: sem a DLL, séries por comunicar à AT e a faixa de módulo em falta são o estado esperado.
+_Avoid_: versão free, open source, Community
 
 **Edição LogicPulse**:
 O anfitrião fechado em `logicPOS-internal` que referencia a Avalonia pública e acrescenta a composição própria: modo local (licença + fiscal) ou modo LogicPulse (API). O instalador publica este anfitrião, com certificação em Community, Business e Cloud.
@@ -100,21 +100,49 @@ _Avoid_: account, buyer, client genérico
 O segredo numérico de entrada no posto.
 _Avoid_: palavra-passe, password
 
+**Perfil**:
+O papel de um utilizador. Um utilizador novo não tem perfil até alguém o escolher.
+_Avoid_: Barman por omissão, Proprietário em todos os novos
+
 **Palavra-passe do portal**:
 O segredo do portal, distinto do PIN do posto.
 _Avoid_: password, PIN
 
+**Código do artigo**:
+O identificador do artigo, atribuído pelo sistema e já visível antes de gravar.
+_Avoid_: código vazio, código obrigatório escrito à mão
+
+**Valor entregue**:
+O montante em numerário que o cliente entrega no pagamento.
+_Avoid_: dinheiro requisitado, dinheiro pedido
+
+**Predefinido**:
+O registo usado quando ninguém escolhe outro.
+_Avoid_: por padrão, por omissão, default
+
+**Código do país**:
+As duas letras do país, como PT ou AO.
+_Avoid_: Código2 do País, código2
+
+**Consulta VIES**:
+A leitura do NIF no VIES, só quando quem edita o cliente a pede. Não corre ao sair do campo.
+_Avoid_: validação automática, erro ao sair do NIF
+
+**Total do documento**:
+O único total em dinheiro de um documento fiscal. Listas, resumo e pagamento mostram os mesmos cêntimos.
+_Avoid_: total por ecrã, diferença de um cêntimo aceite
+
 **Código-postal (auxiliar)**:
-Registo de referência Código-postal → Localidade/Cidade dum País; serve para preencher a morada do Cliente, não substitui a linha de rua.
-_Avoid_: catálogo de moradas, CTT completo, street directory
+Consulta pública só de Portugal. O código completo preenche localidade e cidade, e a rua apenas se a morada estiver vazia; um prefixo de quatro dígitos só abre uma lista que alguém pediu. Sem rede, com código desconhecido, ou em Angola e Moçambique, não há sugestão nem erro, e a morada escreve-se à mão.
+_Avoid_: postallocalities.json, postalstreets.json, tabela PostalLocalities, catálogo local, consulta a cada letra
 
 **Localidade (campo)**:
 Texto da localidade na morada do Cliente; pode ser preenchido a partir do Código-postal auxiliar.
 _Avoid_: cidade como sinónimo exclusivo; tabela de ruas
 
 **Consumidor final**:
-O cliente de sistema usado quando não há cliente comercial específico; não se edita nem apaga na listagem nem no documento.
-_Avoid_: anónimo, cliente vazio
+O cliente de sistema usado quando não há cliente comercial específico; não se edita nem apaga na listagem nem no documento. Na face da fatura não leva NIF, salvo se o pedir. O 999999990 não se imprime: serve só o SAF-T e o QR.
+_Avoid_: anónimo, cliente vazio, 999999990 impresso, NIF obrigatório
 
 **Documento novo**:
 O ecrã de emissão de um documento (Avalonia NewDocument / portal Novo Doc.).
@@ -128,13 +156,45 @@ _Avoid_: fatura, FS, FR, FT, conta paga, documento fiscal
 O documento com série que substitui a ordem aberta: fatura simplificada (FS), fatura-recibo (FR) ou fatura (FT). Não é a ordem aberta da mesa.
 _Avoid_: pedido de mesa, ticket de cozinha, Fin.pedido, pagamento (a FT não é um pagamento)
 
+**NIF na fatura**:
+Campo opcional no pagamento e no documento novo. Não cria ficha de cliente. Vazio: a face da fatura não leva NIF. NIF de pessoa singular imprime-se e o teto mantém-se. NIF iniciado por 5 ou por 6 trata o adquirente como sujeito passivo: até 100 € sai fatura simplificada só com esse NIF; acima do teto, a liquidação espera um cliente com nome, morada e o mesmo NIF, e só então sai a fatura-recibo. No regime do artigo 53.º a simplificada com esse NIF chega em qualquer valor.
+_Avoid_: ficha de cliente obrigatória abaixo de 100 €, fatura-recibo só com NIF de empresa, 999999990 na face
+
+**Vendedor ambulante**:
+Marcação na ficha da empresa. Fora da restauração, do café e do estacionamento, uma venda só de Produtos a quem não é sujeito passivo pode ir até 1000 € na fatura simplificada. Sem a marcação, essa venda fica nos 100 €. Restauração, café e estacionamento ficam nos 100 € mesmo com a marcação.
+_Avoid_: modo de retalho como sinónimo, 1000 € na restauração
+
+**Anulação (fatura)**:
+Estado de uma FT, FS ou FR já emitida. Exige motivo. Só cabe se não houver recibo, nota de crédito nem estado faturado. O número mantém-se na série. Devolução ou desconto faz-se por nota de crédito. O rascunho apaga-se.
+_Avoid_: apagar o número, anular com recibo, nota de crédito se a certificação o exigir
+
+**Guia de transporte**:
+Documento que acompanha bens em circulação. Na ficha da empresa, quem teve volume de negócios acima de 100 000 € no ano anterior marca essa obrigação. Com a marcação, a guia só circula com o código da AT e com hora de início posterior à comunicação; sem rede, os bens não saem. Sem a marcação, a guia imprime-se sem esperar pelo código.
+_Avoid_: código AT em toda a empresa, guia válida depois da hora de início, contingência do 5.º dia útil no uso normal
+
+**Série comunicada (ATCUD)**:
+Com o módulo fiscal presente, em Portugal, a FT, a FS, a FR, a nota de crédito, o recibo e a guia só se emitem se a série tiver código AT. O ATCUD é esse código mais o número. Sem o módulo, a emissão local mantém-se e o arranque avisa.
+_Avoid_: ATCUD vazio com o módulo presente, recusar a versão GitHub
+
+**Estacionamento (venda)**:
+O talão de pagamento fecha a venda e dispensa fatura. A fatura simplificada só sai se alguém a pedir, e fica sujeita ao teto de 100 €.
+_Avoid_: fatura obrigatória em cada saída, venda sem comprovativo
+
 **Fatura simplificada (FS)**:
-Documento fiscal de venda imediata ao consumidor final, liquidado na emissão.
-_Avoid_: fatura, fatura-recibo, conta corrente
+Documento fiscal de venda liquidada na emissão, só dentro do artigo 40.º do CIVA. O teto é o total da fatura. Restauração, café e estacionamento ficam nos 100 €, mesmo que o artigo esteja como Produto. Os 1000 € só existem num modo de retalho (loja, padaria, talho, roupa, ferragens, sapatos, peixe), com todas as linhas na classe Produtos, a um cliente que não é sujeito passivo. Uma linha que não seja Produto, ou um sujeito passivo, baixa essa fatura para 100 €. Na dúvida, 100 €. Com o regime do artigo 53.º marcado na ficha da empresa, não há teto. Acima do teto que se aplique, a venda liquidada sai em fatura-recibo, mesmo ao consumidor final.
+_Avoid_: teto por artigo, 1000 € em restauração, 1000 € com uma linha de serviço, motivo de isenção da linha como regime da empresa
+
+**Sujeito passivo (adquirente)**:
+Quem compra com NIF iniciado por 5 ou por 6. A fatura simplificada dessa venda só vai até 100 € e o NIF vai na face. Consumidor final e NIF de pessoa singular não o são. O empresário em nome individual não se distingue pelo NIF.
+_Avoid_: tipo de cliente Empresa, NIF singular como sujeito passivo
+
+**Regime de isenção (artigo 53.º)**:
+Regime marcado na ficha da empresa. Enquanto estiver marcado, a fatura simplificada não tem teto de 100 € nem de 1000 €. Enquanto não estiver marcado, aplicam-se os tetos normais. O NIF do sujeito passivo continua obrigatório na face, e o do consumidor final só se ele o pedir.
+_Avoid_: motivo M10, isenção de IVA de uma linha
 
 **Fatura-recibo (FR)**:
-Documento fiscal de venda imediata a um cliente com nome e NIF, liquidado na emissão.
-_Avoid_: fatura, fatura simplificada, recibo à parte, conta corrente
+Documento fiscal de venda liquidada na emissão, com os elementos da fatura completa. Pode sair para o consumidor final sem NIF. O NIF desse cliente só entra se ele o pedir. Se o adquirente for sujeito passivo, o NIF é obrigatório.
+_Avoid_: exigir NIF ao consumidor final, 999999990 impresso na fatura, conta corrente
 
 **Fatura (FT)**:
 Documento fiscal emitido sem liquidação. Fica em dívida até um recibo.
@@ -153,16 +213,16 @@ A liquidação de só algumas quantidades da ordem aberta. O resto continua na o
 _Avoid_: adiantamento, fatura com dívida parcial
 
 **Pagamento misto**:
-Uma liquidação em que o mesmo documento fiscal soma mais do que um método de pagamento.
+Uma liquidação em que o mesmo documento fiscal soma mais do que um método de pagamento. As parcelas somam o total a liquidar.
 _Avoid_: um documento por método, vários recibos
 
 **MB Way**:
-Método de pagamento. Pode liquidar sozinho ou entrar num pagamento misto.
-_Avoid_: referência multibanco, transferência
+Método de pagamento. Escolhe-se e a venda liquida, sozinho ou num pagamento misto, sem espera de confirmação no telemóvel.
+_Avoid_: referência multibanco, transferência, confirmação no telemóvel
 
 **Nota de crédito**:
-Documento fiscal que reduz ou anula uma venda já emitida. Na liquidação entra como crédito e baixa a dívida da fatura. Na grelha de documentos não é dívida do cliente. A sigla de tipo é NC; o nome visível é nota de crédito.
-_Avoid_: NC como único nome, valor em dívida na linha da nota, fatura, recibo
+Documento fiscal que reduz ou anula uma venda já emitida, sempre a partir do documento de origem e com motivo. Usa o cliente dessa fatura, incluindo o consumidor final. Na liquidação entra como crédito e baixa a dívida da fatura. Na grelha de documentos não é dívida do cliente. A sigla de tipo é NC; o nome visível é nota de crédito. Se a origem foi talão, imprime-se em talão: o cliente leva o original e o estabelecimento fica com a segunda via, que tem a linha de assinatura. Os valores no papel são positivos. Não leva a menção de documento que não serve de fatura.
+_Avoid_: NC como único nome, valor em dívida na linha da nota, valores negativos no papel, exigir NIF ao consumidor final, fatura, recibo
 
 **Recibo**:
 O documento que liquida uma fatura (FT). O número é a sigla da série e o sequencial. O método de pagamento por omissão é Numerário.
