@@ -17,6 +17,7 @@ using Avalonia.VisualTree;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Core.Finance.Postal;
 using LogicPOS.Core.FrontOffice;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -2107,47 +2108,27 @@ public partial class EntityListing : UserControl
             return;
         }
 
+        var trigger = force ? PostalSearchTrigger.Explicit : PostalSearchTrigger.AutoComplete;
         var matches = countryId == Guid.Empty
-            ? await Service.SearchCompanyPostalLocalitiesAsync(zip)
-            : await Service.SearchPostalLocalitiesAsync(countryId, zip);
-        var exact = matches
-            .Where(item => string.Equals(item.ZipCode, zip, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-        var streets = exact
-            .Where(item => string.IsNullOrWhiteSpace(item.Street) == false)
-            .GroupBy(item => item.Street, StringComparer.OrdinalIgnoreCase)
-            .Select(group => group.First())
-            .ToList();
-        PostalLocalityMatch? match = streets.Count == 1
-            ? streets[0]
-            : exact.FirstOrDefault(item => string.IsNullOrWhiteSpace(item.Street)) ?? exact.FirstOrDefault();
-        if (match is not null && streets.Count != 1 && force == false)
+            ? await Service.SearchCompanyPostalLocalitiesAsync(zip, trigger: trigger)
+            : await Service.SearchPostalLocalitiesAsync(countryId, zip, trigger: trigger);
+
+        if (PostalLocalitySelection.ShouldOfferPicker(matches, zip, force)
+            && zipInput is TextBox zipBox
+            && zipInput.Parent is Panel zipHost)
         {
-            match = new PostalLocalityMatch
-            {
-                ZipCode = match.ZipCode,
-                Locality = match.Locality,
-                City = match.City
-            };
+            PostalZipSuggest.ShowSuggestions(zipBox, zipHost, matches, ApplyFormPostal);
+            return;
         }
 
-        if (match is null && force && matches.Count > 0)
-        {
-            match = matches[0];
-        }
-
+        var match = PostalLocalitySelection.ChooseForAutoFill(matches, zip, force);
         if (match is null)
         {
-            if (force)
-            {
-                EditorNotice.Text = "Código-postal não encontrado.";
-            }
-
             return;
         }
 
         ApplyFormPostal(match);
-        if (force)
+        if (force && string.IsNullOrWhiteSpace(match.Locality) == false)
         {
             EditorNotice.Text = "Localidade preenchida a partir do código-postal.";
         }
@@ -2195,7 +2176,11 @@ public partial class EntityListing : UserControl
 
         if (_inputs.Any(item => item.Key == "Address"))
         {
-            SetText("Address", match.Street);
+            var current = ReadInput(_inputs.First(item => item.Key == "Address").Input);
+            if (string.IsNullOrWhiteSpace(current))
+            {
+                SetText("Address", match.Street);
+            }
         }
 
         if (_inputs.Any(item => item.Key == "Residence"))

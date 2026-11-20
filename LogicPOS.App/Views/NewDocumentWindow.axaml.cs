@@ -10,6 +10,7 @@ using LogicPOS.App;
 using LogicPOS.Core;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Core.Finance.Postal;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities.Finance.Calculations;
@@ -2920,40 +2921,24 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        var matches = await listing.SearchPostalLocalitiesAsync(countryId.Value, zip);
-        var exact = matches
-            .Where(item => string.Equals(item.ZipCode, zip, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-        var streets = exact
-            .Where(item => string.IsNullOrWhiteSpace(item.Street) == false)
-            .GroupBy(item => item.Street, StringComparer.OrdinalIgnoreCase)
-            .Select(group => group.First())
-            .ToList();
-        PostalLocalityMatch? match = streets.Count == 1
-            ? streets[0]
-            : exact.FirstOrDefault(item => string.IsNullOrWhiteSpace(item.Street)) ?? exact.FirstOrDefault();
-        if (match is not null && streets.Count != 1 && force == false)
+        var trigger = force ? PostalSearchTrigger.Explicit : PostalSearchTrigger.AutoComplete;
+        var matches = await listing.SearchPostalLocalitiesAsync(countryId.Value, zip, trigger: trigger);
+
+        if (PostalLocalitySelection.ShouldOfferPicker(matches, zip, force)
+            && EditorZip.Parent is Panel zipHost)
         {
-            match = new PostalLocalityMatch { ZipCode = match.ZipCode, Locality = match.Locality, City = match.City };
+            PostalZipSuggest.ShowSuggestions(EditorZip, zipHost, matches, ApplyEditorPostal);
+            return;
         }
 
-        if (match is null && force && matches.Count > 0)
-        {
-            match = matches[0];
-        }
-
+        var match = PostalLocalitySelection.ChooseForAutoFill(matches, zip, force);
         if (match is null)
         {
-            if (force)
-            {
-                EditorError.Text = "Código-postal não encontrado.";
-            }
-
             return;
         }
 
         ApplyEditorPostal(match);
-        if (force)
+        if (force && string.IsNullOrWhiteSpace(match.Locality) == false)
         {
             EditorError.Text = "Localidade preenchida a partir do código-postal.";
         }

@@ -8,6 +8,7 @@ using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Core.Finance.Postal;
 using LogicPOS.Core.Licensing;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Common;
@@ -270,6 +271,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
     private readonly ISystemInformationService _system;
     private readonly IAuditingInformationService _auditing;
     private readonly ILicenseModule _license;
+    private readonly PortugalPostalSearch _portugalPostal;
     private readonly PageSpec[] _pages;
 
     public BackOfficeListingService(
@@ -277,13 +279,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         IPasswordHasher passwords,
         ISystemInformationService system,
         IAuditingInformationService auditing,
-        ILicenseModule license)
+        ILicenseModule license,
+        PortugalPostalSearch portugalPostal)
     {
         _scopes = scopes;
         _passwords = passwords;
         _system = system;
         _auditing = auditing;
         _license = license;
+        _portugalPostal = portugalPostal;
         _pages = BuildPages();
     }
 
@@ -515,6 +519,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         Guid countryId,
         string search,
         int take = 25,
+        PostalSearchTrigger trigger = PostalSearchTrigger.Explicit,
         CancellationToken cancellationToken = default)
     {
         if (countryId == Guid.Empty)
@@ -523,7 +528,6 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         take = take <= 0 ? 25 : Math.Min(take, 50);
-        var term = (search ?? string.Empty).Trim();
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var code = await database.Countries.AsNoTracking()
@@ -535,24 +539,18 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return [];
         }
 
-        var settings = scope.ServiceProvider.GetRequiredService<DatabaseSettings>();
-        var entries = await Task.Run(
-            () => PostalCatalog.Take(settings.SeedPath ?? "db_seeds", code, term, take, out _),
-            cancellationToken);
-        return entries
-            .Select(item => new PostalLocalityMatch
-            {
-                ZipCode = item.ZipCode,
-                Street = item.Street,
-                Locality = item.Locality,
-                City = item.City
-            })
-            .ToList();
+        if (PortuguesePostalFormats.SupportsSuggestion(code) == false)
+        {
+            return [];
+        }
+
+        return await _portugalPostal.SearchAsync(search, trigger, take, cancellationToken);
     }
 
     public async Task<IReadOnlyList<PostalLocalityMatch>> SearchCompanyPostalLocalitiesAsync(
         string search,
         int take = 25,
+        PostalSearchTrigger trigger = PostalSearchTrigger.Explicit,
         CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();
@@ -563,7 +561,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return [];
         }
 
-        return await SearchPostalLocalitiesAsync(country.Value.Id, search, take, cancellationToken);
+        return await SearchPostalLocalitiesAsync(country.Value.Id, search, take, trigger, cancellationToken);
     }
 
     public async Task<ListingSaveResult> SaveAsync(string title, Guid? id, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken = default)

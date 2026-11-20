@@ -30,12 +30,14 @@ public interface IBackOfficeListingService
         Guid countryId,
         string search,
         int take = 25,
+        Finance.Postal.PostalSearchTrigger trigger = Finance.Postal.PostalSearchTrigger.Explicit,
         CancellationToken cancellationToken = default);
 
     /// <summary>Same search, using the company country from the database.</summary>
     Task<IReadOnlyList<PostalLocalityMatch>> SearchCompanyPostalLocalitiesAsync(
         string search,
         int take = 25,
+        Finance.Postal.PostalSearchTrigger trigger = Finance.Postal.PostalSearchTrigger.Explicit,
         CancellationToken cancellationToken = default);
 
     Task<ListingSaveResult> SaveAsync(string title, Guid? id, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken = default);
