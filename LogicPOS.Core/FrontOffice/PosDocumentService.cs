@@ -399,8 +399,8 @@ public static class PosDocumentRules
     public static bool RequiresNamedCustomer(string? acronym, bool isAngola = false)
     {
         _ = isAngola;
-        // FR may use consumidor final (CIVA art. 40.º). Credit notes keep the origin customer.
-        return acronym is "FT" or "NC" or "ND";
+        // FR may use consumidor final (CIVA art. 40.º). NC uses the origin customer, including consumidor final.
+        return acronym is "FT" or "ND";
     }
 
     public const decimal ServiceSimplifiedInvoiceCap = 100m;
@@ -612,6 +612,17 @@ public static class PosDocumentRules
         var chars = fiscalNumber.Where(char.IsLetterOrDigit).ToArray();
         return new string(chars).ToUpperInvariant();
     }
+
+    public static bool IsCreditNote(string? acronym)
+        => string.Equals(acronym, "NC", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>FS and FR are front-office tickets. A credit note of either follows that paper.</summary>
+    public static bool CreditNoteUsesTicket(string? sourceType)
+        => string.Equals(sourceType, "FS", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(sourceType, "FR", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Despacho n.º 8632/2014: printed documents do not show negative amounts.</summary>
+    public static decimal CreditNotePaperAmount(decimal value) => Math.Abs(value);
 
     public static bool RequiresPaymentCondition(string? acronym)
         => string.IsNullOrWhiteSpace(acronym) == false
@@ -2480,11 +2491,13 @@ public sealed class PosDocumentService : IPosDocumentService
             .Select(customer => customer.Order)
             .FirstOrDefaultAsync(cancellationToken);
         document.Details = document.Details.OrderBy(detail => detail.CreatedAt).ToList();
-        document.RelatedDocuments = new List<string>();
+        var parent = await ReadParentDocumentAsync(database, documentId, cancellationToken);
+        document.RelatedDocuments = parent is { } source ? [source.Number] : [];
 
         var country = SystemCountry;
         document.WithholdingTaxAmount = DocumentLineCalculator.EffectiveServiceWithholding(
             country, document.WithholdingTaxAmount);
+        UseCreditNotePaperAmounts(document);
         var data = new LogicPOS.Application.Features.Finance.Documents.PdfGeneration.DocumentPdfData
         {
             Company = await ReadCompanyAsync(database, cancellationToken),
@@ -2524,18 +2537,77 @@ public sealed class PosDocumentService : IPosDocumentService
             .AnyAsync(item => item.IsDeleted == false && item.DocumentId == documentId && item.IsThermalPrint, cancellationToken);
         var backOfficeOnly = scope.ServiceProvider.GetService<IOperationMode>() is { } mode
             && await mode.IsBackOfficeOnlyAsync(cancellationToken);
-        // BackOffice mode is always A4. FO talões (FS/FR) always; other types only when already printed thermally.
-        var useTicketLayout = backOfficeOnly == false && (document.Type is "FS" or "FR" || thermalPrinted);
+        // BackOffice mode is always A4. FO talões (FS/FR) always. A credit note follows the origin paper.
+        var creditOnTicket = PosDocumentRules.IsCreditNote(document.Type)
+            && parent is { } origin
+            && PosDocumentRules.CreditNoteUsesTicket(origin.Type);
+        var useTicketLayout = backOfficeOnly == false && (document.Type is "FS" or "FR" || creditOnTicket || thermalPrinted);
         // Portuguese rules: after the original was delivered, further copies are 2ª via.
         var isSecondCopy = wasPrinted;
+        var creditPair = PosDocumentRules.IsCreditNote(document.Type) && wasPrinted == false;
 
         var safeNumber = string.Concat(document.Number.Select(character => Path.GetInvalidFileNameChars().Contains(character) ? '_' : character));
         var path = Path.Combine(Path.GetTempPath(), $"logicpos-{safeNumber}.pdf");
         var bytes = useTicketLayout
-            ? ThermalTicketPdf.Render(data, isSecondCopy)
-            : A4DocumentPdf.Render(data, isSecondCopy);
+            ? (creditPair ? ThermalTicketPdf.RenderWithHouseCopy(data) : ThermalTicketPdf.Render(data, isSecondCopy))
+            : (creditPair ? A4DocumentPdf.RenderWithHouseCopy(data) : A4DocumentPdf.Render(data, isSecondCopy));
         await File.WriteAllBytesAsync(path, bytes, cancellationToken);
         return path;
+    }
+
+    private static async Task<(string Type, string Number)?> ReadParentDocumentAsync(
+        LogicPOSDbContext database,
+        Guid documentId,
+        CancellationToken cancellationToken)
+    {
+        var parentId = await database.Documents
+            .AsNoTracking()
+            .Where(item => item.Id == documentId)
+            .Select(item => item.ParentId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (parentId is not Guid id || id == Guid.Empty)
+        {
+            return null;
+        }
+
+        var parent = await database.Documents
+            .AsNoTracking()
+            .Where(item => item.Id == id)
+            .Select(item => new { item.Type, item.Number })
+            .FirstOrDefaultAsync(cancellationToken);
+        return parent is null ? null : (parent.Type, parent.Number);
+    }
+
+    private static void UseCreditNotePaperAmounts(PdfDocument document)
+    {
+        if (PosDocumentRules.IsCreditNote(document.Type) == false)
+        {
+            return;
+        }
+
+        document.TotalDiscount = PosDocumentRules.CreditNotePaperAmount(document.TotalDiscount);
+        document.TotalNet = PosDocumentRules.CreditNotePaperAmount(document.TotalNet);
+        document.TotalTax = PosDocumentRules.CreditNotePaperAmount(document.TotalTax);
+        document.TotalFinal = PosDocumentRules.CreditNotePaperAmount(document.TotalFinal);
+        document.WithholdingTaxAmount = PosDocumentRules.CreditNotePaperAmount(document.WithholdingTaxAmount);
+        foreach (var detail in document.Details)
+        {
+            detail.Quantity = PosDocumentRules.CreditNotePaperAmount(detail.Quantity);
+            detail.Price = PosDocumentRules.CreditNotePaperAmount(detail.Price);
+            detail.TotalNet = PosDocumentRules.CreditNotePaperAmount(detail.TotalNet);
+            detail.TotalTax = PosDocumentRules.CreditNotePaperAmount(detail.TotalTax);
+            detail.TotalFinal = PosDocumentRules.CreditNotePaperAmount(detail.TotalFinal);
+        }
+
+        if (document.PaymentMethods is null)
+        {
+            return;
+        }
+
+        foreach (var method in document.PaymentMethods)
+        {
+            method.Amount = PosDocumentRules.CreditNotePaperAmount(method.Amount);
+        }
     }
 
     public async Task<string?> CreateReceiptFileAsync(Guid receiptId, CancellationToken cancellationToken = default)

@@ -47,6 +47,22 @@ public static class A4DocumentPdf
         return model.GeneratePdf();
     }
 
+    /// <summary>Customer original, then the establishment copy with the signature line.</summary>
+    public static byte[] RenderWithHouseCopy(DocumentPdfData data)
+    {
+        EnsureReady();
+        var original = CreateModel(data);
+        original.Copy = 1;
+        var house = CreateModel(data);
+        house.Copy = 1;
+        house.IsSecondCopy = true;
+        return QuestPDF.Fluent.Document.Create(container =>
+        {
+            original.Compose(container);
+            house.Compose(container);
+        }).GeneratePdf();
+    }
+
     private static DocumentModel CreateModel(DocumentPdfData data)
     {
         var type = data.Document!.TypeAnalyzer;

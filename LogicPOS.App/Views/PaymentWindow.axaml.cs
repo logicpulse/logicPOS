@@ -56,9 +56,9 @@ public partial class PaymentWindow : Window
     [
         ("MONEY", "Numerário"),
         ("CASH_MACHINE", "MB Way"),
-        ("DEBIT_CARD", "Cartão Débito"),
+        ("DEBIT_CARD", "Cartão de Débito"),
         ("BANK_CHECK", "Cheque"),
-        ("CREDIT_CARD", "Cartão Crédito"),
+        ("CREDIT_CARD", "Cartão de Crédito"),
         ("CURRENT_ACCOUNT", "Conta Corrente")
     ];
 

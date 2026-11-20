@@ -153,7 +153,19 @@ internal static class FrontOfficePrinting
                 return (true, "Impressora térmica do terminal não configurada.");
             }
 
-            await ThermalPrinterOutput.SendAsync(job.Printer, job.Document.Number, ThermalInvoiceRenderer.Render(job));
+            if (PosDocumentRules.IsCreditNote(job.Document.Type))
+            {
+                await ThermalPrinterOutput.SendAsync(job.Printer, job.Document.Number, ThermalInvoiceRenderer.Render(job));
+                await ThermalPrinterOutput.SendAsync(
+                    job.Printer,
+                    job.Document.Number,
+                    ThermalInvoiceRenderer.Render(job, isSecondCopy: true));
+            }
+            else
+            {
+                await ThermalPrinterOutput.SendAsync(job.Printer, job.Document.Number, ThermalInvoiceRenderer.Render(job));
+            }
+
             if (job.OpenDrawer)
             {
                 try

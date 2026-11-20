@@ -14,7 +14,7 @@ public static class ThermalTicketPdf
 {
     private static readonly HashSet<string> TicketTypes = new(StringComparer.OrdinalIgnoreCase)
     {
-        "FS", "FR", "FT", "FC"
+        "FS", "FR", "FT", "FC", "NC"
     };
 
     static ThermalTicketPdf()
@@ -31,6 +31,16 @@ public static class ThermalTicketPdf
         return model.GeneratePdf();
     }
 
+    /// <summary>Customer original, then the establishment copy with the signature line.</summary>
+    public static byte[] RenderWithHouseCopy(DocumentPdfData data)
+    {
+        return QuestPDF.Fluent.Document.Create(container =>
+        {
+            new ThermalTicketModel(data, false).AddPage(container);
+            new ThermalTicketModel(data, true).AddPage(container);
+        }).GeneratePdf();
+    }
+
     private sealed class ThermalTicketModel : IDocument
     {
         private readonly DocumentPdfData _data;
@@ -42,7 +52,9 @@ public static class ThermalTicketPdf
             _isSecondCopy = isSecondCopy;
         }
 
-        public void Compose(IDocumentContainer container)
+        public void Compose(IDocumentContainer container) => AddPage(container);
+
+        public void AddPage(IDocumentContainer container)
         {
             container.Page(page =>
             {
@@ -60,6 +72,7 @@ public static class ThermalTicketPdf
                     ComposeTotals(column);
                     ComposeTaxResume(column);
                     ComposePayments(column);
+                    ComposeCreditNote(column);
                     ComposeFiscal(column);
                     ComposeFooter(column);
                 });
@@ -225,6 +238,28 @@ public static class ThermalTicketPdf
             column.Item().PaddingVertical(2).LineHorizontal(0.5f).LineColor(Colors.Grey.Medium);
         }
 
+        private void ComposeCreditNote(ColumnDescriptor column)
+        {
+            var document = _data.Document!;
+            if (PosDocumentRules.IsCreditNote(document.Type) == false)
+            {
+                return;
+            }
+
+            var origin = document.RelatedDocuments is { Count: > 0 }
+                ? string.Join(", ", document.RelatedDocuments)
+                : string.Empty;
+            column.Item().Text($"Documento de origem: {origin}").FontSize(8);
+            column.Item().Text($"Motivo: {document.Notes}").FontSize(8);
+            if (_isSecondCopy)
+            {
+                column.Item().PaddingTop(8).Text("Assinatura do cliente").FontSize(8);
+                column.Item().PaddingTop(10).Text("______________________________").FontSize(8);
+            }
+
+            column.Item().PaddingVertical(2).LineHorizontal(0.5f).LineColor(Colors.Grey.Medium);
+        }
+
         private void ComposeFiscal(ColumnDescriptor column)
         {
             var document = _data.Document!;
@@ -274,7 +309,7 @@ public static class ThermalTicketPdf
             column.Item().AlignCenter()
                 .Text($"LogicPOS v{_data.SoftwareVersion}")
                 .FontSize(6);
-            if (_isSecondCopy)
+            if (_isSecondCopy && PosDocumentRules.IsCreditNote(_data.Document!.Type) == false)
             {
                 column.Item().PaddingTop(2).AlignCenter().Text("2ª Via — conteúdo idêntico ao original").Bold().FontSize(7);
             }

@@ -67,19 +67,19 @@ public sealed class ThermalDocumentLine
 
     public string? TaxDesignation { get; init; }
 
-    public decimal Quantity { get; init; }
+    public decimal Quantity { get; set; }
 
     public string? Unit { get; init; }
 
-    public decimal UnitPrice { get; init; }
+    public decimal UnitPrice { get; set; }
 
     public decimal Discount { get; init; }
 
-    public decimal TotalNet { get; init; }
+    public decimal TotalNet { get; set; }
 
-    public decimal TotalTax { get; init; }
+    public decimal TotalTax { get; set; }
 
-    public decimal TotalFinal { get; init; }
+    public decimal TotalFinal { get; set; }
 
     public string? VatExemptionReason { get; init; }
 }
@@ -112,11 +112,15 @@ public sealed class ThermalDocument
 
     public IReadOnlyList<ThermalDocumentLine> Lines { get; init; } = [];
 
-    public decimal TotalNet { get; init; }
+    public decimal TotalNet { get; set; }
 
-    public decimal TotalTax { get; init; }
+    public decimal TotalTax { get; set; }
 
-    public decimal TotalFinal { get; init; }
+    public decimal TotalFinal { get; set; }
+
+    public string? Notes { get; set; }
+
+    public string? OriginNumber { get; set; }
 
     public string? Atcud { get; set; }
 

@@ -25,8 +25,11 @@ public class CreditNoteModel : DocumentModel
                     col.ConstantColumn(3.5f, Unit.Centimetre);
                 });
                 DesignNotesAndQrSection(qrTable);
-
-                finalTable.Cell().PaddingTop(3).Text("Este documento não serve de fatura").AlignCenter().FontSize(7);
+                if (IsSecondCopy)
+                {
+                    finalTable.Cell().PaddingTop(16).Text("Assinatura do cliente").FontSize(8);
+                    finalTable.Cell().PaddingTop(18).Text("________________________________").FontSize(8);
+                }
             });
         });
     }

@@ -948,6 +948,7 @@ public partial class NewDocumentWindow : UserControl
         }
 
         UpdateTransport(openPopup: PosDocumentRules.IsWayBill(SelectedType()?.Acronym));
+        RefreshIssueLabel();
     }
 
     private static void SelectCode(ComboBox box, string code)
@@ -1328,6 +1329,7 @@ public partial class NewDocumentWindow : UserControl
     {
         SelectDocumentId(OriginBox, null);
         RefreshOriginClear();
+        RefreshIssueLabel();
     }
 
     private void OnClearCopyClick(object? sender, RoutedEventArgs e)
@@ -3286,6 +3288,15 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
+        if (draft == false
+            && PosDocumentRules.IsCreditNote(type.Acronym)
+            && string.IsNullOrWhiteSpace(NotesBox.Text))
+        {
+            ShowDocumentError("Indique o motivo da nota de crédito.");
+            NotesBox.Focus();
+            return;
+        }
+
         var paymentMethods = BuildPaymentMethods();
         if (draft == false && paymentMethods.Count > 0)
         {
@@ -3444,7 +3455,20 @@ public partial class NewDocumentWindow : UserControl
 
     private void RefreshIssueLabel()
     {
-        IssueLabel.Text = DraftBox.IsChecked == true ? "Gravar" : "Emitir A4";
+        if (DraftBox.IsChecked == true)
+        {
+            IssueLabel.Text = "Gravar";
+            return;
+        }
+
+        var originId = ListingFilters.SelectedDocumentId(OriginBox);
+        var originType = originId is Guid id
+            ? _documents.FirstOrDefault(item => item.Id == id)?.Code
+            : null;
+        IssueLabel.Text = PosDocumentRules.IsCreditNote(SelectedType()?.Acronym)
+            && PosDocumentRules.CreditNoteUsesTicket(originType)
+            ? "Emitir talão"
+            : "Emitir A4";
     }
 
     private Guid SaveLocalDraft(PosDocumentTypeOption type, Guid customerId, decimal total)
