@@ -29,6 +29,7 @@ public partial class EntityListing : UserControl
     private string? _mode;
     private Guid? _editingId;
     private string? _pendingAction;
+    private TaskCompletionSource<bool>? _deleteConfirm;
     private bool _fillingFilters;
     private bool _filtersRequested;
     private Guid? _appliedCustomer;
@@ -2911,6 +2912,11 @@ public partial class EntityListing : UserControl
             return;
         }
 
+        if (_title == "Sessões de Trab." && await ConfirmDeleteWorkSessionAsync(row) == false)
+        {
+            return;
+        }
+
         var result = await service.DeleteAsync(_title, row.Id);
         Notice.Text = result.Error ?? string.Empty;
         ShowResultToast(result.Succeeded, result.Error, result.Message ?? "Registo eliminado com sucesso.");
@@ -2924,6 +2930,41 @@ public partial class EntityListing : UserControl
             Toast.Success(this, success);
         }
         // Erros já passam pelo BindToast de Notice / EditorNotice.
+    }
+
+    private Task<bool> ConfirmDeleteWorkSessionAsync(ListingRow row)
+    {
+        var label = SessionDeleteLabel(row);
+        ConfirmMessage.Text = $"Confirma que deseja apagar a sessão «{label}»?";
+        _deleteConfirm = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        ConfirmOverlay.IsVisible = true;
+        return _deleteConfirm.Task;
+    }
+
+    private static string SessionDeleteLabel(ListingRow row)
+    {
+        if (row.Values.TryGetValue("Designation", out var designation) && string.IsNullOrWhiteSpace(designation) == false)
+        {
+            return designation;
+        }
+
+        if (row.Values.TryGetValue("Code", out var code) && string.IsNullOrWhiteSpace(code) == false)
+        {
+            return code;
+        }
+
+        return row.Id.ToString();
+    }
+
+    private void OnDeleteConfirmYesClick(object? sender, RoutedEventArgs e) => CompleteDeleteConfirm(true);
+
+    private void OnDeleteConfirmNoClick(object? sender, RoutedEventArgs e) => CompleteDeleteConfirm(false);
+
+    private void CompleteDeleteConfirm(bool confirmed)
+    {
+        ConfirmOverlay.IsVisible = false;
+        _deleteConfirm?.TrySetResult(confirmed);
+        _deleteConfirm = null;
     }
 
     private async Task RunActionAsync(string action)

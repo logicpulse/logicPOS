@@ -69,6 +69,12 @@ public sealed class FiscalFeaturesTests
             Assert.Equal(agt, company.Rows.Any(row => row.Values["Token"].StartsWith("AGT_FE", StringComparison.Ordinal)));
 
             var seriesFields = await listing.LoadFieldsAsync("Séries", null);
+            var articleFields = await listing.LoadFieldsAsync("Artigos", null);
+            var articleCode = articleFields.FirstOrDefault(field => field.Key == "Code");
+            Assert.NotNull(articleCode);
+            Assert.False(string.IsNullOrWhiteSpace(articleCode!.Value));
+            Assert.True(articleCode.ReadOnly);
+
             var series = await listing.QueryAsync("Séries");
             Assert.Equal(at, seriesFields.Any(field => field.Key == "ATDocCodeValidationSeries"));
             Assert.Equal(at, series.Actions.Any(action => action.Key == "register-at"));

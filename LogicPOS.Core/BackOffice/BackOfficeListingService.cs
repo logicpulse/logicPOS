@@ -395,6 +395,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             }
         }
 
+        if (id is null)
+        {
+            PrepareNextCode(page.EntityType, entity, database);
+        }
+
         var fields = Describe(page, entity, id is null);
         if (entity is PreferenceParameter companyCountry && companyCountry.Token == "COMPANY_COUNTRY")
         {
@@ -1983,6 +1988,20 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return true;
     }
 
+    private static void PrepareNextCode(Type type, object entity, LogicPOSDbContext database)
+    {
+        var code = type.GetProperty("Code");
+        if (code is null || code.PropertyType != typeof(string))
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(code.GetValue(entity) as string))
+        {
+            code.SetValue(entity, NextCode(database, type));
+        }
+    }
+
     private static void PrepareRequired(Type type, object entity, LogicPOSDbContext database)
     {
         foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
@@ -2008,11 +2027,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             }
         }
 
-        var code = type.GetProperty("Code");
-        if (code is not null && string.IsNullOrWhiteSpace(code.GetValue(entity) as string))
-        {
-            code.SetValue(entity, NextCode(database, type));
-        }
+        PrepareNextCode(type, entity, database);
     }
 
     private static string DefaultString(Type type, string property, object entity)
