@@ -16,9 +16,12 @@ public sealed class PosTicketLine
         Quantity = article.QuantityStep;
         ShelfUnitPrice = article.PriceIncludesVat ? article.CatalogPrice : ToNetUnitPrice(article.CatalogPrice, article.VatPercentage, false);
         NetUnitPrice = DocumentLineCalculator.ToNetUnitPrice(ShelfUnitPrice, VatPercentage, PriceIncludesVat);
+        ClassAcronym = article.ClassAcronym;
     }
 
     public Guid ArticleId { get; }
+
+    public string ClassAcronym { get; }
 
     public string Designation { get; }
 

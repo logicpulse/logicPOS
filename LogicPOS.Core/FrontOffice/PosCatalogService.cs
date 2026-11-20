@@ -73,6 +73,7 @@ public sealed class PosCatalogService : IPosCatalogService
                 Price = article.Price1.Value,
                 article.VatDirectSellingId,
                 article.VatExemptionReasonId,
+                ClassAcronym = article.Class != null ? article.Class.Acronym : "P",
                 Vat = article.VatDirectSelling != null ? article.VatDirectSelling.Value : 0m,
                 Label = article.Button != null ? article.Button.Label : null
             })
@@ -105,7 +106,8 @@ public sealed class PosCatalogService : IPosCatalogService
                 item.VatDirectSellingId,
                 imageBase64: null,
                 item.PVPVariable,
-                item.VatExemptionReasonId)).ToList());
+                item.VatExemptionReasonId,
+                item.ClassAcronym)).ToList());
     }
 
     public async Task<string?> GetButtonImageAsync(ButtonImageKind kind, Guid id, CancellationToken cancellationToken = default)

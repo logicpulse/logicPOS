@@ -91,7 +91,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
                 CustomerZipCode = doc.Customer.ZipCode,
                 CustomerCity = doc.Customer.City,
                 CustomerCountry = doc.Customer.Country,
-                CustomerFiscalNumber = doc.Customer.FiscalNumber,
+                CustomerFiscalNumber = PosDocumentRules.ThermalCustomerFiscalNumber(doc.Customer.FiscalNumber),
                 PaymentCondition = doc.PaymentConditionId != null ? doc.PaymentCondition!.Designation : null,
                 PaymentMethods = doc.PaymentMethods!.Select(payment => payment.PaymentMethod!.Designation).ToList(),
                 Lines = doc.Details!.OrderBy(detail => detail.CreatedAt).Select(detail => new ThermalDocumentLine

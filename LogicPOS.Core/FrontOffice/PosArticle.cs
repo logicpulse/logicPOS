@@ -18,7 +18,8 @@ public sealed class PosArticle
         Guid vatRateId,
         string? imageBase64 = null,
         bool pvpVariable = false,
-        Guid? vatExemptionReasonId = null)
+        Guid? vatExemptionReasonId = null,
+        string classAcronym = ProductsClassAcronym)
     {
         Id = id;
         SubfamilyId = subfamilyId;
@@ -36,7 +37,10 @@ public sealed class PosArticle
         ImageBase64 = imageBase64;
         PvpVariable = pvpVariable;
         VatExemptionReasonId = vatExemptionReasonId;
+        ClassAcronym = classAcronym;
     }
+
+    public const string ProductsClassAcronym = "P";
 
     public Guid Id { get; }
 
@@ -72,6 +76,8 @@ public sealed class PosArticle
 
     /// <summary>Default VAT exemption reason when the article VAT rate is 0%.</summary>
     public Guid? VatExemptionReasonId { get; }
+
+    public string ClassAcronym { get; }
 
     public decimal QuantityStep => DefaultQuantity > 0 ? DefaultQuantity : 1m;
 

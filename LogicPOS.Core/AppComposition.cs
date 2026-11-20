@@ -96,6 +96,8 @@ public static class AppComposition
             services.AddSingleton<IPosCatalogService>(provider => provider.GetRequiredService<PosCatalogService>());
             services.AddSingleton<PosCustomerService>();
             services.AddSingleton<IPosCustomerService>(provider => provider.GetRequiredService<PosCustomerService>());
+            services.AddSingleton<CompanyFiscalMarkService>();
+            services.AddSingleton<ICompanyFiscalMarkService>(provider => provider.GetRequiredService<CompanyFiscalMarkService>());
             services.AddScoped<IDocumentHasher, LocalDocumentHasher>();
             services.AddSingleton<PosDocumentService>();
             services.AddSingleton<IPosDocumentService>(provider => provider.GetRequiredService<PosDocumentService>());

@@ -238,7 +238,7 @@ public sealed class PublicEditionStartupTests
                 customer.Id,
                 [new PosSaleLine(article.Id, 1, article.CatalogPrice, 0, article.VatRateId)],
                 new PosDocumentHeader { PaymentToken = "MONEY" },
-                CancellationToken.None);
+                cancellationToken: CancellationToken.None);
 
             Assert.Null(issued.Error);
             Assert.False(string.IsNullOrWhiteSpace(issued.Number));
@@ -341,7 +341,7 @@ public sealed class PublicEditionStartupTests
                 customer.Id,
                 [new PosSaleLine(article.Id, 1, article.CatalogPrice, 0, article.VatRateId)],
                 new PosDocumentHeader { PaymentToken = "MONEY" },
-                CancellationToken.None);
+                cancellationToken: CancellationToken.None);
 
             Assert.Null(issued.Error);
             pdfPath = await documents.CreateA4FileAsync(issued.DocumentId, CancellationToken.None);
