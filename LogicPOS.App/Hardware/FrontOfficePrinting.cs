@@ -307,20 +307,22 @@ internal static class FrontOfficePrinting
 
     /// <summary>
     /// ESC/POS cash-drawer pulse (ESC p 0 25 250) on the terminal thermal printer.
-    /// Returns null when there is no printer or the pulse was sent.
+    /// Returns an error when there is no printer; null when the pulse was sent.
     /// </summary>
     public static async Task<string?> OpenDrawerAsync()
     {
+        const string missingPrinter =
+            "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null)
         {
-            return null;
+            return missingPrinter;
         }
 
         var printer = await source.GetTerminalPrinterAsync();
         if (printer is null)
         {
-            return null;
+            return missingPrinter;
         }
 
         try
