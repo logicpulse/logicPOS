@@ -948,7 +948,7 @@ public partial class PaymentWindow : Window
                 message += $"{Environment.NewLine}{Environment.NewLine}Erro ao imprimir: {printError}";
             }
 
-            _confirmPayment = settledSale;
+            _confirmPayment = true;
             ShowNotice(title, message, error: false);
         }
         catch (Exception exception)
