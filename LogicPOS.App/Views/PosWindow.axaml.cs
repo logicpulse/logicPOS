@@ -5866,6 +5866,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
             _priceTyping = false;
         }
+        else
+        {
+            _priceMoney = 0;
+        }
 
         _priceMoney += amount;
         PriceEntry.Text = _priceMoney.ToString("0.00", CultureInfo.CurrentCulture);

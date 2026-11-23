@@ -1174,6 +1174,10 @@ public partial class PaymentWindow : Window
 
             _cashTyping = false;
         }
+        else
+        {
+            _cashMoney = 0;
+        }
 
         _cashMoney += amount;
         CashEntry.Text = _cashMoney.ToString("0.00", CultureInfo.CurrentCulture);
