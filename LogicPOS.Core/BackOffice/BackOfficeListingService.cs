@@ -642,6 +642,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 }
             }
 
+            if (creating && entity is Customer customerToCreate)
+            {
+                var customerConflict = await FindCustomerCreateConflictAsync(database, customerToCreate, cancellationToken);
+                if (customerConflict is not null)
+                {
+                    return ListingSaveResult.Fail(customerConflict);
+                }
+            }
+
             var missing = await FillForeignKeysAsync(database, page.EntityType, entity, cancellationToken);
             if (missing is not null)
             {
@@ -2099,6 +2108,34 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         return (max + 1).ToString(CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Listing Save bypasses Domain <c>CustomerCreator</c>; mirror its name/fiscal uniqueness
+    /// so «Consumidor Final» (and any NIF) cannot be inserted twice.
+    /// </summary>
+    private static async Task<string?> FindCustomerCreateConflictAsync(
+        LogicPOSDbContext database,
+        Customer customer,
+        CancellationToken cancellationToken)
+    {
+        var name = customer.Name?.Trim() ?? string.Empty;
+        var fiscal = customer.FiscalNumber?.Trim() ?? string.Empty;
+        if (name.Length > 0
+            && await database.Customers.AsNoTracking()
+                .AnyAsync(item => item.IsDeleted == false && item.Name == name, cancellationToken))
+        {
+            return $"Nome '{name}' já existe.";
+        }
+
+        if (fiscal.Length > 0
+            && await database.Customers.AsNoTracking()
+                .AnyAsync(item => item.IsDeleted == false && item.FiscalNumber == fiscal, cancellationToken))
+        {
+            return $"Número fiscal '{fiscal}' já existe.";
+        }
+
+        return null;
     }
 
     private async Task<string?> FillForeignKeysAsync(LogicPOSDbContext database, Type type, object entity, CancellationToken cancellationToken)

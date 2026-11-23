@@ -59,8 +59,7 @@ public sealed class LocalFinalConsumerSetupWizard : IFinalConsumerSetupWizard
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var exists = await database.Customers.AsNoTracking()
-            .AnyAsync(item => item.IsDeleted == false && item.Name == DefaultName, cancellationToken);
+        var exists = await FindExistingAsync(database, DefaultName, DefaultFiscalNumber, cancellationToken) is not null;
         var blocked = await MissingPrerequisiteAsync(database, cancellationToken);
         return new FinalConsumerSetupDraft
         {
@@ -85,8 +84,7 @@ public sealed class LocalFinalConsumerSetupWizard : IFinalConsumerSetupWizard
         }
 
         var preferredCountry = await CompanyCountryResolver.ResolveAsync(database, cancellationToken);
-        var existing = await database.Customers
-            .FirstOrDefaultAsync(item => item.IsDeleted == false && item.Name == name, cancellationToken);
+        var existing = await FindExistingAsync(database, name, fiscal, cancellationToken);
         if (existing is not null)
         {
             if (preferredCountry is { } country && existing.CountryId != country.Id)
@@ -116,10 +114,36 @@ public sealed class LocalFinalConsumerSetupWizard : IFinalConsumerSetupWizard
             cancellationToken);
         if (saved.Succeeded == false)
         {
+            // Concurrent create: listing uniqueness may reject; treat an existing row as success.
+            existing = await FindExistingAsync(database, name, fiscal, cancellationToken);
+            if (existing is not null)
+            {
+                return FinalConsumerSetupResult.Done($"O cliente «{name}» já existe.");
+            }
+
             return FinalConsumerSetupResult.Fail(saved.Error ?? "Não foi possível criar o cliente de balcão.");
         }
 
         return FinalConsumerSetupResult.Done($"Cliente «{name}» criado.");
+    }
+
+    /// <summary>
+    /// Idempotent match: well-known Id, exact name, or final-consumer fiscal number on a CF-named row.
+    /// Listing Save bypasses Domain CustomerCreator, so this guard is required here too.
+    /// </summary>
+    internal static async Task<Customer?> FindExistingAsync(
+        LogicPOSDbContext database,
+        string name,
+        string fiscal,
+        CancellationToken cancellationToken)
+    {
+        return await database.Customers
+            .FirstOrDefaultAsync(
+                item => item.IsDeleted == false
+                    && (item.Id == CustomerWellKnownIds.FinalConsumer
+                        || item.Name == name
+                        || (item.FiscalNumber == fiscal && item.Name == DefaultName)),
+                cancellationToken);
     }
 
     private static async Task<string?> MissingPrerequisiteAsync(LogicPOSDbContext database, CancellationToken cancellationToken)
