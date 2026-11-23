@@ -2674,8 +2674,8 @@ public partial class StockManagementView : UserControl
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Apagar", OnDeleteClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Doc. origem", OnOriginClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Doc. venda", OnSaleClick));
-        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Cod. barras", OnBarcodeClick));
-        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Modif. Loc.", OnChangeLocationClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Código de barras", OnBarcodeClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Modificar localização", OnChangeLocationClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Trocar", OnExchangeClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Mais resultados", OnMoreClick));
         MoreSheet.IsVisible = true;

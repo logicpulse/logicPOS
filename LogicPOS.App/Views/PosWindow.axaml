@@ -322,14 +322,14 @@
                             <StackPanel>
                                 <Image Classes="pos_doc_menu_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_reports.png" />
-                                <TextBlock Classes="pos_doc_menu_caption" Text="Conta.Corr." />
+                                <TextBlock Classes="pos_doc_menu_caption" Text="Conta corrente" />
                             </StackPanel>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="1" Classes="pos_doc_menu" Tag="sessions" Click="OnDocumentsMenuClick">
                             <StackPanel>
                                 <Image Classes="pos_doc_menu_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png" />
-                                <TextBlock Classes="pos_doc_menu_caption" Text="Sessões de Trab." />
+                                <TextBlock Classes="pos_doc_menu_caption" Text="Sessões de Trabalho" />
                             </StackPanel>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="2" Classes="pos_doc_menu" Tag="stock" Click="OnDocumentsMenuClick">

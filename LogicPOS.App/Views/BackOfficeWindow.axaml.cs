@@ -909,8 +909,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
                 ("Documentos", "Menu/menu_dashboard_documentos_b.svg", false),
                 ("Emissão Recibos", "Menu/menu_dashboard_emissao_recibos.svg", false),
                 ("Recibos", "Menu/menu_dashboard_recibos.svg", false),
-                ("Conta.Corr.", "Menu/menu_dashboard_conta_corrente.svg", false),
-                ("Sessões de Trab.", (string?)null, false)
+                ("Conta corrente", "Menu/menu_dashboard_conta_corrente.svg", false),
+                ("Sessões de Trabalho", (string?)null, false)
             }),
             ("Relatórios", "Menu/menu_relatorios_relatorios.svg", new[]
             {
@@ -935,7 +935,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
                 ("Tipo de documento", "Menu/menu_informacoes_fiscais_tipos_documentos.svg", false),
                 ("Taxas de imposto", "Menu/menu_informacoes_fiscais_taxas_iva.svg", false),
                 ("Motivo de isenção de IVA", "Menu/menu_informacoes_fiscais_movimentos_isencao_iva.svg", false),
-                ("Cond. de Pagamento", "Menu/menu_informacoes_fiscais_condicoes_pagamento.svg", false),
+                ("Condições de Pagamento", "Menu/menu_informacoes_fiscais_condicoes_pagamento.svg", false),
                 ("Métodos de pagamento", "Menu/menu_informacoes_fiscais_metodo_pagamento.svg", false)
             }),
             ("Clientes", "Menu/menu_clientes.svg", new[]
@@ -988,7 +988,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             ("Sistema", "Menu/menu_sistema.svg", new[]
             {
                 ("Notificações", "Menu/menu_sistema_notificacoes.svg", false),
-                ("Registro de alterações (Changelog)", "Menu/menu_sistema_change_logs.svg", false),
+                ("Registo de alterações", "Menu/menu_sistema_change_logs.svg", false),
                 ("Backup DB", "Menu/menu_sistema_backup.svg", false),
                 ("Restaurar DB", "Menu/menu_sistema_restauro.svg", false),
                 ("Restaurar de ficheiro", "Menu/menu_sistema_restauro.svg", false),

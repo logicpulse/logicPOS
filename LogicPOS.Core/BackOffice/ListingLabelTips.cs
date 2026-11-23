@@ -1,7 +1,7 @@
 namespace LogicPOS.Core.BackOffice;
 
 /// <summary>
-/// Short visible labels stay compact; tooltips carry the full PT-PT term (manual §4 / triagem 2.0.31).
+/// Maps compact or legacy labels to a clearer PT-PT tooltip when the visible text stays short.
 /// </summary>
 public static class ListingLabelTips
 {
@@ -9,20 +9,15 @@ public static class ListingLabelTips
     {
         ["Ant."] = "Anterior",
         ["Prox."] = "Próximo",
-        ["Alt. lista"] = "Alternar modo de lista",
-        ["Cód.Barras/Artigo"] = "Código de barras ou artigo",
-        ["Cond. de Pagamento"] = "Condições de Pagamento",
-        ["Conta.Corr."] = "Conta corrente",
+        ["Alternar lista"] = "Alternar modo de lista",
+        ["Código de barras/Artigo"] = "Código de barras ou artigo",
         ["Doc. origem"] = "Documento de origem",
         ["Doc. venda"] = "Documento de venda",
-        ["Fin.pedido"] = "Finalizar pedido",
-        ["Modif. Loc."] = "Modificar localização",
         ["Num.Doc."] = "Número do documento",
         ["Número do Doc."] = "Número do documento",
-        ["Pag.Parcial"] = "Pagamento parcial",
         ["Pag.Total"] = "Pagamento total",
-        ["Reemb. Volta"] = "Reembolso de volta",
-        ["Sessões de Trab."] = "Sessões de Trabalho",
+        ["Pagamento Parcial"] = "Pagamento parcial",
+        ["Reembolso Volta"] = "Reembolso de volta",
         ["SubT."] = "Subtotal",
         ["Código do país"] = "Código do país (2 caracteres)",
         ["Código do País (2 Caracteres)"] = "Código do país (2 caracteres)",

@@ -257,7 +257,7 @@ public partial class EntityListing : UserControl
     }
 
     private static bool UsesDateFilter(string title)
-        => title is "Recibos" or "Emissão Recibos" or "Sessões de Trab." or "Gestão de Stocks" or "Conta.Corr." or "Registro de alterações (Changelog)" or "Séries";
+        => title is "Recibos" or "Emissão Recibos" or "Sessões de Trabalho" or "Gestão de Stocks" or "Conta corrente" or "Registo de alterações" or "Séries";
 
     private IBackOfficeListingService? Service => AppComposition.Services?.GetService<IBackOfficeListingService>();
 
@@ -2930,7 +2930,7 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        if (_title == "Sessões de Trab." && await ConfirmDeleteWorkSessionAsync(row) == false)
+        if (_title == "Sessões de Trabalho" && await ConfirmDeleteWorkSessionAsync(row) == false)
         {
             return;
         }

@@ -1698,7 +1698,7 @@ public partial class DocumentsListing : UserControl
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Editar", OnEditDraftClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Anular", OnCancelClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imprimir", OnPrintClick));
-        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imp.Como", OnPrintAsClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imprimir Como", OnPrintAsClick));
         if (SendToAtButton.IsVisible)
         {
             MoreSheetHost.Children.Add(PortraitChrome.SheetButton("AT", OnSendToAtClick));

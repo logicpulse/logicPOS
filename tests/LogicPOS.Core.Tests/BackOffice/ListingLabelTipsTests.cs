@@ -5,10 +5,10 @@ namespace LogicPOS.Core.Tests.BackOffice;
 public sealed class ListingLabelTipsTests
 {
     [Theory]
-    [InlineData("Fin.pedido", "Finalizar pedido")]
-    [InlineData("Cond. de Pagamento", "Condições de Pagamento")]
+    [InlineData("Alternar lista", "Alternar modo de lista")]
     [InlineData("Cartão Crédito", "Cartão de Crédito")]
     [InlineData("Predefinido", "Terminal predefinido")]
+    [InlineData("Pag.Total", "Pagamento total")]
     public void Maps_short_labels_to_full_term(string shortLabel, string expected)
     {
         Assert.Equal(expected, ListingLabelTips.FullTerm(shortLabel));

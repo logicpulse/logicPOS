@@ -41,16 +41,16 @@
                                         <TextBlock Classes="bo_doc_action_text" Text="Doc. venda" />
                                     </StackPanel>
                                 </Button>
-                                <Button x:Name="BtnBarcode" Classes="bo_page_action" Click="OnBarcodeClick" ToolTip.Tip="Cod. barras">
+                                <Button x:Name="BtnBarcode" Classes="bo_page_action" Click="OnBarcodeClick" ToolTip.Tip="Código de barras">
                                     <StackPanel Classes="bo_doc_action_content">
                                         <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_w.svg" />
-                                        <TextBlock Classes="bo_doc_action_text" Text="Cod. barras" />
+                                        <TextBlock Classes="bo_doc_action_text" Text="Código de barras" />
                                     </StackPanel>
                                 </Button>
                                 <Button x:Name="BtnLocation" Classes="bo_page_action" Click="OnChangeLocationClick" ToolTip.Tip="Modificar localização">
                                     <StackPanel Classes="bo_doc_action_content">
                                         <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_repor_b.svg" />
-                                        <TextBlock Classes="bo_doc_action_text" Text="Modif. Loc." />
+                                        <TextBlock Classes="bo_doc_action_text" Text="Modificar localização" />
                                     </StackPanel>
                                 </Button>
                                 <Button x:Name="BtnExchange" Classes="bo_page_action" Click="OnExchangeClick" ToolTip.Tip="Trocar">

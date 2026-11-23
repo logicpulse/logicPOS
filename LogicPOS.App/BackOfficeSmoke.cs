@@ -143,7 +143,7 @@ public static class BackOfficeSmoke
 
         ok &= await Step(log, "Conta corrente", async () =>
         {
-            await listing.QueryAsync("Conta.Corr.");
+            await listing.QueryAsync("Conta corrente");
             return null;
         });
 
@@ -158,7 +158,7 @@ public static class BackOfficeSmoke
             var cashIn = await listing.RunActionAsync("cash-in", null, "1,50");
             var cashOut = await listing.RunActionAsync("cash-out", null, "0,50");
             var closed = await listing.RunActionAsync("close-session", null, null);
-            await listing.DeleteAsync("Sessões de Trab.", opened.Id);
+            await listing.DeleteAsync("Sessões de Trabalho", opened.Id);
             return FirstError(cashIn, cashOut, closed);
         });
 

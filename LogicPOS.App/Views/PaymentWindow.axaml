@@ -46,7 +46,7 @@
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_clients.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Novo Cli." />
+                                <TextBlock Classes="login_alert_action_text" Text="Novo Cliente" />
                             </StackPanel>
                         </Button>
                         <Button x:Name="FullPaymentButton" Classes="login_alert_action pos_pay_action selected">
@@ -60,7 +60,7 @@
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_partial.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Pag. Parcial" />
+                                <TextBlock Classes="login_alert_action_text" Text="Pagamento Parcial" />
                             </StackPanel>
                         </Button>
                         <Button x:Name="MixedPaymentButton" Classes="login_alert_action pos_pay_action" Click="OnMixedPaymentClick">
@@ -312,7 +312,7 @@
                         <StackPanel Classes="login_alert_title_row">
                             <Image Classes="login_alert_title_icon"
                                    Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
-                            <TextBlock Classes="login_alert_title" Text="Dinheiro requisitado" />
+                            <TextBlock Classes="login_alert_title" Text="Introduzir valor" />
                         </StackPanel>
                     </Border>
                     <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">

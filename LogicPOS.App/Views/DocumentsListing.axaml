@@ -41,10 +41,10 @@
                                 <TextBlock Classes="bo_doc_action_text" Text="Imprimir" />
                             </StackPanel>
                         </Button>
-                        <Button Classes="bo_page_action" Click="OnPrintAsClick" ToolTip.Tip="Imp.Como">
+                        <Button Classes="bo_page_action" Click="OnPrintAsClick" ToolTip.Tip="Imprimir Como">
                             <StackPanel Classes="bo_doc_action_content">
                                 <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_como_w.svg" />
-                                <TextBlock Classes="bo_doc_action_text" Text="Imp.Como" />
+                                <TextBlock Classes="bo_doc_action_text" Text="Imprimir Como" />
                             </StackPanel>
                         </Button>
                         <Button x:Name="SendToAtButton" Classes="bo_page_action" Click="OnSendToAtClick" ToolTip.Tip="Comunicar a guia à AT">

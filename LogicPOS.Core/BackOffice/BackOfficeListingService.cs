@@ -198,7 +198,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["NumberRangeEnd"] = "Limite superior",
         ["ATDocCodeValidationSeries"] = "Código de validação AT",
         ["AtValidationCode"] = "Código de validação AT",
-        ["CharactersPerLine"] = "Num.Caracteres Linha",
+        ["CharactersPerLine"] = "Nº caracteres por linha",
         ["ThermalCutCommand"] = "Comando de Corte",
         ["ThermalEncoding"] = "Encoding",
         ["ThermalImageCompanyLogo"] = "Ficheiro de Imagem de Logotipo",
@@ -301,7 +301,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         "Rel. de Fatur." => "Relatórios",
         "Vendas por dia" => "Relatórios",
         "Aber. de ano fiscal" => "Abertura de ano fiscal",
-        "Ext. C.Cliente" => "Conta.Corr.",
+        "Ext. C.Cliente" => "Conta corrente",
         "Stocks" => "Gestão de Stocks",
         "Outras Tabelas" => "País",
         "Novo Documento" => "Novo Doc.",
@@ -4058,7 +4058,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Entity("Tipo de documento", typeof(DocumentType)),
             Entity("Taxas de imposto", typeof(VatRate)),
             Entity("Motivo de isenção de IVA", typeof(VatExemptionReason)),
-            Entity("Cond. de Pagamento", typeof(PaymentCondition)),
+            Entity("Condições de Pagamento", typeof(PaymentCondition)),
             Entity("Métodos de pagamento", typeof(PaymentMethod)),
             Entity("Clientes", typeof(Customer)),
             Entity("Tipo de clientes", typeof(CustomerType)),
@@ -4089,10 +4089,10 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 new ListingAction { Key = "undo-receipt", Label = "Anular" }
             ]),
             new("Emissão Recibos", PageKind.ReceiptEmission, null, false, false, false, null, [new ListingAction { Key = "emit-receipt", Label = "Emitir" }], []),
-            new("Conta.Corr.", PageKind.CurrentAccount, null, false, false, false, null, [], []),
+            new("Conta corrente", PageKind.CurrentAccount, null, false, false, false, null, [], []),
             new("Relatórios", PageKind.Reports, null, false, false, false, null, [], ["Vendas por dia", "Vendas por cliente", "Vendas por artigo"]),
             Entity("Notificações", typeof(SystemNotification)),
-            Entity("Registro de alterações (Changelog)", typeof(SystemAudit), create: false, edit: false, delete: false),
+            Entity("Registo de alterações", typeof(SystemAudit), create: false, edit: false, delete: false),
             new("Backup DB", PageKind.Files, null, false, false, false, "backups", [new ListingAction { Key = "backup", Label = "Criar backup" }], []),
             new("Restaurar DB", PageKind.Files, null, false, false, false, "backups", [new ListingAction { Key = "restore", Label = "Restaurar" }], []),
             new("Importar Artigos", PageKind.Files, null, false, false, false, "exports", [new ListingAction { Key = "import-articles", Label = "Importar" }], []),
@@ -4102,7 +4102,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             // SAF-T ano / mês / período are menu dialogs on BackOfficeWindow (not Notice listing pages).
             new("Documentos AGT", PageKind.Notice, null, false, false, false, "A consulta online de documentos AGT está disponível no modo cloud.", [new ListingAction { Key = "agt-consult", Label = "Consultar" }], []),
             new("Séries AGT", PageKind.Notice, null, false, false, false, "A consulta online de séries AGT está disponível no modo cloud.", [], []),
-            Entity("Sessões de Trab.", typeof(WorkSessionPeriod), actions:
+            Entity("Sessões de Trabalho", typeof(WorkSessionPeriod), actions:
             [
                 new ListingAction { Key = "open-session", Label = "Abrir sessão" },
                 new ListingAction { Key = "close-session", Label = "Fechar sessão" },

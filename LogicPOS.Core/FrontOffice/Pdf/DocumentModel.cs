@@ -465,7 +465,7 @@ public abstract class DocumentModel : IDocument
 
                             header.Cell().Border(0.5f).BorderColor(Color.FromRGB(192, 194, 196))
                                 .Background((Color.FromRGB(225, 232, 242))).AlignCenter().Padding(3)
-                                .Text("Cond. de Pagamento").Bold().FontSize(8);
+                                .Text("Condições de Pagamento").Bold().FontSize(8);
 
                             header.Cell().Border(0.5f).BorderColor(Color.FromRGB(192, 194, 196))
                                 .Background((Color.FromRGB(225, 232, 242))).AlignCenter().Padding(3)

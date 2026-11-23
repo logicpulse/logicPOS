@@ -73,7 +73,7 @@ public partial class FiscalYearWizard : UserControl
         NotesBox.Text = string.Empty;
         CloseRow.IsVisible = _draft.ActiveYearId is not null;
         CloseCurrent.IsChecked = _draft.ActiveYearId is not null;
-        CloseCurrent.Content = $"Fechar o ano fiscal activo ({_draft.ActiveYearDesignation})";
+        CloseCurrent.Content = $"Fechar o ano fiscal ativo ({_draft.ActiveYearDesignation})";
         CreateSeries.IsChecked = true;
         PerTerminal.IsChecked = _draft.Portugal;
         Communicate.IsChecked = _draft.Portugal;
@@ -295,7 +295,7 @@ public partial class FiscalYearWizard : UserControl
 
         if (_draft.ActiveYearId is not null && CloseCurrent.IsChecked != true)
         {
-            return "Confirme o fecho do ano fiscal activo.";
+            return "Confirme o fecho do ano fiscal ativo.";
         }
 
         if (SelectedSeries().Count > 0 && PerTerminal.IsChecked == true && SelectedTerminals().Count == 0)

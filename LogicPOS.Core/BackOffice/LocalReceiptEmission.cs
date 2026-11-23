@@ -128,7 +128,7 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         if (await database.FiscalYears.AnyAsync(item => item.IsDeleted == false, cancellationToken) == false)
         {
-            return ReceiptPayResult.Fail("Nenhum ano fiscal activo");
+            return ReceiptPayResult.Fail("Nenhum ano fiscal ativo");
         }
 
         var seriesError = await MissingSeriesAsync(database, documentType, cancellationToken);

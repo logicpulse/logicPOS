@@ -5255,7 +5255,7 @@ namespace LogicPOS.Globalization.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Commando de Corte.
+        ///   Looks up a localized string similar to Cut Command.
         /// </summary>
         public static string global_printer_thermal_cut_command {
             get {
