@@ -65,6 +65,7 @@ public partial class PaymentWindow : Window
     private bool _mixedPayment;
     private Dictionary<string, Guid> _paymentMethodIds = new(StringComparer.OrdinalIgnoreCase);
     private bool _issuing;
+    private bool _closingWithResult;
 
     public bool PartialPayment { get; private set; }
 
@@ -109,12 +110,20 @@ public partial class PaymentWindow : Window
         BuildMethods();
         FullPaymentButton.Click += OnFullPaymentClick;
         TouchFields.Attach(this);
-        // Block Alt+F4 / system close while a document is being issued or printed.
+        // Block Alt+F4 while issuing; after success always Close(true) so PosWindow clears the order.
         Closing += (_, args) =>
         {
-            if (_issuing && _confirmPayment == false)
+            if (PaymentWindowCloseDecision.ShouldCancelWhileIssuing(_issuing, _confirmPayment))
             {
                 args.Cancel = true;
+                return;
+            }
+
+            if (PaymentWindowCloseDecision.ShouldForceSuccessClose(_confirmPayment, _closingWithResult))
+            {
+                args.Cancel = true;
+                _closingWithResult = true;
+                Close(true);
             }
         };
         Opened += (_, _) => CoverOwner();
@@ -832,6 +841,7 @@ public partial class PaymentWindow : Window
         SetNoticeButtons(confirm: false);
         if (_confirmPayment)
         {
+            _closingWithResult = true;
             Close(true);
             return;
         }

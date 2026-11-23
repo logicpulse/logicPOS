@@ -134,9 +134,21 @@ public static class SidebarMenuText
     /// <summary>Portuguese keys present in the English caption table (menu + sidebar chrome).</summary>
     public static IReadOnlyCollection<string> EnglishKeys => Tables["en"].Keys;
 
-    public static string Get(string key)
+    public static string Get(string key) => Get(key, UiCulture.Read(null));
+
+    /// <summary>Resolve a caption for an explicit culture name (tests / callers that skip the cache).</summary>
+    public static string Get(string key, string cultureName)
     {
-        var language = CultureInfo.GetCultureInfo(UiCulture.Read(null)).TwoLetterISOLanguageName;
+        string language;
+        try
+        {
+            language = CultureInfo.GetCultureInfo(cultureName).TwoLetterISOLanguageName;
+        }
+        catch (CultureNotFoundException)
+        {
+            language = "pt";
+        }
+
         if (language == "pt" || Tables.TryGetValue(language, out var table) == false)
         {
             return key;

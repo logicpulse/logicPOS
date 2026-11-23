@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using LogicPOS.Core;
-using LogicPOS.Core.BackOffice;
+﻿using LogicPOS.Core.BackOffice;
 
 namespace LogicPOS.Core.Tests.BackOffice;
 
@@ -91,57 +89,25 @@ public sealed class SidebarMenuTextTests
     ];
 
     [Fact]
-    public void Pt_ui_culture_keeps_portuguese_labels_when_os_culture_is_english()
+    public void Pt_culture_keeps_portuguese_labels()
     {
-        var previousCulture = CultureInfo.CurrentCulture;
-        var previousUi = CultureInfo.CurrentUICulture;
-        var previousDefault = CultureInfo.DefaultThreadCurrentUICulture;
-        var path = Path.Combine(AppContext.BaseDirectory, "ui-culture.txt");
-        var previousFile = File.Exists(path) ? File.ReadAllText(path) : null;
-        try
-        {
-            File.WriteAllText(path, "pt-PT");
-            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
-            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
-
-            Assert.Equal("en", CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
-            Assert.Equal("pt-PT", UiCulture.Read(null));
-            Assert.Equal("Primeiros passos", SidebarMenuText.Get("Primeiros passos"));
-            Assert.Equal("Documentos", SidebarMenuText.Get("Documentos"));
-            Assert.Equal("Outras Tabelas", SidebarMenuText.Get("Outras Tabelas"));
-            Assert.Equal("Sair da Aplicação", SidebarMenuText.Get("Sair da Aplicação"));
-            Assert.Equal("FrontOffice", SidebarMenuText.Get("FrontOffice"));
-            Assert.Equal("Restaurar de ficheiro", SidebarMenuText.Get("Restaurar de ficheiro"));
-        }
-        finally
-        {
-            CultureInfo.CurrentCulture = previousCulture;
-            CultureInfo.CurrentUICulture = previousUi;
-            CultureInfo.DefaultThreadCurrentUICulture = previousDefault;
-            RestoreCultureFile(path, previousFile);
-        }
+        Assert.Equal("Primeiros passos", SidebarMenuText.Get("Primeiros passos", "pt-PT"));
+        Assert.Equal("Documentos", SidebarMenuText.Get("Documentos", "pt-PT"));
+        Assert.Equal("Outras Tabelas", SidebarMenuText.Get("Outras Tabelas", "pt-PT"));
+        Assert.Equal("Sair da Aplicação", SidebarMenuText.Get("Sair da Aplicação", "pt-PT"));
+        Assert.Equal("FrontOffice", SidebarMenuText.Get("FrontOffice", "pt-PT"));
+        Assert.Equal("Restaurar de ficheiro", SidebarMenuText.Get("Restaurar de ficheiro", "pt-PT"));
     }
 
     [Fact]
-    public void En_ui_culture_translates_sidebar_labels()
+    public void En_culture_translates_sidebar_labels()
     {
-        var path = Path.Combine(AppContext.BaseDirectory, "ui-culture.txt");
-        var previousFile = File.Exists(path) ? File.ReadAllText(path) : null;
-        try
-        {
-            File.WriteAllText(path, "en-US");
-            Assert.Equal("Getting started", SidebarMenuText.Get("Primeiros passos"));
-            Assert.Equal("Documents", SidebarMenuText.Get("Documentos"));
-            Assert.Equal("Other tables", SidebarMenuText.Get("Outras Tabelas"));
-            Assert.Equal("Exit", SidebarMenuText.Get("Sair da Aplicação"));
-            Assert.Equal("Front office", SidebarMenuText.Get("FrontOffice"));
-            Assert.Equal("Restore from file", SidebarMenuText.Get("Restaurar de ficheiro"));
-        }
-        finally
-        {
-            RestoreCultureFile(path, previousFile);
-        }
+        Assert.Equal("Getting started", SidebarMenuText.Get("Primeiros passos", "en-US"));
+        Assert.Equal("Documents", SidebarMenuText.Get("Documentos", "en-US"));
+        Assert.Equal("Other tables", SidebarMenuText.Get("Outras Tabelas", "en-US"));
+        Assert.Equal("Exit", SidebarMenuText.Get("Sair da Aplicação", "en-US"));
+        Assert.Equal("Front office", SidebarMenuText.Get("FrontOffice", "en-US"));
+        Assert.Equal("Restore from file", SidebarMenuText.Get("Restaurar de ficheiro", "en-US"));
     }
 
     [Fact]
@@ -154,51 +120,24 @@ public sealed class SidebarMenuTextTests
     }
 
     [Fact]
-    public void En_ui_culture_translates_every_sidebar_menu_key()
+    public void En_culture_translates_every_sidebar_menu_key()
     {
-        var path = Path.Combine(AppContext.BaseDirectory, "ui-culture.txt");
-        var previousFile = File.Exists(path) ? File.ReadAllText(path) : null;
-        try
+        var unchanged = new List<string>();
+        foreach (var key in MenuKeys)
         {
-            File.WriteAllText(path, "en-US");
-            var unchanged = new List<string>();
-            foreach (var key in MenuKeys)
+            var label = SidebarMenuText.Get(key, "en-US");
+            if (label == key && key is not ("SAFT" or "AGT" or "Dashboard"))
             {
-                var label = SidebarMenuText.Get(key);
-                // Acronyms / proper nouns may match the PT key (SAFT, AGT, Dashboard).
-                if (label == key && key is not ("SAFT" or "AGT" or "Dashboard"))
+                if (SidebarMenuText.EnglishKeys.Contains(key) == false)
                 {
-                    // Still OK when the EN table maps the key to itself.
-                    if (SidebarMenuText.EnglishKeys.Contains(key) == false)
-                    {
-                        unchanged.Add(key);
-                    }
+                    unchanged.Add(key);
                 }
             }
+        }
 
-            Assert.True(
-                unchanged.Count == 0,
-                "No EN caption for: " + string.Join(", ", unchanged));
-            Assert.Equal("Restore from file", SidebarMenuText.Get("Restaurar de ficheiro"));
-        }
-        finally
-        {
-            RestoreCultureFile(path, previousFile);
-        }
-    }
-
-    private static void RestoreCultureFile(string path, string? previousFile)
-    {
-        if (previousFile is null)
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        else
-        {
-            File.WriteAllText(path, previousFile);
-        }
+        Assert.True(
+            unchanged.Count == 0,
+            "No EN caption for: " + string.Join(", ", unchanged));
+        Assert.Equal("Restore from file", SidebarMenuText.Get("Restaurar de ficheiro", "en-US"));
     }
 }

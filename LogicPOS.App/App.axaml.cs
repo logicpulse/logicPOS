@@ -122,7 +122,15 @@ public partial class App : global::Avalonia.Application
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             // Re-apply UI culture on the Avalonia thread (bootstrap ran on a worker).
-            UiCulture.Apply(UiCulture.Read(configuration?["Culture"]));
+            try
+            {
+                UiCulture.Apply(UiCulture.Read(configuration?["Culture"]));
+            }
+            catch
+            {
+                // Invalid culture / I/O — keep process start; callers fall back to pt-PT.
+            }
+
             // Close splash before dialogs: Opened may touch ILicenseModule (branding).
             loading.Close();
         });
