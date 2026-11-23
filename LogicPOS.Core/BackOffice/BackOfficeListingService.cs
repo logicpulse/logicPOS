@@ -404,8 +404,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         {
             if (entity is Article)
             {
-                // Match SaveAsync: pre-fill FKs and prices so Novo shows the same defaults GTK used to seed on save.
-                PrepareRequired(page.EntityType, entity, database);
+                // FKs + prices + code only — never DefaultString (would put «SMOKE» in Designation).
+                PrepareArticleNewEditor(page.EntityType, entity, database);
                 await FillForeignKeysAsync(database, page.EntityType, entity, cancellationToken);
             }
             else
@@ -2039,6 +2039,33 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         {
             code.SetValue(entity, NextCode(database, type));
         }
+    }
+
+    /// <summary>
+    /// New-article editor: seed prices/button and next code only.
+    /// Does not call <see cref="DefaultString"/> so Designation stays empty for the user to fill.
+    /// </summary>
+    private static void PrepareArticleNewEditor(Type type, object entity, LogicPOSDbContext database)
+    {
+        foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+        {
+            if (property.CanWrite == false)
+            {
+                continue;
+            }
+
+            if (property.PropertyType == typeof(Button) && property.GetValue(entity) is null)
+            {
+                property.SetValue(entity, new Button());
+            }
+
+            if (property.PropertyType == typeof(ArticlePrice) && property.GetValue(entity) is null)
+            {
+                property.SetValue(entity, ArticlePrice.Default());
+            }
+        }
+
+        PrepareNextCode(type, entity, database);
     }
 
     private static void PrepareRequired(Type type, object entity, LogicPOSDbContext database)

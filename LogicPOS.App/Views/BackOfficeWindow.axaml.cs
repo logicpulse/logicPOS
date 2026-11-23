@@ -1395,11 +1395,19 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private async Task RestoreFromExternalFileSequentialAsync()
     {
-        await EntityHost.ShowAsync("Restaurar DB");
-        await EntityHost.RestoreFromExternalFileAsync();
+        try
+        {
+            await EntityHost.ShowAsync("Restaurar DB");
+            await EntityHost.RestoreFromExternalFileAsync();
+        }
+        catch (Exception exception)
+        {
+            ShowSaftMessage(
+                $"Não foi possível restaurar a base de dados.{Environment.NewLine}{Environment.NewLine}{exception.Message}");
+        }
     }
 
-    private void ShowPage(string title)
+    private async void ShowPage(string title)
     {
         var service = AppComposition.Services?.GetService<IBackOfficeListingService>();
         title = service?.ResolveTitle(title) ?? title;
@@ -1481,7 +1489,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             EntityHost.SetOverlayOnly(false);
             EntityHost.IsVisible = true;
             PlaceholderHost.IsVisible = false;
-            _ = RestoreFromExternalFileSequentialAsync();
+            await RestoreFromExternalFileSequentialAsync();
             return;
         }
 

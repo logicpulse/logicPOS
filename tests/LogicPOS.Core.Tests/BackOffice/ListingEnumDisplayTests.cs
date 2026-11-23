@@ -29,4 +29,16 @@ public sealed class ListingEnumDisplayTests
         Assert.Equal("Ocupada", open.Label);
         Assert.Equal("Ocupada", open.ToString());
     }
+
+    [Fact]
+    public void Editor_persists_clr_enum_name_not_portuguese_label()
+    {
+        var occupied = ListingEnumDisplay.Choices(typeof(TableStatus))
+            .Single(choice => choice.Label == "Ocupada");
+        Assert.Equal(nameof(TableStatus.Open), occupied.Value);
+        Assert.NotEqual("Ocupada", occupied.Value);
+        Assert.True(Enum.TryParse(occupied.Value, ignoreCase: false, out TableStatus status));
+        Assert.Equal(TableStatus.Open, status);
+        Assert.False(Enum.TryParse("Ocupada", ignoreCase: false, out TableStatus _));
+    }
 }
