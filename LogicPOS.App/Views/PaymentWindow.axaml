@@ -20,7 +20,7 @@
                                    Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
                             <TextBlock Classes="login_alert_title" Text="Pagamentos" />
                         </StackPanel>
-                        <Button Grid.Column="1" Classes="bo_window_button" Click="OnCancelClick" ToolTip.Tip="Fechar">
+                        <Button x:Name="CloseHeaderButton" Grid.Column="1" Classes="bo_window_button" Click="OnCancelClick" ToolTip.Tip="Fechar">
                             <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                         </Button>
                     </Grid>
@@ -77,7 +77,7 @@
                                 <TextBlock Classes="login_alert_action_text" Text="Ok" />
                             </StackPanel>
                         </Button>
-                        <Button Classes="login_alert_action pos_pay_action" Click="OnCancelClick">
+                        <Button x:Name="CancelButton" Classes="login_alert_action pos_pay_action" Click="OnCancelClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />

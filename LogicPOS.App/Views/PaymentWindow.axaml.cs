@@ -109,6 +109,14 @@ public partial class PaymentWindow : Window
         BuildMethods();
         FullPaymentButton.Click += OnFullPaymentClick;
         TouchFields.Attach(this);
+        // Block Alt+F4 / system close while a document is being issued or printed.
+        Closing += (_, args) =>
+        {
+            if (_issuing && _confirmPayment == false)
+            {
+                args.Cancel = true;
+            }
+        };
         Opened += (_, _) => CoverOwner();
         Opened += async (_, _) => await LoadCustomerAsync();
         Opened += async (_, _) => await LoadCompanyMarksAsync();
@@ -806,6 +814,11 @@ public partial class PaymentWindow : Window
 
     private void OnCancelClick(object? sender, RoutedEventArgs e)
     {
+        if (_issuing)
+        {
+            return;
+        }
+
         Close(false);
     }
 
@@ -913,6 +926,16 @@ public partial class PaymentWindow : Window
         if (PartialConfirmButton is not null)
         {
             PartialConfirmButton.IsEnabled = enabled;
+        }
+
+        if (CancelButton is not null)
+        {
+            CancelButton.IsEnabled = enabled;
+        }
+
+        if (CloseHeaderButton is not null)
+        {
+            CloseHeaderButton.IsEnabled = enabled;
         }
     }
 
