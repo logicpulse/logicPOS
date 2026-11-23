@@ -15,4 +15,27 @@ public sealed class ReceiptEmissionDefaultsTests
         Assert.Equal("RC2026/12", number);
         Assert.Equal(13, series.NextNumber);
     }
+
+    [Fact]
+    public void Cash_selects_numerario_even_when_it_is_not_first()
+    {
+        var card = Method("CC", "Cartão de Crédito");
+        var cash = Method(ReceiptEmissionDefaults.CashCode, ReceiptEmissionDefaults.CashName);
+
+        var selected = ReceiptEmissionDefaults.Cash([card, cash]);
+
+        Assert.Same(cash, selected);
+    }
+
+    [Fact]
+    public void Cash_is_absent_when_only_card_exists()
+    {
+        var selected = ReceiptEmissionDefaults.Cash([Method("CC", "Cartão de Crédito")]);
+
+        Assert.Null(selected);
+        Assert.Contains("Numerário", ReceiptEmissionDefaults.CashUnavailable);
+    }
+
+    private static ReceiptPayOption Method(string code, string name)
+        => new() { Code = code, Name = name };
 }

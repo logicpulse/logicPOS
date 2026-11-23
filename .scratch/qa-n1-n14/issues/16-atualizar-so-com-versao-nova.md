@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Sem versão mais nova, não aparece a pergunta de descarregar e reiniciar
-- [ ] Com versão mais nova, a pergunta inclui essa versão
-- [ ] A comparação de versões já existente não é redefinida
-- [ ] Um facto novo cobre a pergunta, sem repetir os factos da comparação
+- [x] Sem versão mais nova, não aparece a pergunta de descarregar e reiniciar
+- [x] Com versão mais nova, a pergunta inclui essa versão
+- [x] A comparação de versões já existente não é redefinida
+- [x] Um facto novo cobre a pergunta, sem repetir os factos da comparação

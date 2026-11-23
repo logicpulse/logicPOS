@@ -1,4 +1,5 @@
-﻿using LogicPOS.Domain.Enums;
+﻿using LogicPOS.Domain.Entities.Finance.Customers.Customers.Common;
+using LogicPOS.Domain.Enums;
 
 namespace LogicPOS.Core.BackOffice;
 
@@ -34,6 +35,16 @@ public static class ListingEnumDisplay
             {
                 nameof(WorkSessionPeriodStatus.Open) => "Aberta",
                 nameof(WorkSessionPeriodStatus.Closed) => "Fechada",
+                _ => enumName
+            };
+        }
+
+        if (enumType == typeof(CardMode))
+        {
+            return enumName switch
+            {
+                nameof(CardMode.Debit) => "Débito",
+                nameof(CardMode.Credit) => "Crédito",
                 _ => enumName
             };
         }

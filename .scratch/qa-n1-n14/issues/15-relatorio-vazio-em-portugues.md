@@ -4,8 +4,8 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Um relatório que usava a página inglesa passa a texto em português quando não há linhas
-- [ ] Os três relatórios de stock que já mostram o alerta em português continuam nesse alerta
-- [ ] Um facto novo cobre a página vazia, sem repetir o alerta dos três stocks
+- [x] Um relatório que usava a página inglesa passa a texto em português quando não há linhas
+- [x] Os três relatórios de stock que já mostram o alerta em português continuam nesse alerta
+- [x] Um facto novo cobre a página vazia, sem repetir o alerta dos três stocks

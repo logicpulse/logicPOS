@@ -189,6 +189,9 @@ internal static class ApplicationUpdater
     private static InvalidOperationException AlreadyCurrent(string installed)
         => new($"A aplicação já está na versão {ApplicationVersionComparer.Display(installed)}.");
 
+    internal static Task<string?> ReadPublishedVersionAsync(CancellationToken cancellationToken = default)
+        => TryReadPublishedVersionAsync(cancellationToken);
+
     private static async Task<string?> TryReadPublishedVersionAsync(CancellationToken cancellationToken)
     {
         try

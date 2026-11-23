@@ -17,7 +17,7 @@ Um spec de correção para a lista N1–N20: o comportamento esperado de cada it
   - N19. Em `dev`, o estado da mesa mostra `TableStatus.Free` como «Free». Em `fix/ux-2.0.35-r3`, por integrar, `ListingEnumDisplay` mostra «Livre», «Ocupada» e «Reservada» no editor. Ainda não está em `dev`.
   - N20. «Modo do cartão» mostra `CardMode.Debit` como «Debit». Esse ramo não traduz `CardMode`. O editor mostra Débito e Crédito.
 - O instalador e o anfitrião LogicPulse vivem em `C:\SVN\logicPOS-api-integration\logicPOS-internal`, fora do repositório público.
-- Spec publicado: [spec.md](spec.md), `ready-for-agent`. Só o que está decidido e ainda não está em `dev`, no diff local dos relatórios de stock, nem nos ramos de 2026-11-23. O que já existe ficou de fora.
+- Spec publicado: [spec.md](spec.md). Tickets 11–18 e as decisões 02–08 estão gravados em `dev`. O 04 já era o comportamento do pagamento misto. O que já existia em `dev` ficou de fora da spec.
 - Skills: grilling, domain-modeling, research. Tracker: markdown em `.scratch/qa-n1-n14/` (a pasta `.scratch/` está no `.gitignore`).
 - Glossário já fechado, e que este spec não reabre: recibo com método por omissão Numerário; pagamento misto em que as parcelas somam o total a liquidar; MB Way liquida sem confirmação no telemóvel.
 
@@ -26,6 +26,13 @@ Um spec de correção para a lista N1–N20: o comportamento esperado de cada it
 - [O que é que o trabalho de hoje já fecha na lista N1–N14](issues/01-o-que-ja-esta-feito.md): em `dev` nenhum fecha; no GitHub de 2026-11-23, por integrar, há ramos que tratam N1, N5, N7, N8 e N9. N2 e N4 continuam como no `dev` nesses ramos.
 - [O que lista o sumário de vendas por condição de pagamento?](issues/09-sumario-condicao-pagamento.md): um sumário das linhas, agrupadas por condição de pagamento, sem linha por artigo.
 - [O que abre «Ver relatório completo» no Top 10 artigos?](issues/10-ver-relatorio-completo-top-artigos.md): o relatório «Total vendido por artigo» (`articles-sold`), chamado aqui «Vendas por artigo Resumido».
+- [A atualização reescreve textos de semente numa base já criada?](issues/02-atualizacao-reescreve-textos-seed.md): só as alterações dessa versão. A semente que a versão não muda fica como está.
+- [MB Way substituiu o Multibanco ou são dois métodos?](issues/03-mb-way-e-multibanco.md): são dois métodos. MB Way só numa base de Portugal.
+- [Conta Corrente pode ser parcela de um pagamento misto?](issues/04-conta-corrente-no-pagamento-misto.md): sim, e essa parcela conta como liquidada no documento.
+- [O que faz Gerar sem cliente ou sem artigo?](issues/05-gerar-sem-cliente-ou-artigo.md): recusa se o filtro estiver vazio. «Todos», que já vem seleccionado, emite o relatório para todos.
+- [Qual é o período por omissão dos relatórios?](issues/06-periodo-omissao-dos-relatorios.md): do primeiro ao último dia do mês actual nos relatórios, e do ano actual nas listas que abrem no ano.
+- [O que deve explicar a dica Reemb. Volta?](issues/07-dica-reemb-volta.md): emite o talão de reembolso do depósito de vasilhame e imprime o documento `TRV`.
+- [A lista cloud de Sessões de Trab. mostra o período ou só terminais abertos?](issues/08-lista-sessoes-de-trabalho-cloud.md): só as sessões abertas.
 
 ## Not yet specified
 

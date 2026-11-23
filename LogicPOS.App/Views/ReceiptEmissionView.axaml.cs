@@ -80,9 +80,8 @@ public partial class ReceiptEmissionView : UserControl
     {
         if (_datesReady == false)
         {
-            Period.SetRange(
-                new DateTime(DateTime.Today.Year, 1, 1),
-                DateTime.Today.AddDays(1).AddSeconds(-1));
+            var year = DefaultPeriods.Year(DateTime.Today);
+            Period.SetRange(year.Start, year.End);
             _datesReady = true;
         }
 
@@ -337,7 +336,12 @@ public partial class ReceiptEmissionView : UserControl
         ExchangeFields.IsVisible = ReceiptPayDefaults.ShowExchange(portugal);
         _filling = true;
         PaymentMethodBox.ItemsSource = _catalog.PaymentMethods;
-        PaymentMethodBox.SelectedItem = _catalog.PaymentMethods.FirstOrDefault();
+        var cash = ReceiptEmissionDefaults.Cash(_catalog.PaymentMethods);
+        PaymentMethodBox.SelectedItem = cash;
+        if (cash is null)
+        {
+            PayError.Text = ReceiptEmissionDefaults.CashUnavailable;
+        }
         CurrencyBox.ItemsSource = _catalog.Currencies;
         CurrencyBox.SelectedItem = pay.Currency;
         ExchangeRate.Text = pay.Rate.ToString("0.00", CultureInfo.CurrentCulture);

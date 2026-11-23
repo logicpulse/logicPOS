@@ -36,7 +36,7 @@ public static class ReportCatalog
         Item("sales-vat-class", "Vendas por taxa IVA e classe de artigo", GSum, "reports/sales-by-vatrate-and-articleclass/pdf", ReportFilterProfile.DateRangeVat, "Menu/menu_relatorios_vendas_por_taxa_iva_classe_artigo.svg"),
 
         // Financeiros (Detalhado)
-        Item("customer-balance-details", "Saldo de clientes (detalhe)", GDet, "reports/customers/{customer}/current-account/pdf", ReportFilterProfile.DateRangeCustomerRequired, "Menu/menu_relatorios_saldo_clientes_detalhado.svg"),
+        Item("customer-balance-details", "Saldo de clientes (detalhe)", GDet, "reports/customers/{customer}/current-account/pdf", ReportFilterProfile.DateRangeCustomerOptional, "Menu/menu_relatorios_saldo_clientes_detalhado.svg"),
         Item("articles-sold", "Total vendido por artigo", GDet, "reports/articles/total-sold/pdf", ReportFilterProfile.DateRangeDocTerminal, "Menu/menu_relatorios_total_vendidos_por_artigo.svg"),
         Item("sales-document-type-detail", "Vendas por tipo de documento fiscal (Detalhado)", GDet, "reports/sales-by-document-type/detailed/pdf", ReportFilterProfile.DateRangeDocTerminal, "Menu/menu_relatorios_vendas_por_tipo_documento_fiscal_detalhado.svg"),
         Item("sales-day-detail", "Vendas por dia (Detalhado)", GDet, "reports/sales-by-document-date/detailed/pdf", ReportFilterProfile.DateRangeDocTerminal, "Menu/menu_relatorios_vendas_por_dia_detalhado.svg"),

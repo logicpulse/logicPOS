@@ -258,7 +258,7 @@ public partial class EntityListing : UserControl
     }
 
     private static bool UsesDateFilter(string title)
-        => title is "Recibos" or "Emissão Recibos" or "Sessões de Trabalho" or "Gestão de Stocks" or "Conta corrente" or "Registo de alterações" or "Séries";
+        => title is "Recibos" or "Emissão Recibos" or "Gestão de Stocks" or "Conta corrente" or "Registo de alterações" or "Séries";
 
     private IBackOfficeListingService? Service => AppComposition.Services?.GetService<IBackOfficeListingService>();
 
@@ -337,9 +337,8 @@ public partial class EntityListing : UserControl
 
     private void ResetDates()
     {
-        Period.SetRange(
-            new DateTime(DateTime.Today.Year, 1, 1),
-            DateTime.Today.AddDays(1).AddSeconds(-1));
+        var year = DefaultPeriods.Year(DateTime.Today);
+        Period.SetRange(year.Start, year.End);
     }
 
     private void OnCustomerFilterChanged(object? sender, SelectionChangedEventArgs e)

@@ -246,7 +246,7 @@
                         <Grid Classes="login_alert_body">
                             <Image Classes="login_alert_symbol"
                                    Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
-                            <TextBlock Classes="login_alert_message"
+                            <TextBlock x:Name="UpdateQuestion" Classes="login_alert_message"
                                        Text="Descarregar a atualização e reiniciar? A configuração (appsettings) e a base de dados local mantêm-se." />
                             <StackPanel Classes="bo_update_progress_panel">
                                 <TextBlock x:Name="UpdateStatus" Classes="bo_update_status" Text="" />

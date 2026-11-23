@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Status: implemented (tickets 11–18 and decisions 02–08). Ticket 04 was already the mixed-payment behaviour.
 
 ## Problem Statement
 

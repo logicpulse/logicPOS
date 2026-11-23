@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Core.BackOffice;
+using LogicPOS.Domain.Entities.Finance.Customers.Customers.Common;
 using LogicPOS.Domain.Enums;
 
 namespace LogicPOS.Core.Tests.BackOffice;
@@ -40,5 +41,23 @@ public sealed class ListingEnumDisplayTests
         Assert.True(Enum.TryParse(occupied.Value, ignoreCase: false, out TableStatus status));
         Assert.Equal(TableStatus.Open, status);
         Assert.False(Enum.TryParse("Ocupada", ignoreCase: false, out TableStatus _));
+    }
+
+    [Fact]
+    public void Card_mode_labels_are_portuguese_and_values_stay_clr_names()
+    {
+        var choices = ListingEnumDisplay.Choices(typeof(CardMode));
+
+        var debit = choices.Single(choice => choice.Value == nameof(CardMode.Debit));
+        var credit = choices.Single(choice => choice.Value == nameof(CardMode.Credit));
+        Assert.Equal("Débito", debit.Label);
+        Assert.Equal("Crédito", credit.Label);
+        Assert.Equal("Débito", debit.ToString());
+        Assert.True(Enum.TryParse(debit.Value, ignoreCase: false, out CardMode mode));
+        Assert.Equal(CardMode.Debit, mode);
+        Assert.False(Enum.TryParse("Débito", ignoreCase: false, out CardMode _));
+        Assert.Equal("Livre", ListingEnumDisplay.Label(TableStatus.Free));
+        Assert.Equal("Ocupada", ListingEnumDisplay.Label(TableStatus.Open));
+        Assert.Equal("Reservada", ListingEnumDisplay.Label(TableStatus.Reserved));
     }
 }

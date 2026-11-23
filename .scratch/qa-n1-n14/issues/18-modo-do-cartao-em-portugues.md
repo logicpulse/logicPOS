@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] O campo mostra Débito para Debit e Crédito para Credit
-- [ ] Gravar o cliente não troca o valor por causa do texto visível
-- [ ] Os rótulos de estado da mesa que já estão em Livre, Ocupada e Reservada não são refeitos
-- [ ] Um facto novo cobre os dois rótulos e os dois valores
+- [x] O campo mostra Débito para Debit e Crédito para Credit
+- [x] Gravar o cliente não troca o valor por causa do texto visível
+- [x] Os rótulos de estado da mesa que já estão em Livre, Ocupada e Reservada não são refeitos
+- [x] Um facto novo cobre os dois rótulos e os dois valores

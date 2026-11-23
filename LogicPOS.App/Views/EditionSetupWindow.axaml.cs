@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using LogicPOS.Core;
+using LogicPOS.Core.Fiscal;
 
 namespace LogicPOS.App.Views;
 
@@ -37,6 +38,9 @@ public partial class EditionSetupWindow : Window
     public EditionSetupWindow()
     {
         InitializeComponent();
+        var logicPulse = FiscalModuleLoader.IsPresent(AppContext.BaseDirectory);
+        CommunityIntro.Text = CommunityFirstRunCopy.Intro(logicPulse);
+        CommunityFeature.Text = CommunityFirstRunCopy.Feature(logicPulse);
         TouchFields.Attach(this);
         ListingNotice.BindToast(LblStatus, this, skipProgress: true);
         RbRemoteApi.IsCheckedChanged += (_, _) => RefreshApiFields();
