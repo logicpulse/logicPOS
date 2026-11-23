@@ -979,8 +979,20 @@ public partial class PaymentWindow : Window
 
         if (_cashTyping)
         {
-            _cashMoney = 0;
+            if (MoneyFormat.TryParse(CashEntry.Text, out var typed))
+            {
+                _cashMoney = typed;
+            }
+            else
+            {
+                _cashMoney = 0;
+            }
+
             _cashTyping = false;
+        }
+        else
+        {
+            _cashMoney = 0;
         }
 
         _cashMoney += amount;

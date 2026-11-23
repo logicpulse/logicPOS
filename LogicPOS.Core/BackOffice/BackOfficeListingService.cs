@@ -402,7 +402,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         if (id is null)
         {
-            PrepareNextCode(page.EntityType, entity, database);
+            if (entity is Article)
+            {
+                // Match SaveAsync: pre-fill FKs and prices so Novo shows the same defaults GTK used to seed on save.
+                PrepareRequired(page.EntityType, entity, database);
+                await FillForeignKeysAsync(database, page.EntityType, entity, cancellationToken);
+            }
+            else
+            {
+                PrepareNextCode(page.EntityType, entity, database);
+            }
         }
 
         var fields = Describe(page, entity, id is null);
