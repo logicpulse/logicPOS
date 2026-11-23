@@ -118,7 +118,7 @@ public sealed class LocalReportService : IReportService
         var rows = await ReadRowsAsync(database, balances, report, filters, cancellationToken);
         if (rows.Count == 0)
         {
-            rows.Add(Row(("Informação", "Sem dados no intervalo indicado.")));
+            rows.Add(Row(("Informação", "Sem registos. Verifique os filtros.")));
         }
 
         var headers = rows[0].Keys.ToList();

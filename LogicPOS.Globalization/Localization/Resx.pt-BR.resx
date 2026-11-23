@@ -617,7 +617,7 @@ A aplicação será fechada.</value>
     <comment>Message for when user tries to run a new POS instance</comment>
   </data>
   <data name="dialog_message_report_filter_no_records_with_criteria" xml:space="preserve">
-    <value>Os filtros atuais não encontram registros com essas condições, reformule os fitros e tente novamente com outra condições!</value>
+    <value>Sem registros. Verifique os filtros.</value>
   </data>
   <data name="dialog_message_request_backup" xml:space="preserve">
     <value>Deseja fazer uma Cópia de Segurança da Base de Dados?</value>

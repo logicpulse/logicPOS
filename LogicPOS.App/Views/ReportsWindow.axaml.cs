@@ -564,7 +564,7 @@ public partial class ReportsWindow : UserControl
         EmptyDataTitle.Text = PreferenceLabels.Text("global_information", "Informação");
         EmptyDataMessage.Text = PreferenceLabels.Text(
             "dialog_message_report_filter_no_records_with_criteria",
-            "Os filtros atuais não encontram registos com essas condições, reformule os filtros e tente novamente.");
+            "Sem registos. Verifique os filtros.");
         EmptyDataOverlay.IsVisible = true;
     }
 
