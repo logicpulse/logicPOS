@@ -38,7 +38,7 @@ public static class CloudClientIdProbe
             if (response.StatusCode == HttpStatusCode.BadRequest)
             {
                 return (false,
-                    "A conta Cloud não existe ou não está activa. Crie / pague em logic-pos.com e volte a tentar.");
+                    "A conta Cloud não existe ou não está ativa. Crie / pague em logic-pos.com e volte a tentar.");
             }
 
             return (false, $"Não foi possível validar a conta Cloud ({(int)response.StatusCode}).");

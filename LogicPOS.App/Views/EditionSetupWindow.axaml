@@ -250,7 +250,7 @@
             <Border Classes="bo_article_section_header">
               <StackPanel Classes="bo_article_section_title_row">
                 <svg:Svg Classes="bo_article_section_icon" Path="avares://LogicPOS.App/Assets/Images/Articles/icon_lock_g.svg" />
-                <TextBlock Classes="bo_article_section_title" Text="Activar Business" />
+                <TextBlock Classes="bo_article_section_title" Text="Ativar Business" />
               </StackPanel>
             </Border>
             <StackPanel Spacing="8" Margin="16,12,16,14">
@@ -264,7 +264,7 @@
               <Button Classes="edition_link" Content="Não tem chave? Mais informações em logic-pos.com" Click="OnPayBusinessClick" />
               <TextBlock Classes="edition_tagline" Margin="0,6,0,0" Text="Alojamento" />
               <RadioButton x:Name="RbLocalServer" GroupName="Hosting" IsChecked="True"
-                           Content="Este computador é o servidor (API e webapp quando a licença estiver activa)" />
+                           Content="Este computador é o servidor (API e webapp quando a licença estiver ativa)" />
               <RadioButton x:Name="RbRemoteApi" GroupName="Hosting"
                            Content="Ligar a uma API já existente (modo API, sem Client ID)" />
               <TextBox x:Name="TxtApiAddress" Classes="bo_entity_input" PlaceholderText="https://servidor:5001/" IsVisible="False" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" />

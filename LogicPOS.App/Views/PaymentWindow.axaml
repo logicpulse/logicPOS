@@ -53,7 +53,7 @@
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_full.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Pag. Total" />
+                                <TextBlock Classes="login_alert_action_text" Text="Pagamento Total" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action pos_pay_action" Click="OnPartialPaymentClick">
@@ -67,7 +67,7 @@
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_ticketpad_split_payments.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Pag. Misto" />
+                                <TextBlock Classes="login_alert_action_text" Text="Pagamento Misto" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action pos_pay_action pos_pay_action_ok" Click="OnConfirmClick">
@@ -312,7 +312,7 @@
                         <StackPanel Classes="login_alert_title_row">
                             <Image Classes="login_alert_title_icon"
                                    Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
-                            <TextBlock Classes="login_alert_title" Text="Introduzir valor" />
+                            <TextBlock Classes="login_alert_title" Text="Valor entregue" />
                         </StackPanel>
                     </Border>
                     <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">

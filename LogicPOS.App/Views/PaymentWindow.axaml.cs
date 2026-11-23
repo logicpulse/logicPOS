@@ -906,7 +906,7 @@ public partial class PaymentWindow : Window
                 _pendingSettledSale = settledSale;
                 ShowConfirm(
                     "Série fiscal",
-                    $"Não existe série activa para «{_pendingSeriesDocumentType}».{Environment.NewLine}{Environment.NewLine}Deseja criar o ano fiscal e a série automaticamente?");
+                    $"Não existe série ativa para «{_pendingSeriesDocumentType}».{Environment.NewLine}{Environment.NewLine}Deseja criar o ano fiscal e a série automaticamente?");
                 return;
             }
 

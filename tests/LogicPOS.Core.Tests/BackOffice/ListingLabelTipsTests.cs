@@ -8,7 +8,7 @@ public sealed class ListingLabelTipsTests
     [InlineData("Alternar lista", "Alternar modo de lista")]
     [InlineData("Cartão Crédito", "Cartão de Crédito")]
     [InlineData("Predefinido", "Terminal predefinido")]
-    [InlineData("Pag.Total", "Pagamento total")]
+    [InlineData("Pagamento Total", "Pagamento total")]
     public void Maps_short_labels_to_full_term(string shortLabel, string expected)
     {
         Assert.Equal(expected, ListingLabelTips.FullTerm(shortLabel));

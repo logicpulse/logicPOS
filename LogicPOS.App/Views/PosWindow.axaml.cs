@@ -496,7 +496,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         PortraitChrome.FitOverlay(DocumentsMenuFrame, this, 581, 286, lockHeight: false, bottomReserve: bottomReserve);
         if (PricePad.IsVisible)
         {
-            // Same footprint as Payments "Introduzir valor" cash pad.
+            // Same footprint as Payments "Valor entregue" cash pad.
             PortraitChrome.FitOverlay(TicketFrame, this, 680, 600, lockHeight: false, bottomReserve: bottomReserve);
         }
         else if (_splitHost?.IsVisible == true)

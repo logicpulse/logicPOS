@@ -202,7 +202,7 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             .FirstOrDefaultAsync(cancellationToken);
         if (series is null)
         {
-            return ReceiptPayResult.Fail("Nenhuma série activa para emissão de recibos foi encontrada.");
+            return ReceiptPayResult.Fail("Nenhuma série ativa para emissão de recibos foi encontrada.");
         }
 
         var refNo = ReceiptEmissionDefaults.TakeNextReceiptNumber(series);
@@ -273,6 +273,6 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             return null;
         }
 
-        return $"Não existe uma série activa para o tipo de documento «{documentType}».{Environment.NewLine}{Environment.NewLine}Crie uma série deste tipo no BackOffice (Séries) antes de emitir.";
+        return $"Não existe uma série ativa para o tipo de documento «{documentType}».{Environment.NewLine}{Environment.NewLine}Crie uma série deste tipo no BackOffice (Séries) antes de emitir.";
     }
 }

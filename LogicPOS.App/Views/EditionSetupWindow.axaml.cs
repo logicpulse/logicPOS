@@ -117,7 +117,7 @@ public partial class EditionSetupWindow : Window
         ContinueText.Text = edition switch
         {
             ProductEdition.Community => "Começar a usar",
-            ProductEdition.Business => "Activar Business",
+            ProductEdition.Business => "Ativar Business",
             ProductEdition.Cloud => "Continuar com Cloud",
             _ => throw new System.ComponentModel.InvalidEnumArgumentException(
                 nameof(edition), (int)edition, typeof(ProductEdition)),

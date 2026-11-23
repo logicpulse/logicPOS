@@ -15,7 +15,7 @@ public static class ListingLabelTips
         ["Doc. venda"] = "Documento de venda",
         ["Num.Doc."] = "Número do documento",
         ["Número do Doc."] = "Número do documento",
-        ["Pag.Total"] = "Pagamento total",
+        ["Pagamento Total"] = "Pagamento total",
         ["Pagamento Parcial"] = "Pagamento parcial",
         ["Reembolso Volta"] = "Reembolso de volta",
         ["SubT."] = "Subtotal",

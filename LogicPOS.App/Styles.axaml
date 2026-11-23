@@ -6212,7 +6212,7 @@
         <Setter Property="Stretch" Value="Uniform" />
     </Style>
 
-    <!-- Listing mode filter (e.g. Artigos Ativos / Desactivados / Todos): segmented pill like dash_segmented. -->
+    <!-- Listing mode filter (e.g. Artigos Ativos / Desativados / Todos): segmented pill like dash_segmented. -->
     <Style Selector="ListBox.bo_entity_mode">
         <Setter Property="Background" Value="#FFFFFF" />
         <Setter Property="BorderBrush" Value="#D8D8D8" />

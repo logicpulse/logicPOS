@@ -976,7 +976,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Limpar</value>
   </data>
   <data name="global_button_label_payment_dialog_full_payment" xml:space="preserve">
-    <value>Pag.Total</value>
+    <value>Pagamento Total</value>
   </data>
   <data name="global_button_label_payment_dialog_partial_payment" xml:space="preserve">
     <value>Pagamento Parcial</value>
@@ -1988,7 +1988,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <comment>Value for "Update At" data in details dialog</comment>
   </data>
   <data name="global_record_disabled" xml:space="preserve">
-    <value>Desactivado</value>
+    <value>Desativado</value>
   </data>
   <data name="global_record_enabled" xml:space="preserve">
     <value>Ativo</value>
@@ -3570,7 +3570,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Confirmar</value>
   </data>
   <data name="window_title_dialog_moneypad" xml:space="preserve">
-    <value>Introduzir valor</value>
+    <value>Valor entregue</value>
   </data>
   <data name="window_title_dialog_moneypad_product_price" xml:space="preserve">
     <value>Preço do Produto</value>
