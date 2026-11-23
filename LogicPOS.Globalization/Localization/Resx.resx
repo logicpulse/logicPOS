@@ -1572,7 +1572,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Financial template</value>
   </data>
   <data name="global_fiscal_number" xml:space="preserve">
-    <value>Fiscal Number</value>
+    <value>Tax ID</value>
   </data>
   <data name="global_fiscal_number_acronym" xml:space="preserve">
     <value>NUIT</value>

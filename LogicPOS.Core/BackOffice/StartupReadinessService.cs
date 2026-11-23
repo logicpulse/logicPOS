@@ -1,4 +1,4 @@
-using LogicPOS.Application.Features.System;
+﻿using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Domain.ValueObjects;
 using LogicPOS.Persistence.Database;
@@ -62,26 +62,26 @@ public sealed class StartupReadinessService : IStartupReadinessService
         {
             issues.Add(new StartupReadinessIssue(
                 "fiscal-year",
-                "Falta criar o ano fiscal antes de emitir documentos.",
+                DocumentsListingText.MissingFiscalYear(),
                 "Abertura de ano fiscal",
-                "Abrir"));
+                DocumentsListingText.Open()));
         }
         else if (hasCurrentYear == false)
         {
             issues.Add(new StartupReadinessIssue(
                 "fiscal-year-current",
-                $"Não existe ano fiscal para {year}. Crie a abertura do ano corrente.",
+                DocumentsListingText.MissingCurrentFiscalYear(year),
                 "Abertura de ano fiscal",
-                "Abrir"));
+                DocumentsListingText.Open()));
         }
 
         if (seriesCount == 0)
         {
             issues.Add(new StartupReadinessIssue(
                 "series",
-                "Faltam séries de documento. Use a Abertura de ano fiscal para as criar.",
+                DocumentsListingText.MissingDocumentSeries(),
                 "Abertura de ano fiscal",
-                "Abrir"));
+                DocumentsListingText.Open()));
         }
         else if (FiscalFeatures.ShowsAtCommunication(FiscalCountryOf(scope.ServiceProvider)))
         {
@@ -93,14 +93,11 @@ public sealed class StartupReadinessService : IStartupReadinessService
             {
                 var fiscal = scope.ServiceProvider.GetService<IFiscalModule>();
                 var atModuleMissing = fiscal is null || fiscal.IsAvailable == false;
-                var message = atModuleMissing
-                    ? $"{withoutAt} série(s) criadas localmente ainda sem comunicação à AT. Em Séries, use «Comunicar série fiscal». O módulo de certificação fiscal não está instalado neste posto."
-                    : $"{withoutAt} série(s) criadas localmente ainda sem comunicação à AT. Em Séries, use «Comunicar série fiscal».";
                 issues.Add(new StartupReadinessIssue(
                     "series-at",
-                    message,
+                    DocumentsListingText.SeriesWithoutAt(withoutAt, atModuleMissing),
                     "Séries",
-                    "Abrir"));
+                    DocumentsListingText.Open()));
             }
         }
 

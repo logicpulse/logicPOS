@@ -19,4 +19,16 @@ public static class DocumentsListingExport
         "AssociatedDocuments" => row.AssociatedDocuments,
         _ => string.Empty
     };
+
+    /// <summary>
+    /// With a selection, export those rows; otherwise export every matching/filtered row.
+    /// </summary>
+    public static IReadOnlyList<PosDocumentRow> ResolveRows(
+        IReadOnlyList<PosDocumentRow> selected,
+        IReadOnlyList<PosDocumentRow> allMatching)
+        => selected.Count > 0 ? selected : allMatching;
+
+    /// <summary>Builds one export data row from stable column keys (never translated headers).</summary>
+    public static IReadOnlyList<string> BuildRow(PosDocumentRow row, IReadOnlyList<string> columnKeys)
+        => columnKeys.Select(key => Cell(row, key)).ToList();
 }

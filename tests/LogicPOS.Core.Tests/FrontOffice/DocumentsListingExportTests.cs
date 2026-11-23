@@ -70,4 +70,58 @@ public sealed class DocumentsListingExportTests
         Assert.Equal("FT B/9", cells[1]);
         Assert.Equal("Buyer", cells[3]);
     }
+
+    [Fact]
+    public void ResolveRows_prefers_selection_otherwise_all_matching()
+    {
+        var visible = new PosDocumentRow { Number = "A" };
+        var other = new PosDocumentRow { Number = "B" };
+        var selected = DocumentsListingExport.ResolveRows([visible], [visible, other]);
+        Assert.Equal(["A"], selected.Select(row => row.Number));
+
+        var all = DocumentsListingExport.ResolveRows([], [visible, other]);
+        Assert.Equal(["A", "B"], all.Select(row => row.Number));
+    }
+
+    [Fact]
+    public void Excel_bytes_include_header_and_data_rows()
+    {
+        var row = new PosDocumentRow
+        {
+            DocumentDate = new DateTime(2026, 11, 23, 10, 0, 0),
+            Number = "FS A/1",
+            Status = "Normal",
+            EntityName = "ACME",
+            TaxId = "123",
+            FinalTotal = 10m,
+            PaidAmount = 10m,
+            DebitAmount = 0m,
+            AssociatedDocuments = "-"
+        };
+        var keys = new[]
+        {
+            "DocumentDateText", "Number", "Status", "EntityName", "TaxId",
+            "FinalTotalText", "PaidAmountText", "DebitAmountText", "AssociatedDocuments"
+        };
+        var headers = new[]
+        {
+            "Data do documento", "Número do Doc.", "Estado", "Entidade", "NIF",
+            "Total Final", "Valor Pago", "Valor em Dívida", "Documentos Associados"
+        };
+        var data = new[] { DocumentsListingExport.BuildRow(row, keys) };
+        var bytes = LogicPOS.Core.BackOffice.ListingTableExport.ToExcel("Documentos", headers, data);
+        var xml = ReadSheetXml(bytes);
+        Assert.Contains("Data do documento", xml, StringComparison.Ordinal);
+        Assert.Contains("FS A/1", xml, StringComparison.Ordinal);
+        Assert.Contains("ACME", xml, StringComparison.Ordinal);
+        Assert.Contains("r=\"2\"", xml, StringComparison.Ordinal);
+    }
+
+    private static string ReadSheetXml(byte[] xlsx)
+    {
+        using var stream = new MemoryStream(xlsx);
+        using var zip = new System.IO.Compression.ZipArchive(stream, System.IO.Compression.ZipArchiveMode.Read);
+        using var reader = new StreamReader(zip.GetEntry("xl/worksheets/sheet1.xml")!.Open());
+        return reader.ReadToEnd();
+    }
 }

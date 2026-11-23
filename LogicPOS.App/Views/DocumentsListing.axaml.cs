@@ -47,6 +47,8 @@ public partial class DocumentsListing : UserControl
     public DocumentsListing()
     {
         InitializeComponent();
+        // Closed ComboBox must show Label (Todos/All); without this the selection box stays blank.
+        TypeBox.DisplayMemberBinding = new Avalonia.Data.Binding(nameof(ListingFilterChoice.Label));
         SendToAtButton.IsVisible = FiscalFeatures.ShowsAtCommunication(FiscalFeatures.Current);
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
@@ -91,8 +93,8 @@ public partial class DocumentsListing : UserControl
         }
 
         SetFilterLabel(0, Pref("global_customer", "Cliente"));
-        // Keep the pre-r3 caption (not part of the Carlos review).
-        SetFilterLabel(1, "Tipo");
+        SetFilterLabel(1, DocumentsListingText.Type());
+        RefreshEveryoneLabels();
 
         foreach (var button in MobileBar.Children.OfType<Button>())
         {
@@ -127,8 +129,9 @@ public partial class DocumentsListing : UserControl
         SetColumnHeader(4, Pref("global_entity", "Entidade"));
         SetColumnHeader(5, Pref("global_fiscal_number", "NIF"));
         SetColumnHeader(6, Pref("global_total_final", "Total Final"));
-        SetColumnHeader(7, Pref("window_title_dialog_document_finance_column_total_credit_rc_nc_based", "Valor Pago"));
-        SetColumnHeader(8, Pref("global_debit", "Valor em Dívida"));
+        // Listing-local captions (EN: Amount Paid / Amount Due — not global Resx Credit/Debit).
+        SetColumnHeader(7, DocumentsListingText.AmountPaid());
+        SetColumnHeader(8, DocumentsListingText.AmountDue());
         SetColumnHeader(9, Pref("window_title_dialog_document_finance_column_related_doc", "Documentos Associados"));
 
         // Never replace a load error with the empty-period caption on culture change.
@@ -185,6 +188,48 @@ public partial class DocumentsListing : UserControl
         if (fields[index].Children.OfType<Avalonia.Controls.TextBlock>().FirstOrDefault() is { } label)
         {
             label.Text = text;
+        }
+    }
+
+    /// <summary>Keep the empty «Todos»/«All» filter option in the active UI culture.</summary>
+    private void RefreshEveryoneLabels()
+    {
+        var all = DocumentsListingText.All();
+        if (CustomerBox.ItemsSource is System.Collections.IEnumerable customers)
+        {
+            foreach (var item in customers)
+            {
+                if (item is ListingFilterChoice { Id: var id } choice && id == Guid.Empty)
+                {
+                    choice.Label = all;
+                }
+            }
+        }
+
+        string? selectedTypeCode = null;
+        if (TypeBox.SelectedItem is ListingFilterChoice selectedType && selectedType.Id != Guid.Empty)
+        {
+            selectedTypeCode = selectedType.Code;
+        }
+
+        if (TypeBox.ItemsSource is System.Collections.IEnumerable types)
+        {
+            foreach (var item in types)
+            {
+                if (item is ListingFilterChoice { Id: var id } choice && id == Guid.Empty)
+                {
+                    choice.Label = all;
+                }
+            }
+
+            TypeBox.ItemsSource = null;
+            TypeBox.ItemsSource = types;
+            ListingFilters.SelectDocumentType(TypeBox, selectedTypeCode);
+        }
+
+        if (CustomerBox.SelectedItem is ListingFilterChoice { Id: var selected } && selected == Guid.Empty)
+        {
+            ListingFilters.SelectEveryone(CustomerBox);
         }
     }
 
@@ -266,7 +311,7 @@ public partial class DocumentsListing : UserControl
             CustomerBox.ItemsSource = customers;
             TypeBox.ItemsSource = types;
             ListingFilters.SelectEveryone(CustomerBox);
-            TypeBox.SelectedIndex = 0;
+            ListingFilters.SelectDocumentType(TypeBox, typeCode: null);
             _appliedCustomer = null;
         }
         catch (Exception exception)
@@ -283,10 +328,7 @@ public partial class DocumentsListing : UserControl
     {
         _fillingFilters = true;
         ListingFilters.SelectEveryone(CustomerBox);
-        if (TypeBox.Items.Count > 0)
-        {
-            TypeBox.SelectedIndex = 0;
-        }
+        ListingFilters.SelectDocumentType(TypeBox, typeCode: null);
 
         _appliedCustomer = null;
         _fillingFilters = false;
@@ -1689,9 +1731,11 @@ public partial class DocumentsListing : UserControl
             var columns = ChoosableColumns().Where(column => column.IsVisible).ToList();
             var headers = columns.Select(column => column.Header?.ToString() ?? string.Empty).ToList();
             var keys = columns.Select(ColumnExportKey).ToList();
-            var source = await AllMatchingAsync();
+            // Prefer the checkbox/grid selection; otherwise every row matching the same
+            // period/filters as the grid (Period.Start/End — not StartDate/EndDate midnight).
+            var source = DocumentsListingExport.ResolveRows(ChosenRows(), await AllMatchingAsync());
             var rows = source
-                .Select(row => (IReadOnlyList<string>)keys.Select(key => DocumentsListingExport.Cell(row, key)).ToList())
+                .Select(row => (IReadOnlyList<string>)DocumentsListingExport.BuildRow(row, keys))
                 .ToList();
             await ListingFileExport.SaveAsync(TopLevel.GetTopLevel(this), "Documentos", excel, headers, rows);
         }
@@ -1719,8 +1763,14 @@ public partial class DocumentsListing : UserControl
             return _rows.ToList();
         }
 
-        var start = Period.StartDate;
-        var end = Period.EndDate;
+        // Same bounds as LoadCoreAsync — StartDate/EndDate are midnight and drop the end day.
+        var start = Period.Start;
+        var end = Period.End;
+        if (end < start)
+        {
+            end = start;
+        }
+
         var search = SearchBox.Text?.Trim();
         var documents = services.GetRequiredService<IPosDocumentService>();
         var all = new List<PosDocumentRow>();

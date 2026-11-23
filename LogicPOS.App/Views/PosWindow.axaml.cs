@@ -2764,6 +2764,30 @@ public partial class PosWindow : UserControl, IOfficeSurface
             return;
         }
 
+        // Ticket/Pedido notices and confirms: Escape dismisses (Não / Ok) and must not
+        // fall through to Quantidade or other pad actions behind the overlay.
+        if (TicketOverlay.IsVisible && _prompt is not TicketPrompt.None)
+        {
+            if (e.Key == Key.Escape)
+            {
+                e.Handled = true;
+                OnTicketDialogDismissClick(this, new RoutedEventArgs());
+                return;
+            }
+
+            // Tab/Space/Enter must stay inside the modal (Cycle + re-focus if focus escaped).
+            if (e.Key is Key.Tab or Key.Enter or Key.Space)
+            {
+                if (TicketOverlay.IsKeyboardFocusWithin == false)
+                {
+                    e.Handled = true;
+                    FocusTicketDefaultButton();
+                }
+            }
+
+            return;
+        }
+
         if (e.Key == Key.Escape
             && TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement() is not TextBox
             && TryCloseListingOverlay())
@@ -5443,7 +5467,60 @@ public partial class PosWindow : UserControl, IOfficeSurface
             : "avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png");
         TicketDialogActions.IsVisible = true;
         TicketOverlay.IsVisible = true;
+        // Block pointer and accidental activation of the POS pad under the modal.
+        Surface.IsHitTestVisible = false;
+        FloatingToolbarHost.IsHitTestVisible = false;
+
+        // Destructive Sim/Não: Não is default + cancel so Enter/Escape never confirm by mistake.
+        // Ok-only notices and Ok/Cancel keypads keep confirm as the default action.
+        var cancelIsSafeDefault = TicketDialogDefaults.PreferCancelAsDefault(showCancel, confirmText);
+        TicketDialogCancel.IsDefault = cancelIsSafeDefault;
+        TicketDialogCancel.IsCancel = showCancel;
+        TicketDialogConfirm.IsDefault = cancelIsSafeDefault == false;
+        TicketDialogConfirm.IsCancel = false;
+        // Match chrome to the safe choice: Não filled primary, Sim outlined secondary.
+        var cancelPrimary = TicketDialogDefaults.CancelUsesPrimaryStyle(showCancel, confirmText);
+        TicketDialogCancel.Classes.Set("action_secondary", cancelPrimary == false);
+        TicketDialogConfirm.Classes.Set("action_secondary", cancelPrimary);
+
         FitHostedOverlays();
+        Dispatcher.UIThread.Post(FocusTicketDefaultButton, DispatcherPriority.Input);
+    }
+
+    private void FocusTicketDefaultButton()
+    {
+        if (TicketOverlay.IsVisible == false)
+        {
+            return;
+        }
+
+        // NavigationMethod.Tab shows the focus adorner (:focus-visible) so the default is visible.
+        var target = TicketDialogCancel.IsDefault ? (IInputElement)TicketDialogCancel : TicketDialogConfirm;
+        target.Focus(NavigationMethod.Tab);
+    }
+
+    private void OnTicketOverlayKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (TicketOverlay.IsVisible == false)
+        {
+            return;
+        }
+
+        if (e.Key == Key.Escape)
+        {
+            e.Handled = true;
+            OnTicketDialogDismissClick(this, new RoutedEventArgs());
+            return;
+        }
+
+        if (e.Key is Key.Tab or Key.Enter or Key.Space)
+        {
+            if (TicketOverlay.IsKeyboardFocusWithin == false)
+            {
+                e.Handled = true;
+                FocusTicketDefaultButton();
+            }
+        }
     }
 
     private void BuildKeypad()
@@ -5812,6 +5889,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _pendingUserId = null;
         _pendingUserName = string.Empty;
         TicketOverlay.IsVisible = false;
+        Surface.IsHitTestVisible = true;
+        FloatingToolbarHost.IsHitTestVisible = true;
         TicketKeypad.IsVisible = false;
         SplitPeopleButtons.IsVisible = false;
         HidePinPad();
@@ -5838,6 +5917,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
         TicketBarcode.Watermark = null;
         TicketQuestionBody.IsVisible = true;
         TicketDialogCancelText.Text = "Não";
+        // Restore non-destructive chrome for the next open.
+        TicketDialogCancel.Classes.Set("action_secondary", true);
+        TicketDialogConfirm.Classes.Set("action_secondary", false);
         FitHostedOverlays();
     }
 

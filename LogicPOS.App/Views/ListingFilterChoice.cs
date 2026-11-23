@@ -18,7 +18,7 @@ public sealed class ListingFilterChoice
 {
     public Guid Id { get; init; }
 
-    public string Label { get; init; } = "Todos";
+    public string Label { get; set; } = DocumentsListingText.All();
 
     public string? Code { get; init; }
 
@@ -34,7 +34,7 @@ public static class ListingFilters
     public static Guid? CustomerId(AutoCompleteBox box)
     {
         var text = (box.Text ?? string.Empty).Trim();
-        if (text.Length == 0 || text.Equals("Todos", StringComparison.CurrentCultureIgnoreCase))
+        if (text.Length == 0 || IsAllLabel(text))
         {
             return null;
         }
@@ -76,7 +76,7 @@ public static class ListingFilters
         {
             var text = box.Text ?? string.Empty;
             var selected = (box.SelectedItem as ListingFilterChoice)?.Label;
-            if (string.IsNullOrEmpty(text) || text == "Todos" || text == selected)
+            if (string.IsNullOrEmpty(text) || IsAllLabel(text) || text == selected)
             {
                 box.GetVisualDescendants().OfType<TextBox>().FirstOrDefault()?.SelectAll();
             }
@@ -103,7 +103,7 @@ public static class ListingFilters
 
         // Text has to change first. Selecting the item alone leaves the previous
         // search text, and the box snaps back to that customer name.
-        var label = everyone?.Label ?? "Todos";
+        var label = everyone?.Label ?? DocumentsListingText.All();
         box.Text = label;
         if (everyone is not null && ReferenceEquals(box.SelectedItem, everyone) == false)
         {
@@ -117,6 +117,41 @@ public static class ListingFilters
         }
     }
 
+    /// <summary>
+    /// Selects the «Todos»/«All» type row, or a specific acronym when <paramref name="typeCode"/> is set.
+    /// Keeps the closed ComboBox caption filled (needs DisplayMemberBinding on the control).
+    /// </summary>
+    public static void SelectDocumentType(ComboBox box, string? typeCode)
+    {
+        if (box.ItemsSource is not System.Collections.IEnumerable items)
+        {
+            return;
+        }
+
+        ListingFilterChoice? everyone = null;
+        ListingFilterChoice? match = null;
+        foreach (var item in items)
+        {
+            if (item is not ListingFilterChoice choice)
+            {
+                continue;
+            }
+
+            if (choice.Id == Guid.Empty)
+            {
+                everyone = choice;
+            }
+
+            if (string.IsNullOrWhiteSpace(typeCode) == false
+                && string.Equals(choice.Code, typeCode, StringComparison.OrdinalIgnoreCase))
+            {
+                match = choice;
+            }
+        }
+
+        box.SelectedItem = match ?? everyone;
+    }
+
     public static bool MatchCustomer(string? search, object? item)
     {
         if (item is not ListingFilterChoice choice)
@@ -124,7 +159,7 @@ public static class ListingFilters
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(search) || string.Equals(search.Trim(), "Todos", StringComparison.CurrentCultureIgnoreCase))
+        if (string.IsNullOrWhiteSpace(search) || IsAllLabel(search))
         {
             return true;
         }
@@ -207,7 +242,7 @@ public static class ListingFilters
         {
             var text = box.Text ?? string.Empty;
             var selected = (box.SelectedItem as LookupOption)?.Label;
-            if (string.IsNullOrEmpty(text) || text == "Todos" || text == "(nenhum)" || text == selected)
+            if (string.IsNullOrEmpty(text) || IsAllLabel(text) || text == "(nenhum)" || text == selected)
             {
                 box.GetVisualDescendants().OfType<TextBox>().FirstOrDefault()?.SelectAll();
             }
@@ -501,7 +536,7 @@ public static class ListingFilters
 
         var text = (box.Text ?? string.Empty).Trim();
         if (text.Length == 0
-            || text.Equals("Todos", StringComparison.CurrentCultureIgnoreCase)
+            || IsAllLabel(text)
             || text.Equals("(nenhum)", StringComparison.CurrentCultureIgnoreCase))
         {
             return null;
@@ -640,5 +675,20 @@ public static class ListingFilters
         }
 
         return count;
+    }
+
+    /// <summary>«Todos» / «All» (and known UI-culture variants) mean no filter.</summary>
+    private static bool IsAllLabel(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        var value = text.Trim();
+        return value.Equals("Todos", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("All", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("Tous", StringComparison.OrdinalIgnoreCase)
+            || value.Equals(DocumentsListingText.All(), StringComparison.OrdinalIgnoreCase);
     }
 }
