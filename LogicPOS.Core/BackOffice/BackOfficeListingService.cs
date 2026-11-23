@@ -2729,8 +2729,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             });
         }
 
-        Add(new Guid("a1b2c3d4-e5f6-4789-a012-3456789ab901"), tokens[0], "Regime de isenção (art.º 53.º)", 112);
-        Add(new Guid("b2c3d4e5-f6a7-4890-b123-456789abcdef"), tokens[1], "Vendedor ambulante", 113);
+        // Guids must not collide with seeded PreferenceParameters.Id (e.g. SYSTEM_CURRENCY_OID).
+        Add(new Guid("c3d4e5f6-a7b8-4901-c234-56789abcde01"), tokens[0], "Regime de isenção (art.º 53.º)", 112);
+        Add(new Guid("d4e5f6a7-b8c9-4012-d345-6789abcdef12"), tokens[1], "Vendedor ambulante", 113);
         await database.SaveChangesAsync(cancellationToken);
     }
 
