@@ -91,8 +91,8 @@ public partial class DocumentsListing : UserControl
         }
 
         SetFilterLabel(0, Pref("global_customer", "Cliente"));
-        // Keep the pre-r3 caption (not part of the Carlos review).
-        SetFilterLabel(1, "Tipo");
+        SetFilterLabel(1, DocumentsListingText.Type());
+        RefreshEveryoneLabels();
 
         foreach (var button in MobileBar.Children.OfType<Button>())
         {
@@ -185,6 +185,41 @@ public partial class DocumentsListing : UserControl
         if (fields[index].Children.OfType<Avalonia.Controls.TextBlock>().FirstOrDefault() is { } label)
         {
             label.Text = text;
+        }
+    }
+
+    /// <summary>Keep the empty «Todos»/«All» filter option in the active UI culture.</summary>
+    private void RefreshEveryoneLabels()
+    {
+        var all = DocumentsListingText.All();
+        if (CustomerBox.ItemsSource is System.Collections.IEnumerable customers)
+        {
+            foreach (var item in customers)
+            {
+                if (item is ListingFilterChoice { Id: var id } choice && id == Guid.Empty)
+                {
+                    choice.Label = all;
+                }
+            }
+        }
+
+        if (TypeBox.ItemsSource is System.Collections.IEnumerable types)
+        {
+            foreach (var item in types)
+            {
+                if (item is ListingFilterChoice { Id: var id } choice && id == Guid.Empty)
+                {
+                    choice.Label = all;
+                }
+            }
+
+            TypeBox.ItemsSource = null;
+            TypeBox.ItemsSource = types;
+        }
+
+        if (CustomerBox.SelectedItem is ListingFilterChoice { Id: var selected } && selected == Guid.Empty)
+        {
+            ListingFilters.SelectEveryone(CustomerBox);
         }
     }
 
@@ -1691,9 +1726,11 @@ public partial class DocumentsListing : UserControl
             var columns = ChoosableColumns().Where(column => column.IsVisible).ToList();
             var headers = columns.Select(column => column.Header?.ToString() ?? string.Empty).ToList();
             var keys = columns.Select(ColumnExportKey).ToList();
-            var source = await AllMatchingAsync();
+            // Prefer the checkbox/grid selection; otherwise every row matching the same
+            // period/filters as the grid (Period.Start/End — not StartDate/EndDate midnight).
+            var source = DocumentsListingExport.ResolveRows(ChosenRows(), await AllMatchingAsync());
             var rows = source
-                .Select(row => (IReadOnlyList<string>)keys.Select(key => DocumentsListingExport.Cell(row, key)).ToList())
+                .Select(row => (IReadOnlyList<string>)DocumentsListingExport.BuildRow(row, keys))
                 .ToList();
             await ListingFileExport.SaveAsync(TopLevel.GetTopLevel(this), "Documentos", excel, headers, rows);
         }
@@ -1721,8 +1758,14 @@ public partial class DocumentsListing : UserControl
             return _rows.ToList();
         }
 
-        var start = Period.StartDate;
-        var end = Period.EndDate;
+        // Same bounds as LoadCoreAsync — StartDate/EndDate are midnight and drop the end day.
+        var start = Period.Start;
+        var end = Period.End;
+        if (end < start)
+        {
+            end = start;
+        }
+
         var search = SearchBox.Text?.Trim();
         var documents = services.GetRequiredService<IPosDocumentService>();
         var all = new List<PosDocumentRow>();
