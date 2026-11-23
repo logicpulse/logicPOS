@@ -5,23 +5,24 @@ namespace LogicPOS.Persistence.DataFixes;
 
 /// <summary>
 /// Conditional SQL for FixSeedTexts2035R2 (SQLite / MySQL / SQL Server / PostgreSQL).
-/// Each UPDATE matches the exact previous seed value so customer edits are left untouched.
+/// Text UPDATEs match seed Id/Code and the exact previous value (binary / case-sensitive).
+/// Also soft-deletes orphan duplicate Final Consumer rows (non-text cleanup; not reversed on Down).
 /// </summary>
 public static class FixSeedTexts2035R2Statements
 {
     public const string OldSdrArticleDesignation = "Valor de Depósitivo Volta";
     public const string NewSdrArticleDesignation = "Depósito";
+    public const string SdrArticleCode = "SDRVDEP";
 
     public const string OldArticleClassDesignation = "Imposto (excepto IVA e IS) ou Encargo Parafiscal";
     public const string NewArticleClassDesignation = "Imposto (exceto IVA e IS) ou Encargo Parafiscal";
+    public static readonly Guid ArticleClassImpostoId = Guid.Parse("82c158f9-9c30-468f-9d15-8bde112998f4");
 
     public const string OldMailSubject = "Envio de documentos electrónicos";
     public const string NewMailSubject = "Envio de documentos eletrónicos";
 
     public const string OldMailBody = "Estimado/a cliente, \n\nVimos por este meio enviar em anexo o(s) vosso(s) documento(s) electrónico(s).\n\n${DOCUMENT_LIST}\n\nPara qualquer dúvida ou esclarecimento adicionais por favor não hesite em contactar-nos através do nr ${COMPANY_TELEPHONE}, todos os dias úteis das 09:00 às 18:00, ou via e-mail para ${COMPANY_EMAIL}.\n\nNo caso de liquidação de faturas, agradecemos envio de comprovativo com indicação Nome / Nr Cliente ou Nr Factura(s) após pagamento para o endereço email ${COMPANY_EMAIL}.\n\nCom os nossos melhores cumprimentos, \nDepartamento Facturação / Cobranças \n\n${COMPANY_NAME}, ${COMPANY_BUSINESS_NAME}\n${COMPANY_WEBSITE}\n${COMPANY_EMAIL}\n\nTel. ${COMPANY_TELEPHONE}\n${COMPANY_ADDRESS}\n${COMPANY_POSTALCODE} ${COMPANY_CITY}\n${COMPANY_COUNTRY}";
     public const string NewMailBody = "Estimado/a cliente, \n\nVimos por este meio enviar em anexo o(s) vosso(s) documento(s) eletrónico(s).\n\n${DOCUMENT_LIST}\n\nPara qualquer dúvida ou esclarecimento adicionais por favor não hesite em contactar-nos através do nr ${COMPANY_TELEPHONE}, todos os dias úteis das 09:00 às 18:00, ou via e-mail para ${COMPANY_EMAIL}.\n\nNo caso de liquidação de faturas, agradecemos envio de comprovativo com indicação Nome / Nr Cliente ou N.º Fatura(s) após pagamento para o endereço email ${COMPANY_EMAIL}.\n\nCom os nossos melhores cumprimentos, \nDepartamento Faturação / Cobranças \n\n${COMPANY_NAME}, ${COMPANY_BUSINESS_NAME}\n${COMPANY_WEBSITE}\n${COMPANY_EMAIL}\n\nTel. ${COMPANY_TELEPHONE}\n${COMPANY_ADDRESS}\n${COMPANY_POSTALCODE} ${COMPANY_CITY}\n${COMPANY_COUNTRY}";
-
-    public static readonly Guid InternoSupplierId = Guid.Parse("00000000-0000-0000-0000-000000000002");
 
     public static readonly Guid FinalConsumerId = Guid.Parse("0cf40622-578b-417d-b50f-e945fefb5d68");
 
@@ -53,11 +54,13 @@ public static class FixSeedTexts2035R2Statements
 
     private static IEnumerable<string> Build(SqlDialect dialect)
     {
-        yield return UpdateExact(dialect, "Articles", "Designation", OldSdrArticleDesignation, NewSdrArticleDesignation);
-        yield return UpdateExact(dialect, "ArticleClasses", "Designation", OldArticleClassDesignation, NewArticleClassDesignation);
+        yield return UpdateArticleDesignationByCode(
+            dialect, SdrArticleCode, OldSdrArticleDesignation, NewSdrArticleDesignation);
+        yield return UpdateDesignationById(
+            dialect, "ArticleClasses", ArticleClassImpostoId,
+            OldArticleClassDesignation, NewArticleClassDesignation);
         yield return UpdateTokenValue(dialect, "SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT", OldMailSubject, NewMailSubject);
         yield return UpdateTokenValue(dialect, "SEND_MAIL_FINANCE_DOCUMENTS_BODY", OldMailBody, NewMailBody);
-        yield return UndeleteInternoSupplier(dialect);
         yield return SoftDeleteDuplicateFinalConsumersWithoutDocuments(dialect);
         yield return UpdateDesignationById(
             dialect, "PaymentConditions", PaymentConditionLpdId,
@@ -67,25 +70,16 @@ public static class FixSeedTexts2035R2Statements
             OldDocumentTypeTrvDesignation, NewDocumentTypeTrvDesignation);
     }
 
-    private static string UndeleteInternoSupplier(SqlDialect dialect)
-    {
-        var table = Quote(dialect, "Customers");
-        var idCol = Quote(dialect, "Id");
-        var deletedCol = Quote(dialect, "IsDeleted");
-        var supplierCol = Quote(dialect, "Supplier");
-        var idLiteral = GuidLiteral(dialect, InternoSupplierId);
-        var (falseLiteral, trueLiteral) = BoolLiterals(dialect);
-        return $"UPDATE {table} SET {deletedCol} = {falseLiteral} WHERE {idCol} = {idLiteral} AND {deletedCol} = {trueLiteral} AND {supplierCol} = {trueLiteral};";
-    }
-
     /// <summary>
-    /// Safe cleanup: soft-delete extra «Consumidor Final» rows that have no documents.
-    /// Keeps the well-known seed Id; never deletes a customer referenced by Documents.
+    /// Soft-delete extra «Consumidor Final» rows that have no documents and no stock movements.
+    /// Keeps the well-known seed Id; Name match uses the keep-row ciphertext with binary comparison.
+    /// Derived-table form avoids MySQL error 1093 (same-table subquery in UPDATE).
     /// </summary>
     private static string SoftDeleteDuplicateFinalConsumersWithoutDocuments(SqlDialect dialect)
     {
         var customers = Quote(dialect, "Customers");
         var documents = Quote(dialect, "Documents");
+        var stockMovements = Quote(dialect, "StockMovements");
         var idCol = Quote(dialect, "Id");
         var nameCol = Quote(dialect, "Name");
         var deletedCol = Quote(dialect, "IsDeleted");
@@ -99,17 +93,30 @@ public static class FixSeedTexts2035R2Statements
             SqlDialect.PostgreSql => "NOW() AT TIME ZONE 'UTC'",
             _ => "CURRENT_TIMESTAMP"
         };
-        // Customer.Name is stored encrypted (deterministic). Match duplicates by the well-known
-        // row's ciphertext, not the plaintext «Consumidor Final».
-        // Subquery form avoids SQLite UPDATE/NOT EXISTS quirks on the target table.
-        return $"UPDATE {customers} SET {deletedCol} = {trueLiteral}, {deletedAtCol} = {deletedAt} "
-            + $"WHERE {idCol} IN ("
-            + $"SELECT c.{idCol} FROM {customers} c "
+
+        // PK lookup — no LIMIT (invalid on SQL Server; unnecessary for a single Id).
+        var keepNameSubquery = $"(SELECT k.{nameCol} FROM {customers} k WHERE k.{idCol} = {keepId})";
+        var nameMatch = dialect switch
+        {
+            SqlDialect.MySql =>
+                $"c.{nameCol} = {keepNameSubquery} COLLATE utf8mb4_bin",
+            SqlDialect.SqlServer =>
+                $"c.{nameCol} = {keepNameSubquery} COLLATE Latin1_General_100_BIN2",
+            _ =>
+                $"c.{nameCol} = {keepNameSubquery}"
+        };
+
+        var innerSelect =
+            $"SELECT c.{idCol} FROM {customers} c "
             + $"WHERE c.{deletedCol} = {falseLiteral} "
             + $"AND c.{idCol} <> {keepId} "
-            + $"AND c.{nameCol} = (SELECT k.{nameCol} FROM {customers} k WHERE k.{idCol} = {keepId} LIMIT 1) "
-            + $"AND NOT EXISTS (SELECT 1 FROM {documents} d WHERE d.{customerIdCol} = c.{idCol})"
-            + $");";
+            + $"AND {nameMatch} "
+            + $"AND NOT EXISTS (SELECT 1 FROM {documents} d WHERE d.{customerIdCol} = c.{idCol}) "
+            + $"AND NOT EXISTS (SELECT 1 FROM {stockMovements} s WHERE s.{customerIdCol} = c.{idCol})";
+
+        // Derived table required for MySQL 8 (error 1093); harmless on the other providers.
+        return $"UPDATE {customers} SET {deletedCol} = {trueLiteral}, {deletedAtCol} = {deletedAt} "
+            + $"WHERE {idCol} IN (SELECT {idCol} FROM ({innerSelect}) AS DuplicateFinalConsumers);";
     }
 
     private static (string FalseLiteral, string TrueLiteral) BoolLiterals(SqlDialect dialect) =>
@@ -133,11 +140,16 @@ public static class FixSeedTexts2035R2Statements
         return $"UPDATE {table} SET {valueColumn} = {Literal(dialect, newValue)} WHERE {tokenColumn} = {Literal(dialect, token)} AND {valueColumn} = {Literal(dialect, oldValue)};";
     }
 
-    private static string UpdateExact(SqlDialect dialect, string table, string column, string oldValue, string newValue)
+    private static string UpdateArticleDesignationByCode(
+        SqlDialect dialect, string code, string oldValue, string newValue)
     {
-        var quotedTable = Quote(dialect, table);
-        var quotedColumn = Quote(dialect, column);
-        return $"UPDATE {quotedTable} SET {quotedColumn} = {Literal(dialect, newValue)} WHERE {quotedColumn} = {Literal(dialect, oldValue)};";
+        var quotedTable = Quote(dialect, "Articles");
+        var designation = Quote(dialect, "Designation");
+        var codeColumn = Quote(dialect, "Code");
+        var oldLiteral = BinaryStringLiteral(dialect, oldValue);
+        var newLiteral = Literal(dialect, newValue);
+        var codeLiteral = BinaryStringLiteral(dialect, code);
+        return $"UPDATE {quotedTable} SET {designation} = {newLiteral} WHERE {codeColumn} = {codeLiteral} AND {designation} = {oldLiteral};";
     }
 
     private static string UpdateDesignationById(

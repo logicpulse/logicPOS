@@ -92,12 +92,12 @@ public sealed class DemoSeedTextTests
     [InlineData("pt")]
     [InlineData("ao")]
     [InlineData("mz")]
-    public void Customers_Interno_Supplier_IsNotDeleted(string culture)
+    public void Customers_Interno_Supplier_RemainsSoftDeletedLikeDev(string culture)
     {
         var items = ReadArray(Path.Combine(culture, "customers.json"));
         var interno = items.Single(item => item.GetProperty("Name").GetString() == "Interno");
         Assert.True(interno.GetProperty("Supplier").GetBoolean());
-        Assert.False(interno.GetProperty("IsDeleted").GetBoolean());
+        Assert.True(interno.GetProperty("IsDeleted").GetBoolean());
     }
 
     [Theory]

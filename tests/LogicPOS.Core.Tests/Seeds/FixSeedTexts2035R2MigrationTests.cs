@@ -13,7 +13,7 @@ namespace LogicPOS.Core.Tests.Seeds;
 public sealed class FixSeedTexts2035R2MigrationTests
 {
     [Fact]
-    public async Task R2_statements_fix_texts_undelete_interno_and_soft_delete_orphan_final_consumer()
+    public async Task R2_statements_fix_texts_and_soft_delete_orphan_final_consumer()
     {
         var root = Directory.CreateTempSubdirectory("logicpos-fix-seed-r2-");
         try
@@ -23,13 +23,11 @@ public sealed class FixSeedTexts2035R2MigrationTests
             await using var scope = services.CreateAsyncScope();
             var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
 
-            var sdr = await database.Articles.FirstOrDefaultAsync(item => item.Code == SdrConstants.SdrArticleCode)
-                ?? await database.Articles.Where(item => item.IsDeleted == false).OrderBy(item => item.Code).FirstAsync();
+            var sdr = await database.Articles.SingleAsync(item => item.Code == SdrConstants.SdrArticleCode);
             sdr.Designation = FixSeedTexts2035R2Statements.OldSdrArticleDesignation;
 
             var articleClass = await database.ArticleClasses.SingleAsync(item =>
-                item.Designation == FixSeedTexts2035R2Statements.NewArticleClassDesignation
-                || item.Designation == FixSeedTexts2035R2Statements.OldArticleClassDesignation);
+                item.Id == FixSeedTexts2035R2Statements.ArticleClassImpostoId);
             articleClass.Designation = FixSeedTexts2035R2Statements.OldArticleClassDesignation;
 
             var mailSubject = await database.PreferenceParameters.SingleAsync(item =>
@@ -40,11 +38,6 @@ public sealed class FixSeedTexts2035R2MigrationTests
                 item.Token == "SEND_MAIL_FINANCE_DOCUMENTS_BODY");
             mailBody.Value = FixSeedTexts2035R2Statements.OldMailBody;
 
-            var interno = await database.Customers.SingleAsync(item =>
-                item.Id == FixSeedTexts2035R2Statements.InternoSupplierId);
-            interno.IsDeleted = true;
-            interno.Supplier = true;
-
             var seedConsumer = await database.Customers.SingleAsync(item =>
                 item.Id == CustomerWellKnownIds.FinalConsumer);
             var orphanDuplicate = CloneCustomer(seedConsumer, Guid.Parse("11111111-2222-3333-4444-555555555555"), code: "11");
@@ -52,21 +45,17 @@ public sealed class FixSeedTexts2035R2MigrationTests
             await database.SaveChangesAsync();
 
             var softDeleteSql = FixSeedTexts2035R2Statements.ForSqlite()
-                .Single(sql => sql.Contains("SELECT k.", StringComparison.Ordinal));
+                .Single(sql => sql.Contains("DuplicateFinalConsumers", StringComparison.Ordinal));
             Assert.Contains("NOT EXISTS (SELECT 1 FROM Documents", softDeleteSql, StringComparison.Ordinal);
+            Assert.Contains("NOT EXISTS (SELECT 1 FROM StockMovements", softDeleteSql, StringComparison.Ordinal);
+            Assert.DoesNotContain("LIMIT 1", softDeleteSql, StringComparison.Ordinal);
 
-            foreach (var sql in FixSeedTexts2035R2Statements.ForSqlite())
-            {
-                // ExecuteSqlRaw treats {…} as format holes; mail templates contain ${DOCUMENT_LIST} etc.
-                var escaped = sql.Replace("{", "{{", StringComparison.Ordinal).Replace("}", "}}", StringComparison.Ordinal);
-                await database.Database.ExecuteSqlRawAsync(escaped);
-            }
+            await ApplyR2SqliteAsync(database);
 
             await database.Entry(sdr).ReloadAsync();
             await database.Entry(articleClass).ReloadAsync();
             await database.Entry(mailSubject).ReloadAsync();
             await database.Entry(mailBody).ReloadAsync();
-            await database.Entry(interno).ReloadAsync();
             await database.Entry(orphanDuplicate).ReloadAsync();
             await database.Entry(seedConsumer).ReloadAsync();
 
@@ -74,7 +63,6 @@ public sealed class FixSeedTexts2035R2MigrationTests
             Assert.Equal(FixSeedTexts2035R2Statements.NewArticleClassDesignation, articleClass.Designation);
             Assert.Equal(FixSeedTexts2035R2Statements.NewMailSubject, mailSubject.Value);
             Assert.Equal(FixSeedTexts2035R2Statements.NewMailBody, mailBody.Value);
-            Assert.False(interno.IsDeleted);
             Assert.True(orphanDuplicate.IsDeleted);
             Assert.False(seedConsumer.IsDeleted);
             Assert.Equal(
@@ -215,13 +203,22 @@ public sealed class FixSeedTexts2035R2MigrationTests
         var sqlServer = FixSeedTexts2035R2Statements.ForSqlServer().ToList();
         var postgresql = FixSeedTexts2035R2Statements.ForPostgreSql().ToList();
 
-        Assert.Equal(8, sqlite.Count);
+        Assert.Equal(7, sqlite.Count);
         Assert.Equal(sqlite.Count, mysql.Count);
         Assert.Equal(sqlite.Count, sqlServer.Count);
         Assert.Equal(sqlite.Count, postgresql.Count);
-        Assert.Contains(sqlite, sql => sql.Contains("Depósito", StringComparison.Ordinal));
-        Assert.Contains(sqlite, sql => sql.Contains("exceto", StringComparison.Ordinal));
-        Assert.Contains(sqlite, sql => sql.Contains("SELECT k.", StringComparison.Ordinal));
+        Assert.Contains(sqlite, sql => sql.Contains("Depósito", StringComparison.Ordinal)
+            && sql.Contains("SDRVDEP", StringComparison.Ordinal));
+        Assert.Contains(sqlite, sql => sql.Contains("exceto", StringComparison.Ordinal)
+            && sql.Contains("82C158F9-9C30-468F-9D15-8BDE112998F4", StringComparison.Ordinal));
+        Assert.Contains(sqlite, sql => sql.Contains("DuplicateFinalConsumers", StringComparison.Ordinal)
+            && !sql.Contains("LIMIT 1", StringComparison.Ordinal));
+        Assert.Contains(mysql, sql => sql.Contains("DuplicateFinalConsumers", StringComparison.Ordinal)
+            && sql.Contains("COLLATE utf8mb4_bin", StringComparison.Ordinal)
+            && sql.Contains("StockMovements", StringComparison.Ordinal));
+        Assert.Contains(sqlServer, sql => sql.Contains("DuplicateFinalConsumers", StringComparison.Ordinal)
+            && sql.Contains("COLLATE Latin1_General_100_BIN2", StringComparison.Ordinal)
+            && !sql.Contains("LIMIT 1", StringComparison.Ordinal));
         Assert.Contains(sqlite, sql => sql.Contains("Letra para desconto", StringComparison.Ordinal)
             && sql.Contains("C07A5C41-37B2-4BF3-9469-5FAF1799A89F", StringComparison.Ordinal));
         Assert.Contains(mysql, sql => sql.Contains("COLLATE utf8mb4_bin", StringComparison.Ordinal)
@@ -230,6 +227,7 @@ public sealed class FixSeedTexts2035R2MigrationTests
             && sql.Contains("DocumentTypes", StringComparison.Ordinal));
         Assert.Contains(postgresql, sql => sql.Contains("::uuid", StringComparison.Ordinal)
             && sql.Contains("\"DocumentTypes\"", StringComparison.Ordinal));
+        Assert.DoesNotContain(sqlite, sql => sql.Contains("00000000-0000-0000-0000-000000000002", StringComparison.Ordinal));
     }
 
     private static async Task ApplyR2SqliteAsync(LogicPOSDbContext database)

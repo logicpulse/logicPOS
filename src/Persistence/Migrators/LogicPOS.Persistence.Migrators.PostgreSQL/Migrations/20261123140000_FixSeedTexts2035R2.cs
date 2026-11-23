@@ -1,4 +1,4 @@
-using LogicPOS.Persistence.DataFixes;
+﻿using LogicPOS.Persistence.DataFixes;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -20,8 +20,9 @@ public class FixSeedTexts2035R2 : Migration
     }
 
     /// <summary>
-    /// Data correction only: Down is intentionally empty so a rollback does not restore
-    /// incorrect Portuguese seed values on customer databases.
+    /// Text-fix migration: Down is intentionally empty so a rollback does not restore
+    /// incorrect Portuguese seed values. Up also soft-deletes orphan duplicate Final Consumer
+    /// rows (non-text); that cleanup is not reversed here.
     /// </summary>
     protected override void Down(MigrationBuilder migrationBuilder)
     {
