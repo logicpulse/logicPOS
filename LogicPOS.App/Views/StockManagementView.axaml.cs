@@ -1104,7 +1104,7 @@ public partial class StockManagementView : UserControl
         var locations = await service.GetLocationsAsync();
         if (suppliers.Count == 0)
         {
-            Notice.Text = "Não há fornecedores para o movimento.";
+            Notice.Text = "Não há fornecedores. Crie um cliente marcado como fornecedor em Clientes e volte a tentar.";
             return;
         }
 

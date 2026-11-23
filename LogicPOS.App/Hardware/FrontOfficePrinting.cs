@@ -80,7 +80,7 @@ internal static class FrontOfficePrinting
             var job = await source.GetInvoiceJobAsync(documentId);
             if (job is null)
             {
-                return (true, "Impressora térmica do terminal não configurada.");
+                return (true, "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.");
             }
 
             var count = Math.Max(1, copies);
@@ -150,7 +150,7 @@ internal static class FrontOfficePrinting
             var job = await source.GetInvoiceJobAsync(documentId);
             if (job is null)
             {
-                return (true, "Impressora térmica do terminal não configurada.");
+                return (true, "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.");
             }
 
             if (PosDocumentRules.IsCreditNote(job.Document.Type))
@@ -216,7 +216,7 @@ internal static class FrontOfficePrinting
         var printer = await source.GetTerminalPrinterAsync();
         if (printer is null)
         {
-            return null;
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         try
@@ -241,13 +241,13 @@ internal static class FrontOfficePrinting
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null)
         {
-            return null;
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         var printer = await source.GetTerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora térmica do terminal não configurada.";
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         try
@@ -348,7 +348,7 @@ internal static class FrontOfficePrinting
         var printer = await TerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora térmica do terminal não configurada.";
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         var width = Math.Max(16, printer.ColumnsNormal);
@@ -379,7 +379,7 @@ internal static class FrontOfficePrinting
         var printer = await TerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora térmica do terminal não configurada.";
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         return await SendAsync(printer, report.Title, RenderCashReport(report, printer.ColumnsNormal));

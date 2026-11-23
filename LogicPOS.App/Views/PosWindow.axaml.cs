@@ -795,8 +795,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Dividir", "icon_pos_ticketpad_split_payments.png", 0, 2, 1, "pos_pad_button_grey", RequestSplit);
             AddPadButton("Reembolso Volta", "icon_pos_ticketpad_payments.png", 1, 2, 1, "pos_pad_button_grey", ShowVoltaRefund);
             AddPadButton("Código de barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 2, 1, "pos_pad_button_grey", RequestBarcode);
-            AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 2, 1, "pos_pad_button_grey", RequestWeight);
-            AddPadButton("Desconto", "icon_pos_ticketpad_change_price.png", 4, 2, 1, "pos_pad_button_grey", RequestDiscount);
+            AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 2, 1, "pos_pad_button_grey", RequestWeight, forceCaption: true);
+            AddPadButton("Desconto", "icon_pos_ticketpad_decrease.png", 4, 2, 1, "pos_pad_button_grey", RequestDiscount, forceCaption: true);
         }
         else
         {
@@ -816,8 +816,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 2, 2, 1, "pos_pad_button_grey", RequestCard);
             AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 3, 2, 1, "pos_pad_button_green", ShowOrders);
             AddPadButton("Código de barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 3, 1, "pos_pad_button_grey", RequestBarcode);
-            AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 3, 1, "pos_pad_button_grey", RequestWeight, half: 0);
-            AddPadButton("Desconto", "icon_pos_ticketpad_change_price.png", 3, 3, 1, "pos_pad_button_grey", RequestDiscount, half: 1);
+            AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 3, 1, "pos_pad_button_grey", RequestWeight, half: 0, forceCaption: true);
+            AddPadButton("Desconto", "icon_pos_ticketpad_decrease.png", 3, 3, 1, "pos_pad_button_grey", RequestDiscount, half: 1, forceCaption: true);
         }
 
         ApplyFrontOfficeRules();
@@ -1998,10 +1998,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
         return button;
     }
 
-    private void AddPadButton(string text, string iconFile, int column, int row, int columnSpan, string styleClass, Action click, int? half = null)
+    private void AddPadButton(string text, string iconFile, int column, int row, int columnSpan, string styleClass, Action click, int? half = null, bool forceCaption = false)
     {
         var layout = _layout;
-        var iconOnly = layout.IsPortrait || half is not null;
+        var iconOnly = forceCaption == false && (layout.IsPortrait || half is not null);
         var button = new Button
         {
             Classes = { "pos_pad_button", styleClass },
@@ -2011,9 +2011,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 layout.TicketIconSize,
                 iconOnly)
         };
-        if (iconOnly)
+        ToolTip.SetTip(button, ListingLabelTips.Tooltip(text));
+        if (iconOnly || half is not null)
         {
-            ToolTip.SetTip(button, ListingLabelTips.Tooltip(text));
             button.Classes.Add("pos_pad_button_compact");
         }
 
@@ -4905,11 +4905,12 @@ public partial class PosWindow : UserControl, IOfficeSurface
         var totalText = _cashTotal.ToString("0.00", CultureInfo.CurrentCulture);
         if (action == "open-session")
         {
-            // GTK: amount field shows current total, read-only, description not required
+            // Opening float: start from current drawer total, editable so the user can set the initial value.
             SessionAmount.Text = totalText;
-            SessionAmount.IsReadOnly = true;
+            SessionAmount.IsReadOnly = false;
             SessionNote.Text = string.Empty;
-            SessionDescLabel.Text = "Descrição";
+            SessionDescLabel.Text = "Valor inicial";
+            SessionAmount.Focus();
         }
         else if (action == "close-session")
         {
@@ -4944,15 +4945,15 @@ public partial class PosWindow : UserControl, IOfficeSurface
             return;
         }
 
-        // Open allows zero, so we only need a selection
-        if (_sessionAction == "open-session")
-        {
-            SessionConfirm.IsEnabled = true;
-            return;
-        }
-
         // Parse the amount
         var hasAmount = MoneyFormat.TryParse(SessionAmount.Text, out var amount) && amount >= 0;
+
+        // Open allows zero, but the amount field must be filled.
+        if (_sessionAction == "open-session")
+        {
+            SessionConfirm.IsEnabled = hasAmount;
+            return;
+        }
 
         if (_sessionAction == "close-session")
         {
@@ -5946,7 +5947,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
         if (_amountDue is not null)
         {
             var ticketCount = _orderTicketCount + (_ticket.HasLines ? 1 : 0);
-            _amountDue.Text = $"{orderTotal + _ticket.Total:0.00} : #{ticketCount}";
+            var due = MoneyFormat.Format(orderTotal + _ticket.Total);
+            var pedidos = ticketCount == 1 ? "1 pedido" : $"{ticketCount} pedidos";
+            _amountDue.Text = $"{due} ({pedidos})";
         }
 
         selectedRow?.BringIntoView();

@@ -1020,15 +1020,22 @@ public partial class PaymentWindow : Window
 
     private void OnCashOkClick(object? sender, RoutedEventArgs e)
     {
-        if (MoneyFormat.TryParse(CashEntry.Text, out var value) && value > 0)
+        if (MoneyFormat.TryParse(CashEntry.Text, out var value) == false || value <= 0)
         {
-            _delivered = value;
-        }
-        else
-        {
-            _delivered = Payable;
+            CashEntry.Text = Payable.ToString("0.00", CultureInfo.CurrentCulture);
+            return;
         }
 
+        if (value + 0.0001m < Payable)
+        {
+            // Keep the pad open until the delivered amount covers the total (no negative change).
+            CashEntry.Text = Payable.ToString("0.00", CultureInfo.CurrentCulture);
+            _cashTyping = false;
+            _cashMoney = Payable;
+            return;
+        }
+
+        _delivered = value;
         CashOverlay.IsVisible = false;
         RefreshTotals();
     }

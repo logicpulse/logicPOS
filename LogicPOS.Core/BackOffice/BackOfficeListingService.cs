@@ -3222,7 +3222,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             CurrencyCode = "EUR",
             CurrencyAmount = due,
             ExchangeRate = 1,
-            Notes = document.Id.ToString()
+            Notes = string.Empty
         };
         database.Receipts.Add(receipt);
         database.Payments.Add(new Payment
@@ -3412,7 +3412,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingSaveResult.Fail("Recibo não encontrado.");
         }
 
-        if (Guid.TryParse(receipt.Notes, out var documentId))
+        var linkedIds = await database.Payments.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.ReceiptId == receipt.Id)
+            .Select(item => item.DocumentId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+        if (linkedIds.Count == 0 && Guid.TryParse(receipt.Notes, out var legacyDocumentId))
+        {
+            linkedIds.Add(legacyDocumentId);
+        }
+
+        foreach (var documentId in linkedIds)
         {
             var document = await database.Documents.FirstOrDefaultAsync(item => item.Id == documentId, cancellationToken);
             if (document is not null)

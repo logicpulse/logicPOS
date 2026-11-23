@@ -75,6 +75,7 @@ internal static class TouchFields
                 Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
             }
         };
+        ToolTip.SetTip(button, "Teclado virtual");
         button.Click += (_, _) => TouchKeyboard.Show(showKeyboard());
         if (box is TextBox text)
         {

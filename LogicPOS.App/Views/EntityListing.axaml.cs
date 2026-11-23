@@ -2435,6 +2435,7 @@ public partial class EntityListing : UserControl
                 Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
             }
         };
+        ToolTip.SetTip(button, "Teclado virtual");
         button.Click += (_, _) =>
         {
             box.Focus();

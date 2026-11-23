@@ -188,7 +188,7 @@ internal static class EntityEditorLayout
             [""] =
             [
                 Identity(2, "Designation", "Acronym", "Code", "Order"),
-                new("Configuração", "gear", 3, ["Token", "ResourceString", "Symbol", "ButtonIcon", "AllowPayback"]),
+                new("Configuração", "gear", 3, ["Symbol", "AllowPayback"]),
                 Notes
             ]
         },
