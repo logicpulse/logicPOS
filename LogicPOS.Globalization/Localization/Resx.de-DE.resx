@@ -2731,6 +2731,9 @@ Um fortzufahren, drücken Sie Ja, um alle Terminals zu schließen, oder drücken
   <data name="pos_button_label_payment_type_money" xml:space="preserve">
     <value>Geld</value>
   </data>
+  <data name="pos_button_label_payment_type_virtual_money" xml:space="preserve">
+    <value>Elektronisches Geld</value>
+  </data>
   <data name="pos_button_label_payment_type_visa" xml:space="preserve">
     <value>Visa</value>
   </data>

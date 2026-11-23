@@ -4593,7 +4593,7 @@
     "Token": "REPORT_LIST_STOCK_GAIN",
     "PermissionGroup": null,
     "PermissionGroupId": "4c047b35-8fe5-4a4b-ac6e-59c87e0f760a",
-    "Designation": "__designation[4040]__",
+    "Designation": "Relatório :: Stock por valorização de artigo",
     "Order": 4040,
     "Code": "4040",
     "Id": "3fb11872-bbd4-496e-bb3f-bba1e93edffc",

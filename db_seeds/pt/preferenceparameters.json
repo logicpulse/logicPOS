@@ -480,30 +480,6 @@
     "DeletedAt": "0001-01-01T00:00:00"
   },
   {
-    "Token": "COMPANY_COMMUNICATE_TRANSPORT_DOCUMENTS",
-    "Value": "False",
-    "ValueTip": null,
-    "Required": false,
-    "RegEx": "RegexBoolean",
-    "ResourceString": "prefparam_company_communicate_transport_documents",
-    "ResourceStringInfo": null,
-    "FormType": 1,
-    "FormPageNo": 1,
-    "InputType": 3,
-    "Order": 115,
-    "Code": "115",
-    "Id": "b4e8c2a1-7f3d-4e91-9c6a-2d8f5e0b1a43",
-    "Notes": null,
-    "CreatedAt": "2025-08-18T18:35:27.4311500+01:00",
-    "CreatedBy": "00000000-0000-0000-0000-000000000000",
-    "CreatedWhere": "00000000-0000-0000-0000-000000000000",
-    "UpdatedAt": "2025-08-18T18:35:27.4311500+01:00",
-    "UpdatedBy": "00000000-0000-0000-0000-000000000000",
-    "UpdatedWhere": "00000000-0000-0000-0000-000000000000",
-    "IsDeleted": false,
-    "DeletedAt": "0001-01-01T00:00:00"
-  },
-  {
     "Token": "COMPANY_WEBSITE",
     "Value": null,
     "ValueTip": null,
@@ -1250,7 +1226,7 @@
   },
   {
     "Token": "SEND_MAIL_SMTP_USERNAME",
-    "Value": "exemplo@empresa.pt",
+    "Value": "",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",
@@ -1346,7 +1322,7 @@
   },
   {
     "Token": "SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT",
-    "Value": "Envio de documentos electr\u00F3nicos",
+    "Value": "Envio de documentos eletr\u00F3nicos",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",
@@ -1370,7 +1346,7 @@
   },
   {
     "Token": "SEND_MAIL_FINANCE_DOCUMENTS_BODY",
-    "Value": "Estimado/a cliente, \n\nVimos por este meio enviar em anexo o(s) vosso(s) documento(s) electr\u00F3nico(s).\n\n${DOCUMENT_LIST}\n\nPara qualquer d\u00FAvida ou esclarecimento adicionais por favor n\u00E3o hesite em contactar-nos atrav\u00E9s do nr ${COMPANY_TELEPHONE}, todos os dias \u00FAteis das 09:00 \u00E0s 18:00, ou via e-mail para ${COMPANY_EMAIL}.\n\nNo caso de liquida\u00E7\u00E3o de faturas, agradecemos envio de comprovativo com indica\u00E7\u00E3o Nome / Nr Cliente ou Nr Factura(s) ap\u00F3s pagamento para o endere\u00E7o email ${COMPANY_EMAIL}.\n\nCom os nossos melhores cumprimentos, \nDepartamento Factura\u00E7\u00E3o / Cobran\u00E7as \n\n${COMPANY_NAME}, ${COMPANY_BUSINESS_NAME}\n${COMPANY_WEBSITE}\n${COMPANY_EMAIL}\n\nTel. ${COMPANY_TELEPHONE}\n${COMPANY_ADDRESS}\n${COMPANY_POSTALCODE} ${COMPANY_CITY}\n${COMPANY_COUNTRY}",
+    "Value": "Estimado/a cliente, \n\nVimos por este meio enviar em anexo o(s) vosso(s) documento(s) eletr\u00F3nico(s).\n\n${DOCUMENT_LIST}\n\nPara qualquer d\u00FAvida ou esclarecimento adicionais por favor n\u00E3o hesite em contactar-nos atrav\u00E9s do nr ${COMPANY_TELEPHONE}, todos os dias \u00FAteis das 09:00 \u00E0s 18:00, ou via e-mail para ${COMPANY_EMAIL}.\n\nNo caso de liquida\u00E7\u00E3o de faturas, agradecemos envio de comprovativo com indica\u00E7\u00E3o Nome / Nr Cliente ou N.\u00BA Fatura(s) ap\u00F3s pagamento para o endere\u00E7o email ${COMPANY_EMAIL}.\n\nCom os nossos melhores cumprimentos, \nDepartamento Fatura\u00E7\u00E3o / Cobran\u00E7as \n\n${COMPANY_NAME}, ${COMPANY_BUSINESS_NAME}\n${COMPANY_WEBSITE}\n${COMPANY_EMAIL}\n\nTel. ${COMPANY_TELEPHONE}\n${COMPANY_ADDRESS}\n${COMPANY_POSTALCODE} ${COMPANY_CITY}\n${COMPANY_COUNTRY}",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",

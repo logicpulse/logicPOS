@@ -841,6 +841,7 @@
         public const string POS_BUTTON_LABEL_PAYMENT_TYPE_CUSTOMER_CARD = "pos_button_label_payment_type_customer_card";
         public const string POS_BUTTON_LABEL_PAYMENT_TYPE_DEBIT_CARD = "pos_button_label_payment_type_debit_card";
         public const string POS_BUTTON_LABEL_PAYMENT_TYPE_MONEY = "pos_button_label_payment_type_money";
+        public const string POS_BUTTON_LABEL_PAYMENT_TYPE_VIRTUAL_MONEY = "pos_button_label_payment_type_virtual_money";
         public const string POS_BUTTON_LABEL_PAYMENT_TYPE_VISA = "pos_button_label_payment_type_visa";
         public const string POS_BUTTON_LABEL_PAYMENTS = "pos_button_label_payments";
         public const string POS_BUTTON_LABEL_PREV = "pos_button_label_prev";

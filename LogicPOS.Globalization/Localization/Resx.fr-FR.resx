@@ -2787,6 +2787,9 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
   <data name="pos_button_label_payment_type_money" xml:space="preserve">
     <value>Espèces</value>
   </data>
+  <data name="pos_button_label_payment_type_virtual_money" xml:space="preserve">
+    <value>Argent électronique</value>
+  </data>
   <data name="pos_button_label_payment_type_visa" xml:space="preserve">
     <value>Visa</value>
   </data>

@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.Core.Tests;
 
+[Collection(AppCompositionCollection.Name)]
 public sealed class ArticleSetupWizardTests
 {
     [Fact]
