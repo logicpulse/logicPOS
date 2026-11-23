@@ -304,13 +304,7 @@ public sealed class PublicEditionStartupTests
         }
         finally
         {
-            if (AppComposition.Services is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-
-            SqliteConnection.ClearAllPools();
-            root.Delete(recursive: true);
+            CleanupPublicEdition(root, null);
         }
     }
 
