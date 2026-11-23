@@ -39,6 +39,7 @@ public partial class DocumentsListing : UserControl
     private bool _updatingPick;
     private bool _syncingSelection;
     private bool _portrait;
+    private bool _loadFailed;
     private UiViewport _viewport;
     private Panel? _filtersHome;
     private ListingLoad _load = null!;
@@ -81,7 +82,8 @@ public partial class DocumentsListing : UserControl
         SetActionLabel(5, Pref("global_button_label_print_as", "Imprimir Como"));
         SetActionLabel(6, "AT");
         SetActionLabel(7, Pref("global_button_label_open_document", "Abrir"));
-        SetActionLabel(8, Pref("global_button_label_send_email_document", "Email"));
+        // Keep the pre-r3 caption (not part of the Carlos review).
+        SetActionLabel(8, "Email");
 
         if (PageTitleRow.Children.OfType<Avalonia.Controls.TextBlock>().FirstOrDefault() is { } pageTitle)
         {
@@ -89,7 +91,8 @@ public partial class DocumentsListing : UserControl
         }
 
         SetFilterLabel(0, Pref("global_customer", "Cliente"));
-        SetFilterLabel(1, Pref("global_documentfinance_type", "Tipo"));
+        // Keep the pre-r3 caption (not part of the Carlos review).
+        SetFilterLabel(1, "Tipo");
 
         foreach (var button in MobileBar.Children.OfType<Button>())
         {
@@ -128,11 +131,13 @@ public partial class DocumentsListing : UserControl
         SetColumnHeader(8, Pref("global_debit", "Valor em Dívida"));
         SetColumnHeader(9, Pref("window_title_dialog_document_finance_column_related_doc", "Documentos Associados"));
 
-        if (EmptyLabel.IsVisible || string.IsNullOrWhiteSpace(EmptyLabel.Text)
-            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("pt-PT")
-            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("en-US")
-            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("fr-FR")
-            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("es-ES"))
+        // Never replace a load error with the empty-period caption on culture change.
+        if (_loadFailed == false
+            && (string.IsNullOrWhiteSpace(EmptyLabel.Text)
+                || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("pt-PT")
+                || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("en-US")
+                || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("fr-FR")
+                || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("es-ES")))
         {
             EmptyLabel.Text = DocumentsListingText.EmptyPeriod();
         }
@@ -1620,6 +1625,7 @@ public partial class DocumentsListing : UserControl
             _totalPages = Math.Max(1, page.TotalPages);
             _loadedSearch = search ?? string.Empty;
             _picked.RemoveWhere(id => _rows.Exists(row => row.Id == id) == false);
+            _loadFailed = false;
             EmptyLabel.Text = DocumentsListingText.EmptyPeriod();
         }
         catch (Exception exception)
@@ -1632,6 +1638,7 @@ public partial class DocumentsListing : UserControl
             _rows.Clear();
             _picked.Clear();
             _totalPages = 1;
+            _loadFailed = true;
             EmptyLabel.Text = exception.Message;
         }
 
@@ -1660,11 +1667,12 @@ public partial class DocumentsListing : UserControl
         CardList.ItemsSource = items;
         PageLabel.Text = $"{_page} / {_totalPages}";
         EmptyLabel.IsVisible = _rows.Count == 0;
-        if (string.IsNullOrEmpty(EmptyLabel.Text)
-            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("pt-PT")
-            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("en-US")
-            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("fr-FR")
-            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("es-ES"))
+        if (_loadFailed == false
+            && (string.IsNullOrEmpty(EmptyLabel.Text)
+                || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("pt-PT")
+                || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("en-US")
+                || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("fr-FR")
+                || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("es-ES")))
         {
             EmptyLabel.Text = DocumentsListingText.EmptyPeriod();
         }
@@ -1682,14 +1690,27 @@ public partial class DocumentsListing : UserControl
         {
             var columns = ChoosableColumns().Where(column => column.IsVisible).ToList();
             var headers = columns.Select(column => column.Header?.ToString() ?? string.Empty).ToList();
+            var keys = columns.Select(ColumnExportKey).ToList();
             var source = await AllMatchingAsync();
-            var rows = source.Select(row => (IReadOnlyList<string>)headers.Select(header => DocumentCell(row, header)).ToList()).ToList();
+            var rows = source
+                .Select(row => (IReadOnlyList<string>)keys.Select(key => DocumentsListingExport.Cell(row, key)).ToList())
+                .ToList();
             await ListingFileExport.SaveAsync(TopLevel.GetTopLevel(this), "Documentos", excel, headers, rows);
         }
         finally
         {
             Busy.Hide();
         }
+    }
+
+    private static string ColumnExportKey(DataGridColumn column)
+    {
+        if (string.IsNullOrWhiteSpace(column.SortMemberPath) == false)
+        {
+            return column.SortMemberPath;
+        }
+
+        return column.Header?.ToString() ?? string.Empty;
     }
 
     private async Task<List<PosDocumentRow>> AllMatchingAsync()
@@ -1724,20 +1745,6 @@ public partial class DocumentsListing : UserControl
 
         return all;
     }
-
-    private static string DocumentCell(PosDocumentRow row, string header) => header switch
-    {
-        "Data do documento" => row.DocumentDateText,
-        "Número do Doc." => row.Number,
-        "Estado" => row.Status,
-        "Entidade" => row.EntityName,
-        "NIF" => row.TaxId,
-        "Total Final" => row.FinalTotalText,
-        "Valor Pago" => row.PaidAmountText,
-        "Valor em Dívida" => row.DebitAmountText,
-        "Documentos Associados" => row.AssociatedDocuments,
-        _ => string.Empty
-    };
 
     private int PageSize()
     {
