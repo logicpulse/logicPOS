@@ -154,19 +154,31 @@ public sealed class FixSeedTexts2035MigrationTests
     }
 
     [Fact]
-    public void MySql_and_SqlServer_statements_are_generated()
+    public void MySql_SqlServer_and_PostgreSql_statements_are_generated()
     {
         var mysql = FixSeedTexts2035Statements.ForMySql().ToList();
         var sqlServer = FixSeedTexts2035Statements.ForSqlServer().ToList();
+        var postgresql = FixSeedTexts2035Statements.ForPostgreSql().ToList();
         var sqlite = FixSeedTexts2035Statements.ForSqlite().ToList();
 
         Assert.NotEmpty(mysql);
         Assert.NotEmpty(sqlServer);
+        Assert.NotEmpty(postgresql);
+        Assert.Equal(259, sqlite.Count);
         Assert.Equal(sqlite.Count, mysql.Count);
         Assert.Equal(sqlite.Count, sqlServer.Count);
+        Assert.Equal(sqlite.Count, postgresql.Count);
         Assert.Contains(mysql, sql => sql.Contains("KeepTransport", StringComparison.Ordinal));
         Assert.Contains(sqlServer, sql => sql.Contains("RankedTransport", StringComparison.Ordinal));
         Assert.Contains(sqlite, sql => sql.Contains("rowid", StringComparison.Ordinal));
+        Assert.Contains(
+            postgresql,
+            sql => sql.Contains("ROW_NUMBER()", StringComparison.Ordinal)
+                   && sql.Contains("\"PreferenceParameters\"", StringComparison.Ordinal)
+                   && sql.Contains("COMPANY_COMMUNICATE_TRANSPORT_DOCUMENTS", StringComparison.Ordinal));
+        Assert.Contains(
+            postgresql,
+            sql => sql.Contains("UPDATE \"Articles\" SET \"Designation\"", StringComparison.Ordinal));
         Assert.True(FixSeedTexts2035Statements.ArticleDesignations.Length >= 200);
         Assert.True(FixSeedTexts2035Statements.ArticleSubfamilyDesignations.Length >= 8);
     }

@@ -275,11 +275,14 @@ public static class FixSeedTexts2035Statements
 
     public static IEnumerable<string> ForSqlServer() => Build(SqlDialect.SqlServer);
 
+    public static IEnumerable<string> ForPostgreSql() => Build(SqlDialect.PostgreSql);
+
     private enum SqlDialect
     {
         Sqlite,
         MySql,
-        SqlServer
+        SqlServer,
+        PostgreSql
     }
 
     private static IEnumerable<string> Build(SqlDialect dialect)
@@ -347,6 +350,18 @@ WHERE Token = 'COMPANY_COMMUNICATE_TRANSPORT_DOCUMENTS'
     ) AS KeepTransport
   );
 """,
+            SqlDialect.PostgreSql =>
+                """
+DELETE FROM "PreferenceParameters" AS pp
+USING (
+    SELECT "Id",
+           ROW_NUMBER() OVER (ORDER BY "CreatedAt" ASC, "Id" ASC) AS "RowNumber"
+    FROM "PreferenceParameters"
+    WHERE "Token" = 'COMPANY_COMMUNICATE_TRANSPORT_DOCUMENTS'
+) AS ranked
+WHERE pp."Id" = ranked."Id"
+  AND ranked."RowNumber" > 1;
+""",
             _ =>
                 """
 WITH RankedTransport AS (
@@ -363,18 +378,26 @@ WHERE Token = N'COMPANY_COMMUNICATE_TRANSPORT_DOCUMENTS'
 
     private static string UpdateTokenValue(SqlDialect dialect, string token, string oldValue, string newValue)
     {
+        var table = Quote(dialect, "PreferenceParameters");
+        var valueColumn = Quote(dialect, "Value");
+        var tokenColumn = Quote(dialect, "Token");
         var tokenLiteral = Literal(dialect, token);
         var oldLiteral = Literal(dialect, oldValue);
         var newLiteral = Literal(dialect, newValue);
-        return $"UPDATE PreferenceParameters SET Value = {newLiteral} WHERE Token = {tokenLiteral} AND Value = {oldLiteral};";
+        return $"UPDATE {table} SET {valueColumn} = {newLiteral} WHERE {tokenColumn} = {tokenLiteral} AND {valueColumn} = {oldLiteral};";
     }
 
     private static string UpdateExact(SqlDialect dialect, string table, string column, string oldValue, string newValue)
     {
+        var quotedTable = Quote(dialect, table);
+        var quotedColumn = Quote(dialect, column);
         var oldLiteral = Literal(dialect, oldValue);
         var newLiteral = Literal(dialect, newValue);
-        return $"UPDATE {table} SET {column} = {newLiteral} WHERE {column} = {oldLiteral};";
+        return $"UPDATE {quotedTable} SET {quotedColumn} = {newLiteral} WHERE {quotedColumn} = {oldLiteral};";
     }
+
+    private static string Quote(SqlDialect dialect, string identifier) =>
+        dialect == SqlDialect.PostgreSql ? $"\"{identifier}\"" : identifier;
 
     private static string Literal(SqlDialect dialect, string value)
     {
