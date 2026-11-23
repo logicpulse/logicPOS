@@ -27,6 +27,14 @@ public static class FixSeedTexts2035R2Statements
 
     public const string FinalConsumerName = "Consumidor Final";
 
+    public static readonly Guid PaymentConditionLpdId = Guid.Parse("c07a5c41-37b2-4bf3-9469-5faf1799a89f");
+    public const string OldPaymentConditionLpdDesignation = "Letra p/Desconto";
+    public const string NewPaymentConditionLpdDesignation = "Letra para desconto";
+
+    public static readonly Guid DocumentTypeTrvId = Guid.Parse("020f94b0-8006-4465-aad6-aa478df20f42");
+    public const string OldDocumentTypeTrvDesignation = "Talão Reembolso Volta";
+    public const string NewDocumentTypeTrvDesignation = "Talão de reembolso de depósito";
+
     public static IEnumerable<string> ForSqlite() => Build(SqlDialect.Sqlite);
 
     public static IEnumerable<string> ForMySql() => Build(SqlDialect.MySql);
@@ -51,6 +59,12 @@ public static class FixSeedTexts2035R2Statements
         yield return UpdateTokenValue(dialect, "SEND_MAIL_FINANCE_DOCUMENTS_BODY", OldMailBody, NewMailBody);
         yield return UndeleteInternoSupplier(dialect);
         yield return SoftDeleteDuplicateFinalConsumersWithoutDocuments(dialect);
+        yield return UpdateDesignationById(
+            dialect, "PaymentConditions", PaymentConditionLpdId,
+            OldPaymentConditionLpdDesignation, NewPaymentConditionLpdDesignation);
+        yield return UpdateDesignationById(
+            dialect, "DocumentTypes", DocumentTypeTrvId,
+            OldDocumentTypeTrvDesignation, NewDocumentTypeTrvDesignation);
     }
 
     private static string UndeleteInternoSupplier(SqlDialect dialect)
@@ -124,6 +138,30 @@ public static class FixSeedTexts2035R2Statements
         var quotedTable = Quote(dialect, table);
         var quotedColumn = Quote(dialect, column);
         return $"UPDATE {quotedTable} SET {quotedColumn} = {Literal(dialect, newValue)} WHERE {quotedColumn} = {Literal(dialect, oldValue)};";
+    }
+
+    private static string UpdateDesignationById(
+        SqlDialect dialect, string table, Guid id, string oldValue, string newValue)
+    {
+        var quotedTable = Quote(dialect, table);
+        var designation = Quote(dialect, "Designation");
+        var idColumn = Quote(dialect, "Id");
+        var idLiteral = GuidLiteral(dialect, id);
+        var oldLiteral = BinaryStringLiteral(dialect, oldValue);
+        var newLiteral = Literal(dialect, newValue);
+        return $"UPDATE {quotedTable} SET {designation} = {newLiteral} WHERE {idColumn} = {idLiteral} AND {designation} = {oldLiteral};";
+    }
+
+    private static string BinaryStringLiteral(SqlDialect dialect, string value)
+    {
+        var literal = Literal(dialect, value);
+        return dialect switch
+        {
+            SqlDialect.MySql => $"{literal} COLLATE utf8mb4_bin",
+            SqlDialect.SqlServer => $"{literal} COLLATE Latin1_General_100_BIN2",
+            // SQLite / PostgreSQL string equality is binary by default for these columns.
+            _ => literal
+        };
     }
 
     private static string Quote(SqlDialect dialect, string identifier) =>

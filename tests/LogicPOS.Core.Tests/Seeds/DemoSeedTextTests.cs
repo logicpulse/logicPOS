@@ -70,6 +70,24 @@ public sealed class DemoSeedTextTests
         Assert.Equal("Imposto (exceto IVA e IS) ou Encargo Parafiscal", imposto.GetProperty("Designation").GetString());
     }
 
+    [Fact]
+    public void PaymentConditions_Lpd_UsesExpandedDesignation()
+    {
+        var items = ReadArray("paymentconditions.json");
+        var lpd = items.Single(item => item.GetProperty("Acronym").GetString() == "LPD");
+        Assert.Equal("c07a5c41-37b2-4bf3-9469-5faf1799a89f", lpd.GetProperty("Id").GetString());
+        Assert.Equal("Letra para desconto", lpd.GetProperty("Designation").GetString());
+    }
+
+    [Fact]
+    public void DocumentTypes_Pt_Trv_UsesDepositRefundDesignation()
+    {
+        var items = ReadArray(Path.Combine("pt", "documenttypes.json"));
+        var trv = items.Single(item => item.GetProperty("Acronym").GetString() == "TRV");
+        Assert.Equal("020f94b0-8006-4465-aad6-aa478df20f42", trv.GetProperty("Id").GetString());
+        Assert.Equal("Talão de reembolso de depósito", trv.GetProperty("Designation").GetString());
+    }
+
     [Theory]
     [InlineData("pt")]
     [InlineData("ao")]

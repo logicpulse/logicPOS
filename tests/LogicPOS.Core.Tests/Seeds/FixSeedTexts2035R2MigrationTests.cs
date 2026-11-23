@@ -89,6 +89,125 @@ public sealed class FixSeedTexts2035R2MigrationTests
     }
 
     [Fact]
+    public async Task Old_database_updates_lpd_and_trv_designations()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-fix-seed-r2-old-lpd-");
+        try
+        {
+            ConfigureApp(root, module: "cafe");
+            await using var scope = AppComposition.Services!.CreateAsyncScope();
+            var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+
+            var lpd = await database.PaymentConditions.SingleAsync(item =>
+                item.Id == FixSeedTexts2035R2Statements.PaymentConditionLpdId);
+            var trv = await database.DocumentTypes.SingleAsync(item =>
+                item.Id == FixSeedTexts2035R2Statements.DocumentTypeTrvId);
+            lpd.Designation = FixSeedTexts2035R2Statements.OldPaymentConditionLpdDesignation;
+            trv.Designation = FixSeedTexts2035R2Statements.OldDocumentTypeTrvDesignation;
+            await database.SaveChangesAsync();
+
+            await ApplyR2SqliteAsync(database);
+
+            await database.Entry(lpd).ReloadAsync();
+            await database.Entry(trv).ReloadAsync();
+            Assert.Equal(FixSeedTexts2035R2Statements.NewPaymentConditionLpdDesignation, lpd.Designation);
+            Assert.Equal(FixSeedTexts2035R2Statements.NewDocumentTypeTrvDesignation, trv.Designation);
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task New_database_lpd_and_trv_statements_are_noop()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-fix-seed-r2-new-lpd-");
+        try
+        {
+            ConfigureApp(root, module: "cafe");
+            await using var scope = AppComposition.Services!.CreateAsyncScope();
+            var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+
+            var lpd = await database.PaymentConditions.SingleAsync(item =>
+                item.Id == FixSeedTexts2035R2Statements.PaymentConditionLpdId);
+            var trv = await database.DocumentTypes.SingleAsync(item =>
+                item.Id == FixSeedTexts2035R2Statements.DocumentTypeTrvId);
+            Assert.Equal(FixSeedTexts2035R2Statements.NewPaymentConditionLpdDesignation, lpd.Designation);
+            Assert.Equal(FixSeedTexts2035R2Statements.NewDocumentTypeTrvDesignation, trv.Designation);
+
+            await ApplyR2SqliteAsync(database);
+
+            await database.Entry(lpd).ReloadAsync();
+            await database.Entry(trv).ReloadAsync();
+            Assert.Equal(FixSeedTexts2035R2Statements.NewPaymentConditionLpdDesignation, lpd.Designation);
+            Assert.Equal(FixSeedTexts2035R2Statements.NewDocumentTypeTrvDesignation, trv.Designation);
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Customer_row_with_same_old_text_but_different_id_is_not_changed()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-fix-seed-r2-customer-lpd-");
+        try
+        {
+            ConfigureApp(root, module: "cafe");
+            await using var scope = AppComposition.Services!.CreateAsyncScope();
+            var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+
+            var seedLpd = await database.PaymentConditions.SingleAsync(item =>
+                item.Id == FixSeedTexts2035R2Statements.PaymentConditionLpdId);
+            seedLpd.Designation = FixSeedTexts2035R2Statements.OldPaymentConditionLpdDesignation;
+
+            var seedTrv = await database.DocumentTypes.SingleAsync(item =>
+                item.Id == FixSeedTexts2035R2Statements.DocumentTypeTrvId);
+            seedTrv.Designation = FixSeedTexts2035R2Statements.OldDocumentTypeTrvDesignation;
+
+            var customerPaymentId = Guid.Parse("FEEDFEED-1111-2222-3333-444444444444");
+            var customerDocumentTypeId = Guid.Parse("FEEDFEED-5555-6666-7777-888888888888");
+            database.PaymentConditions.Add(new PaymentCondition
+            {
+                Id = customerPaymentId,
+                Acronym = "CLP",
+                Code = "9991",
+                Order = 9991,
+                Designation = FixSeedTexts2035R2Statements.OldPaymentConditionLpdDesignation,
+                CreatedAt = DateTime.Now,
+                CreatedBy = Guid.Empty,
+                CreatedWhere = Guid.Empty,
+                UpdatedAt = DateTime.Now,
+                UpdatedBy = Guid.Empty,
+                UpdatedWhere = Guid.Empty,
+                IsDeleted = false,
+                DeletedAt = default
+            });
+            database.DocumentTypes.Add(CloneDocumentType(seedTrv, customerDocumentTypeId, "9992",
+                FixSeedTexts2035R2Statements.OldDocumentTypeTrvDesignation));
+            await database.SaveChangesAsync();
+
+            await ApplyR2SqliteAsync(database);
+
+            await database.Entry(seedLpd).ReloadAsync();
+            await database.Entry(seedTrv).ReloadAsync();
+            var customerPayment = await database.PaymentConditions.SingleAsync(item => item.Id == customerPaymentId);
+            var customerDocType = await database.DocumentTypes.SingleAsync(item => item.Id == customerDocumentTypeId);
+
+            Assert.Equal(FixSeedTexts2035R2Statements.NewPaymentConditionLpdDesignation, seedLpd.Designation);
+            Assert.Equal(FixSeedTexts2035R2Statements.NewDocumentTypeTrvDesignation, seedTrv.Designation);
+            Assert.Equal(FixSeedTexts2035R2Statements.OldPaymentConditionLpdDesignation, customerPayment.Designation);
+            Assert.Equal(FixSeedTexts2035R2Statements.OldDocumentTypeTrvDesignation, customerDocType.Designation);
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
     public void R2_provider_statements_are_generated()
     {
         var sqlite = FixSeedTexts2035R2Statements.ForSqlite().ToList();
@@ -96,15 +215,61 @@ public sealed class FixSeedTexts2035R2MigrationTests
         var sqlServer = FixSeedTexts2035R2Statements.ForSqlServer().ToList();
         var postgresql = FixSeedTexts2035R2Statements.ForPostgreSql().ToList();
 
-        Assert.Equal(6, sqlite.Count);
+        Assert.Equal(8, sqlite.Count);
         Assert.Equal(sqlite.Count, mysql.Count);
         Assert.Equal(sqlite.Count, sqlServer.Count);
         Assert.Equal(sqlite.Count, postgresql.Count);
         Assert.Contains(sqlite, sql => sql.Contains("Depósito", StringComparison.Ordinal));
         Assert.Contains(sqlite, sql => sql.Contains("exceto", StringComparison.Ordinal));
         Assert.Contains(sqlite, sql => sql.Contains("SELECT k.", StringComparison.Ordinal));
-        Assert.Contains(postgresql, sql => sql.Contains("::uuid", StringComparison.Ordinal));
+        Assert.Contains(sqlite, sql => sql.Contains("Letra para desconto", StringComparison.Ordinal)
+            && sql.Contains("C07A5C41-37B2-4BF3-9469-5FAF1799A89F", StringComparison.Ordinal));
+        Assert.Contains(mysql, sql => sql.Contains("COLLATE utf8mb4_bin", StringComparison.Ordinal)
+            && sql.Contains("PaymentConditions", StringComparison.Ordinal));
+        Assert.Contains(sqlServer, sql => sql.Contains("COLLATE Latin1_General_100_BIN2", StringComparison.Ordinal)
+            && sql.Contains("DocumentTypes", StringComparison.Ordinal));
+        Assert.Contains(postgresql, sql => sql.Contains("::uuid", StringComparison.Ordinal)
+            && sql.Contains("\"DocumentTypes\"", StringComparison.Ordinal));
     }
+
+    private static async Task ApplyR2SqliteAsync(LogicPOSDbContext database)
+    {
+        foreach (var sql in FixSeedTexts2035R2Statements.ForSqlite())
+        {
+            var escaped = sql.Replace("{", "{{", StringComparison.Ordinal).Replace("}", "}}", StringComparison.Ordinal);
+            await database.Database.ExecuteSqlRawAsync(escaped);
+        }
+    }
+
+    private static DocumentType CloneDocumentType(DocumentType source, Guid id, string code, string designation) =>
+        new()
+        {
+            Id = id,
+            Code = code,
+            Order = source.Order,
+            Designation = designation,
+            Acronym = source.Acronym + "X",
+            AcronymLastSerie = source.AcronymLastSerie,
+            Credit = source.Credit,
+            CreditDebit = source.CreditDebit,
+            PrintCopies = source.PrintCopies,
+            PrintRequestMotive = source.PrintRequestMotive,
+            PrintRequestConfirmation = source.PrintRequestConfirmation,
+            PrintOpenDrawer = source.PrintOpenDrawer,
+            WayBill = source.WayBill,
+            WsAtDocument = source.WsAtDocument,
+            SaftAuditFile = source.SaftAuditFile,
+            SaftDocumentType = source.SaftDocumentType,
+            StockMode = source.StockMode,
+            CreatedAt = source.CreatedAt.AddMinutes(1),
+            CreatedBy = source.CreatedBy,
+            CreatedWhere = source.CreatedWhere,
+            UpdatedAt = source.UpdatedAt.AddMinutes(1),
+            UpdatedBy = source.UpdatedBy,
+            UpdatedWhere = source.UpdatedWhere,
+            IsDeleted = false,
+            DeletedAt = source.DeletedAt
+        };
 
     private static Customer CloneCustomer(Customer source, Guid id, string code) =>
         new()
