@@ -767,7 +767,6 @@
     "IsDeleted": false,
     "DeletedAt": "0001-01-01T00:00:00"
   },
-
   {
     "Token": "CULTURE",
     "Value": "pt-PT",
@@ -1322,7 +1321,7 @@
   },
   {
     "Token": "SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT",
-    "Value": "Envio de documentos electr\u00F3nicos",
+    "Value": "Envio de documentos eletr\u00f3nicos",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",
@@ -1346,7 +1345,7 @@
   },
   {
     "Token": "SEND_MAIL_FINANCE_DOCUMENTS_BODY",
-    "Value": "Estimado/a cliente, \n\nVimos por este meio enviar em anexo o(s) vosso(s) documento(s) electr\u00F3nico(s).\n\n${DOCUMENT_LIST}\n\nPara qualquer d\u00FAvida ou esclarecimento adicionais por favor n\u00E3o hesite em contactar-nos atrav\u00E9s do nr ${COMPANY_TELEPHONE}, todos os dias \u00FAteis das 09:00 \u00E0s 18:00, ou via e-mail para ${COMPANY_EMAIL}.\n\nNo caso de liquida\u00E7\u00E3o de faturas, agradecemos envio de comprovativo com indica\u00E7\u00E3o Nome / Nr Cliente ou Nr Factura(s) ap\u00F3s pagamento para o endere\u00E7o email ${COMPANY_EMAIL}.\n\nCom os nossos melhores cumprimentos, \nDepartamento Factura\u00E7\u00E3o / Cobran\u00E7as \n\n${COMPANY_NAME}, ${COMPANY_BUSINESS_NAME}\n${COMPANY_WEBSITE}\n${COMPANY_EMAIL}\n\nTel. ${COMPANY_TELEPHONE}\n${COMPANY_ADDRESS}\n${COMPANY_POSTALCODE} ${COMPANY_CITY}\n${COMPANY_COUNTRY}",
+    "Value": "Estimado/a cliente, \n\nVimos por este meio enviar em anexo o(s) vosso(s) documento(s) eletr\u00f3nico(s).\n\n${DOCUMENT_LIST}\n\nPara qualquer d\u00favida ou esclarecimento adicionais por favor n\u00e3o hesite em contactar-nos atrav\u00e9s do nr ${COMPANY_TELEPHONE}, todos os dias \u00fateis das 09:00 \u00e0s 18:00, ou via e-mail para ${COMPANY_EMAIL}.\n\nNo caso de liquida\u00e7\u00e3o de faturas, agradecemos envio de comprovativo com indica\u00e7\u00e3o Nome / Nr Cliente ou N.\u00ba Fatura(s) ap\u00f3s pagamento para o endere\u00e7o email ${COMPANY_EMAIL}.\n\nCom os nossos melhores cumprimentos, \nDepartamento Fatura\u00e7\u00e3o / Cobran\u00e7as \n\n${COMPANY_NAME}, ${COMPANY_BUSINESS_NAME}\n${COMPANY_WEBSITE}\n${COMPANY_EMAIL}\n\nTel. ${COMPANY_TELEPHONE}\n${COMPANY_ADDRESS}\n${COMPANY_POSTALCODE} ${COMPANY_CITY}\n${COMPANY_COUNTRY}",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",

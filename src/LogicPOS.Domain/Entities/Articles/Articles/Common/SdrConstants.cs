@@ -4,7 +4,7 @@ public static class SdrConstants
 {
     public const string SdrArticleCode = "SDRVDEP";
     public const decimal SdrArticlePrice = 0.10M;
-    public const string SdrArticleDesignation = "Valor de Depósitivo Volta";
+    public const string SdrArticleDesignation = "Depósito";
 
     public const string SdrFamilyCode = "SDRV";
     public const string SdrFamilyDesignation = "SDR Volta";

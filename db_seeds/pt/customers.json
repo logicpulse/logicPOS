@@ -35,7 +35,7 @@
     "UpdatedAt": "2019-03-11T23:16:18",
     "UpdatedBy": "090c5684-52ba-4d7a-8bc3-a00320ef503d",
     "UpdatedWhere": "00000000-0000-0000-0000-000000000000",
-    "IsDeleted": true,
+    "IsDeleted": false,
     "DeletedAt": "0001-01-01T00:00:00"
   },
   {

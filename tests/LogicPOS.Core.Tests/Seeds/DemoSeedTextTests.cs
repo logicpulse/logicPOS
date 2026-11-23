@@ -1,9 +1,17 @@
 ﻿using System.Text.Json;
+using LogicPOS.Domain.Entities.Articles.Articles.Common;
 
 namespace LogicPOS.Core.Tests.Seeds;
 
 public sealed class DemoSeedTextTests
 {
+    [Fact]
+    public void SdrConstants_Deposit_Designation_IsDeposito()
+    {
+        Assert.Equal("Depósito", SdrConstants.SdrArticleDesignation);
+        Assert.Equal("SDRVDEP", SdrConstants.SdrArticleCode);
+    }
+
     [Fact]
     public void PermissionItems_StockGain_HasTranslatedDesignation()
     {
@@ -40,6 +48,50 @@ public sealed class DemoSeedTextTests
         var items = ReadArray(Path.Combine("pt", "preferenceparameters.json"));
         var matches = items.Where(item => item.GetProperty("Token").GetString() == "COMPANY_COMMUNICATE_TRANSPORT_DOCUMENTS").ToList();
         Assert.Single(matches);
+    }
+
+    [Fact]
+    public void PreferenceParameters_Pt_MailTemplates_UseEuropeanPortuguese()
+    {
+        var items = ReadArray(Path.Combine("pt", "preferenceparameters.json"));
+        Assert.Equal("Envio de documentos eletrónicos", ValueOf(items, "SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT"));
+        var body = ValueOf(items, "SEND_MAIL_FINANCE_DOCUMENTS_BODY");
+        Assert.Contains("eletrónico", body, StringComparison.Ordinal);
+        Assert.Contains("Faturação", body, StringComparison.Ordinal);
+        Assert.DoesNotContain("electrónico", body, StringComparison.Ordinal);
+        Assert.DoesNotContain("Facturação", body, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ArticleClasses_Imposto_UsesExcetoSpelling()
+    {
+        var items = ReadArray("articleclasses.json");
+        var imposto = items.Single(item => item.GetProperty("Acronym").GetString() == "I");
+        Assert.Equal("Imposto (exceto IVA e IS) ou Encargo Parafiscal", imposto.GetProperty("Designation").GetString());
+    }
+
+    [Theory]
+    [InlineData("pt")]
+    [InlineData("ao")]
+    [InlineData("mz")]
+    public void Customers_Interno_Supplier_IsNotDeleted(string culture)
+    {
+        var items = ReadArray(Path.Combine(culture, "customers.json"));
+        var interno = items.Single(item => item.GetProperty("Name").GetString() == "Interno");
+        Assert.True(interno.GetProperty("Supplier").GetBoolean());
+        Assert.False(interno.GetProperty("IsDeleted").GetBoolean());
+    }
+
+    [Theory]
+    [InlineData("pt")]
+    [InlineData("ao")]
+    [InlineData("mz")]
+    public void Customers_HasSingleFinalConsumer(string culture)
+    {
+        var items = ReadArray(Path.Combine(culture, "customers.json"));
+        var consumers = items.Where(item => item.GetProperty("Name").GetString() == "Consumidor Final").ToList();
+        Assert.Single(consumers);
+        Assert.Equal("0cf40622-578b-417d-b50f-e945fefb5d68", consumers[0].GetProperty("Id").GetString());
     }
 
     [Theory]
