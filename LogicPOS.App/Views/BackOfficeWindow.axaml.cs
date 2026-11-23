@@ -20,8 +20,6 @@ namespace LogicPOS.App.Views;
 
 public partial class BackOfficeWindow : UserControl, IOfficeSurface
 {
-    private const string ClockDateFormat = "dddd, dd' de 'MMMM' de 'yyyy";
-    private const string ClockTimeFormat = "HH:mm:ss tt";
     private const string IconRoot = "avares://LogicPOS.App/Assets/Images/BackOffice/";
 
     private readonly DispatcherTimer _clock = new() { Interval = TimeSpan.FromSeconds(1) };
@@ -400,8 +398,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private void UpdateClock()
     {
         var now = DateTime.Now;
-        ClockDateLabel.Text = now.ToString(ClockDateFormat);
-        ClockTimeLabel.Text = now.ToString(ClockTimeFormat);
+        ClockDateLabel.Text = UiDateTimeFormat.FormatLongDate(now);
+        ClockTimeLabel.Text = UiDateTimeFormat.FormatClockTime(now);
     }
 
     private async Task ReloadDashboardSafeAsync()
@@ -1552,6 +1550,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         _sectionButtons.Clear();
         BuildMenu();
         ApplySidebarTexts();
+        UpdateClock();
+        DocumentsHost.ApplyCulture();
     }
 
     private void MarkFlag(string culture)

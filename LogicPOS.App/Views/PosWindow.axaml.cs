@@ -23,8 +23,6 @@ namespace LogicPOS.App.Views;
 
 public partial class PosWindow : UserControl, IOfficeSurface
 {
-    private const string ClockDateFormat = "dddd, dd' de 'MMMM' de 'yyyy";
-    private const string ClockTimeFormat = "HH:mm:ss";
     private const string ClockIconPath = "avares://LogicPOS.App/Assets/Images/BackOffice/icon_clock_w.svg";
 
     private string _userName;
@@ -2255,10 +2253,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         var now = DateTime.Now;
-        // Use stored UI culture — Linux threads often keep en-US after splash bootstrap.
-        var culture = CultureInfo.GetCultureInfo(UiCulture.Read(null));
-        _clockDateLabel.Text = now.ToString(ClockDateFormat, culture);
-        _clockTimeLabel.Text = now.ToString(ClockTimeFormat, culture);
+        _clockDateLabel.Text = UiDateTimeFormat.FormatLongDate(now);
+        _clockTimeLabel.Text = UiDateTimeFormat.FormatClockTime(now);
     }
 
     public async Task ShowNewDocumentAsync(

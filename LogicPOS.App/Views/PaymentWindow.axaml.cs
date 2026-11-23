@@ -126,6 +126,7 @@ public partial class PaymentWindow : Window
                 Close(true);
             }
         };
+        KeyDown += OnWindowKeyDown;
         Opened += (_, _) => CoverOwner();
         Opened += async (_, _) => await LoadCustomerAsync();
         Opened += async (_, _) => await LoadCompanyMarksAsync();
@@ -829,6 +830,39 @@ public partial class PaymentWindow : Window
         }
 
         Close(false);
+    }
+
+    private void OnWindowKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape)
+        {
+            return;
+        }
+
+        if (NoticeOverlay.IsVisible == false)
+        {
+            return;
+        }
+
+        if (PaymentWindowCloseDecision.ShouldCloseNoticeOnEscape(_confirmPayment, _closingWithResult))
+        {
+            e.Handled = true;
+            NoticeOverlay.IsVisible = false;
+            _pendingSeriesDocumentType = null;
+            _pendingSeriesLines = null;
+            _pendingSeriesPartial = null;
+            _pendingSettledSale = true;
+            SetNoticeButtons(confirm: false);
+            _closingWithResult = true;
+            Close(true);
+            return;
+        }
+
+        if (PaymentWindowCloseDecision.ShouldIgnoreEscapeBeforeSuccess(_confirmPayment))
+        {
+            // Before issue / series prompt: Escape must not Close(false) or confirm.
+            e.Handled = true;
+        }
     }
 
     private void OnNoticeCloseClick(object? sender, RoutedEventArgs e)

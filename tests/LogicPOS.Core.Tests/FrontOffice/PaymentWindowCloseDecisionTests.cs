@@ -28,4 +28,23 @@ public sealed class PaymentWindowCloseDecisionTests
             expected,
             PaymentWindowCloseDecision.ShouldForceSuccessClose(confirmPayment, closingWithResult));
     }
+
+    [Theory]
+    [InlineData(true, false, true)]
+    [InlineData(true, true, false)]
+    [InlineData(false, false, false)]
+    public void Escape_closes_success_notice_with_true(bool confirmPayment, bool closingWithResult, bool expected)
+    {
+        Assert.Equal(
+            expected,
+            PaymentWindowCloseDecision.ShouldCloseNoticeOnEscape(confirmPayment, closingWithResult));
+    }
+
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    public void Escape_is_ignored_before_successful_issue(bool confirmPayment, bool expectedIgnore)
+    {
+        Assert.Equal(expectedIgnore, PaymentWindowCloseDecision.ShouldIgnoreEscapeBeforeSuccess(confirmPayment));
+    }
 }
