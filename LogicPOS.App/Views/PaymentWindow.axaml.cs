@@ -761,7 +761,7 @@ public partial class PaymentWindow : Window
         var message = $"Pagamento registado.{Environment.NewLine}Total: {MoneyFormat.Format(payable)}";
         if (printError is not null)
         {
-            message += $"{Environment.NewLine}{Environment.NewLine}Erro ao imprimir: {printError}";
+            message += $"{Environment.NewLine}{Environment.NewLine}Não foi possível imprimir: {printError}";
         }
 
         ShowNotice("Pagamento", message, error: false);
@@ -947,7 +947,7 @@ public partial class PaymentWindow : Window
             var printError = await FrontOfficePrinting.PrintInvoiceAsync(result.DocumentId);
             if (printError is not null)
             {
-                message += $"{Environment.NewLine}{Environment.NewLine}Erro ao imprimir: {printError}";
+                message += $"{Environment.NewLine}{Environment.NewLine}Não foi possível imprimir: {printError}";
             }
 
             _confirmPayment = true;

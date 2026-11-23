@@ -3567,7 +3567,7 @@ Por motivos de segurança, para prosseguir, é necessário alterar a senha.</val
     <value>Confirmar</value>
   </data>
   <data name="window_title_dialog_moneypad" xml:space="preserve">
-    <value>Dinheiro requisitado</value>
+    <value>Valor entregue</value>
   </data>
   <data name="window_title_dialog_moneypad_product_price" xml:space="preserve">
     <value>Preço do Produto</value>

@@ -24,7 +24,7 @@ namespace LogicPOS.App.Views;
 public partial class PosWindow : UserControl, IOfficeSurface
 {
     private const string ClockDateFormat = "dddd, dd' de 'MMMM' de 'yyyy";
-    private const string ClockTimeFormat = "HH:mm:ss tt";
+    private const string ClockTimeFormat = "HH:mm:ss";
     private const string ClockIconPath = "avares://LogicPOS.App/Assets/Images/BackOffice/icon_clock_w.svg";
 
     private string _userName;
@@ -2255,8 +2255,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         var now = DateTime.Now;
-        _clockDateLabel.Text = now.ToString(ClockDateFormat);
-        _clockTimeLabel.Text = now.ToString(ClockTimeFormat);
+        var culture = CultureInfo.CurrentCulture;
+        _clockDateLabel.Text = now.ToString(ClockDateFormat, culture);
+        _clockTimeLabel.Text = now.ToString(ClockTimeFormat, culture);
     }
 
     public async Task ShowNewDocumentAsync(
@@ -4207,7 +4208,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             var printError = await FrontOfficePrinting.PrintInvoiceAsync(result.DocumentId);
             var message = printError is null
                 ? $"Documento {result.Number} emitido."
-                : $"Documento {result.Number} emitido.{Environment.NewLine}Erro ao imprimir: {printError}";
+                : $"Documento {result.Number} emitido.{Environment.NewLine}Não foi possível imprimir: {printError}";
             ShowQuestion(TicketPrompt.Notice, VoltaTitleBase, message, question: false, confirmText: "Ok", showCancel: false);
         }
         catch (Exception exception)

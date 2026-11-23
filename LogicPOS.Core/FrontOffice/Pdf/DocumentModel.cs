@@ -1,4 +1,5 @@
-﻿using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
+﻿using System.Globalization;
+using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.ValueObjects;
 using QrCodes;
@@ -348,7 +349,8 @@ public abstract class DocumentModel : IDocument
             });
     }
 
-    private string DocumentFormattedDate => Data.Document!.CreatedAt.ToShortDateString().Replace("/", "-");
+    private string DocumentFormattedDate
+        => Data.Document!.CreatedAt.ToString("dd-MM-yyyy", CultureInfo.CurrentCulture);
 
     private void DesignHeader(PageDescriptor page)
 
