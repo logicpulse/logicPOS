@@ -10,6 +10,7 @@ public partial class PosShellWindow : Window
     public PosShellWindow(PosWindow pos)
     {
         InitializeComponent();
+        pos.AttachFrontOfficeShell(this);
         Host.Children.Add(pos);
         Opened += async (_, _) => await pos.ActivateHostedAsync();
         pos.LoggedOut += (_, _) => Close();

@@ -2490,7 +2490,14 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private void ShowBackOffice() => ShowBackOffice(null);
 
     private BoShellWindow? _boShell;
+    private Window? _frontOfficeShell;
     private bool _boShellStateWired;
+    private bool _suppressBoShellWindowSync;
+
+    /// <summary>
+    /// Desktop PosShellWindow pins the FO shell so BO↔FO swaps do not rely on TopLevel while the shell is hidden (Linux).
+    /// </summary>
+    internal void AttachFrontOfficeShell(Window shell) => _frontOfficeShell = shell;
 
     private void ShowBackOffice(string? page)
     {
@@ -2550,7 +2557,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
     }
 
-    private Window? FrontOfficeShell => TopLevel.GetTopLevel(this) as Window;
+    private Window? FrontOfficeShell
+        => _frontOfficeShell ?? TopLevel.GetTopLevel(this) as Window;
 
     private void HideFrontOfficeShell()
     {
@@ -2559,38 +2567,55 @@ public partial class PosWindow : UserControl, IOfficeSurface
             return;
         }
 
-        if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-            && _boShell is not null)
+        _suppressBoShellWindowSync = true;
+        try
         {
-            desktop.MainWindow = _boShell;
-        }
+            if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                && _boShell is not null)
+            {
+                desktop.MainWindow = _boShell;
+            }
 
-        posShell.Hide();
+            posShell.Hide();
+        }
+        finally
+        {
+            _suppressBoShellWindowSync = false;
+        }
     }
 
     private void RestoreFrontOfficeShell()
     {
-        if (_boShell is not null)
-        {
-            _boShell.Hide();
-        }
-
         if (FrontOfficeShell is not Window posShell)
         {
             return;
         }
 
-        if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+        _suppressBoShellWindowSync = true;
+        try
         {
-            desktop.MainWindow = posShell;
-        }
+            if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = posShell;
+            }
 
-        // POS returns as the full-screen surface (BO may have been Normal/restored).
-        posShell.WindowDecorations = WindowDecorations.None;
-        posShell.CanResize = false;
-        posShell.WindowState = WindowState.FullScreen;
-        posShell.Show();
-        posShell.Activate();
+            // POS returns as the full-screen surface (BO may have been Normal/restored).
+            posShell.WindowDecorations = WindowDecorations.None;
+            posShell.CanResize = false;
+            posShell.WindowState = WindowState.FullScreen;
+            posShell.Show();
+            posShell.Activate();
+
+            if (_boShell is not null)
+            {
+                _boShell.Hide();
+            }
+        }
+        finally
+        {
+            // Defer: Hide() can raise WindowState on the next UI tick (seen on Linux) and re-hide the FO shell.
+            Dispatcher.UIThread.Post(() => _suppressBoShellWindowSync = false, DispatcherPriority.Background);
+        }
     }
 
     private void WireBoShellWindowSync(BoShellWindow boShell)
@@ -2603,7 +2628,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _boShellStateWired = true;
         boShell.PropertyChanged += (_, args) =>
         {
-            if (args.Property != Window.WindowStateProperty
+            if (_suppressBoShellWindowSync
+                || boShell.IsVisible == false
+                || args.Property != Window.WindowStateProperty
                 || FrontOfficeShell is not Window posShell
                 || ReferenceEquals(posShell, boShell))
             {
