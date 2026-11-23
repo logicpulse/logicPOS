@@ -2682,8 +2682,19 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         var pending = false;
         foreach (var mark in marks)
         {
-            if (existingTokens.Contains(mark.Token) || existingIds.Contains(mark.Id))
+            if (existingTokens.Contains(mark.Token))
             {
+                continue;
+            }
+
+            if (existingIds.Contains(mark.Id))
+            {
+                // Id reserved by another PreferenceParameters row — do not insert or overwrite.
+                AppLogging.Warning(
+                    null,
+                    "Lei PT company fiscal mark {Token} skipped: PreferenceParameters.Id {Id} is already in use",
+                    mark.Token,
+                    mark.Id);
                 continue;
             }
 
