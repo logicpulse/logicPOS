@@ -62,7 +62,7 @@ public sealed class StartupReadinessService : IStartupReadinessService
         {
             issues.Add(new StartupReadinessIssue(
                 "fiscal-year",
-                "Falta criar o ano fiscal antes de emitir documentos.",
+                DocumentsListingText.MissingFiscalYear(),
                 "Abertura de ano fiscal",
                 DocumentsListingText.Open()));
         }
@@ -70,7 +70,7 @@ public sealed class StartupReadinessService : IStartupReadinessService
         {
             issues.Add(new StartupReadinessIssue(
                 "fiscal-year-current",
-                $"Não existe ano fiscal para {year}. Crie a abertura do ano corrente.",
+                DocumentsListingText.MissingCurrentFiscalYear(year),
                 "Abertura de ano fiscal",
                 DocumentsListingText.Open()));
         }
@@ -79,7 +79,7 @@ public sealed class StartupReadinessService : IStartupReadinessService
         {
             issues.Add(new StartupReadinessIssue(
                 "series",
-                "Faltam séries de documento. Use a Abertura de ano fiscal para as criar.",
+                DocumentsListingText.MissingDocumentSeries(),
                 "Abertura de ano fiscal",
                 DocumentsListingText.Open()));
         }

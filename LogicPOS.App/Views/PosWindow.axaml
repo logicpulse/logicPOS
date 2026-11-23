@@ -501,8 +501,15 @@
             <views:ReportsWindow x:Name="ReportsHost" />
         </Panel>
 
-        <Panel x:Name="TicketOverlay" Classes="login_alert_overlay" IsVisible="False" Focusable="True" KeyDown="OnTicketOverlayKeyDown">
-            <Border x:Name="TicketFrame" Classes="login_alert_frame login_alert_message_box">
+        <Panel x:Name="TicketOverlay"
+               Classes="login_alert_overlay"
+               IsVisible="False"
+               Focusable="True"
+               KeyboardNavigation.TabNavigation="Cycle"
+               KeyDown="OnTicketOverlayKeyDown">
+            <Border x:Name="TicketFrame"
+                    Classes="login_alert_frame login_alert_message_box"
+                    KeyboardNavigation.TabNavigation="Cycle">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">

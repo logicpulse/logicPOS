@@ -117,6 +117,41 @@ public static class ListingFilters
         }
     }
 
+    /// <summary>
+    /// Selects the «Todos»/«All» type row, or a specific acronym when <paramref name="typeCode"/> is set.
+    /// Keeps the closed ComboBox caption filled (needs DisplayMemberBinding on the control).
+    /// </summary>
+    public static void SelectDocumentType(ComboBox box, string? typeCode)
+    {
+        if (box.ItemsSource is not System.Collections.IEnumerable items)
+        {
+            return;
+        }
+
+        ListingFilterChoice? everyone = null;
+        ListingFilterChoice? match = null;
+        foreach (var item in items)
+        {
+            if (item is not ListingFilterChoice choice)
+            {
+                continue;
+            }
+
+            if (choice.Id == Guid.Empty)
+            {
+                everyone = choice;
+            }
+
+            if (string.IsNullOrWhiteSpace(typeCode) == false
+                && string.Equals(choice.Code, typeCode, StringComparison.OrdinalIgnoreCase))
+            {
+                match = choice;
+            }
+        }
+
+        box.SelectedItem = match ?? everyone;
+    }
+
     public static bool MatchCustomer(string? search, object? item)
     {
         if (item is not ListingFilterChoice choice)

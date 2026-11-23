@@ -47,6 +47,8 @@ public partial class DocumentsListing : UserControl
     public DocumentsListing()
     {
         InitializeComponent();
+        // Closed ComboBox must show Label (Todos/All); without this the selection box stays blank.
+        TypeBox.DisplayMemberBinding = new Avalonia.Data.Binding(nameof(ListingFilterChoice.Label));
         SendToAtButton.IsVisible = FiscalFeatures.ShowsAtCommunication(FiscalFeatures.Current);
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
@@ -127,8 +129,9 @@ public partial class DocumentsListing : UserControl
         SetColumnHeader(4, Pref("global_entity", "Entidade"));
         SetColumnHeader(5, Pref("global_fiscal_number", "NIF"));
         SetColumnHeader(6, Pref("global_total_final", "Total Final"));
-        SetColumnHeader(7, Pref("window_title_dialog_document_finance_column_total_credit_rc_nc_based", "Valor Pago"));
-        SetColumnHeader(8, Pref("global_debit", "Valor em Dívida"));
+        // Listing-local captions (EN: Amount Paid / Amount Due — not global Resx Credit/Debit).
+        SetColumnHeader(7, DocumentsListingText.AmountPaid());
+        SetColumnHeader(8, DocumentsListingText.AmountDue());
         SetColumnHeader(9, Pref("window_title_dialog_document_finance_column_related_doc", "Documentos Associados"));
 
         // Never replace a load error with the empty-period caption on culture change.
@@ -203,6 +206,12 @@ public partial class DocumentsListing : UserControl
             }
         }
 
+        string? selectedTypeCode = null;
+        if (TypeBox.SelectedItem is ListingFilterChoice selectedType && selectedType.Id != Guid.Empty)
+        {
+            selectedTypeCode = selectedType.Code;
+        }
+
         if (TypeBox.ItemsSource is System.Collections.IEnumerable types)
         {
             foreach (var item in types)
@@ -215,6 +224,7 @@ public partial class DocumentsListing : UserControl
 
             TypeBox.ItemsSource = null;
             TypeBox.ItemsSource = types;
+            ListingFilters.SelectDocumentType(TypeBox, selectedTypeCode);
         }
 
         if (CustomerBox.SelectedItem is ListingFilterChoice { Id: var selected } && selected == Guid.Empty)
@@ -301,7 +311,7 @@ public partial class DocumentsListing : UserControl
             CustomerBox.ItemsSource = customers;
             TypeBox.ItemsSource = types;
             ListingFilters.SelectEveryone(CustomerBox);
-            TypeBox.SelectedIndex = 0;
+            ListingFilters.SelectDocumentType(TypeBox, typeCode: null);
             _appliedCustomer = null;
         }
         catch (Exception exception)
@@ -318,10 +328,7 @@ public partial class DocumentsListing : UserControl
     {
         _fillingFilters = true;
         ListingFilters.SelectEveryone(CustomerBox);
-        if (TypeBox.Items.Count > 0)
-        {
-            TypeBox.SelectedIndex = 0;
-        }
+        ListingFilters.SelectDocumentType(TypeBox, typeCode: null);
 
         _appliedCustomer = null;
         _fillingFilters = false;

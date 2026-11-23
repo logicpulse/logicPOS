@@ -21,4 +21,12 @@ public sealed class TicketDialogDefaultsTests
     {
         Assert.False(TicketDialogDefaults.PreferCancelAsDefault(showCancel: true, confirmText: "Ok"));
     }
+
+    [Fact]
+    public void Destructive_sim_nao_paints_cancel_as_primary()
+    {
+        Assert.True(TicketDialogDefaults.CancelUsesPrimaryStyle(showCancel: true, confirmText: "Sim"));
+        Assert.False(TicketDialogDefaults.CancelUsesPrimaryStyle(showCancel: false, confirmText: "Ok"));
+        Assert.False(TicketDialogDefaults.CancelUsesPrimaryStyle(showCancel: true, confirmText: "Ok"));
+    }
 }

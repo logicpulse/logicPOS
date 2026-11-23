@@ -11,4 +11,10 @@ public static class TicketDialogDefaults
     /// </summary>
     public static bool PreferCancelAsDefault(bool showCancel, string confirmText)
         => showCancel && string.Equals(confirmText, "Sim", StringComparison.Ordinal);
+
+    /// <summary>
+    /// Destructive confirms paint Não as the filled primary button so the safe choice matches the chrome.
+    /// </summary>
+    public static bool CancelUsesPrimaryStyle(bool showCancel, string confirmText)
+        => PreferCancelAsDefault(showCancel, confirmText);
 }

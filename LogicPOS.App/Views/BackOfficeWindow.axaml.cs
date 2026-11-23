@@ -39,6 +39,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private bool _portrait;
     private bool _drawerOpen;
     private UiViewport _viewport;
+    /// <summary>Portuguese page key for navigation; <see cref="PageTitle"/> shows the culture caption.</summary>
+    private string _pageKey = string.Empty;
 
     /// <summary>
     /// When true, finishing mandatory onboarding opens the FrontOffice instead of the Painel.
@@ -344,8 +346,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             PlaceholderHost.IsVisible = false;
             PageHost.IsVisible = true;
             StockHost.IsVisible = true;
-            PageTitle.Text = "Gestão de Stocks";
-            SyncPortraitChrome("Gestão de Stocks");
+            SetPageTitleKey("Gestão de Stocks");
+            SyncPortraitChrome(PageTitle.Text);
             EntityHost.SetOverlayOnly(true);
             EntityHost.IsVisible = true;
             await EntityHost.ShowAsync(title);
@@ -370,8 +372,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         EnsureStockView();
         PageHost.IsVisible = true;
         StockHost.IsVisible = true;
-        PageTitle.Text = "Gestão de Stocks";
-        SyncPortraitChrome("Gestão de Stocks");
+        SetPageTitleKey("Gestão de Stocks");
+        SyncPortraitChrome(PageTitle.Text);
         if (_stockView is not null)
         {
             _ = _stockView.ReloadAsync();
@@ -534,7 +536,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     {
         ClearOnboardingReturn();
         SelectMenuItem(OnboardingMenuButton.IsVisible ? OnboardingMenuButton : DashboardButton);
-        PageTitle.Text = string.Empty;
+        SetPageTitleKey(string.Empty);
         SyncPortraitChrome(AppText.Get("Configuração inicial"));
         DashboardHost.IsVisible = false;
         ArticleDashboardHost.IsVisible = false;
@@ -550,7 +552,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     {
         ClearOnboardingReturn();
         SelectMenuItem(DashboardButton);
-        PageTitle.Text = string.Empty;
+        SetPageTitleKey(string.Empty);
         SyncPortraitChrome(AppText.Get("Dashboard"));
         ReportsOverlay.IsVisible = false;
         OnboardingHost.IsVisible = false;
@@ -774,7 +776,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         EntityHost.IsVisible = false;
         PageHost.IsVisible = false;
         OnboardingHost.IsVisible = true;
-        PageTitle.Text = string.Empty;
+        SetPageTitleKey(string.Empty);
         SyncPortraitChrome(AppText.Get("Configuração inicial"));
         _ = OnboardingHost.ReloadAsync();
     }
@@ -859,7 +861,9 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             var action = new Button
             {
                 Classes = { "bo_setup_alert_action" },
-                Content = string.IsNullOrWhiteSpace(issue.ActionLabel) ? "Abrir" : issue.ActionLabel,
+                Content = string.IsNullOrWhiteSpace(issue.ActionLabel)
+                    ? DocumentsListingText.Open()
+                    : issue.ActionLabel,
                 Tag = issue.ActionPage
             };
             Grid.SetColumn(action, 1);
@@ -1486,8 +1490,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
-        PageTitle.Text = title;
-        SyncPortraitChrome(title);
+        SetPageTitleKey(title);
+        SyncPortraitChrome(PageTitle.Text);
         _articleDashboardRequest++;
         ReportsOverlay.IsVisible = false;
 
@@ -1504,7 +1508,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
         if (title is "Novo Doc.")
         {
-            PageTitle.Text = "Documentos";
+            SetPageTitleKey("Documentos");
+            SyncPortraitChrome(PageTitle.Text);
             DocumentsHost.IsVisible = true;
             _ = DocumentsHost.ReloadAsync();
             _ = ShowNewDocumentAsync();
@@ -1606,7 +1611,28 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         BuildMenu();
         ApplySidebarTexts();
         UpdateClock();
+        // Re-resolve status-bar caption from the Portuguese page key.
+        if (string.IsNullOrWhiteSpace(_pageKey) == false)
+        {
+            SetPageTitleKey(_pageKey);
+            SyncPortraitChrome(PageTitle.Text);
+        }
+
         DocumentsHost.ApplyCulture();
+        // Startup banners were built at first open — rebuild so message/Open follow culture.
+        _ = RefreshSetupAlertsAsync();
+    }
+
+    /// <summary>
+    /// Stores the Portuguese navigation key and paints the culture-aware caption in the status bar.
+    /// Page routing keeps using the key; only the visible text is translated.
+    /// </summary>
+    private void SetPageTitleKey(string key)
+    {
+        _pageKey = key ?? string.Empty;
+        PageTitle.Text = string.IsNullOrWhiteSpace(_pageKey)
+            ? string.Empty
+            : SidebarMenuText.Get(_pageKey);
     }
 
     private void MarkFlag(string culture)
@@ -1707,8 +1733,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         DashboardButton.Classes.Remove("bo_menu_on");
         _selectedItem?.Classes.Remove("bo_menu_on");
         _selectedItem = null;
-        PageTitle.Text = "Artigos";
-        SyncPortraitChrome("Artigos");
+        SetPageTitleKey("Artigos");
+        SyncPortraitChrome(PageTitle.Text);
         ReportsOverlay.IsVisible = false;
         OnboardingHost.IsVisible = false;
         DashboardHost.IsVisible = false;
