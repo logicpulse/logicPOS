@@ -10,7 +10,7 @@ public static class SdrConstants
     public const string SdrFamilyDesignation = "SDR Volta";
 
     public const string SdrSubfamilyCode = "SDRV";
-    public const string SdrSubfamilyDesignation = "Depósito Volta";
+    public const string SdrSubfamilyDesignation = "Depósito";
 
     public static bool IsDepositArticleCode(string? code) =>
         string.Equals(code, SdrArticleCode, StringComparison.OrdinalIgnoreCase);

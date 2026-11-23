@@ -10,6 +10,8 @@ public sealed class DemoSeedTextTests
     {
         Assert.Equal("Depósito", SdrConstants.SdrArticleDesignation);
         Assert.Equal("SDRVDEP", SdrConstants.SdrArticleCode);
+        Assert.Equal("Depósito", SdrConstants.SdrSubfamilyDesignation);
+        Assert.Equal("SDRV", SdrConstants.SdrSubfamilyCode);
     }
 
     [Fact]
@@ -122,7 +124,7 @@ public sealed class DemoSeedTextTests
 
         Assert.Contains("Toucinho do Céu", designations);
         Assert.Contains("Mousse de chocolate com chantilly", designations);
-        Assert.Contains("Tarte de Amêndoa", designations);
+        Assert.Contains("Tarte de amêndoa", designations);
         Assert.Contains("Meia de leite", designations);
         Assert.Contains("Red Bull", designations);
         Assert.Contains("Super Bock Abadia", designations);
@@ -146,9 +148,14 @@ public sealed class DemoSeedTextTests
             Assert.Contains("Bacardi Pina Colada", designations);
             Assert.Contains("Bacalhau à Brás", designations);
             Assert.Contains("Bacalhau à Gomes Sá", designations);
-            Assert.Contains("Terras do Demo Bruto", designations);
+            Assert.Contains("Bacalhau à casa", designations);
+            Assert.Contains("Bacalhau à lagareiro", designations);
+            Assert.Contains("Polvo à lagareiro", designations);
+            Assert.Contains("Terras do Demo bruto", designations);
             Assert.Contains("Montanha Real", designations);
             Assert.Contains("Asti Gancia Doce", designations);
+            Assert.DoesNotContain("Bacalhau à Casa", designations);
+            Assert.DoesNotContain("Terras do Demo Bruto", designations);
         }
 
         Assert.Contains(designations, name => name.StartsWith("Hambúrguer", StringComparison.Ordinal));
