@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:LogicPOS.App.Views"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
@@ -55,7 +55,7 @@
                 </StackPanel>
             </Border>
             <Border x:Name="LoginPinpadFrame" Classes="login_pinpad_frame" />
-            <Button x:Name="LoginMinimize" Classes="login_minimize" Click="OnMinimizeClick" />
+            <Button x:Name="LoginMinimize" Classes="login_minimize" Click="OnMinimizeClick" ToolTip.Tip="Minimizar" />
             <Border x:Name="LoginPinpad" Classes="login_pinpad">
                 <Grid Classes="login_pinpad_keys"
                       ColumnDefinitions="105,105,105"
@@ -86,6 +86,7 @@
                     <Button Classes="login_pin_reset"
                             Grid.Row="0" Grid.Column="2"
                             IsEnabled="{Binding CanResetPassword}"
+                            ToolTip.Tip="Repor palavra-passe"
                             Click="OnResetPasswordClick" />
                     <Button Classes="login_pin_key login_pin_digit" Content="7" Tag="7" Grid.Row="1" Grid.Column="0" Click="OnDigitClick" />
                     <Button Classes="login_pin_key login_pin_digit" Content="8" Tag="8" Grid.Row="1" Grid.Column="1" Click="OnDigitClick" />

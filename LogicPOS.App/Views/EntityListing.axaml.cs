@@ -30,6 +30,7 @@ public partial class EntityListing : UserControl
     private string? _mode;
     private Guid? _editingId;
     private string? _pendingAction;
+    private string? _pendingRestorePath;
     private TaskCompletionSource<bool>? _deleteConfirm;
     private bool _fillingFilters;
     private bool _filtersRequested;
@@ -2438,6 +2439,7 @@ public partial class EntityListing : UserControl
             }
         };
         ToolTip.SetTip(button, "Teclado virtual");
+        Avalonia.Automation.AutomationProperties.SetName(button, "Teclado virtual");
         button.Click += (_, _) =>
         {
             box.Focus();
@@ -2964,16 +2966,21 @@ public partial class EntityListing : UserControl
         ConfirmMessage.Text = _title == "Sessões de Trabalho"
             ? $"Confirma que deseja apagar a sessão «{label}»?"
             : $"Confirma que deseja apagar «{label}»?";
-        _deleteConfirm = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-        ConfirmOverlay.IsVisible = true;
-        return _deleteConfirm.Task;
+        return ShowConfirmAsync();
     }
 
     private Task<bool> ConfirmActionAsync(string message)
     {
         ConfirmMessage.Text = message;
+        return ShowConfirmAsync();
+    }
+
+    private Task<bool> ShowConfirmAsync()
+    {
         _deleteConfirm = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         ConfirmOverlay.IsVisible = true;
+        // Focus Não so Enter/Escape cancel instead of confirming.
+        Dispatcher.UIThread.Post(() => ConfirmNoButton.Focus(), DispatcherPriority.Input);
         return _deleteConfirm.Task;
     }
 
@@ -3005,6 +3012,17 @@ public partial class EntityListing : UserControl
     private void OnDeleteConfirmYesClick(object? sender, RoutedEventArgs e) => CompleteDeleteConfirm(true);
 
     private void OnDeleteConfirmNoClick(object? sender, RoutedEventArgs e) => CompleteDeleteConfirm(false);
+
+    private void OnConfirmOverlayKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape || ConfirmOverlay.IsVisible == false)
+        {
+            return;
+        }
+
+        e.Handled = true;
+        CompleteDeleteConfirm(false);
+    }
 
     private void CompleteDeleteConfirm(bool confirmed)
     {
@@ -3160,23 +3178,31 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        if (action == "restore")
+        if (action is "restore" or "restore-file")
         {
-            if (PromptValue.Text != "RESTAURAR")
+            if (DatabaseRestoreSafety.IsConfirmWord(PromptValue.Text) == false)
             {
                 Notice.Text = "Restauração cancelada.";
+                _pendingRestorePath = null;
                 return;
             }
 
-            var path = (Grid.SelectedItem as ListingRow)?["Path"];
-            await ExecuteAsync(action, null, path);
+            var path = action == "restore-file"
+                ? _pendingRestorePath
+                : (Grid.SelectedItem as ListingRow)?["Path"];
+            _pendingRestorePath = null;
+            await ExecuteAsync("restore", null, path);
             return;
         }
 
         await ExecuteAsync(action, (Grid.SelectedItem as ListingRow)?.Id, PromptValue.Text);
     }
 
-    private void OnPromptCancelClick(object? sender, RoutedEventArgs e) => PromptOverlay.IsVisible = false;
+    private void OnPromptCancelClick(object? sender, RoutedEventArgs e)
+    {
+        PromptOverlay.IsVisible = false;
+        _pendingRestorePath = null;
+    }
 
     private async Task ImportAsync(string action)
     {
@@ -3370,16 +3396,11 @@ public partial class EntityListing : UserControl
         }
     }
 
-    /// <summary>Confirms, picks a .db backup, and restores — used by Sistema → Restaurar de ficheiro.</summary>
+    /// <summary>Picks a .db backup, then asks to type RESTAURAR — used by Sistema → Restaurar de ficheiro.</summary>
     public Task RestoreFromExternalFileAsync() => RestoreFileAsync();
 
     private async Task RestoreFileAsync()
     {
-        if (await ConfirmActionAsync("Confirma que deseja restaurar a base a partir de um ficheiro? A base atual será substituída.") == false)
-        {
-            return;
-        }
-
         var top = TopLevel.GetTopLevel(this);
         if (top is null)
         {
@@ -3407,7 +3428,40 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        await ExecuteAsync("restore", null, path);
+        var livePath = ResolveLiveDatabasePath();
+        if (string.IsNullOrWhiteSpace(livePath) == false)
+        {
+            var validation = DatabaseRestoreSafety.ValidateCandidateFile(livePath, path);
+            if (validation is not null)
+            {
+                Notice.Text = validation;
+                return;
+            }
+        }
+
+        _pendingRestorePath = path;
+        OpenPrompt(
+            "restore-file",
+            "Restaurar",
+            DatabaseRestoreSafety.FileRestorePromptLabel(path),
+            string.Empty);
+    }
+
+    private static string? ResolveLiveDatabasePath()
+    {
+        try
+        {
+            var configuration = AppComposition.Services?
+                .GetService(typeof(Microsoft.Extensions.Configuration.IConfiguration))
+                as Microsoft.Extensions.Configuration.IConfiguration;
+            var connection = configuration?["DatabaseSettings:ConnectionString"] ?? "Data Source=logicpos.db";
+            var dataSource = new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder(connection).DataSource;
+            return string.IsNullOrWhiteSpace(dataSource) ? null : SqliteDataPath.Resolve(dataSource);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private async Task OpenReportAsync()
