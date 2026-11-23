@@ -87,6 +87,7 @@ public static class SidebarMenuText
             ["Registo de alterações"] = "Changelog",
             ["Backup DB"] = "Backup",
             ["Restaurar DB"] = "Restore",
+            ["Restaurar de ficheiro"] = "Restore from file",
             ["Atualizar"] = "Update",
             ["Sair da Sessão"] = "Sign out",
             ["Sim"] = "Yes",
@@ -106,6 +107,7 @@ public static class SidebarMenuText
             ["Sair da Aplicação"] = "Quitter",
             ["Acerca"] = "À propos",
             ["FrontOffice"] = "Caisse",
+            ["Restaurar de ficheiro"] = "Restaurer depuis un fichier",
             ["Sim"] = "Oui",
             ["Não"] = "Non"
         },
@@ -123,10 +125,14 @@ public static class SidebarMenuText
             ["Sair da Aplicação"] = "Salir",
             ["Acerca"] = "Acerca de",
             ["FrontOffice"] = "Punto de venta",
+            ["Restaurar de ficheiro"] = "Restaurar desde archivo",
             ["Sim"] = "Sí",
             ["Não"] = "No"
         }
     };
+
+    /// <summary>Portuguese keys present in the English caption table (menu + sidebar chrome).</summary>
+    public static IReadOnlyCollection<string> EnglishKeys => Tables["en"].Keys;
 
     public static string Get(string key)
     {
