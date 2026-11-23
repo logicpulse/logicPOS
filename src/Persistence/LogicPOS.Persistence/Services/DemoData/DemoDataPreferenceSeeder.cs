@@ -35,7 +35,7 @@ public static class DemoDataPreferenceSeeder
                 RegEx = "RegexBoolean",
                 ResourceString = "Usar dados demo",
                 ValueTip =
-                    "Requer conta em modo demo (cloud «Conta em modo demo» / licença local Demo). Quando activo, gera automaticamente actividade de faturação realista para cobrir Hoje, 7 dias, 30 dias, este mês e este ano, com base nos artigos e terminais existentes.",
+                    "Requer conta em modo demo (cloud «Conta em modo demo» / licença local Demo). Quando ativo, gera automaticamente atividade de faturação realista para cobrir Hoje, 7 dias, 30 dias, este mês e este ano, com base nos artigos e terminais existentes.",
                 FormType = 2,
                 FormPageNo = 1,
                 InputType = PreferenceParameterInputType.CheckButton,

@@ -685,10 +685,10 @@ Deseja continuar e desativar as séries atuais e criar novas?</value>
 Algumas das séries já foram usadas, use outro acrónimo para gerar séries novas.</value>
   </data>
   <data name="dialog_message_series_fiscal_year_close_current" xml:space="preserve">
-    <value>De momento existe um ano fiscal ativo [{0}]. 
-Para continuar e iniciar um novo ano fiscal, tem que fechar o ano fiscal ativo
-Nota: Esta operação fechará o ano fiscal ativo e não poderá ser anulada!
-Tem a certeza que deseja continuar e fechar ano fiscal ativo e criar um novo?</value>
+    <value>De momento existe um ano fiscal activo [{0}]. 
+Para continuar e iniciar um novo ano fiscal, tem que fechar o ano fiscal activo
+Nota: Esta operação fechará o ano fiscal activo e não poderá ser anulada!
+Tem a certeza que deseja continuar e fechar ano fiscal activo e criar um novo?</value>
   </data>
   <data name="dialog_message_show_printer_undefined_on_print" xml:space="preserve">
     <value>O Documento "{0}" não foi impresso!
@@ -1935,7 +1935,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>2ª Via</value>
   </data>
   <data name="global_privilege_active" xml:space="preserve">
-    <value>Ativo</value>
+    <value>Activo</value>
   </data>
   <data name="global_privilege_property" xml:space="preserve">
     <value>Propriedade</value>
@@ -1988,7 +1988,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <comment>Value for "Update At" data in details dialog</comment>
   </data>
   <data name="global_record_disabled" xml:space="preserve">
-    <value>Desativado</value>
+    <value>Desactivado</value>
   </data>
   <data name="global_record_enabled" xml:space="preserve">
     <value>Ativo</value>
@@ -3036,7 +3036,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Serviço da Autoridade Tributária :: Account Password</value>
   </data>
   <data name="prefparam_service_at_production_mode_enabled" xml:space="preserve">
-    <value>Serviço da Autoridade Tributária :: Modo de Produção Ativo</value>
+    <value>Serviço da Autoridade Tributária :: Modo de Produção Activo</value>
   </data>
   <data name="prefparam_service_at_send_documents" xml:space="preserve">
     <value>Serviço da Autoridade Tributária :: Enviar Documentos Fiscais</value>
@@ -3045,7 +3045,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Serviço da Autoridade Tributária :: Enviar Guias de Remessa/Transporte</value>
   </data>
   <data name="prefparam_service_at_waybill_agricultural_mode_enabled" xml:space="preserve">
-    <value>Serviço da Autoridade Tributária :: Guias de Remessa/Transporte em Modo Agrícola Ativo</value>
+    <value>Serviço da Autoridade Tributária :: Guias de Remessa/Transporte em Modo Agrícola Activo</value>
   </data>
   <data name="prefparam_split_payment_max_clients" xml:space="preserve">
     <value>Divisão de Conta :: Número Máximo de Divisão de Clientes</value>
