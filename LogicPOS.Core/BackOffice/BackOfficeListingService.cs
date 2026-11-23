@@ -4084,7 +4084,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Entity("Parâmetros da Empresa", typeof(PreferenceParameter), create: false, delete: false, filter: "company"),
             Entity("Parâmetros de Sistema", typeof(PreferenceParameter), create: false, delete: false, filter: "system"),
             Entity("Terminais", typeof(Terminal)),
-            Entity("Recibos", typeof(Receipt), create: false, edit: false, actions:
+            Entity("Recibos", typeof(Receipt), create: false, edit: false, delete: false, actions:
             [
                 new ListingAction { Key = "undo-receipt", Label = "Anular" }
             ]),

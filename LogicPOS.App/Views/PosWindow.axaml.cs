@@ -135,7 +135,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
         None,
         Delete,
         DeleteOrderLine,
+        DeleteOpenOrder,
         DeleteOpenOrdersAll,
+        CloseDay,
+        Logout,
         Quantity,
         Price,
         Weight,
@@ -146,6 +149,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         Split,
         Notice
     }
+
+    private Guid? _pendingDeleteOrderId;
 
     private enum TablePurpose
     {
@@ -2642,7 +2647,18 @@ public partial class PosWindow : UserControl, IOfficeSurface
         FitHostedOverlays();
     }
 
-    private async void Logout()
+    private void Logout()
+    {
+        ShowQuestion(
+            TicketPrompt.Logout,
+            "Sair da Sessão",
+            "Confirma que deseja sair da sessão?",
+            question: true,
+            confirmText: "Sim",
+            showCancel: true);
+    }
+
+    private async Task ConfirmLogoutAsync()
     {
         await ReleaseLicenceSeatAsync().ConfigureAwait(true);
         LoggedOut?.Invoke(this, EventArgs.Empty);
@@ -3846,7 +3862,17 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 Margin = new Thickness(8, 0, 0, 0),
                 Content = new TextBlock { Classes = { "login_alert_action_text" }, Text = "Eliminar", TextWrapping = TextWrapping.NoWrap }
             };
-            delete.Click += async (_, _) => await DeleteOpenOrderAsync(orderId).ConfigureAwait(true);
+            delete.Click += (_, _) =>
+            {
+                _pendingDeleteOrderId = orderId;
+                ShowQuestion(
+                    TicketPrompt.DeleteOpenOrder,
+                    "Eliminar pedido",
+                    "Confirma que deseja eliminar este pedido?",
+                    question: true,
+                    confirmText: "Sim",
+                    showCancel: true);
+            };
             Grid.SetColumn(delete, 1);
             row.Children.Add(open);
             row.Children.Add(delete);
@@ -4761,46 +4787,56 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 return;
             }
 
-            // Close day
-            var result = await RunSessionAsync("close-day", null);
-            string? printError = null;
-            if (result.Succeeded)
-            {
-                SessionOverlay.IsVisible = false;
-                printError = await PrintDayReportAsync();
-            }
+            ShowQuestion(
+                TicketPrompt.CloseDay,
+                "Fecho do dia",
+                "Confirma que deseja fechar o dia?",
+                question: true,
+                confirmText: "Sim",
+                showCancel: true);
+            return;
+        }
 
+        if (RequireAccess(_access.AllowsDayOpen, "Não tem permissão para abrir o dia.") == false)
+        {
+            return;
+        }
+
+        // Only open the day; then show cash drawer so user can choose opening amount
+        var result = await RunSessionAsync("open-day", null);
+        if (result.Succeeded)
+        {
+            OnShowCashDrawerClick(sender, e);
+        }
+        else
+        {
             var message = result.Error ?? result.Message ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(printError) == false)
-            {
-                message = string.IsNullOrWhiteSpace(message) ? printError : message + " " + printError;
-            }
             if (string.IsNullOrWhiteSpace(message) == false)
             {
                 ShowQuestion(TicketPrompt.Notice, "Sessão de Trabalho", message, question: false, confirmText: "Ok", showCancel: false);
             }
         }
-        else
-        {
-            if (RequireAccess(_access.AllowsDayOpen, "Não tem permissão para abrir o dia.") == false)
-            {
-                return;
-            }
+    }
 
-            // Only open the day; then show cash drawer so user can choose opening amount
-            var result = await RunSessionAsync("open-day", null);
-            if (result.Succeeded)
-            {
-                OnShowCashDrawerClick(sender, e);
-            }
-            else
-            {
-                var message = result.Error ?? result.Message ?? string.Empty;
-                if (string.IsNullOrWhiteSpace(message) == false)
-                {
-                    ShowQuestion(TicketPrompt.Notice, "Sessão de Trabalho", message, question: false, confirmText: "Ok", showCancel: false);
-                }
-            }
+    private async Task ConfirmCloseDayAsync()
+    {
+        var result = await RunSessionAsync("close-day", null);
+        string? printError = null;
+        if (result.Succeeded)
+        {
+            SessionOverlay.IsVisible = false;
+            printError = await PrintDayReportAsync();
+        }
+
+        var message = result.Error ?? result.Message ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(printError) == false)
+        {
+            message = string.IsNullOrWhiteSpace(message) ? printError : message + " " + printError;
+        }
+
+        if (string.IsNullOrWhiteSpace(message) == false)
+        {
+            ShowQuestion(TicketPrompt.Notice, "Sessão de Trabalho", message, question: false, confirmText: "Ok", showCancel: false);
         }
     }
 
@@ -5589,9 +5625,26 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 _orderListMode = true;
                 RefreshTicket();
                 break;
+            case TicketPrompt.DeleteOpenOrder:
+                CloseTicketDialog();
+                if (_pendingDeleteOrderId is Guid orderId)
+                {
+                    _pendingDeleteOrderId = null;
+                    await DeleteOpenOrderAsync(orderId).ConfigureAwait(true);
+                }
+
+                return;
             case TicketPrompt.DeleteOpenOrdersAll:
                 CloseTicketDialog();
                 await ConfirmDeleteAllOpenOrdersAsync();
+                return;
+            case TicketPrompt.CloseDay:
+                CloseTicketDialog();
+                await ConfirmCloseDayAsync();
+                return;
+            case TicketPrompt.Logout:
+                CloseTicketDialog();
+                await ConfirmLogoutAsync();
                 return;
             case TicketPrompt.DeleteOrderLine:
                 if (SelectedOrderLine is { } removedLine)

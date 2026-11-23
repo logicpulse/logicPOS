@@ -28,6 +28,7 @@ public partial class DocumentsListing : UserControl
     private CancellationTokenSource? _searchDelay;
     private string? _promptKind;
     private Guid? _pendingOriginDocumentId;
+    private TaskCompletionSource<bool>? _deleteConfirm;
     private bool _sendingEmail;
     private bool _datesReady;
     private bool _fillingFilters;
@@ -406,6 +407,11 @@ public partial class DocumentsListing : UserControl
 
         if (row.CanEdit)
         {
+            if (await ConfirmActionAsync($"Confirma que deseja anular o rascunho «{row.Number}»?") == false)
+            {
+                return;
+            }
+
             var documents = AppComposition.Services?.GetService<IPosDocumentService>();
             if (documents is null)
             {
@@ -419,6 +425,25 @@ public partial class DocumentsListing : UserControl
         }
 
         OpenPrompt("cancel", "Anular documento", "Motivo da anulação");
+    }
+
+    private Task<bool> ConfirmActionAsync(string message)
+    {
+        ConfirmMessage.Text = message;
+        _deleteConfirm = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        ConfirmOverlay.IsVisible = true;
+        return _deleteConfirm.Task;
+    }
+
+    private void OnDeleteConfirmYesClick(object? sender, RoutedEventArgs e) => CompleteDeleteConfirm(true);
+
+    private void OnDeleteConfirmNoClick(object? sender, RoutedEventArgs e) => CompleteDeleteConfirm(false);
+
+    private void CompleteDeleteConfirm(bool confirmed)
+    {
+        ConfirmOverlay.IsVisible = false;
+        _deleteConfirm?.TrySetResult(confirmed);
+        _deleteConfirm = null;
     }
 
     private async void OnEmailClick(object? sender, RoutedEventArgs e)

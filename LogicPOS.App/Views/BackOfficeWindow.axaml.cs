@@ -36,6 +36,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private bool _onboardingIncomplete;
     private StockManagementView? _stockView;
     private string? _pendingSaftAction;
+    private bool _pendingLogout;
     private bool _portrait;
     private bool _drawerOpen;
     private UiViewport _viewport;
@@ -1310,6 +1311,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private async void OnSaftConfirmYesClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         SaftConfirmOverlay.IsVisible = false;
+        if (_pendingLogout)
+        {
+            _pendingLogout = false;
+            await ConfirmLogoutAsync();
+            return;
+        }
+
         var action = _pendingSaftAction;
         _pendingSaftAction = null;
         if (string.IsNullOrWhiteSpace(action))
@@ -1322,6 +1330,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private void OnSaftConfirmNoClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        _pendingLogout = false;
         _pendingSaftAction = null;
         SaftConfirmOverlay.IsVisible = false;
     }
@@ -1458,6 +1467,16 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
                 _ = _stockView.ReloadAsync();
             }
 
+            return;
+        }
+
+        if (title is "Restaurar de ficheiro")
+        {
+            EntityHost.SetOverlayOnly(false);
+            EntityHost.IsVisible = true;
+            PlaceholderHost.IsVisible = false;
+            _ = EntityHost.ShowAsync("Restaurar DB");
+            _ = EntityHost.RestoreFromExternalFileAsync();
             return;
         }
 
@@ -1898,7 +1917,16 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         App.ExitApplication?.Invoke();
     }
 
-    private async void RaiseLogout()
+    private void RaiseLogout()
+    {
+        _pendingLogout = true;
+        _pendingSaftAction = null;
+        SaftConfirmTitle.Text = "Sair da Sessão";
+        SaftConfirmMessage.Text = "Confirma que deseja sair da sessão?";
+        SaftConfirmOverlay.IsVisible = true;
+    }
+
+    private async Task ConfirmLogoutAsync()
     {
         await ReleaseLicenceSeatAsync().ConfigureAwait(true);
         _allowClose = true;

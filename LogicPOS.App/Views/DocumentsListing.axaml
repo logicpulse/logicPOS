@@ -287,6 +287,43 @@
             </Border>
         </Panel>
 
+        <Panel x:Name="ConfirmOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame login_alert_message_box">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                            <TextBlock Classes="login_alert_title" Text="Confirmar" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnDeleteConfirmYesClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Sim" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action action_secondary" Click="OnDeleteConfirmNoClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Não" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <Grid Classes="login_alert_body">
+                        <Image Classes="login_alert_symbol"
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
+                        <TextBlock x:Name="ConfirmMessage" Classes="login_alert_message" Text="" />
+                    </Grid>
+                </DockPanel>
+            </Border>
+        </Panel>
+
         <Panel x:Name="PromptOverlay" Classes="login_alert_overlay" IsVisible="False">
             <Border x:Name="PromptFrame" Classes="login_alert_frame bo_entity_prompt">
                 <DockPanel Classes="login_alert_inner">

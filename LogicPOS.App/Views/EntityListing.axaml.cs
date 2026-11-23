@@ -2930,7 +2930,7 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        if (_title == "Sessões de Trabalho" && await ConfirmDeleteWorkSessionAsync(row) == false)
+        if (await ConfirmDeleteAsync(row) == false)
         {
             return;
         }
@@ -2950,25 +2950,45 @@ public partial class EntityListing : UserControl
         // Erros já passam pelo BindToast de Notice / EditorNotice.
     }
 
-    private Task<bool> ConfirmDeleteWorkSessionAsync(ListingRow row)
+    private Task<bool> ConfirmDeleteAsync(ListingRow row)
     {
-        var label = SessionDeleteLabel(row);
-        ConfirmMessage.Text = $"Confirma que deseja apagar a sessão «{label}»?";
+        var label = DeleteLabel(row);
+        ConfirmMessage.Text = _title == "Sessões de Trabalho"
+            ? $"Confirma que deseja apagar a sessão «{label}»?"
+            : $"Confirma que deseja apagar «{label}»?";
         _deleteConfirm = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         ConfirmOverlay.IsVisible = true;
         return _deleteConfirm.Task;
     }
 
-    private static string SessionDeleteLabel(ListingRow row)
+    private Task<bool> ConfirmActionAsync(string message)
+    {
+        ConfirmMessage.Text = message;
+        _deleteConfirm = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        ConfirmOverlay.IsVisible = true;
+        return _deleteConfirm.Task;
+    }
+
+    private static string DeleteLabel(ListingRow row)
     {
         if (row.Values.TryGetValue("Designation", out var designation) && string.IsNullOrWhiteSpace(designation) == false)
         {
             return designation;
         }
 
+        if (row.Values.TryGetValue("Name", out var name) && string.IsNullOrWhiteSpace(name) == false)
+        {
+            return name;
+        }
+
         if (row.Values.TryGetValue("Code", out var code) && string.IsNullOrWhiteSpace(code) == false)
         {
             return code;
+        }
+
+        if (row.Values.TryGetValue("Number", out var number) && string.IsNullOrWhiteSpace(number) == false)
+        {
+            return number;
         }
 
         return row.Id.ToString();
@@ -3336,8 +3356,16 @@ public partial class EntityListing : UserControl
         }
     }
 
+    /// <summary>Confirms, picks a .db backup, and restores — used by Sistema → Restaurar de ficheiro.</summary>
+    public Task RestoreFromExternalFileAsync() => RestoreFileAsync();
+
     private async Task RestoreFileAsync()
     {
+        if (await ConfirmActionAsync("Confirma que deseja restaurar a base a partir de um ficheiro? A base atual será substituída.") == false)
+        {
+            return;
+        }
+
         var top = TopLevel.GetTopLevel(this);
         if (top is null)
         {
@@ -3347,14 +3375,26 @@ public partial class EntityListing : UserControl
         var files = await top.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Restaurar de ficheiro",
-            AllowMultiple = false
+            AllowMultiple = false,
+            FileTypeFilter =
+            [
+                new FilePickerFileType("Backup logicPOS") { Patterns = ["*.db", "*.logicpos"] },
+                new FilePickerFileType("Todos") { Patterns = ["*.*"] }
+            ]
         });
         if (files.Count == 0)
         {
             return;
         }
 
-        await ExecuteAsync("restore-file", null, files[0].Name);
+        var path = files[0].TryGetLocalPath();
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            Notice.Text = "Não foi possível aceder ao ficheiro selecionado.";
+            return;
+        }
+
+        await ExecuteAsync("restore", null, path);
     }
 
     private async Task OpenReportAsync()
