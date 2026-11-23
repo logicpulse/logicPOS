@@ -34,6 +34,14 @@ public sealed class DemoSeedTextTests
         }
     }
 
+    [Fact]
+    public void PreferenceParameters_Pt_HasSingleTransportDocumentsToken()
+    {
+        var items = ReadArray(Path.Combine("pt", "preferenceparameters.json"));
+        var matches = items.Where(item => item.GetProperty("Token").GetString() == "COMPANY_COMMUNICATE_TRANSPORT_DOCUMENTS").ToList();
+        Assert.Single(matches);
+    }
+
     [Theory]
     [InlineData("cafe")]
     [InlineData("restaurant")]
@@ -42,10 +50,11 @@ public sealed class DemoSeedTextTests
         var articles = ReadArray(Path.Combine("modules", module, "articles.json"));
         var designations = articles.Select(item => item.GetProperty("Designation").GetString()!).ToHashSet(StringComparer.Ordinal);
 
-        Assert.Contains("Toucinho do céu", designations);
+        Assert.Contains("Toucinho do Céu", designations);
         Assert.Contains("Mousse de Chocolate com Chantilly", designations);
-        Assert.Contains("Tarte de amêndoa", designations);
+        Assert.Contains("Tarte de Amêndoa", designations);
         Assert.Contains("Meia de leite", designations);
+        Assert.Contains(designations, name => name.StartsWith("Hambúrguer", StringComparison.Ordinal));
         Assert.DoesNotContain("Outras Caf", designations);
         Assert.DoesNotContain("YOUR-EMAIL@gmail.com", designations);
     }
@@ -57,8 +66,9 @@ public sealed class DemoSeedTextTests
     {
         var items = ReadArray(Path.Combine("modules", module, "articlesubfamilies.json"));
         var designations = items.Select(item => item.GetProperty("Designation").GetString()!).ToList();
-        Assert.Contains("Outras cafetaria", designations);
+        Assert.Contains("Outros de cafetaria", designations);
         Assert.DoesNotContain("Outras Caf", designations);
+        Assert.DoesNotContain("Outras cafetaria", designations);
     }
 
     private static string ValueOf(JsonElement[] items, string token)
@@ -66,26 +76,9 @@ public sealed class DemoSeedTextTests
 
     private static JsonElement[] ReadArray(string relativePath)
     {
-        var path = Path.Combine(FindRepoRoot(), "db_seeds", relativePath);
+        var path = Path.Combine(SeedTestPaths.FindRepoRoot(), "db_seeds", relativePath);
         Assert.True(File.Exists(path), $"Missing seed file: {path}");
         using var document = JsonDocument.Parse(File.ReadAllText(path));
         return document.RootElement.EnumerateArray().Select(item => item.Clone()).ToArray();
-    }
-
-    private static string FindRepoRoot()
-    {
-        var dir = new DirectoryInfo(AppContext.BaseDirectory);
-        while (dir is not null)
-        {
-            if (File.Exists(Path.Combine(dir.FullName, "LogicPOS.sln"))
-                && Directory.Exists(Path.Combine(dir.FullName, "db_seeds")))
-            {
-                return dir.FullName;
-            }
-
-            dir = dir.Parent;
-        }
-
-        throw new InvalidOperationException("Could not locate repository root from test base directory.");
     }
 }
