@@ -81,7 +81,7 @@ public sealed class FixSeedTexts2035MigrationTests
             Assert.Equal(string.Empty, smtpPassword.Value);
             Assert.Equal("Dinheiro Eletrónico", virtualMoney.Designation);
             Assert.Equal("Relatório :: Stock por valorização de artigo", stockGain.Designation);
-            Assert.Equal("Mousse de Chocolate com Chantilly", mousse.Designation);
+            Assert.Equal("Mousse de chocolate com chantilly", mousse.Designation);
             Assert.Equal("Toucinho do Céu", toucinho.Designation);
             Assert.Equal("Outros de cafetaria", outras.Designation);
             Assert.Equal(customerDesignation, customArticle.Designation);
@@ -221,7 +221,11 @@ public sealed class FixSeedTexts2035MigrationTests
         var postgresql = FixSeedTexts2035Statements.ForPostgreSql().ToList();
         var sqlite = FixSeedTexts2035Statements.ForSqlite().ToList();
 
-        Assert.Equal(257, sqlite.Count);
+        // 1 transport delete + 3 SMTP clears + 2 designation fixes + article/subfamily pairs
+        var expected = 1 + 3 + 2
+            + FixSeedTexts2035Statements.ArticleDesignations.Length
+            + FixSeedTexts2035Statements.ArticleSubfamilyDesignations.Length;
+        Assert.Equal(expected, sqlite.Count);
         Assert.Equal(sqlite.Count, mysql.Count);
         Assert.Equal(sqlite.Count, sqlServer.Count);
         Assert.Equal(sqlite.Count, postgresql.Count);
