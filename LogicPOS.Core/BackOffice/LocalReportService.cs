@@ -11,6 +11,12 @@ namespace LogicPOS.Core.BackOffice;
 
 public sealed class LocalReportService : IReportService
 {
+    /// <summary>
+    /// Stable token when a stock filter report has no rows.
+    /// The Avalonia UI shows the existing alert dialog instead of writing a PDF.
+    /// </summary>
+    public const string NoRecordsError = "report-filter-no-records";
+
     private const int MaxRows = 2000;
 
     private readonly IServiceScopeFactory _scopes;
@@ -45,19 +51,15 @@ public sealed class LocalReportService : IReportService
             return ListingSaveResult.Fail(report.CustomerIsSupplier ? "Escolha um fornecedor." : "Escolha um cliente.");
         }
 
-        if (report.NeedsArticle && (filters.ArticleId is null || filters.ArticleId == Guid.Empty))
-        {
-            return ListingSaveResult.Fail("Escolha um artigo.");
-        }
-
         await using var scope = _scopes.CreateAsyncScope();
         byte[] bytes;
         try
         {
             var branded = scope.ServiceProvider.GetService<ILocalQuestPdfReportService>();
+            byte[]? brandedBytes = null;
             if (branded is not null)
             {
-                var brandedBytes = await branded.TryGenerateAsync(
+                brandedBytes = await branded.TryGenerateAsync(
                     new LocalReportPdfRequest
                     {
                         Key = report.Key,
@@ -79,14 +81,16 @@ public sealed class LocalReportService : IReportService
                             : filters.DocumentNumber.Trim()
                     },
                     cancellationToken);
-                if (brandedBytes is not null)
-                {
-                    bytes = brandedBytes;
-                }
-                else
-                {
-                    bytes = await BuildTablePdfAsync(scope.ServiceProvider, report, filters, cancellationToken);
-                }
+            }
+
+            if (report.Key is "stock-article" or "stock-supplier" or "stock-gain" && brandedBytes is null)
+            {
+                return ListingSaveResult.Fail(NoRecordsError);
+            }
+
+            if (brandedBytes is not null)
+            {
+                bytes = brandedBytes;
             }
             else
             {
@@ -273,6 +277,10 @@ public sealed class LocalReportService : IReportService
             })
             .Take(MaxRows)
             .ToListAsync(cancellationToken);
+        if (lines.Count == 0)
+        {
+            return [];
+        }
 
         var serials = lines.Select(item => item.SerialNumber).ToArray();
         var movements = database.StockMovements.AsNoTracking()

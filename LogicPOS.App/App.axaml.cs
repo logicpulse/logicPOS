@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using LogicPOS.App.Themes;
 using LogicPOS.App.Views;
 using LogicPOS.Core;
@@ -51,11 +52,13 @@ public partial class App : global::Avalonia.Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        Dispatcher.UIThread.UnhandledException += (_, args) =>
-        {
-            WriteCrash("UIThread.UnhandledException", args.Exception);
-            args.Handled = true;
-        };
+            Dispatcher.UIThread.UnhandledException += (_, args) =>
+            {
+                WriteCrash("UIThread.UnhandledException", args.Exception);
+                args.Handled = true;
+                if (IsRepeatingLayoutCrash(args.Exception))
+                    RecoverBlockedReports();
+            };
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -253,6 +256,63 @@ public partial class App : global::Avalonia.Application
             WriteCrash("NeedsFirstUserAsync", exception);
             return false;
         }
+    }
+
+    private static int _layoutRecovery;
+
+    /// <summary>
+    /// Avalonia remeasures a broken Grid every frame. Marking the exception handled
+    /// leaves the reports scrim white and blocks input until that overlay is hidden.
+    /// </summary>
+    private static bool IsRepeatingLayoutCrash(Exception? exception)
+    {
+        for (var current = exception; current is not null; current = current.InnerException)
+        {
+            if (current is ArgumentOutOfRangeException
+                && current.StackTrace?.Contains("Grid.MeasureCellsGroup", StringComparison.Ordinal) == true)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void RecoverBlockedReports()
+    {
+        if (Interlocked.Exchange(ref _layoutRecovery, 1) == 1)
+            return;
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            try
+            {
+                var window = (global::Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+                if (window is null)
+                    return;
+
+                var hidden = false;
+                foreach (var visual in window.GetVisualDescendants().OfType<Control>())
+                {
+                    if (visual.Name is "ReportsOverlay" or "FiltersOverlay" && visual.IsVisible)
+                    {
+                        visual.IsVisible = false;
+                        hidden = true;
+                    }
+                }
+
+                if (hidden)
+                    Toast.Warning(window, "Não foi possível mostrar os relatórios. Volte a tentar.");
+            }
+            catch (Exception exception)
+            {
+                WriteCrash("RecoverBlockedReports", exception);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _layoutRecovery, 0);
+            }
+        }, DispatcherPriority.Send);
     }
 
     internal static void WriteCrash(string source, Exception? exception)

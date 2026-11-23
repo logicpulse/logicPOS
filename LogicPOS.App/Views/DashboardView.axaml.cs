@@ -297,7 +297,7 @@ public partial class DashboardView : UserControl
         var hasQuarter = quarters.Any(point => point.Value != 0);
         QuarterEmpty.IsVisible = !hasQuarter;
         QuarterBars.IsVisible = hasQuarter;
-        FillHorizontalBars(QuarterBars, quarters, showLabelPrefix: true);
+        FillHorizontalBars(QuarterBars, quarters, stacked: false);
 
         var articles = _overview.TopArticles;
         var hasArticles = articles.Count > 0;
@@ -339,7 +339,7 @@ public partial class DashboardView : UserControl
         var hasFamilies = families.Any(item => item.Value != 0);
         FamilyEmpty.IsVisible = !hasFamilies;
         FamilyBars.IsVisible = hasFamilies;
-        FillHorizontalBars(FamilyBars, families, showLabelPrefix: false);
+        FillHorizontalBars(FamilyBars, families, stacked: true);
     }
 
     private List<DashboardChartPoint> BuildDailyPoints(IReadOnlyList<DashboardAmountPoint> daily)
@@ -415,52 +415,86 @@ public partial class DashboardView : UserControl
             .ToList();
     }
 
-    private void FillHorizontalBars(ItemsControl host, IReadOnlyList<BarItem> items, bool showLabelPrefix)
+    private void FillHorizontalBars(ItemsControl host, IReadOnlyList<BarItem> items, bool stacked)
     {
-        _ = showLabelPrefix;
-        var panel = new StackPanel { Spacing = 8 };
+        var panel = new StackPanel { Spacing = stacked ? 10 : 8 };
         var max = Math.Max(0.01d, items.Count == 0 ? 1d : items.Max(item => item.Value));
         for (var index = 0; index < items.Count; index++)
         {
             var item = items[index];
-            var row = new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitions("70,*,Auto"),
-                Margin = new Thickness(0, 0, 0, 2)
-            };
-            row.Children.Add(new TextBlock
-            {
-                Text = item.Label,
-                Classes = { "dash_bar_label" },
-                VerticalAlignment = VerticalAlignment.Center
-            });
-            var bar = new ProgressBar
-            {
-                Classes = { "dash_bar_progress" },
-                Minimum = 0,
-                Maximum = max,
-                Value = Math.Max(0, item.Value),
-                Height = 10,
-                MinHeight = 10,
-                VerticalAlignment = VerticalAlignment.Center,
-                Foreground = ChartBrushes.SeriesAt(index)
-            };
-            Grid.SetColumn(bar, 1);
-            row.Children.Add(bar);
-            var value = new TextBlock
-            {
-                Text = Money((decimal)item.Value),
-                Classes = { "dash_bar_value" },
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(8, 0, 0, 0)
-            };
-            Grid.SetColumn(value, 2);
-            row.Children.Add(value);
-            panel.Children.Add(row);
+            panel.Children.Add(stacked
+                ? BuildStackedBar(item, index, max)
+                : BuildInlineBar(item, index, max));
         }
 
         host.ItemsSource = new[] { panel };
     }
+
+    private Control BuildInlineBar(BarItem item, int index, double max)
+    {
+        var row = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("36,*,Auto"),
+            Margin = new Thickness(0, 0, 0, 2)
+        };
+        row.Children.Add(BarLabel(item.Label));
+        var bar = BarTrack(item, index, max);
+        Grid.SetColumn(bar, 1);
+        row.Children.Add(bar);
+        var value = BarValue(item.Value);
+        Grid.SetColumn(value, 2);
+        row.Children.Add(value);
+        return row;
+    }
+
+    private Control BuildStackedBar(BarItem item, int index, double max)
+    {
+        var row = new StackPanel { Spacing = 4 };
+        var header = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+        header.Children.Add(BarLabel(item.Label));
+        var value = BarValue(item.Value);
+        Grid.SetColumn(value, 1);
+        header.Children.Add(value);
+        row.Children.Add(header);
+        row.Children.Add(BarTrack(item, index, max));
+        return row;
+    }
+
+    private static TextBlock BarLabel(string label)
+    {
+        var text = new TextBlock
+        {
+            Text = label,
+            Classes = { "dash_bar_label" },
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            TextTrimming = TextTrimming.CharacterEllipsis
+        };
+        ToolTip.SetTip(text, label);
+        return text;
+    }
+
+    private TextBlock BarValue(double amount)
+        => new()
+        {
+            Text = Money((decimal)amount),
+            Classes = { "dash_bar_value" },
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(12, 0, 0, 0)
+        };
+
+    private static ProgressBar BarTrack(BarItem item, int index, double max)
+        => new()
+        {
+            Classes = { "dash_bar_progress" },
+            Minimum = 0,
+            Maximum = max,
+            Value = Math.Max(0, item.Value),
+            Height = 10,
+            MinHeight = 10,
+            VerticalAlignment = VerticalAlignment.Center,
+            Foreground = ChartBrushes.SeriesAt(index)
+        };
 
     private void FillTopArticles(IReadOnlyList<DashboardTopArticlePoint> articles)
     {

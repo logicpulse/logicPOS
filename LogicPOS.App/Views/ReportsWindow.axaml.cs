@@ -33,6 +33,8 @@ public partial class ReportsWindow : UserControl
         Period.SetRange(
             new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
             DateTime.Today.AddDays(1).AddSeconds(-1));
+        Period.PeriodChanged += (_, _) => RefreshQuickPeriodState();
+        RefreshQuickPeriodState();
         TouchFields.Attach(Filters);
         ApplyFilterVisibility(null);
         ListingNotice.BindToast(
@@ -52,20 +54,31 @@ public partial class ReportsWindow : UserControl
 
     public async Task ShowAsync()
     {
-        RelayoutForViewport();
-        Notice.Text = string.Empty;
-        FiltersNotice.Text = string.Empty;
-        FiltersOverlay.IsVisible = false;
-        _selected = null;
-        _catalog.Clear();
-        var service = AppComposition.Services?.GetService<IReportService>();
-        _catalog.AddRange(service?.Catalog ?? ReportCatalog.All);
-        var groups = _catalog.Select(item => item.Group).Distinct().ToList();
-        _group = groups.FirstOrDefault() ?? string.Empty;
-        BuildTabs(groups);
-        ShowGroup(_group);
-        ApplyFilterVisibility(null);
-        await LoadLookupsAsync();
+        try
+        {
+            RelayoutForViewport();
+            Notice.Text = string.Empty;
+            FiltersNotice.Text = string.Empty;
+            FiltersOverlay.IsVisible = false;
+            EmptyDataOverlay.IsVisible = false;
+            _selected = null;
+            _catalog.Clear();
+            var service = AppComposition.Services?.GetService<IReportService>();
+            _catalog.AddRange(service?.Catalog ?? ReportCatalog.All);
+            var groups = _catalog.Select(item => item.Group).Distinct().ToList();
+            _group = groups.FirstOrDefault() ?? string.Empty;
+            BuildTabs(groups);
+            ShowGroup(_group);
+            ApplyFilterVisibility(null);
+            await LoadLookupsAsync();
+        }
+        catch (Exception exception)
+        {
+            App.WriteCrash("ReportsWindow.ShowAsync", exception);
+            FiltersOverlay.IsVisible = false;
+            EmptyDataOverlay.IsVisible = false;
+            Closed?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private void OnReportsLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
@@ -273,6 +286,31 @@ public partial class ReportsWindow : UserControl
         SubfamilyPanel.IsVisible = report?.ShowSubfamily == true;
         SerialPanel.IsVisible = report?.ShowSerial == true;
         DocumentNumberPanel.IsVisible = report?.ShowDocumentNumber == true;
+        PackFilterRow(DatesRow, PeriodPanel, DocumentTypePanel, TerminalPanel);
+        PackFilterRow(FieldsRow, CustomerPanel, VatPanel, WarehousePanel, ArticlePanel);
+        PackFilterRow(ExtraRow, FamilyPanel, SubfamilyPanel, SerialPanel, DocumentNumberPanel);
+    }
+
+    /// <summary>
+    /// Visible fields pack from the left. These rows stay StackPanels: a Grid whose
+    /// child column is past ColumnDefinitions throws in MeasureCellsGroup every frame
+    /// and leaves the reports dialog white and blocked.
+    /// </summary>
+    private void PackFilterRow(StackPanel row, params Control[] fields)
+    {
+        var any = false;
+        foreach (var field in fields)
+        {
+            field.HorizontalAlignment = HorizontalAlignment.Left;
+            field.Width = ReferenceEquals(field, PeriodPanel) ? double.NaN : 260;
+            field.Margin = new Avalonia.Thickness(0, 0, field.IsVisible ? 12 : 0, 0);
+            if (field.IsVisible)
+            {
+                any = true;
+            }
+        }
+
+        row.IsVisible = any;
     }
 
     private async Task LoadLookupsAsync()
@@ -378,6 +416,7 @@ public partial class ReportsWindow : UserControl
     private void OnFiltersCancelClick(object? sender, RoutedEventArgs e)
     {
         FiltersOverlay.IsVisible = false;
+        EmptyDataOverlay.IsVisible = false;
         FiltersNotice.Text = string.Empty;
         ApplyFilterVisibility(null);
     }
@@ -435,19 +474,32 @@ public partial class ReportsWindow : UserControl
             return;
         }
 
-        SetActiveNotice("A gerar...");
-        var result = await service.GenerateAsync(_selected.Key, filters);
-        if (result.Succeeded == false || string.IsNullOrWhiteSpace(result.Message))
-        {
-            SetActiveNotice(result.Error ?? "Não há dados para este relatório no intervalo indicado.");
-            return;
-        }
-
         SetActiveNotice(string.Empty);
-        FiltersOverlay.IsVisible = false;
-        if (PreviewRequested is not null)
+        Busy.Show();
+        try
         {
-            await PreviewRequested.Invoke(result.Message, _selected.Name);
+            var result = await service.GenerateAsync(_selected.Key, filters);
+            if (string.Equals(result.Error, LocalReportService.NoRecordsError, StringComparison.Ordinal))
+            {
+                ShowNoRecordsAlert();
+                return;
+            }
+
+            if (result.Succeeded == false || string.IsNullOrWhiteSpace(result.Message))
+            {
+                SetActiveNotice(result.Error ?? "Não há dados para este relatório no intervalo indicado.");
+                return;
+            }
+
+            FiltersOverlay.IsVisible = false;
+            if (PreviewRequested is not null)
+            {
+                await PreviewRequested.Invoke(result.Message, _selected.Name);
+            }
+        }
+        finally
+        {
+            Busy.Hide();
         }
     }
 
@@ -472,6 +524,68 @@ public partial class ReportsWindow : UserControl
     private void OnCloseClick(object? sender, RoutedEventArgs e)
     {
         FiltersOverlay.IsVisible = false;
+        EmptyDataOverlay.IsVisible = false;
+        Busy.Hide();
         Closed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void ShowNoRecordsAlert()
+    {
+        SetActiveNotice(string.Empty);
+        EmptyDataTitle.Text = PreferenceLabels.Text("global_information", "Informação");
+        EmptyDataMessage.Text = PreferenceLabels.Text(
+            "dialog_message_report_filter_no_records_with_criteria",
+            "Os filtros atuais não encontram registos com essas condições, reformule os filtros e tente novamente.");
+        EmptyDataOverlay.IsVisible = true;
+    }
+
+    private void OnEmptyDataOkClick(object? sender, RoutedEventArgs e)
+        => EmptyDataOverlay.IsVisible = false;
+
+    private void OnQuickDayClick(object? sender, RoutedEventArgs e)
+        => ApplyPreset(DateTime.Today, DateTime.Today);
+
+    private void OnQuickMonthClick(object? sender, RoutedEventArgs e)
+    {
+        var today = DateTime.Today;
+        ApplyPreset(new DateTime(today.Year, today.Month, 1), today);
+    }
+
+    private void OnQuickYearClick(object? sender, RoutedEventArgs e)
+    {
+        var today = DateTime.Today;
+        ApplyPreset(new DateTime(today.Year, 1, 1), today);
+    }
+
+    private void ApplyPreset(DateTime startDay, DateTime endDay)
+        => Period.SetRange(startDay.Date, endDay.Date.AddDays(1).AddSeconds(-1), raise: true);
+
+    private void RefreshQuickPeriodState()
+    {
+        var today = DateTime.Today;
+        var day = IsPreset(today, today);
+        var month = IsPreset(new DateTime(today.Year, today.Month, 1), today);
+        var year = IsPreset(new DateTime(today.Year, 1, 1), today);
+        SetQuickOn(QuickDayButton, day);
+        SetQuickOn(QuickMonthButton, month && day == false);
+        SetQuickOn(QuickYearButton, year && month == false);
+    }
+
+    private bool IsPreset(DateTime startDay, DateTime endDay)
+    {
+        var end = endDay.Date.AddDays(1).AddSeconds(-1);
+        return Period.Start == startDay.Date && Period.End == end;
+    }
+
+    private static void SetQuickOn(Button button, bool on)
+    {
+        if (on)
+        {
+            button.Classes.Add("bo_reports_quick_on");
+        }
+        else
+        {
+            button.Classes.Remove("bo_reports_quick_on");
+        }
     }
 }

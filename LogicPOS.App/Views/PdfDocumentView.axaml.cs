@@ -22,6 +22,9 @@ public partial class PdfDocumentView : UserControl
     }
 
     private readonly List<PdfPage> _pages = new();
+    private byte[]? _pdfBytes;
+    private int _pageCount;
+    private int _renderGeneration;
     private TaskCompletionSource<bool>? _closed;
     private string? _pdfPath;
     private string? _documentTitle;
@@ -67,7 +70,7 @@ public partial class PdfDocumentView : UserControl
             : null;
         _documentTitle = string.IsNullOrWhiteSpace(title) ? "Documento" : title;
         TitleText.Text = _documentTitle;
-        SetStatus("A carregar...");
+        Busy.Show();
         PageLabel.Text = string.Empty;
         ZoomLabel.Text = string.Empty;
         PreviousButton.IsEnabled = false;
@@ -77,6 +80,9 @@ public partial class PdfDocumentView : UserControl
         LoadPrinterChoices(ResolvePreferredPrinter());
         _zoomMode = ZoomMode.Page;
         _pageIndex = 0;
+        _pdfBytes = null;
+        _pageCount = 0;
+        _renderGeneration++;
         ClearPages();
         _closed = new TaskCompletionSource<bool>();
         _ = LoadAsync(path);
@@ -220,32 +226,39 @@ public partial class PdfDocumentView : UserControl
         try
         {
             var bytes = await File.ReadAllBytesAsync(path);
+            _pdfBytes = bytes;
             var dpi = _barcodeMode ? 220 : 130;
-            var pngPages = await Task.Run(() => RenderPages(bytes, dpi));
-            ClearPages();
-            foreach (var png in pngPages)
+            _pageCount = await Task.Run(() => PDFtoImage.Conversion.GetPageCount(bytes));
+            if (_pageCount <= 0)
             {
-                var bitmap = new Bitmap(new MemoryStream(png));
-                var view = new Image
-                {
-                    Source = bitmap,
-                    Classes = { "bo_pdf_page" }
-                };
-                var sheet = new Border
-                {
-                    Classes = { "bo_pdf_sheet" },
-                    Child = view
-                };
-                _pages.Add(new PdfPage(bitmap, view));
-                PagesHost.Children.Add(sheet);
+                Busy.Hide();
+                SetStatus("Não foi possível mostrar o documento.");
+                return;
             }
 
-            SetStatus(string.Empty);
-            ShowPage(0);
-            ApplyFit();
+            // Stock reports can run to well over a hundred pages. Rasterizing every
+            // page up front exhausts memory and the preview never appears.
+            if (_pageCount <= 8)
+            {
+                var pngPages = await Task.Run(() => RenderPages(bytes, dpi));
+                ClearPages();
+                foreach (var png in pngPages)
+                {
+                    AddPage(png);
+                }
+
+                Busy.Hide();
+                SetStatus(string.Empty);
+                ShowPage(0);
+                ApplyFit();
+                return;
+            }
+
+            await ShowSinglePageAsync(0);
         }
         catch (Exception)
         {
+            Busy.Hide();
             SetStatus("Não foi possível mostrar o documento.");
         }
     }
@@ -266,20 +279,37 @@ public partial class PdfDocumentView : UserControl
         return pages;
     }
 
-    private void OnPreviousClick(object? sender, RoutedEventArgs e)
+    private async void OnPreviousClick(object? sender, RoutedEventArgs e)
     {
-        if (_pageIndex > 0)
+        if (_pageIndex <= 0)
         {
-            ShowPage(_pageIndex - 1);
+            return;
         }
+
+        if (_pdfBytes is not null && _pageCount > 8)
+        {
+            await ShowSinglePageAsync(_pageIndex - 1);
+            return;
+        }
+
+        ShowPage(_pageIndex - 1);
     }
 
-    private void OnNextClick(object? sender, RoutedEventArgs e)
+    private async void OnNextClick(object? sender, RoutedEventArgs e)
     {
-        if (_pageIndex < _pages.Count - 1)
+        var last = (_pdfBytes is not null && _pageCount > 8 ? _pageCount : _pages.Count) - 1;
+        if (_pageIndex >= last)
         {
-            ShowPage(_pageIndex + 1);
+            return;
         }
+
+        if (_pdfBytes is not null && _pageCount > 8)
+        {
+            await ShowSinglePageAsync(_pageIndex + 1);
+            return;
+        }
+
+        ShowPage(_pageIndex + 1);
     }
 
     private void OnZoomOutClick(object? sender, RoutedEventArgs e)
@@ -553,7 +583,75 @@ public partial class PdfDocumentView : UserControl
 
     private void OnCloseClick(object? sender, RoutedEventArgs e)
     {
+        _renderGeneration++;
+        Busy.Hide();
         _closed?.TrySetResult(true);
+    }
+
+    private async Task ShowSinglePageAsync(int index)
+    {
+        if (_pdfBytes is null || _pageCount <= 0)
+        {
+            return;
+        }
+
+        index = Math.Clamp(index, 0, _pageCount - 1);
+        var generation = ++_renderGeneration;
+        Busy.Show();
+        PreviousButton.IsEnabled = false;
+        NextButton.IsEnabled = false;
+        try
+        {
+            var dpi = _barcodeMode ? 220 : 130;
+            var png = await Task.Run(() => RenderPage(_pdfBytes, index, dpi));
+            if (generation != _renderGeneration)
+            {
+                return;
+            }
+
+            ClearPages();
+            AddPage(png);
+            _pageIndex = index;
+            PageLabel.Text = $"{_pageIndex + 1} / {_pageCount}";
+            PreviousButton.IsEnabled = _pageIndex > 0;
+            NextButton.IsEnabled = _pageIndex < _pageCount - 1;
+            Busy.Hide();
+            SetStatus(string.Empty);
+            ApplyFit();
+        }
+        catch (Exception)
+        {
+            if (generation == _renderGeneration)
+            {
+                Busy.Hide();
+                SetStatus("Não foi possível mostrar o documento.");
+            }
+        }
+    }
+
+    private void AddPage(byte[] png)
+    {
+        var bitmap = new Bitmap(new MemoryStream(png));
+        var view = new Image
+        {
+            Source = bitmap,
+            Classes = { "bo_pdf_page" }
+        };
+        var sheet = new Border
+        {
+            Classes = { "bo_pdf_sheet" },
+            Child = view
+        };
+        _pages.Add(new PdfPage(bitmap, view));
+        PagesHost.Children.Add(sheet);
+    }
+
+    private static byte[] RenderPage(byte[] pdf, int index, int dpi)
+    {
+        var options = new PDFtoImage.RenderOptions { Dpi = Math.Clamp(dpi, 96, 300) };
+        using var image = PDFtoImage.Conversion.ToImage(pdf, index, password: null, options: options);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 90);
+        return data.ToArray();
     }
 
     private void ShowPage(int index)

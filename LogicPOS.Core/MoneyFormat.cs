@@ -191,6 +191,10 @@ public static class MoneyFormat
         culture.NumberFormat.CurrencySymbol = symbol;
         culture.NumberFormat.CurrencyPositivePattern = 3;
         culture.NumberFormat.CurrencyNegativePattern = 8;
+        culture.NumberFormat.CurrencyGroupSeparator = ".";
+        culture.NumberFormat.NumberGroupSeparator = ".";
+        culture.NumberFormat.CurrencyDecimalSeparator = ",";
+        culture.NumberFormat.NumberDecimalSeparator = ",";
         return culture;
     }
 

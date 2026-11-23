@@ -53,7 +53,7 @@ public sealed class ReportDefinition
             or ReportFilterProfile.StockMovements
             or ReportFilterProfile.StockArticleGain;
 
-    public bool NeedsArticle => FilterProfile is ReportFilterProfile.StockArticle;
+    public bool NeedsArticle => false;
 
     public bool ShowWarehouse => FilterProfile is ReportFilterProfile.StockWarehouse;
 

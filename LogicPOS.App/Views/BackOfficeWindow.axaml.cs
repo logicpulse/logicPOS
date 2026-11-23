@@ -1275,10 +1275,18 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         ShowPage(title);
     }
 
-    private void OpenReports()
+    private async void OpenReports()
     {
         ReportsOverlay.IsVisible = true;
-        _ = ReportsHost.ShowAsync();
+        try
+        {
+            await ReportsHost.ShowAsync();
+        }
+        catch (Exception exception)
+        {
+            App.WriteCrash("OpenReports", exception);
+            ReportsOverlay.IsVisible = false;
+        }
     }
 
     private void OpenSaftFromMenu(string title)

@@ -2303,7 +2303,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         ReportsOverlay.IsVisible = reportsOpen;
     }
 
-    private void ShowReports()
+    private async void ShowReports()
     {
         if (RequireAccess(_access.AllowsReports, "Não tem permissão para ver relatórios.") == false)
         {
@@ -2313,7 +2313,15 @@ public partial class PosWindow : UserControl, IOfficeSurface
         HideListingOverlays();
         ReportsOverlay.IsVisible = true;
         FitHostedOverlays();
-        _ = ReportsHost.ShowAsync();
+        try
+        {
+            await ReportsHost.ShowAsync();
+        }
+        catch (Exception exception)
+        {
+            App.WriteCrash("ShowReports", exception);
+            ReportsOverlay.IsVisible = false;
+        }
     }
 
     private void HideListingOverlays()

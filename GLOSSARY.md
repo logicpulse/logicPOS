@@ -72,6 +72,26 @@ _Avoid_: DLL, logicpos.license
 O identificador da máquina no formato `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`, gerado como o GTK já pedia à API.
 _Avoid_: IntelliLock, MachineGuid
 
+**Conta Cloud**:
+A instalação logicPOS na API de produção, identificada pelo Client ID. No logicERP agrupa só licenças da edição Cloud, e cada licença está no máximo numa conta. A licença não guarda o Client ID.
+_Avoid_: Cliente, cliente do ERP, licença Business, conta de outro produto
+
+**Licença Cloud do posto**:
+Uma licença da edição Cloud no logicERP, com o hardware id desta máquina, agrupada numa só conta Cloud. Confirma-se na inscrição e em cada arranque, antes do PIN. Sem resposta do logicERP um posto já inscrito mantém-se 24 horas após a última confirmação; sem a API não há PIN nem cópia local dos segredos.
+_Avoid_: Cliente, ficheiro de licença, lugares em simultâneo, licença do servidor da API, licença Business
+
+**Inscrição do posto**:
+A autorização deste posto Avalonia em Cloud, feita por um utilizador activo com o Client ID, o seu login e a palavra-passe do portal. Se o portal exige código, a inscrição também o exige. Sem a licença Cloud do posto não existe. A entrada do dia, depois disto, é o PIN. O modo local, o modo API e o portal não a usam.
+_Avoid_: sessão, login com PIN, registo de licença
+
+**Bloqueio de inscrição**:
+Cinco palavras-passe do portal erradas impedem nova inscrição neste posto durante cinco minutos. Não mexe no PIN dos outros utilizadores.
+_Avoid_: bloqueio de PIN, bloquear a conta
+
+**Bloqueio de PIN**:
+Cinco introduções erradas seguidas do PIN impedem esse utilizador durante cinco minutos neste posto, no ecrã de entrada e na troca de utilizador. Os outros utilizadores deste posto continuam, e este utilizador noutro posto da mesma conta também.
+_Avoid_: bloquear o posto, bloquear a conta, palavra-passe do portal
+
 **Migrations**:
 A atualização do esquema da base. O modelo é um só, em `logicPOS/src`. Cada motor (SQLite, MySQL, SQL Server, PostgreSQL) tem o seu projeto de migrations, e a app e a API usam esses mesmos projetos. No modo local a app aplica-as ao arrancar. No modo LogicPulse correm na API. O instalador não as corre.
 _Avoid_: migração da 1.4, migrador, modelo da API

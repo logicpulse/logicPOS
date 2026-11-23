@@ -93,58 +93,109 @@
                     <Border Classes="bo_reports_body">
                         <StackPanel x:Name="Filters" Classes="bo_new_doc_fields bo_reports_filters_body" Spacing="14">
                             <TextBlock x:Name="FiltersReportName" Classes="bo_reports_filter_title" TextWrapping="Wrap" />
-                            <Grid Classes="bo_reports_filter_row" ColumnDefinitions="2*,*,*" ColumnSpacing="12">
+                            <StackPanel x:Name="DatesRow" Classes="bo_reports_filter_row" Orientation="Horizontal">
                                 <StackPanel x:Name="PeriodPanel">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="Período" />
                                     <views:PeriodRangeField x:Name="Period" />
+                                    <StackPanel Classes="bo_reports_quick_period" Orientation="Horizontal" Spacing="6">
+                                        <Button x:Name="QuickDayButton"
+                                                Classes="bo_reports_quick_button"
+                                                Content="Dia"
+                                                Click="OnQuickDayClick"
+                                                ToolTip.Tip="Repor o dia de hoje" />
+                                        <Button x:Name="QuickMonthButton"
+                                                Classes="bo_reports_quick_button"
+                                                Content="Mês"
+                                                Click="OnQuickMonthClick"
+                                                ToolTip.Tip="Repor o mês actual" />
+                                        <Button x:Name="QuickYearButton"
+                                                Classes="bo_reports_quick_button"
+                                                Content="Ano"
+                                                Click="OnQuickYearClick"
+                                                ToolTip.Tip="Repor o ano actual" />
+                                    </StackPanel>
                                 </StackPanel>
-                                <StackPanel x:Name="DocumentTypePanel" Grid.Column="1" IsVisible="False">
+                                <StackPanel x:Name="DocumentTypePanel" IsVisible="False">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="Tipo de documento" />
                                     <ComboBox x:Name="DocumentTypeBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
-                                <StackPanel x:Name="TerminalPanel" Grid.Column="2" IsVisible="False">
+                                <StackPanel x:Name="TerminalPanel" IsVisible="False">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="Terminal" />
                                     <ComboBox x:Name="TerminalBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
-                            </Grid>
-                            <Grid Classes="bo_reports_filter_row" ColumnDefinitions="*,*,*,*" ColumnSpacing="12">
+                            </StackPanel>
+                            <StackPanel x:Name="FieldsRow" Classes="bo_reports_filter_row" Orientation="Horizontal">
                                 <StackPanel x:Name="CustomerPanel" IsVisible="False">
                                     <TextBlock x:Name="CustomerCaption" Classes="bo_reports_filter_caption" Text="Cliente" />
                                     <ComboBox x:Name="CustomerBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
-                                <StackPanel x:Name="VatPanel" Grid.Column="1" IsVisible="False">
+                                <StackPanel x:Name="VatPanel" IsVisible="False">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="Taxa IVA" />
                                     <ComboBox x:Name="VatBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
-                                <StackPanel x:Name="WarehousePanel" Grid.Column="2" IsVisible="False">
+                                <StackPanel x:Name="WarehousePanel" IsVisible="False">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="Armazém" />
                                     <ComboBox x:Name="WarehouseBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
-                                <StackPanel x:Name="ArticlePanel" Grid.Column="3" IsVisible="False">
+                                <StackPanel x:Name="ArticlePanel" IsVisible="False">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="Artigo" />
                                     <ComboBox x:Name="ArticleBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
-                            </Grid>
-                            <Grid Classes="bo_reports_filter_row" ColumnDefinitions="*,*,*,*" ColumnSpacing="12">
+                            </StackPanel>
+                            <StackPanel x:Name="ExtraRow" Classes="bo_reports_filter_row" Orientation="Horizontal">
                                 <StackPanel x:Name="FamilyPanel" IsVisible="False">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="Família" />
                                     <ComboBox x:Name="FamilyBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
-                                <StackPanel x:Name="SubfamilyPanel" Grid.Column="1" IsVisible="False">
+                                <StackPanel x:Name="SubfamilyPanel" IsVisible="False">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="Subfamília" />
                                     <ComboBox x:Name="SubfamilyBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
-                                <StackPanel x:Name="SerialPanel" Grid.Column="2" IsVisible="False">
+                                <StackPanel x:Name="SerialPanel" IsVisible="False">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="N.º de série" />
                                     <TextBox x:Name="SerialBox" Classes="bo_new_doc_text bo_reports_filter_input" />
                                 </StackPanel>
-                                <StackPanel x:Name="DocumentNumberPanel" Grid.Column="3" IsVisible="False">
+                                <StackPanel x:Name="DocumentNumberPanel" IsVisible="False">
                                     <TextBlock Classes="bo_reports_filter_caption" Text="N.º documento" />
                                     <TextBox x:Name="DocumentNumberBox" Classes="bo_new_doc_text bo_reports_filter_input" />
                                 </StackPanel>
-                            </Grid>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <views:ListingBusy x:Name="Busy" ZIndex="30" />
+
+        <Panel x:Name="EmptyDataOverlay" Classes="login_alert_overlay" ZIndex="40" IsVisible="False">
+            <Border Classes="login_alert_frame login_alert_message_box">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                            <TextBlock x:Name="EmptyDataTitle" Classes="login_alert_title" Text="Informação" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnEmptyDataOkClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <Grid Classes="login_alert_body">
+                        <Image Classes="login_alert_symbol"
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info.png" />
+                        <TextBlock x:Name="EmptyDataMessage"
+                                   Classes="login_alert_message"
+                                   TextWrapping="Wrap" />
+                    </Grid>
                 </DockPanel>
             </Border>
         </Panel>
