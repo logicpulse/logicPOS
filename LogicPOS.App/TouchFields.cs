@@ -78,7 +78,6 @@ internal static class TouchFields
         var keyboardTip = LogicPOS.Core.BackOffice.DocumentsListingText.Tip("virtual-keyboard");
         ToolTip.SetTip(button, keyboardTip);
         Avalonia.Automation.AutomationProperties.SetName(button, keyboardTip);
-        button.Tag = "docs-tip:virtual-keyboard";
         button.Click += (_, _) => TouchKeyboard.Show(showKeyboard());
         if (box is TextBox text)
         {

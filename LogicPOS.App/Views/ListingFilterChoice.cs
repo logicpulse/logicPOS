@@ -308,7 +308,6 @@ public static class ListingFilters
             VerticalAlignment = VerticalAlignment.Center
         };
         ToolTip.SetTip(button, DocumentsListingText.Tip("open-list"));
-        button.Tag = "docs-tip:open-list";
         // Tunnel PointerPressed (not Click): Avalonia AutoCompleteBox closes the popup when
         // focus/pointer settles after a Button.Click. Defer open past that close.
         button.AddHandler(InputElement.PointerPressedEvent, (_, e) =>

@@ -168,12 +168,7 @@
 
         <views:ListingBusy x:Name="Busy" ZIndex="30" />
 
-        <Panel x:Name="EmptyDataOverlay"
-               Classes="login_alert_overlay"
-               ZIndex="40"
-               IsVisible="False"
-               Focusable="True"
-               KeyDown="OnEmptyDataOverlayKeyDown">
+        <Panel x:Name="EmptyDataOverlay" Classes="login_alert_overlay" ZIndex="40" IsVisible="False">
             <Border Classes="login_alert_frame login_alert_message_box">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">

@@ -23,7 +23,6 @@
                      KeyUp="OnEndKeyUp" />
             <Button x:Name="CalendarButton"
                     Classes="bo_listing_icon_button bo_period_calendar_button"
-                    Tag="docs-tip:choose-calendar"
                     Click="OnSummaryClick"
                     ToolTip.Tip="Escolher no calendário">
                 <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />

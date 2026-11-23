@@ -196,19 +196,19 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:CompileBindings="False">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="0">
-                                    <Button Classes="bo_doc_icon_button" Tag="docs-tip:copy" Click="OnRowCopyClick" IsVisible="{Binding CanCopy}" ToolTip.Tip="Copiar">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowCopyClick" IsVisible="{Binding CanCopy}" ToolTip.Tip="{Binding CopyTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_b.svg" />
                                     </Button>
-                                    <Button Classes="bo_doc_icon_button" Tag="docs-tip:origin-document" Click="OnRowUseAsOriginClick" IsVisible="{Binding CanUseAsSource}" ToolTip.Tip="Documento de origem">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowUseAsOriginClick" IsVisible="{Binding CanUseAsSource}" ToolTip.Tip="{Binding OriginDocumentTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_origem_b.svg" />
                                     </Button>
-                                    <Button Classes="bo_doc_icon_button" Tag="docs-tip:view" Click="OnRowViewClick" IsVisible="{Binding CanView}" ToolTip.Tip="Ver">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" IsVisible="{Binding CanView}" ToolTip.Tip="{Binding ViewTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg" />
                                     </Button>
-                                    <Button Classes="bo_doc_icon_button" Tag="docs-tip:print" Click="OnRowPrintClick" IsVisible="{Binding CanPrint}" ToolTip.Tip="Imprimir">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowPrintClick" IsVisible="{Binding CanPrint}" ToolTip.Tip="{Binding PrintTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_b.svg" />
                                     </Button>
-                                    <Button Classes="bo_doc_icon_button" Tag="docs-tip:edit" Click="OnRowEditClick" IsVisible="{Binding CanEdit}" ToolTip.Tip="Editar">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowEditClick" IsVisible="{Binding CanEdit}" ToolTip.Tip="{Binding EditTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
                                     </Button>
                                 </StackPanel>
