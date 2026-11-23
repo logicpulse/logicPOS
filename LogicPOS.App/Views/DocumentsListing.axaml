@@ -187,7 +187,7 @@
                     <DataGridTextColumn Header="Número do Doc." Binding="{Binding Number}" SortMemberPath="Number" Width="180" MinWidth="180" IsReadOnly="True" />
                     <DataGridTextColumn Header="Estado" Binding="{Binding Status}" SortMemberPath="Status" Width="100" MinWidth="100" IsReadOnly="True" />
                     <DataGridTextColumn Header="Entidade" Binding="{Binding EntityName}" SortMemberPath="EntityName" Width="*" MinWidth="140" IsReadOnly="True" />
-                    <DataGridTextColumn Header="NIF" Binding="{Binding TaxId}" SortMemberPath="TaxId" Width="120" MinWidth="80" IsReadOnly="True" />
+                    <DataGridTextColumn Header="NIF" Binding="{Binding TaxId}" SortMemberPath="TaxId" Width="150" MinWidth="120" IsReadOnly="True" />
                     <DataGridTextColumn Header="Total Final" Binding="{Binding FinalTotalText}" SortMemberPath="FinalTotalText" Width="140" MinWidth="140" IsReadOnly="True" />
                     <DataGridTextColumn Header="Valor Pago" Binding="{Binding PaidAmountText}" SortMemberPath="PaidAmountText" Width="140" MinWidth="140" IsReadOnly="True" />
                     <DataGridTextColumn Header="Valor em Dívida" Binding="{Binding DebitAmountText}" SortMemberPath="DebitAmountText" Width="170" MinWidth="170" IsReadOnly="True" />
