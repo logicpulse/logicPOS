@@ -227,9 +227,8 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             CurrencyCode = currency?.Acronym ?? "EUR",
             CurrencyAmount = request.CurrencyAmount,
             ExchangeRate = request.ExchangeRate,
-            Notes = string.IsNullOrWhiteSpace(request.Notes)
-                ? string.Join(",", documents.Select(item => item.Id))
-                : request.Notes
+            // User notes only — document links live on Payments / RelatedDocs, not as GUIDs in Notes.
+            Notes = string.IsNullOrWhiteSpace(request.Notes) ? string.Empty : request.Notes.Trim()
         };
         if (_systemInformation.IsPortugal()
             && string.IsNullOrWhiteSpace(series.ATDocCodeValidationSeries) == false)

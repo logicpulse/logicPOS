@@ -2657,9 +2657,14 @@ public partial class EntityListing : UserControl
 
         return names
             .Where(name => string.IsNullOrWhiteSpace(name) == false)
-            .Select(name => new ListingChoice(
-                name,
-                PreferenceLabels.Text("enum_" + field.Key + "_" + name, name)))
+            .Select(name =>
+            {
+                var fromCore = field.Choices?.FirstOrDefault(item =>
+                    string.Equals(item.Value, name, StringComparison.Ordinal))?.Label;
+                return new ListingChoice(
+                    name,
+                    PreferenceLabels.Text("enum_" + field.Key + "_" + name, fromCore ?? name));
+            })
             .ToList();
     }
 
@@ -3017,6 +3022,12 @@ public partial class EntityListing : UserControl
         if (action is "cash-in" or "cash-out")
         {
             OpenPrompt(action, "Caixa", "Valor", "0,00");
+            return;
+        }
+
+        if (action == "open-session")
+        {
+            OpenPrompt(action, "Abrir sessão", "Valor inicial em caixa", "0,00");
             return;
         }
 
