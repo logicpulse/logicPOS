@@ -50,7 +50,7 @@ public static class ListingColumns
         ["Unidades de medida"] = CodeDesignationAcronymUpdated,
         ["Moeda"] = CodeDesignationAcronymUpdated,
         ["Tipo de documento"] = CodeDesignationAcronymUpdated,
-        ["Cond. de Pagamento"] = CodeDesignationAcronymUpdated,
+        ["Condições de Pagamento"] = CodeDesignationAcronymUpdated,
         ["Métodos de pagamento"] = CodeDesignationAcronymUpdated,
         ["Motivo de isenção de IVA"] = CodeDesignationAcronymUpdated,
         ["Subfamílias"] =
@@ -138,6 +138,7 @@ public static class ListingColumns
             ("Code", "Código"),
             ("Designation", "Designação"),
             ("PlaceId", "Locais"),
+            ("Status", "Estado"),
             ("UpdatedAt", "Atualizado em")
         ],
         ["Terminais"] =
@@ -157,9 +158,11 @@ public static class ListingColumns
             ("Designation", "Designação"),
             ("UpdatedAt", "Atualizado em")
         ],
-        ["Sessões de Trab."] =
+        ["Sessões de Trabalho"] =
         [
             ("Designation", "Designação"),
+            ("Type", "Tipo"),
+            ("Status", "Estado"),
             ("StartDate", "Data Inicial"),
             ("EndDate", "Data Final")
         ],

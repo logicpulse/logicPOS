@@ -76,7 +76,7 @@
                         <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
                                    Text="Nos passos seguintes indica o nome, escolhe o perfil (por defeito Proprietário, com acesso total) e define o PIN de acesso. Pode também, se quiser, definir uma palavra-passe para o portal/webapp." />
                         <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
-                                   Text="No fim volta ao ecrã de entrada com o novo utilizador seleccionado. Como o PIN acabou de ser definido, não lhe será pedido que o altere." />
+                                   Text="No fim volta ao ecrã de entrada com o novo utilizador selecionado. Como o PIN acabou de ser definido, não lhe será pedido que o altere." />
                     </StackPanel>
 
                     <StackPanel x:Name="UserStep" Classes="bo_fiscal_wizard_form" IsVisible="False">

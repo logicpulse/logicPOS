@@ -1847,7 +1847,7 @@ Um fortzufahren, drücken Sie Ja, um alle Terminals zu schließen, oder drücken
     <value>Möchten Sie ein Dokument auf dem Quittungsdrucker drucken?</value>
   </data>
   <data name="global_printer_thermal_cut_command" xml:space="preserve">
-    <value>Commando de Corte.</value>
+    <value>Schneidebefehl.</value>
   </data>
   <data name="global_printer_thermal_encoding" xml:space="preserve">
     <value>Codierung</value>

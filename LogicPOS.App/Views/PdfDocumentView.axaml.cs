@@ -410,6 +410,7 @@ public partial class PdfDocumentView : UserControl
                 if (handled
                     && printError is not null
                     && printError.Contains("não configurada", StringComparison.OrdinalIgnoreCase) == false
+                    && printError.Contains("Não há impressora térmica", StringComparison.OrdinalIgnoreCase) == false
                     && printError.Contains("não encontrada", StringComparison.OrdinalIgnoreCase) == false)
                 {
                     SetStatus(string.Empty);

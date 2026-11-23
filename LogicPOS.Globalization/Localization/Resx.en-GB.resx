@@ -1854,7 +1854,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Printers</value>
   </data>
   <data name="global_printer_thermal_cut_command" xml:space="preserve">
-    <value>Commando de Corte</value>
+    <value>Cut Command</value>
   </data>
   <data name="global_printer_thermal_encoding" xml:space="preserve">
     <value>Encoding</value>

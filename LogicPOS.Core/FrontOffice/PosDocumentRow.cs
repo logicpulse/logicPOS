@@ -57,7 +57,8 @@ public sealed class PosDocumentRow
 
     public string EditActionText => CanEdit ? "Editar" : "Ver";
 
-    public bool CanDelete => Status != "Anulado";
+    /// <summary>Only drafts may be removed; fiscal documents are cancelled, never deleted.</summary>
+    public bool CanDelete => IsDraft || string.Equals(Status, "Rascunho", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>GTK: row may be used as Documento de origem (not draft/cancelled/invoiced; valid source type).</summary>
     public bool CanUseAsSource => PosDocumentRules.CanUseAsSourceDocument(

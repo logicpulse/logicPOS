@@ -129,7 +129,7 @@ public sealed class LoginService : ILoginService
 
         if (user.IsDeleted)
         {
-            return new LoginAttemptResult(false, "Utilizador desactivado");
+            return new LoginAttemptResult(false, "Utilizador desativado");
         }
 
         if (_passwordHasher.VerifyPassword(pin, user.AccessPin) == false)

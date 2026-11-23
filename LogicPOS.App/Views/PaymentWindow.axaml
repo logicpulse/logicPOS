@@ -20,7 +20,7 @@
                                    Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
                             <TextBlock Classes="login_alert_title" Text="Pagamentos" />
                         </StackPanel>
-                        <Button Grid.Column="1" Classes="bo_window_button" Click="OnCancelClick" ToolTip.Tip="Fechar">
+                        <Button x:Name="CloseHeaderButton" Grid.Column="1" Classes="bo_window_button" Click="OnCancelClick" ToolTip.Tip="Fechar">
                             <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                         </Button>
                     </Grid>
@@ -28,7 +28,7 @@
 
                 <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">
                     <UniformGrid Classes="pos_pay_actions" Columns="8" Rows="1">
-                        <Button Classes="login_alert_action pos_pay_action" Click="OnInvoiceClick">
+                        <Button x:Name="InvoiceButton" Classes="login_alert_action pos_pay_action" Click="OnInvoiceClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_toolbar_finance_document.png" />
@@ -46,38 +46,38 @@
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_clients.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Novo Cli." />
+                                <TextBlock Classes="login_alert_action_text" Text="Novo Cliente" />
                             </StackPanel>
                         </Button>
                         <Button x:Name="FullPaymentButton" Classes="login_alert_action pos_pay_action selected">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_full.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Pag. Total" />
+                                <TextBlock Classes="login_alert_action_text" Text="Pagamento Total" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action pos_pay_action" Click="OnPartialPaymentClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_partial.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Pag. Parcial" />
+                                <TextBlock Classes="login_alert_action_text" Text="Pagamento Parcial" />
                             </StackPanel>
                         </Button>
                         <Button x:Name="MixedPaymentButton" Classes="login_alert_action pos_pay_action" Click="OnMixedPaymentClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_ticketpad_split_payments.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Pag. Misto" />
+                                <TextBlock Classes="login_alert_action_text" Text="Pagamento Misto" />
                             </StackPanel>
                         </Button>
-                        <Button Classes="login_alert_action pos_pay_action pos_pay_action_ok" Click="OnConfirmClick">
+                        <Button x:Name="ConfirmButton" Classes="login_alert_action pos_pay_action pos_pay_action_ok" Click="OnConfirmClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Ok" />
                             </StackPanel>
                         </Button>
-                        <Button Classes="login_alert_action pos_pay_action" Click="OnCancelClick">
+                        <Button x:Name="CancelButton" Classes="login_alert_action pos_pay_action" Click="OnCancelClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
@@ -282,7 +282,7 @@
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                         <StackPanel Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnPartialConfirmClick">
+                            <Button x:Name="PartialConfirmButton" Classes="login_alert_action" Click="OnPartialConfirmClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
@@ -312,7 +312,7 @@
                         <StackPanel Classes="login_alert_title_row">
                             <Image Classes="login_alert_title_icon"
                                    Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
-                            <TextBlock Classes="login_alert_title" Text="Dinheiro requisitado" />
+                            <TextBlock Classes="login_alert_title" Text="Valor entregue" />
                         </StackPanel>
                     </Border>
                     <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">

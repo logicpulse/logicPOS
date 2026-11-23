@@ -1,4 +1,5 @@
-﻿using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
+﻿using System.Globalization;
+using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
 using LogicPOS.Core.FrontOffice;
 using QrCodes;
 using QrCodes.Renderers;
@@ -20,7 +21,8 @@ public class ReceiptModel : IDocument
     public uint CopyNumber { get; set; } = 1;
     public bool IsSecondCopy;
     private DocumentPdfData Data { get; init; }
-    private string DocumentFormattedDate => Data.Receipt!.CreatedAt.ToShortDateString().Replace("/", "-");
+    private string DocumentFormattedDate
+        => Data.Receipt!.CreatedAt.ToString("dd-MM-yyyy", CultureInfo.CurrentCulture);
 
     private string GetDocumentCopyName()
     {

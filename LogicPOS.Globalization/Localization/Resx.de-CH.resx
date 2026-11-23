@@ -3370,7 +3370,7 @@ Um fortzufahren, drücken Sie Ja, um alle Terminals zu schließen, oder drücken
     <value>Schneidebefehl</value>
   </data>
   <data name="global_printer_thermal_cut_command1" xml:space="preserve">
-    <value>Commando de Corte.</value>
+    <value>Schneidebefehl.</value>
   </data>
   <data name="global_printer_thermal_encoding" xml:space="preserve">
     <value>Codierung</value>

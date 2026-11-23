@@ -113,7 +113,7 @@
                                     </StackPanel>
                                 </Border>
                                 <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                           Text="As séries novas são registadas na Autoridade Tributária. Se existir um ano activo, o fecho também comunica a anulação ou a finalização das séries anteriores."
+                                           Text="As séries novas são registadas na Autoridade Tributária. Se existir um ano ativo, o fecho também comunica a anulação ou a finalização das séries anteriores."
                                            TextWrapping="Wrap" />
                                 <CheckBox x:Name="Communicate" Classes="bo_entity_input" Content="Comunicar as séries com a AT" />
                                 <StackPanel x:Name="AtPanel" Classes="bo_fiscal_wizard_at" IsVisible="False">

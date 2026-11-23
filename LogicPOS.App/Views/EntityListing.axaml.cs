@@ -257,7 +257,7 @@ public partial class EntityListing : UserControl
     }
 
     private static bool UsesDateFilter(string title)
-        => title is "Recibos" or "Emissão Recibos" or "Sessões de Trab." or "Gestão de Stocks" or "Conta.Corr." or "Registro de alterações (Changelog)" or "Séries";
+        => title is "Recibos" or "Emissão Recibos" or "Sessões de Trabalho" or "Gestão de Stocks" or "Conta corrente" or "Registo de alterações" or "Séries";
 
     private IBackOfficeListingService? Service => AppComposition.Services?.GetService<IBackOfficeListingService>();
 
@@ -1243,7 +1243,9 @@ public partial class EntityListing : UserControl
                 .Select(field => field!)
                 .ToList())
             .ToList();
-        cards[0].AddRange(fields.Where(field => used.Contains(field.Key) == false));
+        cards[0].AddRange(fields.Where(field =>
+            used.Contains(field.Key) == false
+            && EntityEditorLayout.IsHiddenEditorKey(_title, field.Key) == false));
 
         var root = new StackPanel { Classes = { "bo_article_sections" } };
         for (var index = 0; index < sections.Count; index++)
@@ -2102,7 +2104,7 @@ public partial class EntityListing : UserControl
         {
             if (force)
             {
-                EditorNotice.Text = "Seleccione o país antes de procurar o código-postal.";
+                EditorNotice.Text = "Selecione o país antes de procurar o código-postal.";
             }
 
             return;
@@ -2435,6 +2437,7 @@ public partial class EntityListing : UserControl
                 Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
             }
         };
+        ToolTip.SetTip(button, "Teclado virtual");
         button.Click += (_, _) =>
         {
             box.Focus();
@@ -2656,9 +2659,14 @@ public partial class EntityListing : UserControl
 
         return names
             .Where(name => string.IsNullOrWhiteSpace(name) == false)
-            .Select(name => new ListingChoice(
-                name,
-                PreferenceLabels.Text("enum_" + field.Key + "_" + name, name)))
+            .Select(name =>
+            {
+                var fromCore = field.Choices?.FirstOrDefault(item =>
+                    string.Equals(item.Value, name, StringComparison.Ordinal))?.Label;
+                return new ListingChoice(
+                    name,
+                    PreferenceLabels.Text("enum_" + field.Key + "_" + name, fromCore ?? name));
+            })
             .ToList();
     }
 
@@ -2930,7 +2938,7 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        if (_title == "Sessões de Trab." && await ConfirmDeleteWorkSessionAsync(row) == false)
+        if (await ConfirmDeleteAsync(row) == false)
         {
             return;
         }
@@ -2950,25 +2958,45 @@ public partial class EntityListing : UserControl
         // Erros já passam pelo BindToast de Notice / EditorNotice.
     }
 
-    private Task<bool> ConfirmDeleteWorkSessionAsync(ListingRow row)
+    private Task<bool> ConfirmDeleteAsync(ListingRow row)
     {
-        var label = SessionDeleteLabel(row);
-        ConfirmMessage.Text = $"Confirma que deseja apagar a sessão «{label}»?";
+        var label = DeleteLabel(row);
+        ConfirmMessage.Text = _title == "Sessões de Trabalho"
+            ? $"Confirma que deseja apagar a sessão «{label}»?"
+            : $"Confirma que deseja apagar «{label}»?";
         _deleteConfirm = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         ConfirmOverlay.IsVisible = true;
         return _deleteConfirm.Task;
     }
 
-    private static string SessionDeleteLabel(ListingRow row)
+    private Task<bool> ConfirmActionAsync(string message)
+    {
+        ConfirmMessage.Text = message;
+        _deleteConfirm = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        ConfirmOverlay.IsVisible = true;
+        return _deleteConfirm.Task;
+    }
+
+    private static string DeleteLabel(ListingRow row)
     {
         if (row.Values.TryGetValue("Designation", out var designation) && string.IsNullOrWhiteSpace(designation) == false)
         {
             return designation;
         }
 
+        if (row.Values.TryGetValue("Name", out var name) && string.IsNullOrWhiteSpace(name) == false)
+        {
+            return name;
+        }
+
         if (row.Values.TryGetValue("Code", out var code) && string.IsNullOrWhiteSpace(code) == false)
         {
             return code;
+        }
+
+        if (row.Values.TryGetValue("Number", out var number) && string.IsNullOrWhiteSpace(number) == false)
+        {
+            return number;
         }
 
         return row.Id.ToString();
@@ -2996,6 +3024,12 @@ public partial class EntityListing : UserControl
         if (action is "cash-in" or "cash-out")
         {
             OpenPrompt(action, "Caixa", "Valor", "0,00");
+            return;
+        }
+
+        if (action == "open-session")
+        {
+            OpenPrompt(action, "Abrir sessão", "Valor inicial em caixa", "0,00");
             return;
         }
 
@@ -3336,8 +3370,16 @@ public partial class EntityListing : UserControl
         }
     }
 
+    /// <summary>Confirms, picks a .db backup, and restores — used by Sistema → Restaurar de ficheiro.</summary>
+    public Task RestoreFromExternalFileAsync() => RestoreFileAsync();
+
     private async Task RestoreFileAsync()
     {
+        if (await ConfirmActionAsync("Confirma que deseja restaurar a base a partir de um ficheiro? A base atual será substituída.") == false)
+        {
+            return;
+        }
+
         var top = TopLevel.GetTopLevel(this);
         if (top is null)
         {
@@ -3347,14 +3389,25 @@ public partial class EntityListing : UserControl
         var files = await top.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Restaurar de ficheiro",
-            AllowMultiple = false
+            AllowMultiple = false,
+            FileTypeFilter =
+            [
+                new FilePickerFileType("Backup logicPOS") { Patterns = ["*.db"] }
+            ]
         });
         if (files.Count == 0)
         {
             return;
         }
 
-        await ExecuteAsync("restore-file", null, files[0].Name);
+        var path = files[0].TryGetLocalPath();
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            Notice.Text = "Não foi possível aceder ao ficheiro selecionado.";
+            return;
+        }
+
+        await ExecuteAsync("restore", null, path);
     }
 
     private async Task OpenReportAsync()

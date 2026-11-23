@@ -421,7 +421,7 @@ public partial class ReceiptEmissionView : UserControl
         var selected = Selected().ToList();
         if (selected.Count != 1)
         {
-            Notice.Text = "Seleccione um documento para abrir.";
+            Notice.Text = "Selecione um documento para abrir.";
             return;
         }
 
@@ -663,7 +663,7 @@ public partial class ReceiptEmissionView : UserControl
     {
         if (selected.Count == 0)
         {
-            return "É necessário seleccionar pelo menos um documento.";
+            return "É necessário selecionar pelo menos um documento.";
         }
 
         if (selected.Any(item => item.IsDraft))
@@ -684,7 +684,7 @@ public partial class ReceiptEmissionView : UserControl
 
         if (ReceiptSettlement.Net(selected) < 0)
         {
-            return "O total das notas de crédito seleccionadas excede a dívida das faturas.";
+            return "O total das notas de crédito selecionadas excede a dívida das faturas.";
         }
 
         if (selected.Select(item => item.CustomerId).Distinct().Count() > 1)
@@ -725,7 +725,7 @@ public partial class ReceiptEmissionView : UserControl
 
         if (amount > _net)
         {
-            return "O valor do pagamento é superior ao total em dívida dos documentos seleccionados.";
+            return "O valor do pagamento é superior ao total em dívida dos documentos selecionados.";
         }
 
         if (PayDate.SelectedDate is null)

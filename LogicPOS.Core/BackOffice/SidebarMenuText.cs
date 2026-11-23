@@ -1,0 +1,159 @@
+﻿using System.Globalization;
+
+namespace LogicPOS.Core.BackOffice;
+
+/// <summary>
+/// BackOffice sidebar captions. Keys stay Portuguese (page titles / navigation keys);
+/// display language follows <see cref="UiCulture"/>, not the OS <see cref="CultureInfo.CurrentUICulture"/>.
+/// </summary>
+public static class SidebarMenuText
+{
+    private static readonly Dictionary<string, Dictionary<string, string>> Tables = new(StringComparer.Ordinal)
+    {
+        ["en"] = new(StringComparer.Ordinal)
+        {
+            ["Documentos"] = "Documents",
+            ["Relatórios"] = "Reports",
+            ["Artigos"] = "Articles",
+            ["Informação fiscal"] = "Tax",
+            ["Clientes"] = "Customers",
+            ["Utilizadores"] = "Users",
+            ["Dispositivos"] = "Devices",
+            ["Outras Tabelas"] = "Other tables",
+            ["Configuração"] = "Settings",
+            ["Importar"] = "Import",
+            ["Exportar"] = "Export",
+            ["SAFT"] = "SAFT",
+            ["SAF-T ano"] = "SAF-T year",
+            ["SAF-T último mês"] = "SAF-T last month",
+            ["SAF-T período"] = "SAF-T period",
+            ["AGT"] = "AGT",
+            ["AGT ano"] = "AGT year",
+            ["AGT último mês"] = "AGT last month",
+            ["AGT período"] = "AGT period",
+            ["Séries AGT"] = "AGT series",
+            ["Documentos AGT"] = "AGT documents",
+            ["Sistema"] = "System",
+            ["Primeiros passos"] = "Getting started",
+            ["Dashboard"] = "Dashboard",
+            ["FrontOffice"] = "Front office",
+            ["Sair da Aplicação"] = "Exit",
+            ["Acerca"] = "About",
+            ["Novo Doc."] = "New document",
+            ["Emissão Recibos"] = "Issue receipts",
+            ["Recibos"] = "Receipts",
+            ["Conta corrente"] = "Current account",
+            ["Sessões de Trabalho"] = "Work sessions",
+            ["Famílias"] = "Families",
+            ["Subfamílias"] = "Subfamilies",
+            ["Tipo de artigos"] = "Article types",
+            ["Classe do artigo"] = "Article class",
+            ["Tipo de Preço"] = "Price type",
+            ["Gestão de Stocks"] = "Stock",
+            ["Abertura de ano fiscal"] = "Fiscal year",
+            ["Séries"] = "Series",
+            ["Tipo de documento"] = "Document type",
+            ["Taxas de imposto"] = "VAT rates",
+            ["Motivo de isenção de IVA"] = "VAT exemption",
+            ["Condições de Pagamento"] = "Payment terms",
+            ["Métodos de pagamento"] = "Payment methods",
+            ["Tipo de clientes"] = "Customer types",
+            ["Grupo de descontos"] = "Discount groups",
+            ["Permissões"] = "Permissions",
+            ["Grupo de comissões"] = "Commission groups",
+            ["Tipos de impressora"] = "Printer types",
+            ["Impressoras"] = "Printers",
+            ["Dispositivos de Entrada"] = "Input devices",
+            ["Display de Cliente"] = "Customer display",
+            ["Balanças"] = "Scales",
+            ["País"] = "Country",
+            ["Códigos-postais"] = "Postal codes",
+            ["Moeda"] = "Currency",
+            ["Locais"] = "Places",
+            ["Mesas"] = "Tables",
+            ["Tipo de Movimento"] = "Movement type",
+            ["Unidades de medida"] = "Units",
+            ["Unidades de tamanho"] = "Size units",
+            ["Feriados"] = "Holidays",
+            ["Armazém"] = "Warehouse",
+            ["Parâmetros da Empresa"] = "Company settings",
+            ["Parâmetros de Sistema"] = "System settings",
+            ["Terminais"] = "Terminals",
+            ["Importar Artigos"] = "Import articles",
+            ["Importar Clientes"] = "Import customers",
+            ["Exportar Artigos"] = "Export articles",
+            ["Exportar Clientes"] = "Export customers",
+            ["Notificações"] = "Notifications",
+            ["Registo de alterações"] = "Changelog",
+            ["Backup DB"] = "Backup",
+            ["Restaurar DB"] = "Restore",
+            ["Restaurar de ficheiro"] = "Restore from file",
+            ["Atualizar"] = "Update",
+            ["Sair da Sessão"] = "Sign out",
+            ["Sim"] = "Yes",
+            ["Não"] = "No"
+        },
+        ["fr"] = new(StringComparer.Ordinal)
+        {
+            ["Dashboard"] = "Tableau de bord",
+            ["Primeiros passos"] = "Premiers pas",
+            ["Documentos"] = "Documents",
+            ["Relatórios"] = "Rapports",
+            ["Artigos"] = "Articles",
+            ["Clientes"] = "Clients",
+            ["Utilizadores"] = "Utilisateurs",
+            ["Configuração"] = "Configuration",
+            ["Sistema"] = "Système",
+            ["Sair da Aplicação"] = "Quitter",
+            ["Acerca"] = "À propos",
+            ["FrontOffice"] = "Caisse",
+            ["Restaurar de ficheiro"] = "Restaurer depuis un fichier",
+            ["Sim"] = "Oui",
+            ["Não"] = "Non"
+        },
+        ["es"] = new(StringComparer.Ordinal)
+        {
+            ["Dashboard"] = "Panel",
+            ["Primeiros passos"] = "Primeros pasos",
+            ["Documentos"] = "Documentos",
+            ["Relatórios"] = "Informes",
+            ["Artigos"] = "Artículos",
+            ["Clientes"] = "Clientes",
+            ["Utilizadores"] = "Usuarios",
+            ["Configuração"] = "Configuración",
+            ["Sistema"] = "Sistema",
+            ["Sair da Aplicação"] = "Salir",
+            ["Acerca"] = "Acerca de",
+            ["FrontOffice"] = "Punto de venta",
+            ["Restaurar de ficheiro"] = "Restaurar desde archivo",
+            ["Sim"] = "Sí",
+            ["Não"] = "No"
+        }
+    };
+
+    /// <summary>Portuguese keys present in the English caption table (menu + sidebar chrome).</summary>
+    public static IReadOnlyCollection<string> EnglishKeys => Tables["en"].Keys;
+
+    public static string Get(string key) => Get(key, UiCulture.Read(null));
+
+    /// <summary>Resolve a caption for an explicit culture name (tests / callers that skip the cache).</summary>
+    public static string Get(string key, string cultureName)
+    {
+        string language;
+        try
+        {
+            language = CultureInfo.GetCultureInfo(cultureName).TwoLetterISOLanguageName;
+        }
+        catch (CultureNotFoundException)
+        {
+            language = "pt";
+        }
+
+        if (language == "pt" || Tables.TryGetValue(language, out var table) == false)
+        {
+            return key;
+        }
+
+        return table.TryGetValue(key, out var value) ? value : key;
+    }
+}

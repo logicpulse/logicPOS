@@ -257,7 +257,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
             }
             else if (_users.Count == 0)
             {
-                StatusMessage = "Não há utilizadores activos.";
+                StatusMessage = "Não há utilizadores ativos.";
             }
             else
             {

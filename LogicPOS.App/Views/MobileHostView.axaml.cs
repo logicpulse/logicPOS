@@ -207,8 +207,8 @@ public partial class MobileHostView : UserControl
 
         try
         {
-            // Após ConfigureAwait(false) a continuação está numa thread pool —
-            // criar LoginWindow, activar e esconder overlay só na UI thread.
+            // After ConfigureAwait(false) the continuation is on a thread-pool thread —
+            // create LoginWindow, activate it, and hide the overlay on the UI thread only.
             await Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 ShowLoadingOverlayCore(this, "A preparar o ecrã de login...");

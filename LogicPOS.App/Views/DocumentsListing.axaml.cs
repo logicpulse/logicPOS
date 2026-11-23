@@ -9,6 +9,7 @@ using LogicPOS.App;
 using LogicPOS.App.Hardware;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
+using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,7 @@ public partial class DocumentsListing : UserControl
     private CancellationTokenSource? _searchDelay;
     private string? _promptKind;
     private Guid? _pendingOriginDocumentId;
+    private TaskCompletionSource<bool>? _deleteConfirm;
     private bool _sendingEmail;
     private bool _datesReady;
     private bool _fillingFilters;
@@ -64,6 +66,134 @@ public partial class DocumentsListing : UserControl
         };
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnDocsLayoutUpdated;
         Period.PeriodChanged += (_, _) => ReloadFromFilter();
+        ApplyCulture();
+    }
+
+    /// <summary>Rebinds chrome labels after <see cref="UiCulture.Apply"/> (page keys stay Portuguese).</summary>
+    public void ApplyCulture()
+    {
+        Period.ApplyCulture();
+        SetActionLabel(0, Pref("global_button_label_new_financial_document", "Novo"));
+        SetActionLabel(1, Pref("global_button_label_clone_document", "Copiar"));
+        SetActionLabel(2, Pref("widget_generictreeviewnavigator_update", "Editar"));
+        SetActionLabel(3, Pref("global_button_label_cancel_document", "Anular"));
+        SetActionLabel(4, Pref("global_button_label_print", "Imprimir"));
+        SetActionLabel(5, Pref("global_button_label_print_as", "Imprimir Como"));
+        SetActionLabel(6, "AT");
+        SetActionLabel(7, Pref("global_button_label_open_document", "Abrir"));
+        SetActionLabel(8, Pref("global_button_label_send_email_document", "Email"));
+
+        if (PageTitleRow.Children.OfType<Avalonia.Controls.TextBlock>().FirstOrDefault() is { } pageTitle)
+        {
+            pageTitle.Text = SidebarMenuText.Get("Documentos");
+        }
+
+        SetFilterLabel(0, Pref("global_customer", "Cliente"));
+        SetFilterLabel(1, Pref("global_documentfinance_type", "Tipo"));
+
+        foreach (var button in MobileBar.Children.OfType<Button>())
+        {
+            if (button.Content is string content)
+            {
+                if (content is "Mais" or "More" or "Plus" or "Más")
+                {
+                    button.Content = DocumentsListingText.More();
+                }
+                else if (content is "Filtros" or "Filters" or "Filtres")
+                {
+                    button.Content = DocumentsListingText.Filters();
+                }
+            }
+        }
+
+        MobileSearchBox.PlaceholderText = DocumentsListingText.Search();
+        SearchBox.PlaceholderText = DocumentsListingText.Search();
+
+        foreach (var button in DesktopTools.GetVisualDescendants().OfType<Button>())
+        {
+            if (button.Classes.Contains("bo_listing_columns"))
+            {
+                button.Content = DocumentsListingText.Columns();
+                ToolTip.SetTip(button, DocumentsListingText.Columns().TrimEnd(' ', '▾'));
+            }
+        }
+
+        SetColumnHeader(1, Pref("global_document_date", "Data do documento"));
+        SetColumnHeader(2, Pref("global_document_number", "Número do Doc."));
+        SetColumnHeader(3, Pref("global_document_status", "Estado"));
+        SetColumnHeader(4, Pref("global_entity", "Entidade"));
+        SetColumnHeader(5, Pref("global_fiscal_number", "NIF"));
+        SetColumnHeader(6, Pref("global_total_final", "Total Final"));
+        SetColumnHeader(7, Pref("window_title_dialog_document_finance_column_total_credit_rc_nc_based", "Valor Pago"));
+        SetColumnHeader(8, Pref("global_debit", "Valor em Dívida"));
+        SetColumnHeader(9, Pref("window_title_dialog_document_finance_column_related_doc", "Documentos Associados"));
+
+        if (EmptyLabel.IsVisible || string.IsNullOrWhiteSpace(EmptyLabel.Text)
+            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("pt-PT")
+            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("en-US")
+            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("fr-FR")
+            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("es-ES"))
+        {
+            EmptyLabel.Text = DocumentsListingText.EmptyPeriod();
+        }
+
+        RefreshSelectionLabel();
+    }
+
+    private static string Pref(string key, string fallback)
+    {
+        var text = PreferenceLabels.Text(key, fallback);
+        return string.IsNullOrWhiteSpace(text) ? fallback : text.TrimStart('_');
+    }
+
+    private void SetActionLabel(int index, string text)
+    {
+        var buttons = ActionBar.Children.OfType<Button>().ToList();
+        if (index < 0 || index >= buttons.Count)
+        {
+            return;
+        }
+
+        var button = buttons[index];
+        ToolTip.SetTip(button, text);
+        if (button.Content is StackPanel panel)
+        {
+            var label = panel.Children.OfType<Avalonia.Controls.TextBlock>()
+                .FirstOrDefault(block => block.Classes.Contains("bo_doc_action_text"));
+            if (label is not null)
+            {
+                label.Text = text;
+            }
+        }
+    }
+
+    private void SetFilterLabel(int index, string text)
+    {
+        var fields = DocFilters.Children.OfType<StackPanel>()
+            .Where(panel => panel.Classes.Contains("bo_doc_date_field"))
+            .ToList();
+        if (index < 0 || index >= fields.Count)
+        {
+            return;
+        }
+
+        if (fields[index].Children.OfType<Avalonia.Controls.TextBlock>().FirstOrDefault() is { } label)
+        {
+            label.Text = text;
+        }
+    }
+
+    private void SetColumnHeader(int index, string text)
+    {
+        if (index < 0 || index >= DocumentGrid.Columns.Count)
+        {
+            return;
+        }
+
+        if (DocumentGrid.Columns[index] is DataGridTextColumn column)
+        {
+            column.Header = text;
+        }
     }
 
     public async Task ReloadAsync()
@@ -77,6 +207,7 @@ public partial class DocumentsListing : UserControl
         }
 
         EnsureFilters();
+        ApplyCulture();
         await LoadAsync();
     }
 
@@ -406,6 +537,11 @@ public partial class DocumentsListing : UserControl
 
         if (row.CanEdit)
         {
+            if (await ConfirmActionAsync($"Confirma que deseja anular o rascunho «{row.Number}»?") == false)
+            {
+                return;
+            }
+
             var documents = AppComposition.Services?.GetService<IPosDocumentService>();
             if (documents is null)
             {
@@ -419,6 +555,25 @@ public partial class DocumentsListing : UserControl
         }
 
         OpenPrompt("cancel", "Anular documento", "Motivo da anulação");
+    }
+
+    private Task<bool> ConfirmActionAsync(string message)
+    {
+        ConfirmMessage.Text = message;
+        _deleteConfirm = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        ConfirmOverlay.IsVisible = true;
+        return _deleteConfirm.Task;
+    }
+
+    private void OnDeleteConfirmYesClick(object? sender, RoutedEventArgs e) => CompleteDeleteConfirm(true);
+
+    private void OnDeleteConfirmNoClick(object? sender, RoutedEventArgs e) => CompleteDeleteConfirm(false);
+
+    private void CompleteDeleteConfirm(bool confirmed)
+    {
+        ConfirmOverlay.IsVisible = false;
+        _deleteConfirm?.TrySetResult(confirmed);
+        _deleteConfirm = null;
     }
 
     private async void OnEmailClick(object? sender, RoutedEventArgs e)
@@ -1244,7 +1399,7 @@ public partial class DocumentsListing : UserControl
         var columns = ChoosableColumns().ToList();
         var selectAll = new CheckBox
         {
-            Content = "Selecionar tudo",
+            Content = DocumentsListingText.SelectAll(),
             IsChecked = columns.All(column => column.IsVisible)
         };
         selectAll.IsCheckedChanged += OnSelectAllColumnsChanged;
@@ -1465,7 +1620,7 @@ public partial class DocumentsListing : UserControl
             _totalPages = Math.Max(1, page.TotalPages);
             _loadedSearch = search ?? string.Empty;
             _picked.RemoveWhere(id => _rows.Exists(row => row.Id == id) == false);
-            EmptyLabel.Text = "Não existem documentos neste período.";
+            EmptyLabel.Text = DocumentsListingText.EmptyPeriod();
         }
         catch (Exception exception)
         {
@@ -1505,9 +1660,13 @@ public partial class DocumentsListing : UserControl
         CardList.ItemsSource = items;
         PageLabel.Text = $"{_page} / {_totalPages}";
         EmptyLabel.IsVisible = _rows.Count == 0;
-        if (string.IsNullOrEmpty(EmptyLabel.Text) || EmptyLabel.Text == "Não existem documentos neste período.")
+        if (string.IsNullOrEmpty(EmptyLabel.Text)
+            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("pt-PT")
+            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("en-US")
+            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("fr-FR")
+            || EmptyLabel.Text == DocumentsListingText.EmptyPeriod("es-ES"))
         {
-            EmptyLabel.Text = "Não existem documentos neste período.";
+            EmptyLabel.Text = DocumentsListingText.EmptyPeriod();
         }
 
         RefreshSelectionLabel();
@@ -1600,7 +1759,7 @@ public partial class DocumentsListing : UserControl
             count = DocumentGrid.SelectedItems?.Count ?? 0;
         }
 
-        SelectionLabel.Text = $"{count} documento(s) selecionado(s)";
+        SelectionLabel.Text = DocumentsListingText.SelectedCount(count);
     }
 
     private void RefreshPickAll()
@@ -1698,14 +1857,14 @@ public partial class DocumentsListing : UserControl
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Editar", OnEditDraftClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Anular", OnCancelClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imprimir", OnPrintClick));
-        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imp.Como", OnPrintAsClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imprimir Como", OnPrintAsClick));
         if (SendToAtButton.IsVisible)
         {
             MoreSheetHost.Children.Add(PortraitChrome.SheetButton("AT", OnSendToAtClick));
         }
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Abrir", OnOpenA4Click));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Email", OnEmailClick));
-        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Colunas", OnChooseColumnsClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton(DocumentsListingText.Columns().TrimEnd(' ', '▾'), OnChooseColumnsClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Exportar Excel", OnExportExcelClick));
         MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Exportar PDF", OnExportPdfClick));
         MoreSheet.IsVisible = true;

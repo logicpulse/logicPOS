@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -255,7 +255,7 @@ Ou selecione '{2}' para iniciar o POS em resolução '1024x768'.</value>
     <value>Novo Doc.</value>
   </data>
   <data name="dialog_button_label_select_finance_documents_cc" xml:space="preserve">
-    <value>Conta.Corr.</value>
+    <value>Conta corrente</value>
   </data>
   <data name="dialog_button_label_select_finance_documents_ft_unpaid" xml:space="preserve">
     <value>Emissão Recibos</value>
@@ -274,7 +274,7 @@ Ou selecione '{2}' para iniciar o POS em resolução '1024x768'.</value>
     <comment>Used in 800x600 Theme</comment>
   </data>
   <data name="dialog_button_label_select_worksession_period" xml:space="preserve">
-    <value>Sessões de Trab.</value>
+    <value>Sessões de Trabalho</value>
   </data>
   <data name="dialog_edit_articlesubfamily_tab1_label" xml:space="preserve">
     <value>Detalhes 1</value>
@@ -471,7 +471,7 @@ Instale um SoftwareVendor Plugin, caso contrário os documentos não são Assina
 - Criar Séries Fiscais para o respectivo Terminal</value>
   </data>
   <data name="dialog_message_error_duplicated_key" xml:space="preserve">
-    <value>A chave do registro que está a tentar inserir ({0}) já existe na base de dados. Por favor altere.</value>
+    <value>A chave do registo que está a tentar inserir ({0}) já existe na base de dados. Por favor altere.</value>
   </data>
   <data name="dialog_message_error_initializing_weighing_balance" xml:space="preserve">
     <value>Error ao inicializar a balança
@@ -904,7 +904,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Código de barras</value>
   </data>
   <data name="global_barcode_small" xml:space="preserve">
-    <value>Cód.Barras/Artigo</value>
+    <value>Código de barras/Artigo</value>
   </data>
   <data name="global_cardcode_small" xml:space="preserve">
     <value>Código do Ticket/Cartão</value>
@@ -976,10 +976,10 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Limpar</value>
   </data>
   <data name="global_button_label_payment_dialog_full_payment" xml:space="preserve">
-    <value>Pag.Total</value>
+    <value>Pagamento Total</value>
   </data>
   <data name="global_button_label_payment_dialog_partial_payment" xml:space="preserve">
-    <value>Pag.Parcial</value>
+    <value>Pagamento Parcial</value>
   </data>
   <data name="global_button_label_payment_dialog_split_payment" xml:space="preserve">
     <value>Dividir </value>
@@ -991,7 +991,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Imprimir</value>
   </data>
   <data name="global_button_label_print_as" xml:space="preserve">
-    <value>Imp.Como</value>
+    <value>Imprimir Como</value>
   </data>
   <data name="global_button_label_readcard" xml:space="preserve">
     <value>Ler cartão</value>
@@ -1405,7 +1405,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Recibo</value>
   </data>
   <data name="global_documentfinance_type_title_tr" xml:space="preserve">
-    <value>Talão Reembolso Volta</value>
+    <value>Talão de reembolso de depósito</value>
   </data>
   <data name="global_documentfinance_waybill_comments" xml:space="preserve">
     <value>Observações</value>
@@ -1735,7 +1735,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Condições de Pagamento</value>
   </data>
   <data name="global_payment_conditions" xml:space="preserve">
-    <value>Cond. de Pagamento</value>
+    <value>Condições de Pagamento</value>
   </data>
   <data name="global_payment_date" xml:space="preserve">
     <value>Data de Pagamento</value>
@@ -1811,7 +1811,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Entra em Suspensão (Seg.)</value>
   </data>
   <data name="global_pole_display_number_of_characters_per_line" xml:space="preserve">
-    <value>Num.Caracteres Linha</value>
+    <value>Nº caracteres por linha</value>
   </data>
   <data name="global_pole_display_pid" xml:space="preserve">
     <value>Código do Produto (Pid)</value>
@@ -1929,7 +1929,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Sextuplicado</value>
   </data>
   <data name="global_print_request_confirmation" xml:space="preserve">
-    <value>Pergunta se deseja Imprimir documento</value>
+    <value>Pergunta se deseja imprimir o documento</value>
   </data>
   <data name="global_print_second_print" xml:space="preserve">
     <value>2ª Via</value>
@@ -2076,7 +2076,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Segunda via</value>
   </data>
   <data name="global_seriesforeachterminal" xml:space="preserve">
-    <value>Séries independente por cada terminal</value>
+    <value>Séries independentes por cada terminal</value>
   </data>
   <data name="global_services" xml:space="preserve">
     <value>Prestação de Serviços</value>
@@ -2735,10 +2735,10 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Eliminar</value>
   </data>
   <data name="pos_button_label_finish_order" xml:space="preserve">
-    <value>Fin.pedido</value>
+    <value>Finalizar pedido</value>
   </data>
   <data name="pos_button_label_finish_order_small" xml:space="preserve">
-    <value>Fin.pedido</value>
+    <value>Finalizar pedido</value>
     <comment>Used in 800x600 Theme</comment>
   </data>
   <data name="pos_button_label_increase" xml:space="preserve">
@@ -2751,7 +2751,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Registar</value>
   </data>
   <data name="pos_button_label_list_mode" xml:space="preserve">
-    <value>Alt. lista</value>
+    <value>Alternar lista</value>
   </data>
   <data name="pos_button_label_next" xml:space="preserve">
     <value>Próximo</value>
@@ -2915,7 +2915,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Conservatória</value>
   </data>
   <data name="prefparam_company_civil_registration_id" xml:space="preserve">
-    <value>Número de Registro na Conservatória</value>
+    <value>Número de Registo na Conservatória</value>
   </data>
   <data name="prefparam_company_country" xml:space="preserve">
     <value>País</value>
@@ -3567,7 +3567,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Confirmar</value>
   </data>
   <data name="window_title_dialog_moneypad" xml:space="preserve">
-    <value>Dinheiro requisitado</value>
+    <value>Valor entregue</value>
   </data>
   <data name="window_title_dialog_moneypad_product_price" xml:space="preserve">
     <value>Preço do Produto</value>
@@ -3841,7 +3841,7 @@ Por favor, insira outro número e tente novamente.</value>
     <value>{0} por programa validado Nº {1}/AGT/{3}/LogicPOS</value>
   </data>
   <data name="dialog_button_label_new_client" xml:space="preserve">
-    <value>Novo Cli.</value>
+    <value>Novo Cliente</value>
   </data>
   <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
     <value>Artigos Associados</value>
@@ -3898,7 +3898,7 @@ Por favor, insira outro número e tente novamente.</value>
     <value>Email (para multiplos emails use a virgula. Ex. 123@123.pt,test@test.pt)</value>
   </data>
   <data name="change_log" xml:space="preserve">
-    <value>Registro de alterações (Changelog)</value>
+    <value>Registo de alterações</value>
   </data>
   <data name="global_minimum_stock" xml:space="preserve">
     <value>Stock mínimo</value>

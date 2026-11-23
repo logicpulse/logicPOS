@@ -80,7 +80,7 @@ internal static class FrontOfficePrinting
             var job = await source.GetInvoiceJobAsync(documentId);
             if (job is null)
             {
-                return (true, "Impressora térmica do terminal não configurada.");
+                return (true, "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.");
             }
 
             var count = Math.Max(1, copies);
@@ -150,7 +150,7 @@ internal static class FrontOfficePrinting
             var job = await source.GetInvoiceJobAsync(documentId);
             if (job is null)
             {
-                return (true, "Impressora térmica do terminal não configurada.");
+                return (true, "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.");
             }
 
             if (PosDocumentRules.IsCreditNote(job.Document.Type))
@@ -216,7 +216,7 @@ internal static class FrontOfficePrinting
         var printer = await source.GetTerminalPrinterAsync();
         if (printer is null)
         {
-            return null;
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         try
@@ -241,13 +241,13 @@ internal static class FrontOfficePrinting
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null)
         {
-            return null;
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         var printer = await source.GetTerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora térmica do terminal não configurada.";
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         try
@@ -307,20 +307,22 @@ internal static class FrontOfficePrinting
 
     /// <summary>
     /// ESC/POS cash-drawer pulse (ESC p 0 25 250) on the terminal thermal printer.
-    /// Returns null when there is no printer or the pulse was sent.
+    /// Returns an error when there is no printer; null when the pulse was sent.
     /// </summary>
     public static async Task<string?> OpenDrawerAsync()
     {
+        const string missingPrinter =
+            "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null)
         {
-            return null;
+            return missingPrinter;
         }
 
         var printer = await source.GetTerminalPrinterAsync();
         if (printer is null)
         {
-            return null;
+            return missingPrinter;
         }
 
         try
@@ -348,7 +350,7 @@ internal static class FrontOfficePrinting
         var printer = await TerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora térmica do terminal não configurada.";
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         var width = Math.Max(16, printer.ColumnsNormal);
@@ -379,7 +381,7 @@ internal static class FrontOfficePrinting
         var printer = await TerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora térmica do terminal não configurada.";
+            return "Não há impressora térmica configurada neste terminal. Configure-a em Configuração → Terminais / Impressoras.";
         }
 
         return await SendAsync(printer, report.Title, RenderCashReport(report, printer.ColumnsNormal));

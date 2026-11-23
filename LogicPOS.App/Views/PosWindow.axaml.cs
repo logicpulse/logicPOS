@@ -23,8 +23,6 @@ namespace LogicPOS.App.Views;
 
 public partial class PosWindow : UserControl, IOfficeSurface
 {
-    private const string ClockDateFormat = "dddd, dd' de 'MMMM' de 'yyyy";
-    private const string ClockTimeFormat = "HH:mm:ss tt";
     private const string ClockIconPath = "avares://LogicPOS.App/Assets/Images/BackOffice/icon_clock_w.svg";
 
     private string _userName;
@@ -52,7 +50,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private bool _showFavorites;
     private PortraitBrowseTab _portraitTab = PortraitBrowseTab.Favorites;
     /// <summary>
-    /// Em Subfamílias: true = raiz da árvore (famílias); false = filhos da família seleccionada.
+    /// In Subfamilies: true = tree root (families); false = children of the selected family.
     /// </summary>
     private bool _subfamilyTreeAtRoot;
     private string _articleSearch = string.Empty;
@@ -135,7 +133,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
         None,
         Delete,
         DeleteOrderLine,
+        DeleteOpenOrder,
         DeleteOpenOrdersAll,
+        CloseDay,
+        Logout,
         Quantity,
         Price,
         Weight,
@@ -146,6 +147,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         Split,
         Notice
     }
+
+    private Guid? _pendingDeleteOrderId;
 
     private enum TablePurpose
     {
@@ -496,7 +499,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         PortraitChrome.FitOverlay(DocumentsMenuFrame, this, 581, 286, lockHeight: false, bottomReserve: bottomReserve);
         if (PricePad.IsVisible)
         {
-            // Same footprint as Payments "Dinheiro requisitado" cash pad.
+            // Same footprint as Payments "Valor entregue" cash pad.
             PortraitChrome.FitOverlay(TicketFrame, this, 680, 600, lockHeight: false, bottomReserve: bottomReserve);
         }
         else if (_splitHost?.IsVisible == true)
@@ -778,7 +781,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Anterior", "icon_pos_ticketpad_prev.png", 0, 0, 1, "pos_pad_button_grey", SelectPreviousLine);
             AddPadButton("Aumentar", "icon_pos_ticketpad_increase.png", 1, 0, 1, "pos_pad_button_grey", IncreaseSelected);
             AddPadButton("Eliminar", "icon_pos_ticketpad_delete.png", 2, 0, 1, "pos_pad_button_grey", RequestDeleteTicket);
-            AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 3, 0, 1, "pos_pad_button_green", FinishTicket);
+            AddPadButton("Finalizar pedido", "icon_pos_retail_ticketpad_finish_order.png", 3, 0, 1, "pos_pad_button_green", FinishTicket);
             AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 4, 0, 1, "pos_pad_button_green", RequestPayments);
             AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 5, 0, 1, "pos_pad_button_green", ShowOrders);
             AddPadButton("Próximo", "icon_pos_ticketpad_next.png", 0, 1, 1, "pos_pad_button_grey", SelectNextLine);
@@ -786,12 +789,12 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Quantidade", "icon_pos_ticketpad_change_quantity.png", 2, 1, 1, "pos_pad_button_grey", RequestQuantity);
             AddPadButton("Preço", "icon_pos_ticketpad_change_price.png", 3, 1, 1, "pos_pad_button_grey", RequestPrice);
             AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 4, 1, 1, "pos_pad_button_grey", RequestCard);
-            AddPadButton("Alt. lista", "icon_pos_ticketpad_list_mode.png", 5, 1, 1, "pos_pad_button_grey", ToggleListMode);
+            AddPadButton("Alternar lista", "icon_pos_ticketpad_list_mode.png", 5, 1, 1, "pos_pad_button_grey", ToggleListMode);
             AddPadButton("Dividir", "icon_pos_ticketpad_split_payments.png", 0, 2, 1, "pos_pad_button_grey", RequestSplit);
-            AddPadButton("Reemb. Volta", "icon_pos_ticketpad_payments.png", 1, 2, 1, "pos_pad_button_grey", ShowVoltaRefund);
-            AddPadButton("Cód.Barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 2, 1, "pos_pad_button_grey", RequestBarcode);
-            AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 2, 1, "pos_pad_button_grey", RequestWeight);
-            AddPadButton("Desconto", "icon_pos_ticketpad_change_price.png", 4, 2, 1, "pos_pad_button_grey", RequestDiscount);
+            AddPadButton("Reembolso de depósito", "icon_pos_ticketpad_payments.png", 1, 2, 1, "pos_pad_button_grey", ShowVoltaRefund);
+            AddPadButton("Código de barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 2, 1, "pos_pad_button_grey", RequestBarcode);
+            AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 2, 1, "pos_pad_button_grey", RequestWeight, forceCaption: true);
+            AddPadButton("Desconto", "icon_pos_ticketpad_decrease.png", 4, 2, 1, "pos_pad_button_grey", RequestDiscount, forceCaption: true);
         }
         else
         {
@@ -801,18 +804,18 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Quantidade", "icon_pos_ticketpad_change_quantity.png", 0, 3, 1, "pos_pad_button_grey", RequestQuantity);
             AddPadButton("Aumentar", "icon_pos_ticketpad_increase.png", 1, 0, 1, "pos_pad_button_grey", IncreaseSelected);
             AddPadButton("Diminuir", "icon_pos_ticketpad_decrease.png", 1, 1, 1, "pos_pad_button_grey", DecreaseSelected);
-            AddPadButton("Alt. lista", "icon_pos_ticketpad_list_mode.png", 1, 2, 1, "pos_pad_button_grey", ToggleListMode);
+            AddPadButton("Alternar lista", "icon_pos_ticketpad_list_mode.png", 1, 2, 1, "pos_pad_button_grey", ToggleListMode);
             AddPadButton("Preço", "icon_pos_ticketpad_change_price.png", 1, 3, 1, "pos_pad_button_grey", RequestPrice);
             // Greens on the right column (like FO primary actions in 1.4 preference).
             AddPadButton("Dividir", "icon_pos_ticketpad_split_payments.png", 2, 0, 1, "pos_pad_button_grey", RequestSplit);
-            AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 3, 0, 1, "pos_pad_button_green", FinishTicket);
-            AddPadButton("Reemb. Volta", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
+            AddPadButton("Finalizar pedido", "icon_pos_retail_ticketpad_finish_order.png", 3, 0, 1, "pos_pad_button_green", FinishTicket);
+            AddPadButton("Reembolso de depósito", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
             AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 3, 1, 1, "pos_pad_button_green", RequestPayments);
             AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 2, 2, 1, "pos_pad_button_grey", RequestCard);
             AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 3, 2, 1, "pos_pad_button_green", ShowOrders);
-            AddPadButton("Cód.Barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 3, 1, "pos_pad_button_grey", RequestBarcode);
-            AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 3, 1, "pos_pad_button_grey", RequestWeight, half: 0);
-            AddPadButton("Desconto", "icon_pos_ticketpad_change_price.png", 3, 3, 1, "pos_pad_button_grey", RequestDiscount, half: 1);
+            AddPadButton("Código de barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 3, 1, "pos_pad_button_grey", RequestBarcode);
+            AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 3, 1, "pos_pad_button_grey", RequestWeight, half: 0, forceCaption: true);
+            AddPadButton("Desconto", "icon_pos_ticketpad_decrease.png", 3, 3, 1, "pos_pad_button_grey", RequestDiscount, half: 1, forceCaption: true);
         }
 
         ApplyFrontOfficeRules();
@@ -1187,7 +1190,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             || _portraitTab == PortraitBrowseTab.Families)
         {
             // Favoritos: famílias de topo para contexto; toque muda para Famílias.
-            // Famílias: filtra artigos da família seleccionada.
+            // Families: filter articles of the selected family.
             foreach (var family in _catalog.Families)
             {
                 var selected = _portraitTab == PortraitBrowseTab.Families && family.Id == _familyId;
@@ -1815,7 +1818,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
     }
 
-    // Subfamília: imagem a ocupar o botão todo, legenda sobreposta em baixo; anel/visto marcam a seleccionada.
+    // Subfamily: image fills the button, caption overlaid at the bottom; ring/check mark the selection.
     private static Control BuildSubfamilyTileContent(string text, Image? image)
     {
         var tile = new Grid();
@@ -1993,10 +1996,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
         return button;
     }
 
-    private void AddPadButton(string text, string iconFile, int column, int row, int columnSpan, string styleClass, Action click, int? half = null)
+    private void AddPadButton(string text, string iconFile, int column, int row, int columnSpan, string styleClass, Action click, int? half = null, bool forceCaption = false)
     {
         var layout = _layout;
-        var iconOnly = layout.IsPortrait || half is not null;
+        var iconOnly = forceCaption == false && (layout.IsPortrait || half is not null);
         var button = new Button
         {
             Classes = { "pos_pad_button", styleClass },
@@ -2006,9 +2009,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 layout.TicketIconSize,
                 iconOnly)
         };
-        if (iconOnly)
+        ToolTip.SetTip(button, ListingLabelTips.Tooltip(text));
+        if (iconOnly || half is not null)
         {
-            ToolTip.SetTip(button, ListingLabelTips.Tooltip(text));
             button.Classes.Add("pos_pad_button_compact");
         }
 
@@ -2181,15 +2184,15 @@ public partial class PosWindow : UserControl, IOfficeSurface
         SetNamedButton(_padButtons, "Preço", selling && lineEditable && _access.AllowsChangePrice);
         SetNamedButton(_padButtons, "Peso", selling && lineEditable);
         SetNamedButton(_padButtons, "Desconto", selling && lineEditable);
-        SetNamedButton(_padButtons, "Fin.pedido", selling && hasLines && editingTicket);
+        SetNamedButton(_padButtons, "Finalizar pedido", selling && hasLines && editingTicket);
         SetNamedButton(_padButtons, "Eliminar", selling && lineEditable && _access.AllowsDeleteTicket);
         SetNamedButton(_padButtons, "Pagamentos", selling && (hasLines || hasOrder) && _access.AllowsPayments);
         SetNamedButton(_padButtons, "Dividir", selling && hasOrder && editingTicket == false && _openOrderId is not null && _access.AllowsPayments);
         SetNamedButton(_padButtons, TablesPadLabel, selling);
-        SetNamedButton(_padButtons, "Alt. lista", selling);
+        SetNamedButton(_padButtons, "Alternar lista", selling);
         SetNamedButton(_padButtons, "Cartão", selling);
-        SetNamedButton(_padButtons, "Cód.Barras/Artigo", selling);
-        SetNamedButton(_padButtons, "Reemb. Volta", selling && hasLines == false);
+        SetNamedButton(_padButtons, "Código de barras/Artigo", selling);
+        SetNamedButton(_padButtons, "Reembolso de depósito", selling && hasLines == false);
 
         var toolbarEnabled = hasLines == false;
         SetNamedButton(_toolbarButtons, "BackOffice", toolbarEnabled && _access.AllowsBackOffice);
@@ -2250,8 +2253,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         var now = DateTime.Now;
-        _clockDateLabel.Text = now.ToString(ClockDateFormat);
-        _clockTimeLabel.Text = now.ToString(ClockTimeFormat);
+        _clockDateLabel.Text = UiDateTimeFormat.FormatLongDate(now);
+        _clockTimeLabel.Text = UiDateTimeFormat.FormatClockTime(now);
     }
 
     public async Task ShowNewDocumentAsync(
@@ -2415,7 +2418,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         var path = BackOfficePageIcons.UriFor(title)
                    ?? title switch
                    {
-                       "Sessões de Trab." => "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png",
+                       "Sessões de Trabalho" => "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png",
                        "Gestão de Stocks" => "avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_merchandise_entry.png",
                        "Documentos" => "avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png",
                        _ => "avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png"
@@ -2493,7 +2496,14 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private void ShowBackOffice() => ShowBackOffice(null);
 
     private BoShellWindow? _boShell;
+    private Window? _frontOfficeShell;
     private bool _boShellStateWired;
+    private bool _suppressBoShellWindowSync;
+
+    /// <summary>
+    /// Desktop PosShellWindow pins the FO shell so BO↔FO swaps do not rely on TopLevel while the shell is hidden (Linux).
+    /// </summary>
+    internal void AttachFrontOfficeShell(Window shell) => _frontOfficeShell = shell;
 
     private void ShowBackOffice(string? page)
     {
@@ -2553,7 +2563,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
     }
 
-    private Window? FrontOfficeShell => TopLevel.GetTopLevel(this) as Window;
+    private Window? FrontOfficeShell
+        => _frontOfficeShell ?? TopLevel.GetTopLevel(this) as Window;
 
     private void HideFrontOfficeShell()
     {
@@ -2562,38 +2573,55 @@ public partial class PosWindow : UserControl, IOfficeSurface
             return;
         }
 
-        if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-            && _boShell is not null)
+        _suppressBoShellWindowSync = true;
+        try
         {
-            desktop.MainWindow = _boShell;
-        }
+            if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                && _boShell is not null)
+            {
+                desktop.MainWindow = _boShell;
+            }
 
-        posShell.Hide();
+            posShell.Hide();
+        }
+        finally
+        {
+            _suppressBoShellWindowSync = false;
+        }
     }
 
     private void RestoreFrontOfficeShell()
     {
-        if (_boShell is not null)
-        {
-            _boShell.Hide();
-        }
-
         if (FrontOfficeShell is not Window posShell)
         {
             return;
         }
 
-        if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+        _suppressBoShellWindowSync = true;
+        try
         {
-            desktop.MainWindow = posShell;
-        }
+            if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = posShell;
+            }
 
-        // POS returns as the full-screen surface (BO may have been Normal/restored).
-        posShell.WindowDecorations = WindowDecorations.None;
-        posShell.CanResize = false;
-        posShell.WindowState = WindowState.FullScreen;
-        posShell.Show();
-        posShell.Activate();
+            // POS returns as the full-screen surface (BO may have been Normal/restored).
+            posShell.WindowDecorations = WindowDecorations.None;
+            posShell.CanResize = false;
+            posShell.WindowState = WindowState.FullScreen;
+            posShell.Show();
+            posShell.Activate();
+
+            if (_boShell is not null)
+            {
+                _boShell.Hide();
+            }
+        }
+        finally
+        {
+            // Defer: Hide() can raise WindowState on the next UI tick (seen on Linux) and re-hide the FO shell.
+            Dispatcher.UIThread.Post(() => _suppressBoShellWindowSync = false, DispatcherPriority.Background);
+        }
     }
 
     private void WireBoShellWindowSync(BoShellWindow boShell)
@@ -2606,7 +2634,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _boShellStateWired = true;
         boShell.PropertyChanged += (_, args) =>
         {
-            if (args.Property != Window.WindowStateProperty
+            if (_suppressBoShellWindowSync
+                || boShell.IsVisible == false
+                || args.Property != Window.WindowStateProperty
                 || FrontOfficeShell is not Window posShell
                 || ReferenceEquals(posShell, boShell))
             {
@@ -2650,7 +2680,18 @@ public partial class PosWindow : UserControl, IOfficeSurface
         FitHostedOverlays();
     }
 
-    private async void Logout()
+    private void Logout()
+    {
+        ShowQuestion(
+            TicketPrompt.Logout,
+            "Sair da Sessão",
+            "Confirma que deseja sair da sessão?",
+            question: true,
+            confirmText: "Sim",
+            showCancel: true);
+    }
+
+    private async Task ConfirmLogoutAsync()
     {
         await ReleaseLicenceSeatAsync().ConfigureAwait(true);
         LoggedOut?.Invoke(this, EventArgs.Empty);
@@ -2939,9 +2980,18 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
             if (error is null && add > 0m)
             {
+                var unitPrice = netUnitPrice == line.NetUnitPrice
+                    ? line.DisplayUnitPrice
+                    : DocumentReopenedLinePrice.FromStoredNet(netUnitPrice, line.VatPercentage, line.PriceIncludesVat).UnitPrice;
                 var saved = await orders.SaveAsync(
                     orderId,
-                    [new PosStoredLine(line.ArticleId, add, netUnitPrice, discount: nextDiscount)],
+                    [new PosStoredLine(
+                        line.ArticleId,
+                        add,
+                        netUnitPrice,
+                        unitPrice: unitPrice,
+                        priceWithVat: line.PriceIncludesVat,
+                        discount: nextDiscount)],
                     _currentTable?.Id);
                 error = saved.Succeeded ? null : saved.Error ?? "Não foi possível alterar a ordem.";
             }
@@ -2987,7 +3037,13 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         var lines = _ticket.Lines
-            .Select(line => new PosStoredLine(line.ArticleId, line.Quantity, line.NetUnitPrice, discount: line.Discount))
+            .Select(line => new PosStoredLine(
+                line.ArticleId,
+                line.Quantity,
+                line.NetUnitPrice,
+                unitPrice: line.DisplayUnitPrice,
+                priceWithVat: line.PriceIncludesVat,
+                discount: line.Discount))
             .ToList();
         var saved = await services.GetRequiredService<IPosOrderService>().SaveAsync(_openOrderId, lines, _currentTable?.Id);
         if (saved.Succeeded == false)
@@ -3126,7 +3182,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_orderListMode == false || _openOrderId is null || _orderLines.Count == 0)
         {
-            ShowQuestion(TicketPrompt.Notice, "Dividir conta", "Mostre a ordem antes de a dividir.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Dividir conta", UsesRetailOrderVocabulary() ? "Mostre a ordem antes de a dividir." : "Mostre a mesa antes de a dividir.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -3245,6 +3301,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
             }
         };
+        ToolTip.SetTip(keyboard, "Teclado virtual");
         keyboard.Click += (_, _) =>
         {
             if (seat.Paid)
@@ -3499,19 +3556,19 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_openOrderId is null)
         {
-            ShowQuestion(TicketPrompt.Notice, "Mudar mesa", "Não há uma ordem aberta nesta mesa.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, UsesRetailOrderVocabulary() ? "Mudar ordem" : "Mudar mesa", UsesRetailOrderVocabulary() ? "Não há uma ordem aberta." : "Não há um pedido aberto nesta mesa.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
         _tablePurpose = TablePurpose.ChangeOrder;
-        ListTitle.Text = "Mudar ordem";
+        ListTitle.Text = UsesRetailOrderVocabulary() ? "Mudar ordem" : "Mudar mesa";
     }
 
     private void RequestMoveLine()
     {
         if (_openOrderId is null || SelectedOrderLine is not PosTicketLine line)
         {
-            ShowQuestion(TicketPrompt.Notice, "Mover linha", "Selecione a linha da ordem.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Mover linha", UsesRetailOrderVocabulary() ? "Selecione a linha da ordem." : "Selecione a linha do pedido.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -3578,6 +3635,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             TablePurpose.MoveLine => "Mover linha",
             _ => TablesDialogTitle
         };
+        TablesChangeText.Text = UsesRetailOrderVocabulary() ? "Mudar ordem" : "Mudar mesa";
         if (TablesBar.Child is Panel tablesActions)
         {
             foreach (var child in tablesActions.Children.OfType<Control>())
@@ -3853,7 +3911,17 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 Margin = new Thickness(8, 0, 0, 0),
                 Content = new TextBlock { Classes = { "login_alert_action_text" }, Text = "Eliminar", TextWrapping = TextWrapping.NoWrap }
             };
-            delete.Click += async (_, _) => await DeleteOpenOrderAsync(orderId).ConfigureAwait(true);
+            delete.Click += (_, _) =>
+            {
+                _pendingDeleteOrderId = orderId;
+                ShowQuestion(
+                    TicketPrompt.DeleteOpenOrder,
+                    "Eliminar pedido",
+                    "Confirma que deseja eliminar este pedido?",
+                    question: true,
+                    confirmText: "Sim",
+                    showCancel: true);
+            };
             Grid.SetColumn(delete, 1);
             row.Children.Add(open);
             row.Children.Add(delete);
@@ -3943,7 +4011,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _ordersViewTableId = null;
     }
 
-    private const string VoltaTitleBase = "Talão Reembolso Volta";
+    private const string VoltaTitleBase = "Talão de reembolso de depósito";
     private const string VoltaArticleCode = "SDRVDEP";
     private const string VoltaPaymentToken = "OU";
     private PosArticle? _voltaArticle;
@@ -3955,7 +4023,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             string.Equals(item.Code, VoltaArticleCode, StringComparison.OrdinalIgnoreCase));
         if (_voltaArticle is null)
         {
-            ShowQuestion(TicketPrompt.Notice, VoltaTitleBase, "Crie o artigo de depósito SDRVDEP antes de emitir o Talão Reembolso Volta.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, VoltaTitleBase, "Crie o artigo de depósito de vasilhame antes de emitir o talão de reembolso de depósito.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -4110,7 +4178,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_voltaArticle is null)
         {
-            VoltaNotice.Text = "Crie o artigo de depósito SDRVDEP antes de emitir o Talão Reembolso Volta.";
+            VoltaNotice.Text = "Crie o artigo de depósito de vasilhame antes de emitir o talão de reembolso de depósito.";
             return;
         }
 
@@ -4137,7 +4205,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 .IssueDocumentAsync("TRV", _voltaCustomer.Id, [line], header);
             if (result.Succeeded == false)
             {
-                VoltaNotice.Text = result.Error ?? "Não foi possível emitir o Talão Reembolso Volta.";
+                VoltaNotice.Text = result.Error ?? "Não foi possível emitir o talão de reembolso de depósito.";
                 return;
             }
 
@@ -4145,7 +4213,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             var printError = await FrontOfficePrinting.PrintInvoiceAsync(result.DocumentId);
             var message = printError is null
                 ? $"Documento {result.Number} emitido."
-                : $"Documento {result.Number} emitido.{Environment.NewLine}Erro ao imprimir: {printError}";
+                : $"Documento {result.Number} emitido.{Environment.NewLine}Não foi possível imprimir: {printError}";
             ShowQuestion(TicketPrompt.Notice, VoltaTitleBase, message, question: false, confirmText: "Ok", showCancel: false);
         }
         catch (Exception exception)
@@ -4258,7 +4326,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_openOrderId is not Guid orderId || _moveLine is not PosTicketLine line)
         {
-            ShowQuestion(TicketPrompt.Notice, "Mover linha", "Selecione a linha da ordem.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Mover linha", UsesRetailOrderVocabulary() ? "Selecione a linha da ordem." : "Selecione a linha do pedido.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -4311,7 +4379,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
         if (_ticket.HasLines && table.Id != _currentTable?.Id)
         {
-            ShowQuestion(TicketPrompt.Notice, "Aviso", "Finalize ou cancele o ticket atual antes de mudar de mesa.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Aviso", "Finalize ou cancele o pedido atual antes de mudar de mesa.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -4367,10 +4435,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 await ShowEntityListingAsync("Recibos");
                 return;
             case "current-account":
-                await ShowEntityListingAsync("Conta.Corr.");
+                await ShowEntityListingAsync("Conta corrente");
                 return;
             case "sessions":
-                await ShowEntityListingAsync("Sessões de Trab.");
+                await ShowEntityListingAsync("Sessões de Trabalho");
                 return;
             case "stock":
                 await ShowStockOverlayAsync();
@@ -4481,7 +4549,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         if (_ticket.HasLines)
         {
             ListOverlay.IsVisible = false;
-            ShowQuestion(TicketPrompt.Notice, "Aviso", "Finalize ou cancele o ticket atual antes de abrir uma ordem.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Aviso", $"Finalize ou cancele o pedido atual antes de abrir {(UsesRetailOrderVocabulary() ? "uma ordem" : "uma mesa")}.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -4768,46 +4836,56 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 return;
             }
 
-            // Close day
-            var result = await RunSessionAsync("close-day", null);
-            string? printError = null;
-            if (result.Succeeded)
-            {
-                SessionOverlay.IsVisible = false;
-                printError = await PrintDayReportAsync();
-            }
+            ShowQuestion(
+                TicketPrompt.CloseDay,
+                "Fecho do dia",
+                "Confirma que deseja fechar o dia?",
+                question: true,
+                confirmText: "Sim",
+                showCancel: true);
+            return;
+        }
 
+        if (RequireAccess(_access.AllowsDayOpen, "Não tem permissão para abrir o dia.") == false)
+        {
+            return;
+        }
+
+        // Only open the day; then show cash drawer so user can choose opening amount
+        var result = await RunSessionAsync("open-day", null);
+        if (result.Succeeded)
+        {
+            OnShowCashDrawerClick(sender, e);
+        }
+        else
+        {
             var message = result.Error ?? result.Message ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(printError) == false)
-            {
-                message = string.IsNullOrWhiteSpace(message) ? printError : message + " " + printError;
-            }
             if (string.IsNullOrWhiteSpace(message) == false)
             {
                 ShowQuestion(TicketPrompt.Notice, "Sessão de Trabalho", message, question: false, confirmText: "Ok", showCancel: false);
             }
         }
-        else
-        {
-            if (RequireAccess(_access.AllowsDayOpen, "Não tem permissão para abrir o dia.") == false)
-            {
-                return;
-            }
+    }
 
-            // Only open the day; then show cash drawer so user can choose opening amount
-            var result = await RunSessionAsync("open-day", null);
-            if (result.Succeeded)
-            {
-                OnShowCashDrawerClick(sender, e);
-            }
-            else
-            {
-                var message = result.Error ?? result.Message ?? string.Empty;
-                if (string.IsNullOrWhiteSpace(message) == false)
-                {
-                    ShowQuestion(TicketPrompt.Notice, "Sessão de Trabalho", message, question: false, confirmText: "Ok", showCancel: false);
-                }
-            }
+    private async Task ConfirmCloseDayAsync()
+    {
+        var result = await RunSessionAsync("close-day", null);
+        string? printError = null;
+        if (result.Succeeded)
+        {
+            SessionOverlay.IsVisible = false;
+            printError = await PrintDayReportAsync();
+        }
+
+        var message = result.Error ?? result.Message ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(printError) == false)
+        {
+            message = string.IsNullOrWhiteSpace(message) ? printError : message + " " + printError;
+        }
+
+        if (string.IsNullOrWhiteSpace(message) == false)
+        {
+            ShowQuestion(TicketPrompt.Notice, "Sessão de Trabalho", message, question: false, confirmText: "Ok", showCancel: false);
         }
     }
 
@@ -4876,11 +4954,12 @@ public partial class PosWindow : UserControl, IOfficeSurface
         var totalText = _cashTotal.ToString("0.00", CultureInfo.CurrentCulture);
         if (action == "open-session")
         {
-            // GTK: amount field shows current total, read-only, description not required
+            // Opening float: start from current drawer total, editable so the user can set the initial value.
             SessionAmount.Text = totalText;
-            SessionAmount.IsReadOnly = true;
+            SessionAmount.IsReadOnly = false;
             SessionNote.Text = string.Empty;
-            SessionDescLabel.Text = "Descrição";
+            SessionDescLabel.Text = "Valor inicial";
+            SessionAmount.Focus();
         }
         else if (action == "close-session")
         {
@@ -4915,15 +4994,15 @@ public partial class PosWindow : UserControl, IOfficeSurface
             return;
         }
 
-        // Open allows zero, so we only need a selection
-        if (_sessionAction == "open-session")
-        {
-            SessionConfirm.IsEnabled = true;
-            return;
-        }
-
         // Parse the amount
         var hasAmount = MoneyFormat.TryParse(SessionAmount.Text, out var amount) && amount >= 0;
+
+        // Open allows zero, but the amount field must be filled.
+        if (_sessionAction == "open-session")
+        {
+            SessionConfirm.IsEnabled = hasAmount;
+            return;
+        }
 
         if (_sessionAction == "close-session")
         {
@@ -5596,9 +5675,26 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 _orderListMode = true;
                 RefreshTicket();
                 break;
+            case TicketPrompt.DeleteOpenOrder:
+                CloseTicketDialog();
+                if (_pendingDeleteOrderId is Guid orderId)
+                {
+                    _pendingDeleteOrderId = null;
+                    await DeleteOpenOrderAsync(orderId).ConfigureAwait(true);
+                }
+
+                return;
             case TicketPrompt.DeleteOpenOrdersAll:
                 CloseTicketDialog();
                 await ConfirmDeleteAllOpenOrdersAsync();
+                return;
+            case TicketPrompt.CloseDay:
+                CloseTicketDialog();
+                await ConfirmCloseDayAsync();
+                return;
+            case TicketPrompt.Logout:
+                CloseTicketDialog();
+                await ConfirmLogoutAsync();
                 return;
             case TicketPrompt.DeleteOrderLine:
                 if (SelectedOrderLine is { } removedLine)
@@ -5759,7 +5855,15 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
         if (_priceTyping)
         {
-            _priceMoney = 0;
+            if (MoneyFormat.TryParse(PriceEntry.Text, out var typed))
+            {
+                _priceMoney = typed;
+            }
+            else
+            {
+                _priceMoney = 0;
+            }
+
             _priceTyping = false;
         }
 
@@ -5900,7 +6004,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
         if (_amountDue is not null)
         {
             var ticketCount = _orderTicketCount + (_ticket.HasLines ? 1 : 0);
-            _amountDue.Text = $"{orderTotal + _ticket.Total:0.00} : #{ticketCount}";
+            var due = MoneyFormat.Format(orderTotal + _ticket.Total);
+            var pedidos = ticketCount == 1 ? "1 pedido" : $"{ticketCount} pedidos";
+            _amountDue.Text = $"{due} ({pedidos})";
         }
 
         selectedRow?.BringIntoView();

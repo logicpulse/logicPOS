@@ -2,6 +2,7 @@ using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using LogicPOS.Core.BackOffice;
 
 namespace LogicPOS.App.Views;
 
@@ -38,6 +39,13 @@ public partial class PeriodRangeField : UserControl
         _draftStart = _start;
         _draftEnd = _end;
         RefreshSummary();
+        ApplyCulture();
+    }
+
+    /// <summary>Updates the «Período» caption for the active <see cref="LogicPOS.Core.UiCulture"/>.</summary>
+    public void ApplyCulture()
+    {
+        Caption.Text = DocumentsListingText.Period();
     }
 
     /// <summary>Raised after a committed range change (Aplicar or typed dates).</summary>

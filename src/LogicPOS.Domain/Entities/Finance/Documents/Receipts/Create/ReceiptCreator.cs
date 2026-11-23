@@ -79,7 +79,7 @@ internal class ReceiptCreator : EntityCreator<Receipt>
 
         if (_series is null)
         {
-            return Result.InvalidOperation("Nenhuma série activa para emissão de recibos foi encontrada.");
+            return Result.InvalidOperation("Nenhuma série ativa para emissão de recibos foi encontrada.");
         }
 
         if (!await _references.PaymentMethodExistsAsync(_dto.PaymentMethodId, ct))

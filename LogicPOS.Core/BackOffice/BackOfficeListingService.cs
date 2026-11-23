@@ -193,12 +193,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Credit"] = "Crédito",
         ["WarehouseLocationId"] = "Localização",
         ["ButtonIcon"] = "Ícone do botão",
-        ["SeriesForEachTerminal"] = "Séries independente por cada terminal",
+        ["SeriesForEachTerminal"] = "Séries independentes por cada terminal",
         ["NumberRangeBegin"] = "Limite inferior",
         ["NumberRangeEnd"] = "Limite superior",
         ["ATDocCodeValidationSeries"] = "Código de validação AT",
         ["AtValidationCode"] = "Código de validação AT",
-        ["CharactersPerLine"] = "Num.Caracteres Linha",
+        ["CharactersPerLine"] = "Nº caracteres por linha",
         ["ThermalCutCommand"] = "Comando de Corte",
         ["ThermalEncoding"] = "Encoding",
         ["ThermalImageCompanyLogo"] = "Ficheiro de Imagem de Logotipo",
@@ -222,7 +222,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["TimerInterval"] = "Intervalo do Leitor (ms)",
         ["EndPoint"] = "EndPoint",
         ["GoToStandByInSeconds"] = "Entra em Suspensão (Seg.)",
-        ["PrintRequestConfirmation"] = "Pergunta se deseja Imprimir documento",
+        ["PrintRequestConfirmation"] = "Pergunta se deseja imprimir o documento",
         ["PrintOpenDrawer"] = "Abrir Gaveta",
         ["FiscalNumberRegex"] = "Expressão Regular Número Fiscal",
         ["ZipCodeRegex"] = "Expressão Regular Código Postal",
@@ -301,7 +301,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         "Rel. de Fatur." => "Relatórios",
         "Vendas por dia" => "Relatórios",
         "Aber. de ano fiscal" => "Abertura de ano fiscal",
-        "Ext. C.Cliente" => "Conta.Corr.",
+        "Ext. C.Cliente" => "Conta corrente",
         "Stocks" => "Gestão de Stocks",
         "Outras Tabelas" => "País",
         "Novo Documento" => "Novo Doc.",
@@ -402,7 +402,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         if (id is null)
         {
-            PrepareNextCode(page.EntityType, entity, database);
+            if (entity is Article)
+            {
+                // FKs + prices + code only — never DefaultString (would put «SMOKE» in Designation).
+                PrepareArticleNewEditor(page.EntityType, entity, database);
+                await FillForeignKeysAsync(database, page.EntityType, entity, cancellationToken);
+            }
+            else
+            {
+                PrepareNextCode(page.EntityType, entity, database);
+            }
         }
 
         var fields = Describe(page, entity, id is null);
@@ -1348,7 +1357,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 Lookup = lookup,
                 Options = enumType is { IsEnum: true } ? Enum.GetNames(enumType) : null,
                 Choices = enumType is { IsEnum: true }
-                    ? Enum.GetNames(enumType).Select(name => new ListingChoice(name, name)).ToList()
+                    ? ListingEnumDisplay.Choices(enumType)
                     : null,
                 ReadOnly = readOnly,
                 Required = kind is not ("lookup") && IsRequired(property) || (lookup is not null && IsRequired(property)),
@@ -1696,7 +1705,19 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return string.Empty;
         }
 
-        return ReadRaw(entity, property);
+        var raw = ReadRaw(entity, property);
+        var value = property.GetValue(entity);
+        if (value is Enum enumValue)
+        {
+            return ListingEnumDisplay.Label(enumValue);
+        }
+
+        if (entity is PaymentCondition && propertyName == "Designation")
+        {
+            return PaymentConditionLabels.Display(raw);
+        }
+
+        return raw;
     }
 
     private static bool IsGuidProperty(Type type)
@@ -1747,6 +1768,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         if (value is Enum)
         {
+            // Editor Value must stay the CLR name so the combo can select and save it.
             return value.ToString() ?? string.Empty;
         }
 
@@ -2022,6 +2044,33 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         {
             code.SetValue(entity, NextCode(database, type));
         }
+    }
+
+    /// <summary>
+    /// New-article editor: seed prices/button and next code only.
+    /// Does not call <see cref="DefaultString"/> so Designation stays empty for the user to fill.
+    /// </summary>
+    private static void PrepareArticleNewEditor(Type type, object entity, LogicPOSDbContext database)
+    {
+        foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+        {
+            if (property.CanWrite == false)
+            {
+                continue;
+            }
+
+            if (property.PropertyType == typeof(Button) && property.GetValue(entity) is null)
+            {
+                property.SetValue(entity, new Button());
+            }
+
+            if (property.PropertyType == typeof(ArticlePrice) && property.GetValue(entity) is null)
+            {
+                property.SetValue(entity, ArticlePrice.Default());
+            }
+        }
+
+        PrepareNextCode(type, entity, database);
     }
 
     private static void PrepareRequired(Type type, object entity, LogicPOSDbContext database)
@@ -3222,7 +3271,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             CurrencyCode = "EUR",
             CurrencyAmount = due,
             ExchangeRate = 1,
-            Notes = document.Id.ToString()
+            Notes = string.Empty
         };
         database.Receipts.Add(receipt);
         database.Payments.Add(new Payment
@@ -3412,7 +3461,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingSaveResult.Fail("Recibo não encontrado.");
         }
 
-        if (Guid.TryParse(receipt.Notes, out var documentId))
+        var linkedIds = await database.Payments.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.ReceiptId == receipt.Id)
+            .Select(item => item.DocumentId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+        if (linkedIds.Count == 0 && Guid.TryParse(receipt.Notes, out var legacyDocumentId))
+        {
+            linkedIds.Add(legacyDocumentId);
+        }
+
+        foreach (var documentId in linkedIds)
         {
             var document = await database.Documents.FirstOrDefaultAsync(item => item.Id == documentId, cancellationToken);
             if (document is not null)
@@ -3994,6 +4053,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                     return string.IsNullOrWhiteSpace(locality) ? value : value + " — " + locality;
                 }
 
+                if (name == "Designation" && row is PaymentCondition)
+                {
+                    return PaymentConditionLabels.Display(value);
+                }
+
                 return value;
             }
         }
@@ -4058,7 +4122,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Entity("Tipo de documento", typeof(DocumentType)),
             Entity("Taxas de imposto", typeof(VatRate)),
             Entity("Motivo de isenção de IVA", typeof(VatExemptionReason)),
-            Entity("Cond. de Pagamento", typeof(PaymentCondition)),
+            Entity("Condições de Pagamento", typeof(PaymentCondition)),
             Entity("Métodos de pagamento", typeof(PaymentMethod)),
             Entity("Clientes", typeof(Customer)),
             Entity("Tipo de clientes", typeof(CustomerType)),
@@ -4084,15 +4148,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Entity("Parâmetros da Empresa", typeof(PreferenceParameter), create: false, delete: false, filter: "company"),
             Entity("Parâmetros de Sistema", typeof(PreferenceParameter), create: false, delete: false, filter: "system"),
             Entity("Terminais", typeof(Terminal)),
-            Entity("Recibos", typeof(Receipt), create: false, edit: false, actions:
+            Entity("Recibos", typeof(Receipt), create: false, edit: false, delete: false, actions:
             [
                 new ListingAction { Key = "undo-receipt", Label = "Anular" }
             ]),
             new("Emissão Recibos", PageKind.ReceiptEmission, null, false, false, false, null, [new ListingAction { Key = "emit-receipt", Label = "Emitir" }], []),
-            new("Conta.Corr.", PageKind.CurrentAccount, null, false, false, false, null, [], []),
+            new("Conta corrente", PageKind.CurrentAccount, null, false, false, false, null, [], []),
             new("Relatórios", PageKind.Reports, null, false, false, false, null, [], ["Vendas por dia", "Vendas por cliente", "Vendas por artigo"]),
             Entity("Notificações", typeof(SystemNotification)),
-            Entity("Registro de alterações (Changelog)", typeof(SystemAudit), create: false, edit: false, delete: false),
+            Entity("Registo de alterações", typeof(SystemAudit), create: false, edit: false, delete: false),
             new("Backup DB", PageKind.Files, null, false, false, false, "backups", [new ListingAction { Key = "backup", Label = "Criar backup" }], []),
             new("Restaurar DB", PageKind.Files, null, false, false, false, "backups", [new ListingAction { Key = "restore", Label = "Restaurar" }], []),
             new("Importar Artigos", PageKind.Files, null, false, false, false, "exports", [new ListingAction { Key = "import-articles", Label = "Importar" }], []),
@@ -4102,7 +4166,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             // SAF-T ano / mês / período are menu dialogs on BackOfficeWindow (not Notice listing pages).
             new("Documentos AGT", PageKind.Notice, null, false, false, false, "A consulta online de documentos AGT está disponível no modo cloud.", [new ListingAction { Key = "agt-consult", Label = "Consultar" }], []),
             new("Séries AGT", PageKind.Notice, null, false, false, false, "A consulta online de séries AGT está disponível no modo cloud.", [], []),
-            Entity("Sessões de Trab.", typeof(WorkSessionPeriod), actions:
+            Entity("Sessões de Trabalho", typeof(WorkSessionPeriod), actions:
             [
                 new ListingAction { Key = "open-session", Label = "Abrir sessão" },
                 new ListingAction { Key = "close-session", Label = "Fechar sessão" },

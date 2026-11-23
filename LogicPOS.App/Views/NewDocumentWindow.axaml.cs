@@ -2908,7 +2908,7 @@ public partial class NewDocumentWindow : UserControl
         {
             if (force)
             {
-                EditorError.Text = "Seleccione o país antes de procurar o código-postal.";
+                EditorError.Text = "Selecione o país antes de procurar o código-postal.";
             }
 
             return;
@@ -3640,7 +3640,7 @@ public partial class NewDocumentWindow : UserControl
     {
         if (_customer is null || _customer.IsFinalConsumer || string.IsNullOrWhiteSpace(_customer.Address))
         {
-            ShowDocumentError("O cliente seleccionado não tem morada.");
+            ShowDocumentError("O cliente selecionado não tem morada.");
             return;
         }
 

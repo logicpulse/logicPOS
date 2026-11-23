@@ -118,15 +118,25 @@ public partial class App : global::Avalonia.Application
         // Avoid OnMainWindowClose killing the process while we swap splash → edition → login.
         desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            // Close splash before dialogs: Opened may touch ILicenseModule (branding).
-            loading.Close();
-        });
-
         var configuration = AppComposition.Services?
             .GetService(typeof(Microsoft.Extensions.Configuration.IConfiguration))
             as Microsoft.Extensions.Configuration.IConfiguration;
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            // Re-apply UI culture on the Avalonia thread (bootstrap ran on a worker).
+            try
+            {
+                UiCulture.Apply(UiCulture.Read(configuration?["Culture"]));
+            }
+            catch
+            {
+                // Invalid culture / I/O — keep process start; callers fall back to pt-PT.
+            }
+
+            // Close splash before dialogs: Opened may touch ILicenseModule (branding).
+            loading.Close();
+        });
         var needsEdition = ApplyProductEditionAsync is not null
             && (configuration is null || ProductEditionSettings.HasEdition(configuration) == false);
 

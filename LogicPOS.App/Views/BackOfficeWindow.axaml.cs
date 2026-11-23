@@ -20,8 +20,6 @@ namespace LogicPOS.App.Views;
 
 public partial class BackOfficeWindow : UserControl, IOfficeSurface
 {
-    private const string ClockDateFormat = "dddd, dd' de 'MMMM' de 'yyyy";
-    private const string ClockTimeFormat = "HH:mm:ss tt";
     private const string IconRoot = "avares://LogicPOS.App/Assets/Images/BackOffice/";
 
     private readonly DispatcherTimer _clock = new() { Interval = TimeSpan.FromSeconds(1) };
@@ -36,6 +34,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private bool _onboardingIncomplete;
     private StockManagementView? _stockView;
     private string? _pendingSaftAction;
+    private bool _pendingLogout;
     private bool _portrait;
     private bool _drawerOpen;
     private UiViewport _viewport;
@@ -399,8 +398,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private void UpdateClock()
     {
         var now = DateTime.Now;
-        ClockDateLabel.Text = now.ToString(ClockDateFormat);
-        ClockTimeLabel.Text = now.ToString(ClockTimeFormat);
+        ClockDateLabel.Text = UiDateTimeFormat.FormatLongDate(now);
+        ClockTimeLabel.Text = UiDateTimeFormat.FormatClockTime(now);
     }
 
     private async Task ReloadDashboardSafeAsync()
@@ -909,8 +908,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
                 ("Documentos", "Menu/menu_dashboard_documentos_b.svg", false),
                 ("Emissão Recibos", "Menu/menu_dashboard_emissao_recibos.svg", false),
                 ("Recibos", "Menu/menu_dashboard_recibos.svg", false),
-                ("Conta.Corr.", "Menu/menu_dashboard_conta_corrente.svg", false),
-                ("Sessões de Trab.", (string?)null, false)
+                ("Conta corrente", "Menu/menu_dashboard_conta_corrente.svg", false),
+                ("Sessões de Trabalho", (string?)null, false)
             }),
             ("Relatórios", "Menu/menu_relatorios_relatorios.svg", new[]
             {
@@ -935,7 +934,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
                 ("Tipo de documento", "Menu/menu_informacoes_fiscais_tipos_documentos.svg", false),
                 ("Taxas de imposto", "Menu/menu_informacoes_fiscais_taxas_iva.svg", false),
                 ("Motivo de isenção de IVA", "Menu/menu_informacoes_fiscais_movimentos_isencao_iva.svg", false),
-                ("Cond. de Pagamento", "Menu/menu_informacoes_fiscais_condicoes_pagamento.svg", false),
+                ("Condições de Pagamento", "Menu/menu_informacoes_fiscais_condicoes_pagamento.svg", false),
                 ("Métodos de pagamento", "Menu/menu_informacoes_fiscais_metodo_pagamento.svg", false)
             }),
             ("Clientes", "Menu/menu_clientes.svg", new[]
@@ -988,7 +987,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             ("Sistema", "Menu/menu_sistema.svg", new[]
             {
                 ("Notificações", "Menu/menu_sistema_notificacoes.svg", false),
-                ("Registro de alterações (Changelog)", "Menu/menu_sistema_change_logs.svg", false),
+                ("Registo de alterações", "Menu/menu_sistema_change_logs.svg", false),
                 ("Backup DB", "Menu/menu_sistema_backup.svg", false),
                 ("Restaurar DB", "Menu/menu_sistema_restauro.svg", false),
                 ("Restaurar de ficheiro", "Menu/menu_sistema_restauro.svg", false),
@@ -1318,6 +1317,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private async void OnSaftConfirmYesClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         SaftConfirmOverlay.IsVisible = false;
+        if (_pendingLogout)
+        {
+            _pendingLogout = false;
+            await ConfirmLogoutAsync();
+            return;
+        }
+
         var action = _pendingSaftAction;
         _pendingSaftAction = null;
         if (string.IsNullOrWhiteSpace(action))
@@ -1330,6 +1336,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private void OnSaftConfirmNoClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        _pendingLogout = false;
         _pendingSaftAction = null;
         SaftConfirmOverlay.IsVisible = false;
     }
@@ -1392,7 +1399,21 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private static bool IsAngola() => FiscalFeatures.ShowsAgt(FiscalFeatures.Current);
 
-    private void ShowPage(string title)
+    private async Task RestoreFromExternalFileSequentialAsync()
+    {
+        try
+        {
+            await EntityHost.ShowAsync("Restaurar DB");
+            await EntityHost.RestoreFromExternalFileAsync();
+        }
+        catch (Exception exception)
+        {
+            ShowSaftMessage(
+                $"Não foi possível restaurar a base de dados.{Environment.NewLine}{Environment.NewLine}{exception.Message}");
+        }
+    }
+
+    private async void ShowPage(string title)
     {
         var service = AppComposition.Services?.GetService<IBackOfficeListingService>();
         title = service?.ResolveTitle(title) ?? title;
@@ -1469,6 +1490,15 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        if (title is "Restaurar de ficheiro")
+        {
+            EntityHost.SetOverlayOnly(false);
+            EntityHost.IsVisible = true;
+            PlaceholderHost.IsVisible = false;
+            await RestoreFromExternalFileSequentialAsync();
+            return;
+        }
+
         if (title is "Parâmetros da Empresa" or "Parâmetros de Sistema")
         {
             SettingsHost.IsVisible = true;
@@ -1528,6 +1558,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         _sectionButtons.Clear();
         BuildMenu();
         ApplySidebarTexts();
+        UpdateClock();
+        DocumentsHost.ApplyCulture();
     }
 
     private void MarkFlag(string culture)
@@ -1906,7 +1938,16 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         App.ExitApplication?.Invoke();
     }
 
-    private async void RaiseLogout()
+    private void RaiseLogout()
+    {
+        _pendingLogout = true;
+        _pendingSaftAction = null;
+        SaftConfirmTitle.Text = "Sair da Sessão";
+        SaftConfirmMessage.Text = "Confirma que deseja sair da sessão?";
+        SaftConfirmOverlay.IsVisible = true;
+    }
+
+    private async Task ConfirmLogoutAsync()
     {
         await ReleaseLicenceSeatAsync().ConfigureAwait(true);
         _allowClose = true;

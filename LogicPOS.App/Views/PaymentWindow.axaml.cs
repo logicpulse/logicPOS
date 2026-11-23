@@ -64,6 +64,8 @@ public partial class PaymentWindow : Window
 
     private bool _mixedPayment;
     private Dictionary<string, Guid> _paymentMethodIds = new(StringComparer.OrdinalIgnoreCase);
+    private bool _issuing;
+    private bool _closingWithResult;
 
     public bool PartialPayment { get; private set; }
 
@@ -108,6 +110,23 @@ public partial class PaymentWindow : Window
         BuildMethods();
         FullPaymentButton.Click += OnFullPaymentClick;
         TouchFields.Attach(this);
+        // Block Alt+F4 while issuing; after success always Close(true) so PosWindow clears the order.
+        Closing += (_, args) =>
+        {
+            if (PaymentWindowCloseDecision.ShouldCancelWhileIssuing(_issuing, _confirmPayment))
+            {
+                args.Cancel = true;
+                return;
+            }
+
+            if (PaymentWindowCloseDecision.ShouldForceSuccessClose(_confirmPayment, _closingWithResult))
+            {
+                args.Cancel = true;
+                _closingWithResult = true;
+                Close(true);
+            }
+        };
+        KeyDown += OnWindowKeyDown;
         Opened += (_, _) => CoverOwner();
         Opened += async (_, _) => await LoadCustomerAsync();
         Opened += async (_, _) => await LoadCompanyMarksAsync();
@@ -341,24 +360,36 @@ public partial class PaymentWindow : Window
 
     private async void OnInvoiceClick(object? sender, RoutedEventArgs e)
     {
-        if (PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule()))
+        if (BeginIssuing() == false)
         {
-            _parkingInvoiceRequested = true;
-            ApplySaleDocumentType();
-            ShowNotice("Pagamento", "Confirme com Ok para emitir a fatura pedida.", error: false);
             return;
         }
 
-        if (_finalConsumer || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(FiscalNumber.Text))
+        try
         {
-            ShowNotice(
-                "Aviso",
-                "Não pode criar faturas com o cliente consumidor final ou com um cliente sem nome/NIF!\nUse um cliente válido e tente novamente.",
-                error: true);
-            return;
-        }
+            if (PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule()))
+            {
+                _parkingInvoiceRequested = true;
+                ApplySaleDocumentType();
+                ShowNotice("Pagamento", "Confirme com Ok para emitir a fatura pedida.", error: false);
+                return;
+            }
 
-        await IssueAsync("FT", _lines, partial: null, settledSale: false);
+            if (_finalConsumer || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(FiscalNumber.Text))
+            {
+                ShowNotice(
+                    "Aviso",
+                    "Não pode criar faturas com o cliente consumidor final ou com um cliente sem nome/NIF!\nUse um cliente válido e tente novamente.",
+                    error: true);
+                return;
+            }
+
+            await IssueAsync("FT", _lines, partial: null, settledSale: false);
+        }
+        finally
+        {
+            ReleaseIssuingIfIdle();
+        }
     }
 
     private void OnPartialPaymentClick(object? sender, RoutedEventArgs e)
@@ -398,6 +429,7 @@ public partial class PaymentWindow : Window
                     Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
                 }
             };
+            ToolTip.SetTip(keyboard, "Teclado virtual");
             keyboard.Click += (_, _) =>
             {
                 quantity.Focus();
@@ -438,40 +470,52 @@ public partial class PaymentWindow : Window
 
     private async void OnPartialConfirmClick(object? sender, RoutedEventArgs e)
     {
-        var selected = new List<PartialPaidLine>();
-        var lines = new List<PosTicketLine>();
-        foreach (var row in _partialRows)
+        if (BeginIssuing() == false)
         {
-            if (row.Check.IsChecked != true)
+            return;
+        }
+
+        try
+        {
+            var selected = new List<PartialPaidLine>();
+            var lines = new List<PosTicketLine>();
+            foreach (var row in _partialRows)
             {
-                continue;
+                if (row.Check.IsChecked != true)
+                {
+                    continue;
+                }
+
+                if (TryPartialQuantity(row.Quantity.Text, row.Available, out var quantity) == false)
+                {
+                    ShowNotice("Aviso", $"Indique uma quantidade até {row.Available:0.###}.", error: true);
+                    return;
+                }
+
+                selected.Add(new PartialPaidLine(row.Index, quantity));
+                lines.Add(_lines[row.Index].WithQuantity(quantity));
             }
 
-            if (TryPartialQuantity(row.Quantity.Text, row.Available, out var quantity) == false)
+            if (selected.Count == 0)
             {
-                ShowNotice("Aviso", $"Indique uma quantidade até {row.Available:0.###}.", error: true);
+                ShowNotice("Aviso", "Selecione pelo menos um artigo.", error: true);
                 return;
             }
 
-            selected.Add(new PartialPaidLine(row.Index, quantity));
-            lines.Add(_lines[row.Index].WithQuantity(quantity));
-        }
+            PartialOverlay.IsVisible = false;
+            ApplySaleDocumentType(lines);
+            if (PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule()) && _parkingInvoiceRequested == false)
+            {
+                await CloseParkingWithPaymentTicketAsync(lines, selected);
+                return;
+            }
 
-        if (selected.Count == 0)
+            await IssueAsync(_saleDocumentType, lines, selected);
+        }
+        finally
         {
-            ShowNotice("Aviso", "Selecione pelo menos um artigo.", error: true);
-            return;
+            ReleaseIssuingIfIdle();
         }
-
-        PartialOverlay.IsVisible = false;
-        ApplySaleDocumentType(lines);
-        if (PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule()) && _parkingInvoiceRequested == false)
-        {
-            await CloseParkingWithPaymentTicketAsync(lines, selected);
-            return;
-        }
-
-        await IssueAsync(_saleDocumentType, lines, selected);
     }
 
     private static bool TryPartialQuantity(string? text, decimal available, out decimal quantity)
@@ -667,14 +711,26 @@ public partial class PaymentWindow : Window
 
     private async void OnConfirmClick(object? sender, RoutedEventArgs e)
     {
-        ApplySaleDocumentType();
-        if (PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule()) && _parkingInvoiceRequested == false)
+        if (BeginIssuing() == false)
         {
-            await CloseParkingWithPaymentTicketAsync(_lines, partial: null);
             return;
         }
 
-        await IssueAsync(_saleDocumentType, _lines, partial: null);
+        try
+        {
+            ApplySaleDocumentType();
+            if (PosDocumentRules.ClosesWithPaymentTicketOnly(CurrentModule()) && _parkingInvoiceRequested == false)
+            {
+                await CloseParkingWithPaymentTicketAsync(_lines, partial: null);
+                return;
+            }
+
+            await IssueAsync(_saleDocumentType, _lines, partial: null);
+        }
+        finally
+        {
+            ReleaseIssuingIfIdle();
+        }
     }
 
     private async Task IssueAsync(
@@ -760,7 +816,7 @@ public partial class PaymentWindow : Window
         var message = $"Pagamento registado.{Environment.NewLine}Total: {MoneyFormat.Format(payable)}";
         if (printError is not null)
         {
-            message += $"{Environment.NewLine}{Environment.NewLine}Erro ao imprimir: {printError}";
+            message += $"{Environment.NewLine}{Environment.NewLine}Não foi possível imprimir: {printError}";
         }
 
         ShowNotice("Pagamento", message, error: false);
@@ -768,7 +824,45 @@ public partial class PaymentWindow : Window
 
     private void OnCancelClick(object? sender, RoutedEventArgs e)
     {
+        if (_issuing)
+        {
+            return;
+        }
+
         Close(false);
+    }
+
+    private void OnWindowKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape)
+        {
+            return;
+        }
+
+        if (NoticeOverlay.IsVisible == false)
+        {
+            return;
+        }
+
+        if (PaymentWindowCloseDecision.ShouldCloseNoticeOnEscape(_confirmPayment, _closingWithResult))
+        {
+            e.Handled = true;
+            NoticeOverlay.IsVisible = false;
+            _pendingSeriesDocumentType = null;
+            _pendingSeriesLines = null;
+            _pendingSeriesPartial = null;
+            _pendingSettledSale = true;
+            SetNoticeButtons(confirm: false);
+            _closingWithResult = true;
+            Close(true);
+            return;
+        }
+
+        if (PaymentWindowCloseDecision.ShouldIgnoreEscapeBeforeSuccess(_confirmPayment))
+        {
+            // Before issue / series prompt: Escape must not Close(false) or confirm.
+            e.Handled = true;
+        }
     }
 
     private void OnNoticeCloseClick(object? sender, RoutedEventArgs e)
@@ -781,12 +875,33 @@ public partial class PaymentWindow : Window
         SetNoticeButtons(confirm: false);
         if (_confirmPayment)
         {
+            _closingWithResult = true;
             Close(true);
+            return;
         }
+
+        EndIssuing();
     }
 
     private async void OnNoticeYesClick(object? sender, RoutedEventArgs e)
     {
+        // Series «Sim» stays enabled while Confirm/Fatura/Parcial are locked; guard double Yes here.
+        if (NoticeYesButton is { IsEnabled: false })
+        {
+            return;
+        }
+
+        if (_issuing == false && BeginIssuing() == false)
+        {
+            return;
+        }
+
+        if (NoticeYesButton is not null)
+        {
+            NoticeYesButton.IsEnabled = false;
+        }
+
+        SetIssueButtonsEnabled(false);
         var documentType = _pendingSeriesDocumentType ?? "FS";
         var lines = _pendingSeriesLines ?? _lines;
         var partial = _pendingSeriesPartial;
@@ -797,7 +912,75 @@ public partial class PaymentWindow : Window
         _pendingSeriesPartial = null;
         var settledSale = _pendingSettledSale;
         _pendingSettledSale = true;
-        await IssueWithSeriesAsync(documentType, lines, partial, createMissingSeries: true, settledSale);
+        try
+        {
+            await IssueWithSeriesAsync(documentType, lines, partial, createMissingSeries: true, settledSale);
+        }
+        finally
+        {
+            ReleaseIssuingIfIdle();
+        }
+    }
+
+    private bool BeginIssuing()
+    {
+        if (_issuing)
+        {
+            return false;
+        }
+
+        _issuing = true;
+        SetIssueButtonsEnabled(false);
+        return true;
+    }
+
+    private void EndIssuing()
+    {
+        _issuing = false;
+        SetIssueButtonsEnabled(true);
+        if (NoticeYesButton is not null)
+        {
+            NoticeYesButton.IsEnabled = true;
+        }
+    }
+
+    /// <summary>Keep locked after success (Ok closes) or while waiting for series confirmation.</summary>
+    private void ReleaseIssuingIfIdle()
+    {
+        if (_confirmPayment || string.IsNullOrWhiteSpace(_pendingSeriesDocumentType) == false)
+        {
+            return;
+        }
+
+        EndIssuing();
+    }
+
+    private void SetIssueButtonsEnabled(bool enabled)
+    {
+        if (InvoiceButton is not null)
+        {
+            InvoiceButton.IsEnabled = enabled;
+        }
+
+        if (ConfirmButton is not null)
+        {
+            ConfirmButton.IsEnabled = enabled;
+        }
+
+        if (PartialConfirmButton is not null)
+        {
+            PartialConfirmButton.IsEnabled = enabled;
+        }
+
+        if (CancelButton is not null)
+        {
+            CancelButton.IsEnabled = enabled;
+        }
+
+        if (CloseHeaderButton is not null)
+        {
+            CloseHeaderButton.IsEnabled = enabled;
+        }
     }
 
     private void ShowNotice(string title, string message, bool error)
@@ -808,6 +991,8 @@ public partial class PaymentWindow : Window
         NoticeMessage.Text = message;
         NoticeIcon.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}_window.png");
         NoticeSymbol.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}.png");
+        // Above CashOverlay / MixedPayment overlays when those are open.
+        NoticeOverlay.ZIndex = 100;
         NoticeOverlay.IsVisible = true;
     }
 
@@ -906,7 +1091,7 @@ public partial class PaymentWindow : Window
                 _pendingSettledSale = settledSale;
                 ShowConfirm(
                     "Série fiscal",
-                    $"Não existe série activa para «{_pendingSeriesDocumentType}».{Environment.NewLine}{Environment.NewLine}Deseja criar o ano fiscal e a série automaticamente?");
+                    $"Não existe série ativa para «{_pendingSeriesDocumentType}».{Environment.NewLine}{Environment.NewLine}Deseja criar o ano fiscal e a série automaticamente?");
                 return;
             }
 
@@ -944,10 +1129,10 @@ public partial class PaymentWindow : Window
             var printError = await FrontOfficePrinting.PrintInvoiceAsync(result.DocumentId);
             if (printError is not null)
             {
-                message += $"{Environment.NewLine}{Environment.NewLine}Erro ao imprimir: {printError}";
+                message += $"{Environment.NewLine}{Environment.NewLine}Não foi possível imprimir: {printError}";
             }
 
-            _confirmPayment = settledSale;
+            _confirmPayment = true;
             ShowNotice(title, message, error: false);
         }
         catch (Exception exception)
@@ -978,7 +1163,15 @@ public partial class PaymentWindow : Window
 
         if (_cashTyping)
         {
-            _cashMoney = 0;
+            if (MoneyFormat.TryParse(CashEntry.Text, out var typed))
+            {
+                _cashMoney = typed;
+            }
+            else
+            {
+                _cashMoney = 0;
+            }
+
             _cashTyping = false;
         }
 
@@ -1020,15 +1213,23 @@ public partial class PaymentWindow : Window
 
     private void OnCashOkClick(object? sender, RoutedEventArgs e)
     {
-        if (MoneyFormat.TryParse(CashEntry.Text, out var value) && value > 0)
+        if (MoneyFormat.TryParse(CashEntry.Text, out var value) == false || value <= 0)
         {
-            _delivered = value;
-        }
-        else
-        {
-            _delivered = Payable;
+            CashEntry.Text = Payable.ToString("0.00", CultureInfo.CurrentCulture);
+            return;
         }
 
+        if (value + 0.0001m < Payable)
+        {
+            // Keep the pad open until the delivered amount covers the total (no negative change).
+            ShowNotice(
+                "Aviso",
+                "O valor entregue é inferior ao total. Indique um valor igual ou superior ao devido.",
+                error: true);
+            return;
+        }
+
+        _delivered = value;
         CashOverlay.IsVisible = false;
         RefreshTotals();
     }

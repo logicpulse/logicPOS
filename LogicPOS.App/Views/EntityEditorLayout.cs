@@ -49,7 +49,7 @@ internal static class EntityEditorLayout
         ["Tipo de documento"] = ("tipo de documento", false),
         ["Taxas de imposto"] = ("taxa de imposto", true),
         ["Motivo de isenção de IVA"] = ("motivo de isenção", false),
-        ["Cond. de Pagamento"] = ("condição de pagamento", true),
+        ["Condições de Pagamento"] = ("condição de pagamento", true),
         ["Métodos de pagamento"] = ("método de pagamento", false),
         ["Clientes"] = ("cliente", false),
         ["Tipo de clientes"] = ("tipo de cliente", false),
@@ -76,7 +76,7 @@ internal static class EntityEditorLayout
         ["Parâmetros de Sistema"] = ("parâmetro", false),
         ["Terminais"] = ("terminal", false),
         ["Notificações"] = ("notificação", true),
-        ["Sessões de Trab."] = ("sessão de trabalho", true)
+        ["Sessões de Trabalho"] = ("sessão de trabalho", true)
     };
 
     /// <summary>Cards per listing, then per tab ("" for single-tab editors).</summary>
@@ -188,10 +188,11 @@ internal static class EntityEditorLayout
             [""] =
             [
                 Identity(2, "Designation", "Acronym", "Code", "Order"),
-                new("Configuração", "gear", 3, ["Token", "ResourceString", "Symbol", "ButtonIcon", "AllowPayback"]),
+                new("Configuração", "gear", 3, ["Symbol", "AllowPayback"]),
                 Notes
             ]
         },
+
         ["Impressoras"] = new()
         {
             [""] =
@@ -323,4 +324,12 @@ internal static class EntityEditorLayout
         var gridFields = fields.Count(field => field.Kind is not ("bool" or "multiline" or "image"));
         return [new(group ?? "Geral", group is null ? "tag" : TabIcon(group), gridFields <= 4 ? 2 : 3, [])];
     }
+
+    /// <summary>
+    /// Internal keys that must not spill into the first card when no section claims them.
+    /// Payment-method Token drives FO matching (MONEY, …); ResourceString/ButtonIcon are seed/UI metadata.
+    /// </summary>
+    public static bool IsHiddenEditorKey(string listing, string key)
+        => listing is "Métodos de pagamento"
+           && key is "Token" or "ResourceString" or "ButtonIcon";
 }
