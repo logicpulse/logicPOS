@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace LogicPOS.Core.Tests.Seeds;
 
@@ -54,7 +54,21 @@ public sealed class DemoSeedTextTests
         Assert.Contains("Mousse de Chocolate com Chantilly", designations);
         Assert.Contains("Tarte de Amêndoa", designations);
         Assert.Contains("Meia de leite", designations);
+        Assert.Contains("Red Bull", designations);
+        Assert.Contains("Super Bock Abadia", designations);
+        Assert.Contains("Água Luso 33cl", designations);
+        Assert.Contains("Ponte de Lima", designations);
+        Assert.Contains("Casal Garcia", designations);
+        Assert.Contains("Bola de Berlim", designations);
+        if (module == "restaurant")
+        {
+            Assert.Contains("Vodka Smirnoff", designations);
+            Assert.DoesNotContain("Vodka smirnoff", designations);
+        }
+
         Assert.Contains(designations, name => name.StartsWith("Hambúrguer", StringComparison.Ordinal));
+        Assert.DoesNotContain("Red bull", designations);
+        Assert.DoesNotContain("Super bock abadia", designations);
         Assert.DoesNotContain("Outras Caf", designations);
         Assert.DoesNotContain("YOUR-EMAIL@gmail.com", designations);
     }
