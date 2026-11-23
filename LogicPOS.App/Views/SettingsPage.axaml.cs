@@ -111,6 +111,7 @@ public partial class SettingsPage : UserControl
 
         BuildTabs(tabs);
         TouchFields.Attach(FieldsHost);
+        AttachPasswordReveal();
         AttachCompanyPostal();
     }
 
@@ -342,10 +343,25 @@ public partial class SettingsPage : UserControl
         };
         if (PreferenceParameterFieldMetadata.IsPasswordToken(token) || kind.Contains("Password", StringComparison.OrdinalIgnoreCase))
         {
-            box.PasswordChar = '*';
+            // Masked by default; eye toggle attached after TouchFields in AttachPasswordReveal.
+            box.PasswordChar = PasswordRevealState.Mask;
+            box.Classes.Add("bo_password_field");
         }
 
         return box;
+    }
+
+    private void AttachPasswordReveal()
+    {
+        foreach (var box in FieldsHost.GetVisualDescendants().OfType<TextBox>())
+        {
+            if (box.Classes.Contains("bo_password_field")
+                || PreferenceParameterFieldMetadata.IsPasswordToken(box.Name)
+                || PasswordRevealState.IsHidden(box.PasswordChar))
+            {
+                PasswordReveal.Attach(box);
+            }
+        }
     }
 
     private Control CreateCountryField(string designation)

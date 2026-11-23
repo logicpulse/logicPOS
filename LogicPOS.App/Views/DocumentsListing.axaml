@@ -145,11 +145,11 @@
                     <ComboBoxItem Content="20" />
                     <ComboBoxItem Content="50" />
                 </ComboBox>
-                <Button Classes="bo_doc_page_button" Content="&lt;&lt;" Click="OnFirstPageClick" />
-                <Button Classes="bo_doc_page_button" Content="&lt;" Click="OnPreviousPageClick" />
+                <Button Classes="bo_doc_page_button" Content="&lt;&lt;" Click="OnFirstPageClick" ToolTip.Tip="Primeira página" />
+                <Button Classes="bo_doc_page_button" Content="&lt;" Click="OnPreviousPageClick" ToolTip.Tip="Anterior" />
                 <TextBlock x:Name="PageLabel" Classes="bo_doc_page_label" Text="1 / 1" />
-                <Button Classes="bo_doc_page_button" Content="&gt;" Click="OnNextPageClick" />
-                <Button Classes="bo_doc_page_button" Content="&gt;&gt;" Click="OnLastPageClick" />
+                <Button Classes="bo_doc_page_button" Content="&gt;" Click="OnNextPageClick" ToolTip.Tip="Seguinte" />
+                <Button Classes="bo_doc_page_button" Content="&gt;&gt;" Click="OnLastPageClick" ToolTip.Tip="Última página" />
             </StackPanel>
         </Border>
 
@@ -183,15 +183,15 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Data do documento" Binding="{Binding DocumentDateText}" Width="175" MinWidth="175" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Número do Doc." Binding="{Binding Number}" Width="180" MinWidth="180" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="100" MinWidth="100" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Entidade" Binding="{Binding EntityName}" Width="*" MinWidth="140" IsReadOnly="True" />
-                    <DataGridTextColumn Header="NIF" Binding="{Binding TaxId}" Width="120" MinWidth="80" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Total Final" Binding="{Binding FinalTotalText}" Width="140" MinWidth="140" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Valor Pago" Binding="{Binding PaidAmountText}" Width="140" MinWidth="140" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Valor em Dívida" Binding="{Binding DebitAmountText}" Width="170" MinWidth="170" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Documentos Associados" Binding="{Binding AssociatedDocuments}" Width="230" MinWidth="230" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Data do documento" Binding="{Binding DocumentDateText}" SortMemberPath="DocumentDateText" Width="175" MinWidth="175" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Número do Doc." Binding="{Binding Number}" SortMemberPath="Number" Width="180" MinWidth="180" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Estado" Binding="{Binding Status}" SortMemberPath="Status" Width="100" MinWidth="100" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Entidade" Binding="{Binding EntityName}" SortMemberPath="EntityName" Width="*" MinWidth="140" IsReadOnly="True" />
+                    <DataGridTextColumn Header="NIF" Binding="{Binding TaxId}" SortMemberPath="TaxId" Width="120" MinWidth="80" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Total Final" Binding="{Binding FinalTotalText}" SortMemberPath="FinalTotalText" Width="140" MinWidth="140" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Valor Pago" Binding="{Binding PaidAmountText}" SortMemberPath="PaidAmountText" Width="140" MinWidth="140" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Valor em Dívida" Binding="{Binding DebitAmountText}" SortMemberPath="DebitAmountText" Width="170" MinWidth="170" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Documentos Associados" Binding="{Binding AssociatedDocuments}" SortMemberPath="AssociatedDocuments" Width="230" MinWidth="230" IsReadOnly="True" />
                     <DataGridTemplateColumn Header="" Width="144" MinWidth="144" MaxWidth="144" CanUserSort="False" CanUserReorder="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:CompileBindings="False">

@@ -31,7 +31,7 @@ public partial class Document
 
     internal void CalculateTotals()
     {
-        TotalFinal = TotalNet + TotalTax;
+        TotalFinal = (TotalNet + TotalTax).ToStoredPrecision();
 
         if (TypeAnalyzer.RequireFullPayment())
         {

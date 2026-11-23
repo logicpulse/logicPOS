@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -1167,25 +1167,21 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        if (_cashTyping)
+        // Keep the running total across note clicks; only seed from typed digits.
+        // Reset happens in ShowCashPad / OnCashClearClick, not here.
+        var wasTyping = _cashTyping;
+        decimal? typedValue = null;
+        if (wasTyping)
         {
             if (MoneyFormat.TryParse(CashEntry.Text, out var typed))
             {
-                _cashMoney = typed;
-            }
-            else
-            {
-                _cashMoney = 0;
+                typedValue = typed;
             }
 
             _cashTyping = false;
         }
-        else
-        {
-            _cashMoney = 0;
-        }
 
-        _cashMoney += amount;
+        _cashMoney = CashPadAccumulation.ApplyNote(_cashMoney, amount, wasTyping, typedValue);
         CashEntry.Text = _cashMoney.ToString("0.00", CultureInfo.CurrentCulture);
     }
 
