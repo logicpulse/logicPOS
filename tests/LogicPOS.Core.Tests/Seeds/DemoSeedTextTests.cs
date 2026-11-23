@@ -121,7 +121,7 @@ public sealed class DemoSeedTextTests
         var designations = articles.Select(item => item.GetProperty("Designation").GetString()!).ToHashSet(StringComparer.Ordinal);
 
         Assert.Contains("Toucinho do Céu", designations);
-        Assert.Contains("Mousse de Chocolate com Chantilly", designations);
+        Assert.Contains("Mousse de chocolate com chantilly", designations);
         Assert.Contains("Tarte de Amêndoa", designations);
         Assert.Contains("Meia de leite", designations);
         Assert.Contains("Red Bull", designations);
@@ -130,15 +130,32 @@ public sealed class DemoSeedTextTests
         Assert.Contains("Ponte de Lima", designations);
         Assert.Contains("Casal Garcia", designations);
         Assert.Contains("Bola de Berlim", designations);
+        Assert.Contains("Grão Vasco", designations);
+        Assert.Contains("Mateus Rosé", designations);
+        Assert.Contains("Conde de Villar", designations);
+        Assert.Contains("Porca de Murça", designations);
+        Assert.Contains("Dona Maria", designations);
+        Assert.Contains("Tapada dos Monges", designations);
         if (module == "restaurant")
         {
             Assert.Contains("Vodka Smirnoff", designations);
             Assert.DoesNotContain("Vodka smirnoff", designations);
+            Assert.Contains("Cutty Sark", designations);
+            Assert.Contains("Brandy Macieira", designations);
+            Assert.Contains("Gin N1 The London", designations);
+            Assert.Contains("Bacardi Pina Colada", designations);
+            Assert.Contains("Bacalhau à Brás", designations);
+            Assert.Contains("Bacalhau à Gomes Sá", designations);
+            Assert.Contains("Terras do Demo Bruto", designations);
+            Assert.Contains("Montanha Real", designations);
+            Assert.Contains("Asti Gancia Doce", designations);
         }
 
         Assert.Contains(designations, name => name.StartsWith("Hambúrguer", StringComparison.Ordinal));
         Assert.DoesNotContain("Red bull", designations);
         Assert.DoesNotContain("Super bock abadia", designations);
+        Assert.DoesNotContain("Grão vasco", designations);
+        Assert.DoesNotContain("Mateus rosé", designations);
         Assert.DoesNotContain("Outras Caf", designations);
         Assert.DoesNotContain("YOUR-EMAIL@gmail.com", designations);
     }
