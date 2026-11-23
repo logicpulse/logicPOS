@@ -1661,13 +1661,16 @@ public sealed class PosDocumentService : IPosDocumentService
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        return await database.PaymentConditions
+        var rows = await database.PaymentConditions
             .AsNoTracking()
             .Where(item => item.IsDeleted == false)
             .OrderBy(item => item.Order)
             .ThenBy(item => item.Designation)
-            .Select(item => new PosLookupItem(item.Id, item.Designation, item.Acronym))
+            .Select(item => new { item.Id, item.Designation, item.Acronym })
             .ToListAsync(cancellationToken);
+        return rows
+            .Select(item => new PosLookupItem(item.Id, PaymentConditionLabels.Display(item.Designation), item.Acronym))
+            .ToList();
     }
 
     public async Task<IReadOnlyList<PosLookupItem>> ListPaymentMethodsAsync(CancellationToken cancellationToken = default)

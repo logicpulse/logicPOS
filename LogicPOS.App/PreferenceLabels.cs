@@ -1,5 +1,6 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Resources;
+using LogicPOS.Core;
 
 namespace LogicPOS.App;
 
@@ -50,7 +51,9 @@ internal static class PreferenceLabels
     {
         try
         {
-            var text = Resources.GetString(key, CultureInfo.CurrentUICulture);
+            // Prefer the stored UI culture over whatever the OS thread inherited (Linux often en-US).
+            var culture = CultureInfo.GetCultureInfo(UiCulture.Read(null));
+            var text = Resources.GetString(key, culture);
             return string.IsNullOrWhiteSpace(text) ? null : text;
         }
         catch (MissingManifestResourceException)

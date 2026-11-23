@@ -150,7 +150,7 @@
                             <StackPanel Classes="login_alert_title_row">
                                 <Image Classes="login_alert_title_icon"
                                        Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
-                                <TextBlock x:Name="VoltaTitle" Classes="login_alert_title" Text="Talão Reembolso Volta" />
+                                <TextBlock x:Name="VoltaTitle" Classes="login_alert_title" Text="Talão de reembolso de depósito" />
                             </StackPanel>
                             <Button Grid.Column="1" Classes="bo_window_button" Click="OnVoltaDismissClick" ToolTip.Tip="Fechar">
                                 <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />

@@ -1712,6 +1712,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingEnumDisplay.Label(enumValue);
         }
 
+        if (entity is PaymentCondition && propertyName == "Designation")
+        {
+            return PaymentConditionLabels.Display(raw);
+        }
+
         return raw;
     }
 
@@ -4046,6 +4051,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 {
                     var locality = ReadString(row, "Locality");
                     return string.IsNullOrWhiteSpace(locality) ? value : value + " — " + locality;
+                }
+
+                if (name == "Designation" && row is PaymentCondition)
+                {
+                    return PaymentConditionLabels.Display(value);
                 }
 
                 return value;

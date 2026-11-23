@@ -18,6 +18,7 @@ public static class ListingLabelTips
         ["Pagamento Total"] = "Pagamento total",
         ["Pagamento Parcial"] = "Pagamento parcial",
         ["Reembolso Volta"] = "Reembolso de depósito / vasilhame",
+        ["Reembolso de depósito"] = "Reembolso de depósito / vasilhame (Volta)",
         ["SubT."] = "Subtotal",
         ["Código do país"] = "Código do país (2 caracteres)",
         ["Código do País (2 Caracteres)"] = "Código do país (2 caracteres)",

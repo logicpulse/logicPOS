@@ -3640,7 +3640,7 @@ public partial class NewDocumentWindow : UserControl
     {
         if (_customer is null || _customer.IsFinalConsumer || string.IsNullOrWhiteSpace(_customer.Address))
         {
-            ShowDocumentError("O cliente seleccionado não tem morada.");
+            ShowDocumentError("O cliente selecionado não tem morada.");
             return;
         }
 

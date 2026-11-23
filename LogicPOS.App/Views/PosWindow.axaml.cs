@@ -52,7 +52,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private bool _showFavorites;
     private PortraitBrowseTab _portraitTab = PortraitBrowseTab.Favorites;
     /// <summary>
-    /// Em Subfamílias: true = raiz da árvore (famílias); false = filhos da família seleccionada.
+    /// In Subfamilies: true = tree root (families); false = children of the selected family.
     /// </summary>
     private bool _subfamilyTreeAtRoot;
     private string _articleSearch = string.Empty;
@@ -793,7 +793,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 4, 1, 1, "pos_pad_button_grey", RequestCard);
             AddPadButton("Alternar lista", "icon_pos_ticketpad_list_mode.png", 5, 1, 1, "pos_pad_button_grey", ToggleListMode);
             AddPadButton("Dividir", "icon_pos_ticketpad_split_payments.png", 0, 2, 1, "pos_pad_button_grey", RequestSplit);
-            AddPadButton("Reembolso Volta", "icon_pos_ticketpad_payments.png", 1, 2, 1, "pos_pad_button_grey", ShowVoltaRefund);
+            AddPadButton("Reembolso de depósito", "icon_pos_ticketpad_payments.png", 1, 2, 1, "pos_pad_button_grey", ShowVoltaRefund);
             AddPadButton("Código de barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 2, 1, "pos_pad_button_grey", RequestBarcode);
             AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 2, 1, "pos_pad_button_grey", RequestWeight, forceCaption: true);
             AddPadButton("Desconto", "icon_pos_ticketpad_decrease.png", 4, 2, 1, "pos_pad_button_grey", RequestDiscount, forceCaption: true);
@@ -811,7 +811,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             // Greens on the right column (like FO primary actions in 1.4 preference).
             AddPadButton("Dividir", "icon_pos_ticketpad_split_payments.png", 2, 0, 1, "pos_pad_button_grey", RequestSplit);
             AddPadButton("Finalizar pedido", "icon_pos_retail_ticketpad_finish_order.png", 3, 0, 1, "pos_pad_button_green", FinishTicket);
-            AddPadButton("Reembolso Volta", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
+            AddPadButton("Reembolso de depósito", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
             AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 3, 1, 1, "pos_pad_button_green", RequestPayments);
             AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 2, 2, 1, "pos_pad_button_grey", RequestCard);
             AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 3, 2, 1, "pos_pad_button_green", ShowOrders);
@@ -1192,7 +1192,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             || _portraitTab == PortraitBrowseTab.Families)
         {
             // Favoritos: famílias de topo para contexto; toque muda para Famílias.
-            // Famílias: filtra artigos da família seleccionada.
+            // Families: filter articles of the selected family.
             foreach (var family in _catalog.Families)
             {
                 var selected = _portraitTab == PortraitBrowseTab.Families && family.Id == _familyId;
@@ -1820,7 +1820,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
     }
 
-    // Subfamília: imagem a ocupar o botão todo, legenda sobreposta em baixo; anel/visto marcam a seleccionada.
+    // Subfamily: image fills the button, caption overlaid at the bottom; ring/check mark the selection.
     private static Control BuildSubfamilyTileContent(string text, Image? image)
     {
         var tile = new Grid();
@@ -2194,7 +2194,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         SetNamedButton(_padButtons, "Alternar lista", selling);
         SetNamedButton(_padButtons, "Cartão", selling);
         SetNamedButton(_padButtons, "Código de barras/Artigo", selling);
-        SetNamedButton(_padButtons, "Reembolso Volta", selling && hasLines == false);
+        SetNamedButton(_padButtons, "Reembolso de depósito", selling && hasLines == false);
 
         var toolbarEnabled = hasLines == false;
         SetNamedButton(_toolbarButtons, "BackOffice", toolbarEnabled && _access.AllowsBackOffice);
@@ -2255,7 +2255,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         var now = DateTime.Now;
-        var culture = CultureInfo.CurrentCulture;
+        // Use stored UI culture — Linux threads often keep en-US after splash bootstrap.
+        var culture = CultureInfo.GetCultureInfo(UiCulture.Read(null));
         _clockDateLabel.Text = now.ToString(ClockDateFormat, culture);
         _clockTimeLabel.Text = now.ToString(ClockTimeFormat, culture);
     }
@@ -4006,7 +4007,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _ordersViewTableId = null;
     }
 
-    private const string VoltaTitleBase = "Talão Reembolso Volta";
+    private const string VoltaTitleBase = "Talão de reembolso de depósito";
     private const string VoltaArticleCode = "SDRVDEP";
     private const string VoltaPaymentToken = "OU";
     private PosArticle? _voltaArticle;
@@ -4018,7 +4019,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             string.Equals(item.Code, VoltaArticleCode, StringComparison.OrdinalIgnoreCase));
         if (_voltaArticle is null)
         {
-            ShowQuestion(TicketPrompt.Notice, VoltaTitleBase, "Crie o artigo de depósito de vasilhame antes de emitir o Talão Reembolso Volta.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, VoltaTitleBase, "Crie o artigo de depósito de vasilhame antes de emitir o talão de reembolso de depósito.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -4173,7 +4174,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_voltaArticle is null)
         {
-            VoltaNotice.Text = "Crie o artigo de depósito de vasilhame antes de emitir o Talão Reembolso Volta.";
+            VoltaNotice.Text = "Crie o artigo de depósito de vasilhame antes de emitir o talão de reembolso de depósito.";
             return;
         }
 
@@ -4200,7 +4201,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 .IssueDocumentAsync("TRV", _voltaCustomer.Id, [line], header);
             if (result.Succeeded == false)
             {
-                VoltaNotice.Text = result.Error ?? "Não foi possível emitir o Talão Reembolso Volta.";
+                VoltaNotice.Text = result.Error ?? "Não foi possível emitir o talão de reembolso de depósito.";
                 return;
             }
 
