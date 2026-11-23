@@ -123,6 +123,8 @@ public partial class DocumentsListing : UserControl
             }
         }
 
+        ApplyTaggedToolTips();
+
         SetColumnHeader(1, Pref("global_document_date", "Data do documento"));
         SetColumnHeader(2, Pref("global_document_number", "Número do Doc."));
         SetColumnHeader(3, Pref("global_document_status", "Estado"));
@@ -152,6 +154,32 @@ public partial class DocumentsListing : UserControl
     {
         var text = PreferenceLabels.Text(key, fallback);
         return string.IsNullOrWhiteSpace(text) ? fallback : text.TrimStart('_');
+    }
+
+    /// <summary>
+    /// Rebinds Tag=docs-tip:* tooltips (tools, pager, row icons, touch keys, lookup chevron)
+    /// so they follow <see cref="UiCulture"/> when the language flag changes with the page open.
+    /// </summary>
+    private void ApplyTaggedToolTips()
+    {
+        const string prefix = "docs-tip:";
+        foreach (var button in this.GetVisualDescendants().OfType<Button>())
+        {
+            if (button.Tag is string tag && tag.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                ToolTip.SetTip(button, DocumentsListingText.Tip(tag[prefix.Length..]));
+            }
+            else if (button.Classes.Contains("bo_touch_key"))
+            {
+                var tip = DocumentsListingText.Tip("virtual-keyboard");
+                ToolTip.SetTip(button, tip);
+                Avalonia.Automation.AutomationProperties.SetName(button, tip);
+            }
+            else if (button.Classes.Contains("bo_lookup_chevron"))
+            {
+                ToolTip.SetTip(button, DocumentsListingText.Tip("open-list"));
+            }
+        }
     }
 
     private void SetActionLabel(int index, string text)

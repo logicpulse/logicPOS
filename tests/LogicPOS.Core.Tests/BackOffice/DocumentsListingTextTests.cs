@@ -58,4 +58,29 @@ public sealed class DocumentsListingTextTests
         Assert.Equal("Valor em Dívida", DocumentsListingText.AmountDue("pt-PT"));
         Assert.Equal("Amount Due", DocumentsListingText.AmountDue("en-US"));
     }
+
+    [Fact]
+    public void Tip_keys_resolve_in_pt_en_fr_es_and_keep_pt_for_ao_mz()
+    {
+        Assert.Equal(18, DocumentsListingText.TipKeys.Count);
+        foreach (var key in DocumentsListingText.TipKeys)
+        {
+            var pt = DocumentsListingText.Tip(key, "pt-PT");
+            Assert.False(string.IsNullOrWhiteSpace(pt));
+            Assert.Equal(pt, DocumentsListingText.Tip(key, "pt-AO"));
+            Assert.Equal(pt, DocumentsListingText.Tip(key, "pt-MZ"));
+            Assert.False(string.IsNullOrWhiteSpace(DocumentsListingText.Tip(key, "en-US")));
+            Assert.False(string.IsNullOrWhiteSpace(DocumentsListingText.Tip(key, "fr-FR")));
+            Assert.False(string.IsNullOrWhiteSpace(DocumentsListingText.Tip(key, "es-ES")));
+        }
+
+        Assert.Equal("Exportar para PDF", DocumentsListingText.Tip("export-pdf", "pt-PT"));
+        Assert.Equal("Export to PDF", DocumentsListingText.Tip("export-pdf", "en-US"));
+        Assert.Equal("Escolher no calendário", DocumentsListingText.Tip("choose-calendar", "pt-PT"));
+        Assert.Equal("Choose on the calendar", DocumentsListingText.Tip("choose-calendar", "en-US"));
+        Assert.Equal("Teclado virtual", DocumentsListingText.Tip("virtual-keyboard", "pt-PT"));
+        Assert.Equal("On-screen keyboard", DocumentsListingText.Tip("virtual-keyboard", "en-US"));
+        Assert.Equal("Abrir lista", DocumentsListingText.Tip("open-list", "pt-PT"));
+        Assert.Equal("Open list", DocumentsListingText.Tip("open-list", "en-US"));
+    }
 }

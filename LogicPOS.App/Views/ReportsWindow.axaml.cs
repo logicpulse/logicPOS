@@ -1,8 +1,10 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -566,6 +568,19 @@ public partial class ReportsWindow : UserControl
             "dialog_message_report_filter_no_records_with_criteria",
             "Sem registos. Verifique os filtros.");
         EmptyDataOverlay.IsVisible = true;
+        // Focus the Ok/Cancel button so Escape (IsCancel) dismisses this overlay only.
+        Dispatcher.UIThread.Post(() => EmptyDataOkButton.Focus(), DispatcherPriority.Input);
+    }
+
+    private void OnEmptyDataOverlayKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape || EmptyDataOverlay.IsVisible == false)
+        {
+            return;
+        }
+
+        e.Handled = true;
+        OnEmptyDataOkClick(this, new RoutedEventArgs());
     }
 
     private void OnEmptyDataOkClick(object? sender, RoutedEventArgs e)

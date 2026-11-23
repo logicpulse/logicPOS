@@ -168,7 +168,12 @@
 
         <views:ListingBusy x:Name="Busy" ZIndex="30" />
 
-        <Panel x:Name="EmptyDataOverlay" Classes="login_alert_overlay" ZIndex="40" IsVisible="False">
+        <Panel x:Name="EmptyDataOverlay"
+               Classes="login_alert_overlay"
+               ZIndex="40"
+               IsVisible="False"
+               Focusable="True"
+               KeyDown="OnEmptyDataOverlayKeyDown">
             <Border Classes="login_alert_frame login_alert_message_box">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
@@ -180,7 +185,11 @@
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                         <StackPanel Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnEmptyDataOkClick">
+                            <Button x:Name="EmptyDataOkButton"
+                                    Classes="login_alert_action"
+                                    IsDefault="True"
+                                    IsCancel="True"
+                                    Click="OnEmptyDataOkClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
