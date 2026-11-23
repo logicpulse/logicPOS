@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.Core.Tests.Fiscal;
 
+[Collection(LogicPOS.Core.Tests.AppCompositionCollection.Name)]
 public sealed class FiscalSeriesAtIssueTests
 {
     [Fact]

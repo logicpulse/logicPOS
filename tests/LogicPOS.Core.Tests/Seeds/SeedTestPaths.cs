@@ -1,4 +1,4 @@
-namespace LogicPOS.Core.Tests.Seeds;
+﻿namespace LogicPOS.Core.Tests.Seeds;
 
 internal static class SeedTestPaths
 {

@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using LogicPOS.Domain.Entities;
 
 namespace LogicPOS.Core.Tests.Seeds;

@@ -7856,7 +7856,7 @@ namespace LogicPOS.Globalization.Localization {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Dinheiro Eletrónico.
+        ///   Looks up a localized string similar to Virtual Money.
         /// </summary>
         public static string pos_button_label_payment_type_virtual_money {
             get {
