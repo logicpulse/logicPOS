@@ -501,7 +501,7 @@
             <views:ReportsWindow x:Name="ReportsHost" />
         </Panel>
 
-        <Panel x:Name="TicketOverlay" Classes="login_alert_overlay" IsVisible="False">
+        <Panel x:Name="TicketOverlay" Classes="login_alert_overlay" IsVisible="False" Focusable="True" KeyDown="OnTicketOverlayKeyDown">
             <Border x:Name="TicketFrame" Classes="login_alert_frame login_alert_message_box">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
@@ -522,17 +522,23 @@
                                 <Button x:Name="SplitRemoveButton" Classes="pos_split_step" Content="−" Click="OnSplitPeopleClick" Tag="-1" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnTicketDialogConfirmClick">
-                                <StackPanel Classes="login_alert_action_content">
-                                    <Image x:Name="TicketDialogConfirmIcon" Classes="login_alert_action_icon" />
-                                    <TextBlock x:Name="TicketDialogConfirmText" Classes="login_alert_action_text" Text="Sim" />
-                                </StackPanel>
-                            </Button>
-                            <Button x:Name="TicketDialogCancel" Classes="login_alert_action action_secondary" Click="OnTicketDialogDismissClick">
+                            <!-- Cancel/Não listed first so it can be IsDefault for destructive confirms. -->
+                            <Button x:Name="TicketDialogCancel"
+                                    Classes="login_alert_action action_secondary"
+                                    IsCancel="True"
+                                    Click="OnTicketDialogDismissClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                     <TextBlock x:Name="TicketDialogCancelText" Classes="login_alert_action_text" Text="Não" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="TicketDialogConfirm"
+                                    Classes="login_alert_action"
+                                    Click="OnTicketDialogConfirmClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image x:Name="TicketDialogConfirmIcon" Classes="login_alert_action_icon" />
+                                    <TextBlock x:Name="TicketDialogConfirmText" Classes="login_alert_action_text" Text="Sim" />
                                 </StackPanel>
                             </Button>
                             </StackPanel>

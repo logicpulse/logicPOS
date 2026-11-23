@@ -2764,6 +2764,26 @@ public partial class PosWindow : UserControl, IOfficeSurface
             return;
         }
 
+        // Ticket/Pedido notices and confirms: Escape dismisses (Não / Ok) and must not
+        // fall through to Quantidade or other pad actions behind the overlay.
+        if (TicketOverlay.IsVisible && _prompt is not TicketPrompt.None)
+        {
+            if (e.Key == Key.Escape)
+            {
+                e.Handled = true;
+                OnTicketDialogDismissClick(this, new RoutedEventArgs());
+                return;
+            }
+
+            if (e.Key is Key.Tab or Key.Enter)
+            {
+                // Keep navigation inside the modal; default/cancel buttons handle Enter.
+                e.Handled = TicketOverlay.IsKeyboardFocusWithin == false;
+            }
+
+            return;
+        }
+
         if (e.Key == Key.Escape
             && TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement() is not TextBox
             && TryCloseListingOverlay())
@@ -5443,7 +5463,45 @@ public partial class PosWindow : UserControl, IOfficeSurface
             : "avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png");
         TicketDialogActions.IsVisible = true;
         TicketOverlay.IsVisible = true;
+
+        // Destructive Sim/Não: Não is default + cancel so Enter/Escape never confirm by mistake.
+        // Ok-only notices and Ok/Cancel keypads keep confirm as the default action.
+        var cancelIsSafeDefault = TicketDialogDefaults.PreferCancelAsDefault(showCancel, confirmText);
+        TicketDialogCancel.IsDefault = cancelIsSafeDefault;
+        TicketDialogCancel.IsCancel = showCancel;
+        TicketDialogConfirm.IsDefault = cancelIsSafeDefault == false;
+        TicketDialogConfirm.IsCancel = false;
+
         FitHostedOverlays();
+        Dispatcher.UIThread.Post(
+            () =>
+            {
+                if (TicketOverlay.IsVisible == false)
+                {
+                    return;
+                }
+
+                if (cancelIsSafeDefault)
+                {
+                    TicketDialogCancel.Focus();
+                }
+                else
+                {
+                    TicketDialogConfirm.Focus();
+                }
+            },
+            DispatcherPriority.Input);
+    }
+
+    private void OnTicketOverlayKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape || TicketOverlay.IsVisible == false)
+        {
+            return;
+        }
+
+        e.Handled = true;
+        OnTicketDialogDismissClick(this, new RoutedEventArgs());
     }
 
     private void BuildKeypad()
