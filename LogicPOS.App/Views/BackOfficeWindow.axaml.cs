@@ -1393,6 +1393,12 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private static bool IsAngola() => FiscalFeatures.ShowsAgt(FiscalFeatures.Current);
 
+    private async Task RestoreFromExternalFileSequentialAsync()
+    {
+        await EntityHost.ShowAsync("Restaurar DB");
+        await EntityHost.RestoreFromExternalFileAsync();
+    }
+
     private void ShowPage(string title)
     {
         var service = AppComposition.Services?.GetService<IBackOfficeListingService>();
@@ -1475,8 +1481,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             EntityHost.SetOverlayOnly(false);
             EntityHost.IsVisible = true;
             PlaceholderHost.IsVisible = false;
-            _ = EntityHost.ShowAsync("Restaurar DB");
-            _ = EntityHost.RestoreFromExternalFileAsync();
+            _ = RestoreFromExternalFileSequentialAsync();
             return;
         }
 

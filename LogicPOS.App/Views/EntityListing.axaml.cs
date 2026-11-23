@@ -1243,7 +1243,9 @@ public partial class EntityListing : UserControl
                 .Select(field => field!)
                 .ToList())
             .ToList();
-        cards[0].AddRange(fields.Where(field => used.Contains(field.Key) == false));
+        cards[0].AddRange(fields.Where(field =>
+            used.Contains(field.Key) == false
+            && EntityEditorLayout.IsHiddenEditorKey(_title, field.Key) == false));
 
         var root = new StackPanel { Classes = { "bo_article_sections" } };
         for (var index = 0; index < sections.Count; index++)
@@ -3390,8 +3392,7 @@ public partial class EntityListing : UserControl
             AllowMultiple = false,
             FileTypeFilter =
             [
-                new FilePickerFileType("Backup logicPOS") { Patterns = ["*.db", "*.logicpos"] },
-                new FilePickerFileType("Todos") { Patterns = ["*.*"] }
+                new FilePickerFileType("Backup logicPOS") { Patterns = ["*.db"] }
             ]
         });
         if (files.Count == 0)

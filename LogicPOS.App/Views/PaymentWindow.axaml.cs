@@ -809,6 +809,8 @@ public partial class PaymentWindow : Window
         NoticeMessage.Text = message;
         NoticeIcon.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}_window.png");
         NoticeSymbol.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}.png");
+        // Above CashOverlay / MixedPayment overlays when those are open.
+        NoticeOverlay.ZIndex = 100;
         NoticeOverlay.IsVisible = true;
     }
 
@@ -1042,9 +1044,10 @@ public partial class PaymentWindow : Window
         if (value + 0.0001m < Payable)
         {
             // Keep the pad open until the delivered amount covers the total (no negative change).
-            CashEntry.Text = Payable.ToString("0.00", CultureInfo.CurrentCulture);
-            _cashTyping = false;
-            _cashMoney = Payable;
+            ShowNotice(
+                "Aviso",
+                "O valor entregue é inferior ao total. Indique um valor igual ou superior ao devido.",
+                error: true);
             return;
         }
 

@@ -192,6 +192,7 @@ internal static class EntityEditorLayout
                 Notes
             ]
         },
+
         ["Impressoras"] = new()
         {
             [""] =
@@ -323,4 +324,12 @@ internal static class EntityEditorLayout
         var gridFields = fields.Count(field => field.Kind is not ("bool" or "multiline" or "image"));
         return [new(group ?? "Geral", group is null ? "tag" : TabIcon(group), gridFields <= 4 ? 2 : 3, [])];
     }
+
+    /// <summary>
+    /// Internal keys that must not spill into the first card when no section claims them.
+    /// Payment-method Token drives FO matching (MONEY, …); ResourceString/ButtonIcon are seed/UI metadata.
+    /// </summary>
+    public static bool IsHiddenEditorKey(string listing, string key)
+        => listing is "Métodos de pagamento"
+           && key is "Token" or "ResourceString" or "ButtonIcon";
 }

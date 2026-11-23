@@ -1705,7 +1705,14 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return string.Empty;
         }
 
-        return ReadRaw(entity, property);
+        var raw = ReadRaw(entity, property);
+        var value = property.GetValue(entity);
+        if (value is Enum enumValue)
+        {
+            return ListingEnumDisplay.Label(enumValue);
+        }
+
+        return raw;
     }
 
     private static bool IsGuidProperty(Type type)
@@ -1756,7 +1763,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         if (value is Enum)
         {
-            return ListingEnumDisplay.Label(value.ToString());
+            // Editor Value must stay the CLR name so the combo can select and save it.
+            return value.ToString() ?? string.Empty;
         }
 
         return Convert.ToString(value, CultureInfo.CurrentCulture) ?? string.Empty;
