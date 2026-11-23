@@ -145,11 +145,11 @@
                     <ComboBoxItem Content="20" />
                     <ComboBoxItem Content="50" />
                 </ComboBox>
-                <Button Classes="bo_doc_page_button" Content="&lt;&lt;" Click="OnFirstPageClick" />
-                <Button Classes="bo_doc_page_button" Content="&lt;" Click="OnPreviousPageClick" />
+                <Button Classes="bo_doc_page_button" Content="&lt;&lt;" Click="OnFirstPageClick" ToolTip.Tip="Primeira página" />
+                <Button Classes="bo_doc_page_button" Content="&lt;" Click="OnPreviousPageClick" ToolTip.Tip="Anterior" />
                 <TextBlock x:Name="PageLabel" Classes="bo_doc_page_label" Text="1 / 1" />
-                <Button Classes="bo_doc_page_button" Content="&gt;" Click="OnNextPageClick" />
-                <Button Classes="bo_doc_page_button" Content="&gt;&gt;" Click="OnLastPageClick" />
+                <Button Classes="bo_doc_page_button" Content="&gt;" Click="OnNextPageClick" ToolTip.Tip="Próximo" />
+                <Button Classes="bo_doc_page_button" Content="&gt;&gt;" Click="OnLastPageClick" ToolTip.Tip="Última página" />
             </StackPanel>
         </Border>
 

@@ -76,6 +76,7 @@ internal static class TouchFields
             }
         };
         ToolTip.SetTip(button, "Teclado virtual");
+        Avalonia.Automation.AutomationProperties.SetName(button, "Teclado virtual");
         button.Click += (_, _) => TouchKeyboard.Show(showKeyboard());
         if (box is TextBox text)
         {

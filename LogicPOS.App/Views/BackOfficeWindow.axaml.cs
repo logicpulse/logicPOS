@@ -1395,7 +1395,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     {
         try
         {
-            await EntityHost.ShowAsync("Restaurar DB");
+            // File restore lives on EntityListing; do not require a BackOfficeListingService page.
             await EntityHost.RestoreFromExternalFileAsync();
         }
         catch (Exception exception)
@@ -1482,7 +1482,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
-        if (title is "Restaurar de ficheiro")
+        if (BackOfficeFileRestore.IsMenuTitle(title))
         {
             EntityHost.SetOverlayOnly(false);
             EntityHost.IsVisible = true;

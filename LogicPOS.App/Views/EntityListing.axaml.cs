@@ -2438,6 +2438,7 @@ public partial class EntityListing : UserControl
             }
         };
         ToolTip.SetTip(button, "Teclado virtual");
+        Avalonia.Automation.AutomationProperties.SetName(button, "Teclado virtual");
         button.Click += (_, _) =>
         {
             box.Focus();
