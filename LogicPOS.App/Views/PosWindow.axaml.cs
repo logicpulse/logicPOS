@@ -3118,7 +3118,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_orderListMode == false || _openOrderId is null || _orderLines.Count == 0)
         {
-            ShowQuestion(TicketPrompt.Notice, "Dividir conta", "Mostre a ordem antes de a dividir.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Dividir conta", UsesRetailOrderVocabulary() ? "Mostre a ordem antes de a dividir." : "Mostre a mesa antes de a dividir.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -3491,19 +3491,19 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_openOrderId is null)
         {
-            ShowQuestion(TicketPrompt.Notice, "Mudar mesa", "Não há uma ordem aberta nesta mesa.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, UsesRetailOrderVocabulary() ? "Mudar ordem" : "Mudar mesa", UsesRetailOrderVocabulary() ? "Não há uma ordem aberta." : "Não há um pedido aberto nesta mesa.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
         _tablePurpose = TablePurpose.ChangeOrder;
-        ListTitle.Text = "Mudar ordem";
+        ListTitle.Text = UsesRetailOrderVocabulary() ? "Mudar ordem" : "Mudar mesa";
     }
 
     private void RequestMoveLine()
     {
         if (_openOrderId is null || SelectedOrderLine is not PosTicketLine line)
         {
-            ShowQuestion(TicketPrompt.Notice, "Mover linha", "Selecione a linha da ordem.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Mover linha", UsesRetailOrderVocabulary() ? "Selecione a linha da ordem." : "Selecione a linha do pedido.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -3570,6 +3570,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             TablePurpose.MoveLine => "Mover linha",
             _ => TablesDialogTitle
         };
+        TablesChangeText.Text = UsesRetailOrderVocabulary() ? "Mudar ordem" : "Mudar mesa";
         if (TablesBar.Child is Panel tablesActions)
         {
             foreach (var child in tablesActions.Children.OfType<Control>())
@@ -3947,7 +3948,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             string.Equals(item.Code, VoltaArticleCode, StringComparison.OrdinalIgnoreCase));
         if (_voltaArticle is null)
         {
-            ShowQuestion(TicketPrompt.Notice, VoltaTitleBase, "Crie o artigo de depósito SDRVDEP antes de emitir o Talão Reembolso Volta.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, VoltaTitleBase, "Crie o artigo de depósito de vasilhame antes de emitir o Talão Reembolso Volta.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -4102,7 +4103,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_voltaArticle is null)
         {
-            VoltaNotice.Text = "Crie o artigo de depósito SDRVDEP antes de emitir o Talão Reembolso Volta.";
+            VoltaNotice.Text = "Crie o artigo de depósito de vasilhame antes de emitir o Talão Reembolso Volta.";
             return;
         }
 
@@ -4250,7 +4251,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_openOrderId is not Guid orderId || _moveLine is not PosTicketLine line)
         {
-            ShowQuestion(TicketPrompt.Notice, "Mover linha", "Selecione a linha da ordem.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Mover linha", UsesRetailOrderVocabulary() ? "Selecione a linha da ordem." : "Selecione a linha do pedido.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -4303,7 +4304,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
         if (_ticket.HasLines && table.Id != _currentTable?.Id)
         {
-            ShowQuestion(TicketPrompt.Notice, "Aviso", "Finalize ou cancele o ticket atual antes de mudar de mesa.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Aviso", "Finalize ou cancele o pedido atual antes de mudar de mesa.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
@@ -4473,7 +4474,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         if (_ticket.HasLines)
         {
             ListOverlay.IsVisible = false;
-            ShowQuestion(TicketPrompt.Notice, "Aviso", "Finalize ou cancele o ticket atual antes de abrir uma ordem.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, "Aviso", $"Finalize ou cancele o pedido atual antes de abrir {(UsesRetailOrderVocabulary() ? "uma ordem" : "uma mesa")}.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 

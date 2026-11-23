@@ -37,7 +37,7 @@
                                 </StackPanel>
                             </Button>
                             <Button x:Name="TablesChangeButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnChangeTableClick">
-                                <TextBlock Classes="login_alert_action_text" Text="Mudar ordem" />
+                                <TextBlock x:Name="TablesChangeText" Classes="login_alert_action_text" Text="Mudar mesa" />
                             </Button>
                             <Button x:Name="TablesMoveButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnMoveLineClick">
                                 <TextBlock Classes="login_alert_action_text" Text="Mover linha" />

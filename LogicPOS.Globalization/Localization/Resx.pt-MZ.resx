@@ -1928,7 +1928,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Sextuplicado</value>
   </data>
   <data name="global_print_request_confirmation" xml:space="preserve">
-    <value>Pergunta se deseja Imprimir documento</value>
+    <value>Pergunta se deseja imprimir o documento</value>
   </data>
   <data name="global_print_second_print" xml:space="preserve">
     <value>2ª Via</value>
@@ -2075,7 +2075,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Segunda via</value>
   </data>
   <data name="global_seriesforeachterminal" xml:space="preserve">
-    <value>Séries independente por cada terminal</value>
+    <value>Séries independentes por cada terminal</value>
   </data>
   <data name="global_services" xml:space="preserve">
     <value>Prestação de Serviços</value>

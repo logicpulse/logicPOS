@@ -191,7 +191,7 @@ public sealed class LocalFirstUserSetupWizard : IFirstUserSetupWizard
         var profileExists = await database.UserProfiles.AsNoTracking()
             .AnyAsync(profile => profile.Id == request.ProfileId && profile.IsDeleted == false, cancellationToken);
         if (profileExists == false)
-            return FirstUserSetupResult.Fail("Seleccione um perfil válido.");
+            return FirstUserSetupResult.Fail("Selecione um perfil válido.");
 
         if (await database.Users.AsNoTracking()
                 .AnyAsync(user => user.Login == login, cancellationToken))

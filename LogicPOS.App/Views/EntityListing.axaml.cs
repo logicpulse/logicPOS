@@ -2102,7 +2102,7 @@ public partial class EntityListing : UserControl
         {
             if (force)
             {
-                EditorNotice.Text = "Seleccione o país antes de procurar o código-postal.";
+                EditorNotice.Text = "Selecione o país antes de procurar o código-postal.";
             }
 
             return;

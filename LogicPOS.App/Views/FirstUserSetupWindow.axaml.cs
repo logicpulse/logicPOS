@@ -96,7 +96,7 @@ public partial class FirstUserSetupWindow : Window
         return Steps[_step] switch
         {
             "Utilizador" => request.ValidateIdentity(),
-            "Perfil" => SelectedProfile() is null ? "Seleccione um perfil." : null,
+            "Perfil" => SelectedProfile() is null ? "Selecione um perfil." : null,
             "PIN" => request.ValidatePin() ?? request.ValidatePortalPassword(),
             _ => null
         };

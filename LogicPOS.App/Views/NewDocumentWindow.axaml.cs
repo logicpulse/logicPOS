@@ -2908,7 +2908,7 @@ public partial class NewDocumentWindow : UserControl
         {
             if (force)
             {
-                EditorError.Text = "Seleccione o país antes de procurar o código-postal.";
+                EditorError.Text = "Selecione o país antes de procurar o código-postal.";
             }
 
             return;

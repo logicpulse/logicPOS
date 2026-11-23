@@ -421,7 +421,7 @@ public partial class ReceiptEmissionView : UserControl
         var selected = Selected().ToList();
         if (selected.Count != 1)
         {
-            Notice.Text = "Seleccione um documento para abrir.";
+            Notice.Text = "Selecione um documento para abrir.";
             return;
         }
 

@@ -193,7 +193,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Credit"] = "Crédito",
         ["WarehouseLocationId"] = "Localização",
         ["ButtonIcon"] = "Ícone do botão",
-        ["SeriesForEachTerminal"] = "Séries independente por cada terminal",
+        ["SeriesForEachTerminal"] = "Séries independentes por cada terminal",
         ["NumberRangeBegin"] = "Limite inferior",
         ["NumberRangeEnd"] = "Limite superior",
         ["ATDocCodeValidationSeries"] = "Código de validação AT",
@@ -222,7 +222,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["TimerInterval"] = "Intervalo do Leitor (ms)",
         ["EndPoint"] = "EndPoint",
         ["GoToStandByInSeconds"] = "Entra em Suspensão (Seg.)",
-        ["PrintRequestConfirmation"] = "Pergunta se deseja Imprimir documento",
+        ["PrintRequestConfirmation"] = "Pergunta se deseja imprimir o documento",
         ["PrintOpenDrawer"] = "Abrir Gaveta",
         ["FiscalNumberRegex"] = "Expressão Regular Número Fiscal",
         ["ZipCodeRegex"] = "Expressão Regular Código Postal",
@@ -1348,7 +1348,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 Lookup = lookup,
                 Options = enumType is { IsEnum: true } ? Enum.GetNames(enumType) : null,
                 Choices = enumType is { IsEnum: true }
-                    ? Enum.GetNames(enumType).Select(name => new ListingChoice(name, name)).ToList()
+                    ? ListingEnumDisplay.Choices(enumType)
                     : null,
                 ReadOnly = readOnly,
                 Required = kind is not ("lookup") && IsRequired(property) || (lookup is not null && IsRequired(property)),
@@ -1747,7 +1747,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         if (value is Enum)
         {
-            return value.ToString() ?? string.Empty;
+            return ListingEnumDisplay.Label(value.ToString());
         }
 
         return Convert.ToString(value, CultureInfo.CurrentCulture) ?? string.Empty;

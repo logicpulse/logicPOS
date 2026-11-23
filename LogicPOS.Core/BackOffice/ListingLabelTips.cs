@@ -17,7 +17,7 @@ public static class ListingLabelTips
         ["Número do Doc."] = "Número do documento",
         ["Pagamento Total"] = "Pagamento total",
         ["Pagamento Parcial"] = "Pagamento parcial",
-        ["Reembolso Volta"] = "Reembolso de volta",
+        ["Reembolso Volta"] = "Reembolso de depósito / vasilhame",
         ["SubT."] = "Subtotal",
         ["Código do país"] = "Código do país (2 caracteres)",
         ["Código do País (2 Caracteres)"] = "Código do país (2 caracteres)",

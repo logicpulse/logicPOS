@@ -138,6 +138,7 @@ public static class ListingColumns
             ("Code", "Código"),
             ("Designation", "Designação"),
             ("PlaceId", "Locais"),
+            ("Status", "Estado"),
             ("UpdatedAt", "Atualizado em")
         ],
         ["Terminais"] =
@@ -160,6 +161,8 @@ public static class ListingColumns
         ["Sessões de Trabalho"] =
         [
             ("Designation", "Designação"),
+            ("Type", "Tipo"),
+            ("Status", "Estado"),
             ("StartDate", "Data Inicial"),
             ("EndDate", "Data Final")
         ],
