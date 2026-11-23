@@ -2974,9 +2974,18 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
             if (error is null && add > 0m)
             {
+                var unitPrice = netUnitPrice == line.NetUnitPrice
+                    ? line.DisplayUnitPrice
+                    : DocumentReopenedLinePrice.FromStoredNet(netUnitPrice, line.VatPercentage, line.PriceIncludesVat).UnitPrice;
                 var saved = await orders.SaveAsync(
                     orderId,
-                    [new PosStoredLine(line.ArticleId, add, netUnitPrice, discount: nextDiscount)],
+                    [new PosStoredLine(
+                        line.ArticleId,
+                        add,
+                        netUnitPrice,
+                        unitPrice: unitPrice,
+                        priceWithVat: line.PriceIncludesVat,
+                        discount: nextDiscount)],
                     _currentTable?.Id);
                 error = saved.Succeeded ? null : saved.Error ?? "Não foi possível alterar a ordem.";
             }
@@ -3022,7 +3031,13 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         var lines = _ticket.Lines
-            .Select(line => new PosStoredLine(line.ArticleId, line.Quantity, line.NetUnitPrice, discount: line.Discount))
+            .Select(line => new PosStoredLine(
+                line.ArticleId,
+                line.Quantity,
+                line.NetUnitPrice,
+                unitPrice: line.DisplayUnitPrice,
+                priceWithVat: line.PriceIncludesVat,
+                discount: line.Discount))
             .ToList();
         var saved = await services.GetRequiredService<IPosOrderService>().SaveAsync(_openOrderId, lines, _currentTable?.Id);
         if (saved.Succeeded == false)
@@ -5834,8 +5849,20 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
         if (_priceTyping)
         {
-            _priceMoney = 0;
+            if (MoneyFormat.TryParse(PriceEntry.Text, out var typed))
+            {
+                _priceMoney = typed;
+            }
+            else
+            {
+                _priceMoney = 0;
+            }
+
             _priceTyping = false;
+        }
+        else
+        {
+            _priceMoney = 0;
         }
 
         _priceMoney += amount;
