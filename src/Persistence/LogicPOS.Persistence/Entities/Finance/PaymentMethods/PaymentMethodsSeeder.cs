@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LogicPOS.Application.Features.Finance.PaymentMethods;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
 using Microsoft.Extensions.Logging;
@@ -36,5 +37,42 @@ public static class PaymentMethodsSeeder
 
         logger.LogInformation("Payment methods seeded successfully");
         return true;
+    }
+
+    /// <summary>
+    /// Existing databases: the cash-machine row labeled «MB Way» becomes Multibanco.
+    /// Portugal databases also gain a separate MB Way method. Other rows are left as they are.
+    /// </summary>
+    public static void EnsureMultibancoAndMbWay(LogicPOSDbContext database, bool portugal, ILogger logger)
+    {
+        var cashMachine = database.PaymentMethods
+            .FirstOrDefault(method => method.IsDeleted == false && method.Token == PosPaymentMethods.MultibancoToken);
+        var renamed = cashMachine is not null
+            ? PosPaymentMethods.RenameCashMachine(cashMachine.Designation)
+            : null;
+        if (cashMachine is not null && renamed is not null)
+        {
+            cashMachine.Designation = renamed;
+            logger.LogInformation("Payment method {Token} designation is now {Designation}.", cashMachine.Token, renamed);
+        }
+
+        if (portugal
+            && database.PaymentMethods.Any(method => method.IsDeleted == false && method.Token == PosPaymentMethods.MbWayToken) == false)
+        {
+            database.PaymentMethods.Add(new PaymentMethod
+            {
+                Id = Guid.Parse("6c0e2a41-7b14-4d4e-9a1f-3e8b5d0c7a22"),
+                Token = PosPaymentMethods.MbWayToken,
+                Acronym = "MW",
+                Designation = PosPaymentMethods.MbWayDesignation,
+                Code = "81",
+                Order = 81,
+                ButtonIcon = cashMachine?.ButtonIcon,
+                ResourceString = cashMachine?.ResourceString
+            });
+            logger.LogInformation("Added Portugal payment method {Token}.", PosPaymentMethods.MbWayToken);
+        }
+
+        database.SaveChanges();
     }
 }

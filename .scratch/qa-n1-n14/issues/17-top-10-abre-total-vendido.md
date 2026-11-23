@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] O atalho do Top 10 artigos abre «Total vendido por artigo»
-- [ ] O documento aberto titula «Total de Artigo Vendido»
-- [ ] O atalho não abre a lista de Artigos
-- [ ] Um facto novo cobre o destino do atalho, sem percorrer o ecrã do dashboard
+- [x] O atalho do Top 10 artigos abre «Total vendido por artigo»
+- [x] O documento aberto titula «Total de Artigo Vendido»
+- [x] O atalho não abre a lista de Artigos
+- [x] Um facto novo cobre o destino do atalho, sem percorrer o ecrã do dashboard

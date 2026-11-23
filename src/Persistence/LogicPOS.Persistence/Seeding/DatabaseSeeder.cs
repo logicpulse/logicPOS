@@ -265,6 +265,10 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
 
     public void EnsureCountrySpecificConfiguration()
     {
+        PaymentMethodsSeeder.EnsureMultibancoAndMbWay(
+            _database,
+            _systemInformationService.IsPortugal(),
+            _logger);
         if (!_systemInformationService.IsPortugal())
         {
             return;

@@ -129,7 +129,7 @@
         <StackPanel Spacing="4">
           <TextBlock FontSize="18" FontWeight="Bold" Foreground="#15202B" TextWrapping="Wrap"
                      Text="Três edições, a mesma base. Escolha a que se adapta ao seu negócio." />
-          <TextBlock FontSize="13" Foreground="#64748B" TextWrapping="Wrap"
+          <TextBlock x:Name="CommunityIntro" FontSize="13" Foreground="#64748B" TextWrapping="Wrap"
                      Text="O LogicPOS é um ponto de venda e back-office moderno e flexível. A Community inclui faturação local sem certificação AT integrada; Business e Cloud acrescentam certificação LogicPulse." />
         </StackPanel>
 
@@ -163,7 +163,7 @@
               <StackPanel Spacing="6" Margin="16,12,16,12">
                 <TextBlock Classes="edition_tagline" Text="Um POS completo para começar sem barreiras." />
                 <TextBlock Classes="edition_hint" Text="Para pequenos negócios e quem quer começar sem investimento." />
-                <TextBlock Classes="feature" Text="✓  Faturação e documentos PDF no posto (sem certificação AT integrada)" />
+                <TextBlock x:Name="CommunityFeature" Classes="feature" Text="✓  Faturação e documentos PDF no posto (sem certificação AT integrada)" />
                 <TextBlock Classes="feature" Text="✓  Vendas tácteis rápidas e gestão de mesas" />
                 <TextBlock Classes="feature" Text="✓  Stock, famílias e relatórios PDF" />
                 <TextBlock Classes="feature" Text="✓  SQLite, MySQL, SQL Server e PostgreSQL" />

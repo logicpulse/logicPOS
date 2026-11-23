@@ -33,9 +33,9 @@ public partial class PeriodRangeField : UserControl
     public PeriodRangeField()
     {
         InitializeComponent();
-        var today = DateTime.Today;
-        _start = new DateTime(today.Year, 1, 1, 0, 0, 0);
-        _end = today.AddDays(1).AddSeconds(-1);
+        var year = DefaultPeriods.Year(DateTime.Today);
+        _start = year.Start;
+        _end = year.End;
         _draftStart = _start;
         _draftEnd = _end;
         RefreshSummary();

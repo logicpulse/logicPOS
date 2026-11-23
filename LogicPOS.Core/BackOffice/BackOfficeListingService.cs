@@ -2702,6 +2702,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private bool MatchesFilter(PageSpec page, object row)
     {
+        if (page.EntityType == typeof(WorkSessionPeriod) && row is WorkSessionPeriod period)
+        {
+            return WorkSessionListing.Include(period.Type, period.Status);
+        }
+
         if (page.EntityType != typeof(PreferenceParameter) || row is not PreferenceParameter parameter)
         {
             return true;

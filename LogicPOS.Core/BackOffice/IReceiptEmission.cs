@@ -144,6 +144,17 @@ public readonly record struct ReceiptPaySetup(ReceiptPayOption? Currency, decima
 
 public static class ReceiptEmissionDefaults
 {
+    public const string CashCode = "NU";
+
+    public const string CashName = "Numerário";
+
+    public const string CashUnavailable = "Numerário não está disponível.";
+
+    public static ReceiptPayOption? Cash(IEnumerable<ReceiptPayOption> methods)
+        => methods.FirstOrDefault(item =>
+            item.Code.Equals(CashCode, StringComparison.OrdinalIgnoreCase)
+            || item.Name.Equals(CashName, StringComparison.OrdinalIgnoreCase));
+
     public static string TakeNextReceiptNumber(DocumentSeries series)
     {
         var number = $"{series.Acronym}/{series.NextNumber}";

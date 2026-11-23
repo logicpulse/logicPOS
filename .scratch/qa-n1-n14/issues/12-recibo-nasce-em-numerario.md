@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Com Numerário entre os métodos, é esse o método por omissão
-- [ ] A ordem da lista não escolhe Cartão de Crédito quando Numerário existe
-- [ ] Sem Numerário, o método por omissão não fica Cartão de Crédito em silêncio
-- [ ] Um facto novo cobre a escolha, sem abrir a janela de emissão
+- [x] Com Numerário entre os métodos, é esse o método por omissão
+- [x] A ordem da lista não escolhe Cartão de Crédito quando Numerário existe
+- [x] Sem Numerário, o método por omissão não fica Cartão de Crédito em silêncio
+- [x] Um facto novo cobre a escolha, sem abrir a janela de emissão

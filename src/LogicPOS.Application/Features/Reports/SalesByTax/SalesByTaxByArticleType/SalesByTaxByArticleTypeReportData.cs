@@ -17,5 +17,6 @@ public record Sale
     public decimal FinalTotal { get; set; }
     public decimal TaxPercentage { get; set; }
     public string Currency { get; set; } = null!;
+    public string ArticleType { get; set; } = string.Empty;
 }
 

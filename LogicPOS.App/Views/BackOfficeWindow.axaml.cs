@@ -14,6 +14,7 @@ using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Core.Licensing;
+using LogicPOS.Core.Updates;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
@@ -1274,12 +1275,29 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         ShowPage(title);
     }
 
+    public void OpenReport(string key)
+    {
+        ReportsOverlay.IsVisible = true;
+        _ = ShowReportAsync(key);
+    }
+
     private async void OpenReports()
     {
         ReportsOverlay.IsVisible = true;
+        await ShowReportAsync(null);
+    }
+
+    private async Task ShowReportAsync(string? key)
+    {
         try
         {
-            await ReportsHost.ShowAsync();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                await ReportsHost.ShowAsync();
+                return;
+            }
+
+            await ReportsHost.ShowReportAsync(key);
         }
         catch (Exception exception)
         {
@@ -1775,8 +1793,21 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             area.Y + Math.Max(0, (area.Height - height) / 2));
     }
 
-    private void ShowUpdate()
+    private async void ShowUpdate()
     {
+        var published = await ApplicationUpdater.ReadPublishedVersionAsync();
+        var decision = UpdatePromptDecision.For(published, ApplicationUpdater.ReadInstalledVersion());
+        if (decision.Ask == false)
+        {
+            Toast.Warning(
+                this,
+                string.IsNullOrWhiteSpace(published)
+                    ? "Não foi possível confirmar se há uma versão mais nova."
+                    : "Não há uma versão mais nova.");
+            return;
+        }
+
+        UpdateQuestion.Text = decision.Question;
         UpdateStatus.Text = "A configuração (appsettings) e a base de dados local não são substituídas.";
         UpdateProgress.IsVisible = false;
         UpdateProgress.Value = 0;

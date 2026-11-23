@@ -125,7 +125,7 @@ public partial class DashboardView : UserControl
 
     private void OnArticlesStubClick(object? sender, RoutedEventArgs e)
     {
-        this.FindAncestorOfType<BackOfficeWindow>()?.OpenPage("Artigos");
+        this.FindAncestorOfType<BackOfficeWindow>()?.OpenReport(DashboardReportLinks.TopArticles);
     }
 
     private async Task LoadAsync()

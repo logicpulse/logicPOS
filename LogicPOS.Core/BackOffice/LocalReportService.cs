@@ -616,7 +616,7 @@ public sealed class LocalReportService : IReportService
         DateTime until,
         CancellationToken cancellationToken)
     {
-        var customerId = filters.CustomerId!.Value;
+        var customerId = filters.CustomerId is Guid selected && selected != Guid.Empty ? selected : (Guid?)null;
         var documentRows = await SalesQuery(database, filters, start, until, customerId)
             .Where(item => item.Type == "NC" || item.Type == "FT" || item.Type == "ND" || item.Type == "FR" || item.Type == "FS")
             .OrderBy(item => item.CreatedAt)
@@ -626,7 +626,8 @@ public sealed class LocalReportService : IReportService
                 item.Type,
                 item.Number,
                 Designation = item.Series!.DocumentType!.Designation,
-                item.TotalFinal
+                item.TotalFinal,
+                Customer = item.Customer!.Name
             })
             .Take(MaxRows)
             .ToListAsync(cancellationToken);
@@ -635,33 +636,49 @@ public sealed class LocalReportService : IReportService
             item.CreatedAt,
             item.Designation,
             item.Number,
+            item.Customer,
             Debit = item.Type == "NC" ? 0m : item.TotalFinal,
             Credit = item.Type is "NC" or "FR" or "FS" ? item.TotalFinal : 0m
         }).ToList();
-        var receipts = await database.Payments.AsNoTracking()
-            .Where(item => item.Receipt!.Status != "A" && item.Document!.CustomerId == customerId)
-            .Where(item => item.Receipt!.CreatedAt >= start && item.Receipt.CreatedAt < until)
+        var receiptQuery = database.Payments.AsNoTracking()
+            .Where(item => item.Receipt!.Status != "A")
+            .Where(item => item.Receipt!.CreatedAt >= start && item.Receipt.CreatedAt < until);
+        if (customerId is Guid customer)
+        {
+            receiptQuery = receiptQuery.Where(item => item.Document!.CustomerId == customer);
+        }
+
+        var receipts = await receiptQuery
             .Select(item => new
             {
                 item.Receipt!.CreatedAt,
                 Type = "RC",
                 Number = item.Receipt.RefNo,
                 Designation = "Recibo",
+                Customer = item.Document!.Customer!.Name,
                 Debit = item.DebitAmount,
                 Credit = item.CreditAmount
             })
             .Take(MaxRows)
             .ToListAsync(cancellationToken);
 
-        var rows = documents.Select(item => (item.CreatedAt, item.Designation, item.Number, item.Debit, item.Credit))
-            .Concat(receipts.Select(item => (item.CreatedAt, item.Designation, item.Number, item.Debit, item.Credit)))
+        var rows = documents.Select(item => (item.CreatedAt, item.Designation, item.Number, item.Customer, item.Debit, item.Credit))
+            .Concat(receipts.Select(item => (item.CreatedAt, item.Designation, item.Number, item.Customer, item.Debit, item.Credit)))
             .OrderBy(item => item.CreatedAt)
-            .Select(item => Row(
-                ("Data", DateText(item.CreatedAt)),
-                ("Documento", item.Designation ?? string.Empty),
-                ("Número", item.Number ?? string.Empty),
-                ("Débito", Money(item.Debit)),
-                ("Crédito", Money(item.Credit))))
+            .Select(item => customerId is null
+                ? Row(
+                    ("Data", DateText(item.CreatedAt)),
+                    ("Cliente", item.Customer ?? string.Empty),
+                    ("Documento", item.Designation ?? string.Empty),
+                    ("Número", item.Number ?? string.Empty),
+                    ("Débito", Money(item.Debit)),
+                    ("Crédito", Money(item.Credit)))
+                : Row(
+                    ("Data", DateText(item.CreatedAt)),
+                    ("Documento", item.Designation ?? string.Empty),
+                    ("Número", item.Number ?? string.Empty),
+                    ("Débito", Money(item.Debit)),
+                    ("Crédito", Money(item.Credit))))
             .ToList();
         if (rows.Count == 0)
         {
@@ -670,12 +687,20 @@ public sealed class LocalReportService : IReportService
 
         var debit = documents.Sum(item => item.Debit) + receipts.Sum(item => item.Debit);
         var credit = documents.Sum(item => item.Credit) + receipts.Sum(item => item.Credit);
-        rows.Add(Row(
-            ("Data", string.Empty),
-            ("Documento", "Total"),
-            ("Número", string.Empty),
-            ("Débito", Money(debit)),
-            ("Crédito", Money(credit))));
+        rows.Add(customerId is null
+            ? Row(
+                ("Data", string.Empty),
+                ("Cliente", string.Empty),
+                ("Documento", "Total"),
+                ("Número", string.Empty),
+                ("Débito", Money(debit)),
+                ("Crédito", Money(credit)))
+            : Row(
+                ("Data", string.Empty),
+                ("Documento", "Total"),
+                ("Número", string.Empty),
+                ("Débito", Money(debit)),
+                ("Crédito", Money(credit))));
         return rows;
     }
 

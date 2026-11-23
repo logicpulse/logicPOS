@@ -10,6 +10,9 @@ namespace LogicPOS.Core.Fiscal;
 /// </summary>
 public static class FiscalModuleLoader
 {
+    public static bool IsPresent(string baseDirectory)
+        => CandidatePaths(baseDirectory).Any(File.Exists);
+
     public static bool TryRegister(IServiceCollection services, string baseDirectory)
     {
         foreach (var path in CandidatePaths(baseDirectory))

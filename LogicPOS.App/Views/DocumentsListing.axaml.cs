@@ -200,9 +200,8 @@ public partial class DocumentsListing : UserControl
     {
         if (_datesReady == false)
         {
-            Period.SetRange(
-                new DateTime(DateTime.Today.Year, 1, 1),
-                DateTime.Today.AddDays(1).AddSeconds(-1));
+            var year = DefaultPeriods.Year(DateTime.Today);
+            Period.SetRange(year.Start, year.End);
             _datesReady = true;
         }
 
@@ -328,9 +327,8 @@ public partial class DocumentsListing : UserControl
     private async Task ClearAndReloadAsync()
     {
         SearchBox.Text = string.Empty;
-        Period.SetRange(
-            new DateTime(DateTime.Today.Year, 1, 1),
-            DateTime.Today.AddDays(1).AddSeconds(-1));
+        var year = DefaultPeriods.Year(DateTime.Today);
+        Period.SetRange(year.Start, year.End);
         ResetFilterBoxes();
         _page = 1;
         await LoadAsync();

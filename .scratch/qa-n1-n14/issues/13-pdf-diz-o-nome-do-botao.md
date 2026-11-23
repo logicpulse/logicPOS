@@ -4,12 +4,12 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] O PDF da mesa detalhada titula o nome do botão da mesa
-- [ ] O PDF da zona detalhada mantém um título de zona
-- [ ] O PDF de IVA e tipo de artigo titula o nome do botão e agrupa por tipo de artigo
-- [ ] A coluna desse grupo não diz «Tipo Documento»
-- [ ] O PDF de IVA e classe de artigo não muda de título nem de agrupamento
-- [ ] «Ganho por artigo» e «Auditoria do sistema» titulam o nome do botão
-- [ ] Um facto novo cobre título e agrupamento do documento, sem abrir a janela de relatórios
+- [x] O PDF da mesa detalhada titula o nome do botão da mesa
+- [x] O PDF da zona detalhada mantém um título de zona
+- [x] O PDF de IVA e tipo de artigo titula o nome do botão e agrupa por tipo de artigo
+- [x] A coluna desse grupo não diz «Tipo Documento»
+- [x] O PDF de IVA e classe de artigo não muda de título nem de agrupamento
+- [x] «Ganho por artigo» e «Auditoria do sistema» titulam o nome do botão
+- [x] Um facto novo cobre título e agrupamento do documento, sem abrir a janela de relatórios

@@ -8,6 +8,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using LogicPOS.App.Hardware;
+using LogicPOS.Application.Features.Finance.PaymentMethods;
 using LogicPOS.Application.Features.System;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
@@ -52,15 +53,7 @@ public partial class PaymentWindow : Window
     private CompanyFiscalMarkState _companyMarks = CompanyFiscalMarkState.None;
     private bool _parkingInvoiceRequested;
     private readonly List<MixedPaymentRow> _mixedRows = new();
-    private readonly List<(string Token, string Label)> _posPaymentMethods =
-    [
-        ("MONEY", "Numerário"),
-        ("CASH_MACHINE", "MB Way"),
-        ("DEBIT_CARD", "Cartão de Débito"),
-        ("BANK_CHECK", "Cheque"),
-        ("CREDIT_CARD", "Cartão de Crédito"),
-        ("CURRENT_ACCOUNT", "Conta Corrente")
-    ];
+    private readonly List<(string Token, string Label)> _posPaymentMethods;
 
     private bool _mixedPayment;
     private Dictionary<string, Guid> _paymentMethodIds = new(StringComparer.OrdinalIgnoreCase);
@@ -107,7 +100,9 @@ public partial class PaymentWindow : Window
         }
         ListingNotice.BindToast(CustomerSearchNotice, this);
         ApplySaleDocumentType();
-        BuildMethods();
+        var portugal = AppComposition.Services?.GetService<ISystemInformationService>()?.IsPortugal() == true;
+        _posPaymentMethods = PosPaymentMethods.For(portugal).ToList();
+        BuildMethods(portugal);
         FullPaymentButton.Click += OnFullPaymentClick;
         TouchFields.Attach(this);
         // Block Alt+F4 while issuing; after success always Close(true) so PosWindow clears the order.
@@ -167,15 +162,26 @@ public partial class PaymentWindow : Window
         Height = owner.Bounds.Height;
     }
 
-    private void BuildMethods()
+    private void BuildMethods(bool portugal)
     {
         AddMethod("MONEY", "Numerário", "icon_pos_payment_type_money.png", 0, 0, 1);
-        AddMethod("CASH_MACHINE", "MB Way", "icon_pos_payment_type_cash_machine.png", 1, 0, 1);
+        AddMethod(PosPaymentMethods.MultibancoToken, PosPaymentMethods.MultibancoDesignation, "icon_pos_payment_type_cash_machine.png", 1, 0, 1);
         AddMethod("DEBIT_CARD", "Cartão de Débito", "icon_pos_payment_type_debit_card.png", 2, 0, 1);
         AddMethod("BANK_CHECK", "Cheque", "icon_pos_payment_type_bank_check.png", 0, 1, 1);
         AddMethod("CREDIT_CARD", "Cartão de Crédito", "icon_pos_payment_type_credit_card.png", 1, 1, 1);
         AddMethod("CURRENT_ACCOUNT", "Conta Corrente", "icon_pos_payment_type_current_account.png", 2, 1, 1);
-        _customerCard = AddMethod("CUSTOMER_CARD", "Cartão Cliente", "icon_pos_payment_type_customer_card.png", 0, 2, 3);
+        if (portugal)
+        {
+            AddMethod(PosPaymentMethods.MbWayToken, PosPaymentMethods.MbWayDesignation, "icon_pos_payment_type_cash_machine.png", 0, 2, 1);
+        }
+
+        _customerCard = AddMethod(
+            "CUSTOMER_CARD",
+            "Cartão Cliente",
+            "icon_pos_payment_type_customer_card.png",
+            portugal ? 1 : 0,
+            2,
+            portugal ? 2 : 3);
         _customerCard.Classes.Add("pos_pay_method_wide");
         SetEnabled(_customerCard, false);
     }

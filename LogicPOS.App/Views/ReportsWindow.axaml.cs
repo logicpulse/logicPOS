@@ -30,9 +30,8 @@ public partial class ReportsWindow : UserControl
     {
         InitializeComponent();
         Period.ShowCaption = false;
-        Period.SetRange(
-            new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
-            DateTime.Today.AddDays(1).AddSeconds(-1));
+        var month = DefaultPeriods.Month(DateTime.Today);
+        Period.SetRange(month.Start, month.End);
         Period.PeriodChanged += (_, _) => RefreshQuickPeriodState();
         RefreshQuickPeriodState();
         TouchFields.Attach(Filters);
@@ -50,6 +49,25 @@ public partial class ReportsWindow : UserControl
             LayoutUpdated += OnReportsLayoutUpdated;
         };
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnReportsLayoutUpdated;
+    }
+
+    public async Task ShowReportAsync(string key)
+    {
+        await ShowAsync();
+        var report = _catalog.FirstOrDefault(item => string.Equals(item.Key, key, StringComparison.Ordinal));
+        if (report is null)
+        {
+            return;
+        }
+
+        _group = report.Group;
+        BuildTabs(_catalog.Select(item => item.Group).Distinct().ToList());
+        ShowGroup(_group);
+        var button = _rows.FirstOrDefault(row => ReferenceEquals(row.Tag, report));
+        if (button is not null)
+        {
+            await ActivateReportAsync(report, button);
+        }
     }
 
     public async Task ShowAsync()
@@ -356,9 +374,8 @@ public partial class ReportsWindow : UserControl
 
     private void ResetFilterDefaults()
     {
-        Period.SetRange(
-            new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
-            DateTime.Today.AddDays(1).AddSeconds(-1));
+        var month = DefaultPeriods.Month(DateTime.Today);
+        Period.SetRange(month.Start, month.End);
         foreach (var box in new[]
                  {
                      CustomerBox, ArticleBox, DocumentTypeBox, TerminalBox, VatBox, WarehouseBox, FamilyBox, SubfamilyBox
@@ -426,6 +443,18 @@ public partial class ReportsWindow : UserControl
         if (_selected is null)
         {
             FiltersNotice.Text = "Escolha um relatório.";
+            return;
+        }
+
+        var missing = ReportFilterSelection.Missing(
+            _selected.ShowCustomer,
+            CustomerBox.SelectedItem is not null,
+            _selected.CustomerIsSupplier,
+            _selected.ShowArticle,
+            ArticleBox.SelectedItem is not null);
+        if (missing is not null)
+        {
+            FiltersNotice.Text = missing;
             return;
         }
 
@@ -547,14 +576,14 @@ public partial class ReportsWindow : UserControl
 
     private void OnQuickMonthClick(object? sender, RoutedEventArgs e)
     {
-        var today = DateTime.Today;
-        ApplyPreset(new DateTime(today.Year, today.Month, 1), today);
+        var month = DefaultPeriods.Month(DateTime.Today);
+        ApplyPreset(month.Start, month.End.Date);
     }
 
     private void OnQuickYearClick(object? sender, RoutedEventArgs e)
     {
-        var today = DateTime.Today;
-        ApplyPreset(new DateTime(today.Year, 1, 1), today);
+        var year = DefaultPeriods.Year(DateTime.Today);
+        ApplyPreset(year.Start, year.End.Date);
     }
 
     private void ApplyPreset(DateTime startDay, DateTime endDay)
@@ -564,8 +593,10 @@ public partial class ReportsWindow : UserControl
     {
         var today = DateTime.Today;
         var day = IsPreset(today, today);
-        var month = IsPreset(new DateTime(today.Year, today.Month, 1), today);
-        var year = IsPreset(new DateTime(today.Year, 1, 1), today);
+        var monthRange = DefaultPeriods.Month(today);
+        var yearRange = DefaultPeriods.Year(today);
+        var month = IsPreset(monthRange.Start, monthRange.End.Date);
+        var year = IsPreset(yearRange.Start, yearRange.End.Date);
         SetQuickOn(QuickDayButton, day);
         SetQuickOn(QuickMonthButton, month && day == false);
         SetQuickOn(QuickYearButton, year && month == false);

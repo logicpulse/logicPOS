@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] O sumário tem um grupo por condição de pagamento
-- [ ] Cada grupo mostra os totais das linhas, sem código, designação ou quantidade de artigo
-- [ ] O detalhado da mesma venda continua com uma linha por artigo
-- [ ] Um facto novo cobre o sumário e o detalhado, sem abrir a janela de relatórios
+- [x] O sumário tem um grupo por condição de pagamento
+- [x] Cada grupo mostra os totais das linhas, sem código, designação ou quantidade de artigo
+- [x] O detalhado da mesma venda continua com uma linha por artigo
+- [x] Um facto novo cobre o sumário e o detalhado, sem abrir a janela de relatórios

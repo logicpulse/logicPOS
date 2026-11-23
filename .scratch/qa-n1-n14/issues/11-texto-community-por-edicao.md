@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Na edição LogicPulse, o texto da Community inclui certificação
-- [ ] Na edição pública, o texto da Community continua a dizer faturação local sem certificação AT integrada
-- [ ] Business e Cloud, na edição LogicPulse, não passam a aparecer sem certificação
-- [ ] Um facto novo cobre as duas frases, sem abrir a janela
+- [x] Na edição LogicPulse, o texto da Community inclui certificação
+- [x] Na edição pública, o texto da Community continua a dizer faturação local sem certificação AT integrada
+- [x] Business e Cloud, na edição LogicPulse, não passam a aparecer sem certificação
+- [x] Um facto novo cobre as duas frases, sem abrir a janela
