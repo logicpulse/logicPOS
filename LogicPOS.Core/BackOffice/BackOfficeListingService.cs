@@ -2736,51 +2736,102 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         || value == "1"
         || string.Equals(value, "sim", StringComparison.OrdinalIgnoreCase);
 
-    private static async Task EnsureLeiPtCompanyFiscalMarksAsync(LogicPOSDbContext database, CancellationToken cancellationToken)
+    /// <summary>
+    /// Ensures Lei PT company fiscal-mark preferences exist. Idempotent for Id and Token:
+    /// skips when either already exists and tolerates concurrent inserts (UNIQUE races).
+    /// </summary>
+    internal static async Task EnsureLeiPtCompanyFiscalMarksAsync(LogicPOSDbContext database, CancellationToken cancellationToken)
     {
-        var tokens = new[]
+        // Guids must not collide with seeded PreferenceParameters.Id values (e.g. SYSTEM_CURRENCY_OID).
+        var marks = new (Guid Id, string Token, string Label, uint Order)[]
         {
-            LogicPOS.Core.Fiscal.CompanyFiscalMarkTokens.RegimeArtigo53,
-            LogicPOS.Core.Fiscal.CompanyFiscalMarkTokens.VendedorAmbulante
+            (new Guid("c3d4e5f6-a7b8-4901-c234-56789abcde01"), CompanyFiscalMarkTokens.RegimeArtigo53, "Regime de isenção (art.º 53.º)", 112),
+            (new Guid("d4e5f6a7-b8c9-4012-d345-6789abcdef12"), CompanyFiscalMarkTokens.VendedorAmbulante, "Vendedor ambulante", 113)
         };
+
+        var tokens = marks.Select(mark => mark.Token).ToArray();
+        var ids = marks.Select(mark => mark.Id).ToArray();
         var existing = await database.PreferenceParameters
-            .Where(item => item.IsDeleted == false && tokens.Contains(item.Token))
-            .Select(item => item.Token)
+            .AsNoTracking()
+            .Where(item => tokens.Contains(item.Token) || ids.Contains(item.Id))
+            .Select(item => new { item.Id, item.Token })
             .ToListAsync(cancellationToken);
-        if (existing.Count == tokens.Length)
+
+        var existingTokens = existing.Select(item => item.Token).ToHashSet(StringComparer.Ordinal);
+        var existingIds = existing.Select(item => item.Id).ToHashSet();
+        if (tokens.All(existingTokens.Contains))
         {
             return;
         }
 
         var now = DateTime.Now;
-        void Add(Guid id, string token, string label, uint order)
+        var pending = false;
+        foreach (var mark in marks)
         {
-            if (existing.Contains(token))
+            if (existingTokens.Contains(mark.Token))
             {
-                return;
+                continue;
+            }
+
+            if (existingIds.Contains(mark.Id))
+            {
+                // Id reserved by another PreferenceParameters row — do not insert or overwrite.
+                AppLogging.Warning(
+                    null,
+                    "Lei PT company fiscal mark {Token} skipped: PreferenceParameters.Id {Id} is already in use",
+                    mark.Token,
+                    mark.Id);
+                continue;
             }
 
             database.PreferenceParameters.Add(new PreferenceParameter
             {
-                Id = id,
-                Token = token,
+                Id = mark.Id,
+                Token = mark.Token,
                 Value = "False",
                 Required = false,
                 RegEx = "RegexBoolean",
-                ResourceString = label,
+                ResourceString = mark.Label,
                 FormType = 1,
                 FormPageNo = 1,
                 InputType = LogicPOS.Domain.Enums.PreferenceParameterInputType.CheckButton,
-                Order = order,
-                Code = order.ToString(),
+                Order = mark.Order,
+                Code = mark.Order.ToString(),
                 CreatedAt = now,
                 UpdatedAt = now
             });
+            existingTokens.Add(mark.Token);
+            existingIds.Add(mark.Id);
+            pending = true;
         }
 
-        Add(new Guid("a1b2c3d4-e5f6-4789-a012-3456789ab901"), tokens[0], "Regime de isenção (art.º 53.º)", 112);
-        Add(new Guid("b2c3d4e5-f6a7-4890-b123-456789abcdef"), tokens[1], "Vendedor ambulante", 113);
-        await database.SaveChangesAsync(cancellationToken);
+        if (pending == false)
+        {
+            return;
+        }
+
+        try
+        {
+            await database.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            // Another caller inserted the same Id/Token first — drop our pending inserts.
+            foreach (var entry in database.ChangeTracker.Entries<PreferenceParameter>()
+                         .Where(entry => entry.State == EntityState.Added)
+                         .ToList())
+            {
+                entry.State = EntityState.Detached;
+            }
+
+            var present = await database.PreferenceParameters
+                .AsNoTracking()
+                .CountAsync(item => tokens.Contains(item.Token), cancellationToken);
+            if (present < tokens.Length)
+            {
+                throw;
+            }
+        }
     }
 
     private static async Task EnsureCompanyTransportObligationParameterAsync(
