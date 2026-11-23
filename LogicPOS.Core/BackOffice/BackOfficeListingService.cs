@@ -3518,17 +3518,19 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private async Task<ListingSaveResult> RestoreAsync(string? path, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(path) || File.Exists(path) == false)
-        {
-            return ListingSaveResult.Fail("Selecione um ficheiro de backup.");
-        }
-
-        if (string.Equals(Path.GetFileName(path), "RESTAURAR", StringComparison.Ordinal) == false && path.EndsWith(".db", StringComparison.OrdinalIgnoreCase) == false)
-        {
-            return ListingSaveResult.Fail("O ficheiro de backup não é válido.");
-        }
-
         var livePath = await DatabasePathAsync(cancellationToken);
+        var validation = DatabaseRestoreSafety.ValidateCandidateFile(livePath, path);
+        if (validation is not null)
+        {
+            return ListingSaveResult.Fail(validation);
+        }
+
+        var bakError = DatabaseRestoreSafety.TryCreateLiveBak(livePath, DateTime.Now);
+        if (bakError is not null)
+        {
+            return ListingSaveResult.Fail(bakError);
+        }
+
         await using var source = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = path, Mode = SqliteOpenMode.ReadOnly }.ToString());
         await using var destination = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = livePath }.ToString());
         await source.OpenAsync(cancellationToken);

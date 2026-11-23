@@ -2070,7 +2070,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Mesa reservada</value>
   </data>
   <data name="global_reset_password" xml:space="preserve">
-    <value>Reset de palavra-passe</value>
+    <value>Repor palavra-passe</value>
   </data>
   <data name="global_second_copy" xml:space="preserve">
     <value>Segunda via</value>

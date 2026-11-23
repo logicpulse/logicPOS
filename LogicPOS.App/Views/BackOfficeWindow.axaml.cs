@@ -984,16 +984,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
                 ("SAF-T último mês", "Menu/menu_exportacao_saft_ultimo_mes.svg", false),
                 ("SAF-T período", "Menu/menu_exportacao_saft_personalizado.svg", false)
             }),
-            ("Sistema", "Menu/menu_sistema.svg", new[]
-            {
-                ("Notificações", "Menu/menu_sistema_notificacoes.svg", false),
-                ("Registo de alterações", "Menu/menu_sistema_change_logs.svg", false),
-                ("Backup DB", "Menu/menu_sistema_backup.svg", false),
-                ("Restaurar DB", "Menu/menu_sistema_restauro.svg", false),
-                ("Restaurar de ficheiro", "Menu/menu_sistema_restauro.svg", false),
-                ("Atualizar", (string?)null, false),
-                ("Sair da Sessão", "Menu/menu_sistema_logout.svg", true)
-            })
+            ("Sistema", "Menu/menu_sistema.svg", BuildSistemaMenuItems())
         };
 
         var menu = sections.ToList();
@@ -1390,6 +1381,44 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     }
 
     private static bool IsAngola() => FiscalFeatures.ShowsAgt(FiscalFeatures.Current);
+
+    private static (string Title, string? Icon, bool Logout)[] BuildSistemaMenuItems()
+    {
+        var items = new List<(string Title, string? Icon, bool Logout)>
+        {
+            ("Notificações", "Menu/menu_sistema_notificacoes.svg", false),
+            ("Registo de alterações", "Menu/menu_sistema_change_logs.svg", false),
+            ("Backup DB", "Menu/menu_sistema_backup.svg", false),
+            ("Restaurar DB", "Menu/menu_sistema_restauro.svg", false),
+        };
+        if (IsSqliteDatabase())
+        {
+            items.Add(("Restaurar de ficheiro", "Menu/menu_sistema_restauro.svg", false));
+        }
+
+        items.Add(("Atualizar", null, false));
+        items.Add(("Sair da Sessão", "Menu/menu_sistema_logout.svg", true));
+        return items.ToArray();
+    }
+
+    /// <summary>File restore only applies to a local SQLite database file.</summary>
+    private static bool IsSqliteDatabase()
+    {
+        try
+        {
+            var configuration = AppComposition.Services?
+                .GetService(typeof(Microsoft.Extensions.Configuration.IConfiguration))
+                as Microsoft.Extensions.Configuration.IConfiguration;
+            var type = configuration?["DatabaseSettings:DatabaseType"];
+            return string.IsNullOrWhiteSpace(type)
+                || string.Equals(type, "Sqlite", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(type, "SQLite", StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            return true;
+        }
+    }
 
     private async Task RestoreFromExternalFileSequentialAsync()
     {
