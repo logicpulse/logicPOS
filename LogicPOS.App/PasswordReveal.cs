@@ -1,5 +1,6 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
+using LogicPOS.Core.BackOffice;
 
 namespace LogicPOS.App;
 
@@ -10,7 +11,6 @@ namespace LogicPOS.App;
 /// </summary>
 internal static class PasswordReveal
 {
-    private const char Mask = '•';
     private const string InvisibleIcon = "avares://LogicPOS.App/Assets/Images/Login/botao_password_invisivel.svg";
     private const string VisibleIcon = "avares://LogicPOS.App/Assets/Images/Login/botao_password_visivel.svg";
 
@@ -29,9 +29,10 @@ internal static class PasswordReveal
             return;
         }
 
-        box.PasswordChar = Mask;
+        box.PasswordChar = PasswordRevealState.Mask;
         box.Padding = new Thickness(8, 4, 36, 4);
         box.Classes.Add("bo_password_reveal_ready");
+        box.Classes.Add("bo_password_field");
 
         var hidden = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
         {
@@ -49,14 +50,15 @@ internal static class PasswordReveal
             Classes = { "login_pin_reveal" },
             Content = new Panel { Children = { hidden, shown } }
         };
-        ToolTip.SetTip(button, "Mostrar");
+        ToolTip.SetTip(button, PasswordRevealState.Tip(currentlyHidden: true));
         button.Click += (_, _) =>
         {
-            var reveal = box.PasswordChar != '\0';
-            box.PasswordChar = reveal ? '\0' : Mask;
-            hidden.IsVisible = !reveal;
-            shown.IsVisible = reveal;
-            ToolTip.SetTip(button, reveal ? "Ocultar" : "Mostrar");
+            var currentlyHidden = PasswordRevealState.IsHidden(box.PasswordChar);
+            box.PasswordChar = PasswordRevealState.NextPasswordChar(currentlyHidden);
+            var nowHidden = PasswordRevealState.IsHidden(box.PasswordChar);
+            hidden.IsVisible = nowHidden;
+            shown.IsVisible = nowHidden == false;
+            ToolTip.SetTip(button, PasswordRevealState.Tip(nowHidden));
         };
 
         var host = new Panel();
