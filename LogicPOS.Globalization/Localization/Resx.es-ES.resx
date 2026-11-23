@@ -2787,6 +2787,9 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
   <data name="pos_button_label_payment_type_money" xml:space="preserve">
     <value>Dinero</value>
   </data>
+  <data name="pos_button_label_payment_type_virtual_money" xml:space="preserve">
+    <value>Dinero electrónico</value>
+  </data>
   <data name="pos_button_label_payment_type_visa" xml:space="preserve">
     <value>Visa</value>
   </data>

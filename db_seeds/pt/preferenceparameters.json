@@ -1250,7 +1250,7 @@
   },
   {
     "Token": "SEND_MAIL_SMTP_USERNAME",
-    "Value": "exemplo@empresa.pt",
+    "Value": "",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",

@@ -2787,6 +2787,9 @@ To continue press Yes to close all terminals, or press No and close all terminal
   <data name="pos_button_label_payment_type_money" xml:space="preserve">
     <value>Money</value>
   </data>
+  <data name="pos_button_label_payment_type_virtual_money" xml:space="preserve">
+    <value>Virtual Money</value>
+  </data>
   <data name="pos_button_label_payment_type_visa" xml:space="preserve">
     <value>Visa</value>
   </data>

@@ -2787,6 +2787,9 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="pos_button_label_payment_type_money" xml:space="preserve">
     <value>Numerário</value>
   </data>
+  <data name="pos_button_label_payment_type_virtual_money" xml:space="preserve">
+    <value>Dinheiro Eletrónico</value>
+  </data>
   <data name="pos_button_label_payment_type_visa" xml:space="preserve">
     <value>Visa</value>
   </data>
