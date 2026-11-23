@@ -842,7 +842,7 @@
   },
   {
     "Token": "SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER",
-    "Value": "599999993/0037",
+    "Value": "",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",
@@ -866,7 +866,7 @@
   },
   {
     "Token": "SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD",
-    "Value": "testes1234",
+    "Value": "",
     "ValueTip": null,
     "Required": true,
     "RegEx": "RegexAlfaNumericExtended",
