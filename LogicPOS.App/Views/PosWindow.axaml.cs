@@ -3253,6 +3253,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
             }
         };
+        ToolTip.SetTip(keyboard, "Teclado virtual");
         keyboard.Click += (_, _) =>
         {
             if (seat.Paid)

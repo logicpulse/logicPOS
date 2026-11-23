@@ -398,6 +398,7 @@ public partial class PaymentWindow : Window
                     Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
                 }
             };
+            ToolTip.SetTip(keyboard, "Teclado virtual");
             keyboard.Click += (_, _) =>
             {
                 quantity.Focus();
