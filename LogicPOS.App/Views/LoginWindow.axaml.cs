@@ -468,6 +468,8 @@ public partial class LoginWindow : UserControl
         UpdateAuthLoading("A preparar o ecrã...");
         await YieldLoginPaintAsync();
 
+        await PromptFirstEntryIfPendingAsync();
+
         var backOfficeOnly = false;
         var mode = AppComposition.Services?.GetService<IOperationMode>();
         if (mode is not null)
@@ -609,6 +611,38 @@ public partial class LoginWindow : UserControl
                 }
             };
             await box.ShowDialog(owner);
+        }
+    }
+
+    /// <summary>
+    /// Primeira entrada pendente: mostra a janela antes do trabalho principal. Fechar sem confirmar
+    /// deixa-a pendente (volta a aparecer no próximo login).
+    /// </summary>
+    private async Task PromptFirstEntryIfPendingAsync()
+    {
+        var service = AppComposition.Services?.GetService<IFirstEntryService>();
+        var owner = ResolveDialogOwner();
+        if (service is null || owner is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var pending = await Task.Run(async () => await service.GetPendingAsync())
+                .ConfigureAwait(true);
+            if (pending.IsPending == false)
+            {
+                return;
+            }
+
+            HideAuthLoading();
+            await new FirstEntryWindow(service).ShowDialog(owner);
+            UpdateAuthLoading("A preparar o ecrã...");
+        }
+        catch (Exception exception)
+        {
+            App.WriteCrash("PromptFirstEntryIfPendingAsync", exception);
         }
     }
 

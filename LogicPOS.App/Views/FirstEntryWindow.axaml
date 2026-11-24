@@ -1,0 +1,105 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+        x:Class="LogicPOS.App.Views.FirstEntryWindow"
+        Title="Primeira entrada"
+        Width="760"
+        Height="600"
+        WindowDecorations="None"
+        WindowStartupLocation="CenterScreen"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        CanResize="False"
+        FontFamily="avares://LogicPOS.App/Assets/Fonts#Montserrat">
+    <Border Classes="login_alert_frame bo_fiscal_wizard">
+        <DockPanel Classes="login_alert_inner">
+            <Border Classes="login_alert_titlebar" DockPanel.Dock="Top" PointerPressed="OnTitlePointerPressed">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Classes="login_alert_title_row">
+                        <Image Classes="login_alert_title_icon"
+                               Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_show_change_user_dialog.png" />
+                        <TextBlock Classes="login_alert_title" Text="Primeira entrada" />
+                    </StackPanel>
+                    <Button Grid.Column="1" Classes="bo_window_button" Click="OnCancelClick" ToolTip.Tip="Fechar">
+                        <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                    </Button>
+                </Grid>
+            </Border>
+
+            <Border Classes="login_alert_actions bo_fiscal_wizard_actions" DockPanel.Dock="Bottom">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Right" Classes="login_alert_action_buttons">
+                        <Button x:Name="BackButton" Classes="login_alert_action action_secondary" Click="OnBackClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <svg:Svg Classes="login_alert_action_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_back.svg" />
+                                <TextBlock Classes="login_alert_action_text" Text="Anterior" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="NextButton" Classes="login_alert_action" Click="OnNextClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <svg:Svg Classes="login_alert_action_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_next.svg" />
+                                <TextBlock Classes="login_alert_action_text" Text="Seguinte" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="ConfirmButton" Classes="login_alert_action" Click="OnConfirmClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Confirmar" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="CancelButton" Classes="login_alert_action action_secondary" Click="OnCancelClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock x:Name="LblStatus" Classes="bo_entity_error" Margin="12,0,12,0"
+                               VerticalAlignment="Center" TextWrapping="Wrap" />
+                </DockPanel>
+            </Border>
+
+            <Border Classes="bo_fiscal_wizard_tabs_host" DockPanel.Dock="Top">
+                <StackPanel x:Name="TabBar" Classes="bo_fiscal_wizard_tabs" />
+            </Border>
+
+            <ScrollViewer Classes="bo_fiscal_wizard_scroll">
+                <Panel>
+                    <StackPanel x:Name="ModeStep" Classes="bo_fiscal_wizard_form">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Modo de operação" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="Escolha o tipo de negócio. Define o módulo com que a base de dados é preparada." />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Modo" />
+                        <ComboBox x:Name="CmbMode" Classes="bo_entity_input" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="DemoStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Base de dados de demonstração" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="A demonstração traz artigos, mesas e clientes de exemplo. Por defeito é recusada e a base fica limpa, pronta a faturar." />
+                        <RadioButton x:Name="RbDemoRefuse" Classes="bo_entity_input" GroupName="FirstEntryDemo"
+                                     IsChecked="True" Content="Recusar (recomendado)" />
+                        <RadioButton x:Name="RbDemoAccept" Classes="bo_entity_input" GroupName="FirstEntryDemo"
+                                     Content="Aceitar dados de demonstração" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="CompanyStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Dados da empresa" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="O país define o IVA, os meios de pagamento e os tipos de documento. A moeda é sugerida pelo país e pode ser alterada." />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="País" />
+                        <ComboBox x:Name="CmbCountry" Classes="bo_entity_input" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Moeda" />
+                        <ComboBox x:Name="CmbCurrency" Classes="bo_entity_input" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="NIF" />
+                        <TextBox x:Name="TxtFiscalNumber" Classes="bo_entity_input" PlaceholderText="NIF da empresa" />
+                    </StackPanel>
+                </Panel>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</Window>

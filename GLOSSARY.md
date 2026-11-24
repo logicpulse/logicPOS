@@ -29,8 +29,8 @@ A identificação do documento na edição pública: a sigla da série e o próx
 _Avoid_: ATCUD, código de série certificada, número local
 
 **Instalador**:
-O instalador Windows da edição LogicPulse, com certificação. A edição pública não tem instalador. Por defeito instala em `C:\Program Files\Logicpulse\logicpos`.
-_Avoid_: setup opensource, instalador do GitHub
+O instalador Windows da edição LogicPulse, com certificação. A edição pública não tem instalador. Numa instalação nova cria a base com esquema e administrador, pede o modo de operação, a base de dados de demonstração e os dados da empresa, e essa escolha só fica feita quando a app a confirma.
+_Avoid_: setup opensource, instalador do GitHub, conta cloud
 
 **Atualização da 1.6**:
 Substituir os programas e as seeds de uma 1.6 já instalada, mantendo o appsettings, o `logicpos.licence`, a base SQLite dessa pasta e os Logs. A edição não é inventada; a página de escolha aparece se ainda não existir.
@@ -53,12 +53,28 @@ Termo antigo para a ligação à API de produção. Preferir Cloud.
 _Avoid_: usar em texto novo; ver Cloud
 
 **Modo de operação**:
-O ramo de negócio da instalação local, como restauração, café ou padaria. No modo LogicPulse vem da API e o instalador não pergunta.
-_Avoid_: vertical, cloud, módulo da API
+O ramo de negócio, como restauração, café ou padaria. Numa instalação nova, local ou Cloud, escolhe-se na primeira entrada, no Avalonia ou na webapp. No local, depois da confirmação, fica esse modo. Na conta cloud é um só: se a conta já tiver um, vem selecionado, e depois da primeira entrada é o que a conta disser, mesmo que a ficha mude mais tarde.
+_Avoid_: vertical, módulo da API, conta em modo demo
+
+**Primeira entrada**:
+A confirmação, numa instalação nova local ou Cloud, do modo de operação, de aceitar ou não a base de dados de demonstração, e dos dados da empresa. Não acontece no modo API nem numa atualização. No local o instalador deixa a escolha pronta e a app é que a confirma. Na Cloud só a app pergunta, depois do login; se a conta já tiver modo, esse vem selecionado, e a demonstração vem por aceitar. Antes de confirmar pode mudar-se o modo, a demonstração e a empresa; a amostra é a do modo confirmado. Fechar a app sem confirmar não grava a confirmação. Outra confirmação ainda aberta não a substitui. Se a base de dados de demonstração aceite não chegar a entrar, a confirmação não fica feita.
+_Avoid_: modo API, atualização, conta em modo demo, ano fiscal
+
+**Dados da empresa**:
+O país, a moeda e o NIF da primeira entrada. Os três são precisos para a concluir. Na conta cloud o país vem preenchido. A pessoa pode mudá-los antes de confirmar. Com o país confirmado entram o IVA, os meios de pagamento e os tipos de documento, sem pergunta própria.
+_Avoid_: ano fiscal, séries, base de dados de demonstração
+
+**Base da conta cloud**:
+A base do POS dessa conta cloud. Nasce com o administrador da ficha, antes da primeira entrada. A palavra-passe é a que a conta tinha nesse momento; uma alteração posterior na conta não a muda.
+_Avoid_: base de dados de demonstração, base sem administrador
 
 **Base de dados de demonstração**:
-Os dados iniciais do modo de operação. Só entram se quem instala os aceitar.
-_Avoid_: migração da 1.4, base vazia
+Os artigos, as mesas e os clientes de exemplo do modo de operação. Entram na primeira entrada, se a pessoa aceitar, e são os do modo confirmado. Uma mudança posterior do modo não os tira nem os troca.
+_Avoid_: IVA, meios de pagamento, tipos de documento, conta em modo demo
+
+**Conta em modo demo**:
+Marca comercial da conta no logicERP. Não escolhe o modo de operação nem mete a base de dados de demonstração.
+_Avoid_: base de dados de demonstração, seeds, modo de operação
 
 **Client ID**:
 O identificador com que o posto se apresenta à API no modo LogicPulse. Vem preenchido e pode ficar vazio.
@@ -117,8 +133,12 @@ A entidade comercial ligada a um documento: identificação, NIF, morada e conta
 _Avoid_: account, buyer, client genérico
 
 **PIN**:
-O segredo numérico de entrada no posto.
-_Avoid_: palavra-passe, password
+O segredo numérico de entrada no posto, depois da inscrição. Não é a entrada na base.
+_Avoid_: palavra-passe, password, entrada na base
+
+**Entrada na base**:
+O administrador e a palavra-passe da base, no Avalonia e na webapp. A palavra-passe é a que a conta, ou a instalação, tinha quando a base nasceu.
+_Avoid_: PIN, inscrição do posto, palavra-passe do portal
 
 **Perfil**:
 O papel de um utilizador. Um utilizador novo não tem perfil até alguém o escolher.

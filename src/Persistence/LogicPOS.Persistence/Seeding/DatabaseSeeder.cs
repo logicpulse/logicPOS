@@ -111,6 +111,24 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
         _logger.LogInformation("Additional data seeded successfully");
     }
 
+    /// <summary>
+    /// Demo sample of the configured module only (articles, places, tables, customers).
+    /// Unlike <see cref="ApplyAdditionalSeed"/> it does not repeat profiles or lookups from birth,
+    /// and it reports failure so the caller can roll back.
+    /// </summary>
+    public bool ApplyDemoSample()
+    {
+        _logger.LogInformation("Applying demo sample for module {Module}", _dbSettings.Module);
+
+        return ArticleFamiliesSeeder.SeedData(_database, _dbSettings, _logger)
+            && ArticleTypesSeeder.SeedData(_database, _dbSettings, _logger)
+            && ArticleSubfamiliesSeeder.SeedData(_database, _dbSettings, _logger)
+            && ArticlesSeeder.SeedData(_database, _dbSettings, _logger)
+            && PlacesSeeder.SeedData(_database, _dbSettings, _logger)
+            && TablesSeeder.SeedData(_database, _dbSettings, _logger)
+            && CustomersSeeder.SeedData(_database, _dbSettings, _systemCountryCode2, _logger);
+    }
+
     public bool ApplyRequiredSeed()
     {
         _logger.LogInformation("Applying required seed");

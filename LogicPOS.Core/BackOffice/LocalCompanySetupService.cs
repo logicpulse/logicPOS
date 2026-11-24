@@ -166,13 +166,32 @@ public sealed class LocalCompanySetupService : ICompanySetupService
 
     public async Task<ListingSaveResult> SaveAsync(CompanySetupRequest request, CancellationToken cancellationToken = default)
     {
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+
+        var result = await SaveAsync(database, request, cancellationToken);
+        if (result.Succeeded)
+        {
+            // Host composition may omit CompanyCurrency; never fail company save because of formatting cache.
+            AppComposition.Services?.GetService<CompanyCurrency>()?.Reload(database);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Writes the company on the caller's context, so a caller with an open transaction
+    /// (first entry) keeps it atomic. The caller reloads <see cref="CompanyCurrency"/> after commit.
+    /// </summary>
+    public async Task<ListingSaveResult> SaveAsync(
+        LogicPOSDbContext database,
+        CompanySetupRequest request,
+        CancellationToken cancellationToken = default)
+    {
         if (request.CountryId == Guid.Empty || request.CurrencyId == Guid.Empty)
         {
             return ListingSaveResult.Fail("Escolha o país e a moeda.");
         }
-
-        await using var scope = _scopes.CreateAsyncScope();
-        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
 
         var country = await database.Countries.AsNoTracking()
             .FirstOrDefaultAsync(item => item.Id == request.CountryId && item.IsDeleted == false, cancellationToken);
@@ -222,8 +241,6 @@ public sealed class LocalCompanySetupService : ICompanySetupService
         }
 
         await database.SaveChangesAsync(cancellationToken);
-        // Host composition may omit CompanyCurrency; never fail company save because of formatting cache.
-        AppComposition.Services?.GetService<CompanyCurrency>()?.Reload(database);
         return ListingSaveResult.Ok(Guid.Empty, "Dados da empresa gravados.");
     }
 

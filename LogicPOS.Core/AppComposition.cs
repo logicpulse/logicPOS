@@ -137,6 +137,14 @@ public static class AppComposition
             services.AddSingleton<IStartupReadinessService>(provider => provider.GetRequiredService<StartupReadinessService>());
             services.AddSingleton<OnboardingService>();
             services.AddSingleton<IOnboardingService>(provider => provider.GetRequiredService<OnboardingService>());
+            services.AddSingleton<IFirstEntryAccountContext, LocalFirstEntryAccountContext>();
+            services.AddSingleton(provider => new FirstEntryService(
+                provider.GetRequiredService<IServiceScopeFactory>(),
+                provider.GetRequiredService<LocalCompanySetupService>(),
+                provider.GetRequiredService<IConfiguration>(),
+                baseDirectory,
+                account: provider.GetRequiredService<IFirstEntryAccountContext>()));
+            services.AddSingleton<IFirstEntryService>(provider => provider.GetRequiredService<FirstEntryService>());
             services.AddSingleton<CompanyCurrency>();
             services.AddSingleton<ITicketPrinter, EscPosTicketPrinter>();
             services.AddSingleton<IThermalPrintSource, LocalThermalPrintSource>();
