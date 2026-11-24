@@ -180,7 +180,11 @@
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                         <StackPanel Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnEmptyDataOkClick">
+                            <Button x:Name="EmptyDataOkButton"
+                                    Classes="login_alert_action"
+                                    IsDefault="True"
+                                    IsCancel="True"
+                                    Click="OnEmptyDataOkClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />

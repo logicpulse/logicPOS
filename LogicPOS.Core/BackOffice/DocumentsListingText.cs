@@ -129,6 +129,144 @@ public static class DocumentsListingText
         };
     }
 
+    /// <summary>Stable tip keys used by the Documents listing chrome (and shared Period / lookup / touch controls).</summary>
+    public static IReadOnlyList<string> TipKeys { get; } =
+    [
+        "export-pdf", "export-excel", "clear-filter", "search", "first-page", "last-page",
+        "print", "origin-document", "choose-calendar", "virtual-keyboard", "open-list",
+        "filter", "reset", "previous", "next", "copy", "view", "edit"
+    ];
+
+    /// <summary>Localized tooltip for a Documents listing tip key (pt-PT wording preserved; pt-AO/pt-MZ → pt).</summary>
+    public static string Tip(string key, string? cultureName = null)
+    {
+        var language = Language(cultureName);
+        return key switch
+        {
+            "export-pdf" => language switch
+            {
+                "en" => "Export to PDF",
+                "fr" => "Exporter en PDF",
+                "es" => "Exportar a PDF",
+                _ => "Exportar para PDF"
+            },
+            "export-excel" => language switch
+            {
+                "en" => "Export to Excel",
+                "fr" => "Exporter vers Excel",
+                "es" => "Exportar a Excel",
+                _ => "Exportar para Excel"
+            },
+            "clear-filter" => language switch
+            {
+                "en" => "Clear filter",
+                "fr" => "Effacer le filtre",
+                "es" => "Limpiar filtro",
+                _ => "Limpar filtro"
+            },
+            "search" => Search(cultureName),
+            "first-page" => language switch
+            {
+                "en" => "First page",
+                "fr" => "Première page",
+                "es" => "Primera página",
+                _ => "Primeira página"
+            },
+            "last-page" => language switch
+            {
+                "en" => "Last page",
+                "fr" => "Dernière page",
+                "es" => "Última página",
+                _ => "Última página"
+            },
+            "print" => language switch
+            {
+                "en" => "Print",
+                "fr" => "Imprimer",
+                "es" => "Imprimir",
+                _ => "Imprimir"
+            },
+            "origin-document" => language switch
+            {
+                "en" => "Source document",
+                "fr" => "Document d'origine",
+                "es" => "Documento de origen",
+                _ => "Documento de origem"
+            },
+            "choose-calendar" => language switch
+            {
+                "en" => "Choose on the calendar",
+                "fr" => "Choisir dans le calendrier",
+                "es" => "Elegir en el calendario",
+                _ => "Escolher no calendário"
+            },
+            "virtual-keyboard" => language switch
+            {
+                "en" => "On-screen keyboard",
+                "fr" => "Clavier virtuel",
+                "es" => "Teclado virtual",
+                _ => "Teclado virtual"
+            },
+            "open-list" => language switch
+            {
+                "en" => "Open list",
+                "fr" => "Ouvrir la liste",
+                "es" => "Abrir lista",
+                _ => "Abrir lista"
+            },
+            "filter" => language switch
+            {
+                "en" => "Filter",
+                "fr" => "Filtrer",
+                "es" => "Filtrar",
+                _ => "Filtrar"
+            },
+            "reset" => language switch
+            {
+                "en" => "Reset",
+                "fr" => "Réinitialiser",
+                "es" => "Restablecer",
+                _ => "Repor"
+            },
+            "previous" => language switch
+            {
+                "en" => "Previous",
+                "fr" => "Précédent",
+                "es" => "Anterior",
+                _ => "Anterior"
+            },
+            "next" => language switch
+            {
+                "en" => "Next",
+                "fr" => "Suivant",
+                "es" => "Siguiente",
+                _ => "Seguinte"
+            },
+            "copy" => language switch
+            {
+                "en" => "Copy",
+                "fr" => "Copier",
+                "es" => "Copiar",
+                _ => "Copiar"
+            },
+            "view" => language switch
+            {
+                "en" => "View",
+                "fr" => "Voir",
+                "es" => "Ver",
+                _ => "Ver"
+            },
+            "edit" => language switch
+            {
+                "en" => "Edit",
+                "fr" => "Modifier",
+                "es" => "Editar",
+                _ => "Editar"
+            },
+            _ => key
+        };
+    }
+
     /// <summary>Documents listing «Valor Pago» column — listing-local EN wording.</summary>
     public static string AmountPaid(string? cultureName = null)
     {

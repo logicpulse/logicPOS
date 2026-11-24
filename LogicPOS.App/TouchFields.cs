@@ -75,8 +75,9 @@ internal static class TouchFields
                 Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
             }
         };
-        ToolTip.SetTip(button, "Teclado virtual");
-        Avalonia.Automation.AutomationProperties.SetName(button, "Teclado virtual");
+        var keyboardTip = LogicPOS.Core.BackOffice.DocumentsListingText.Tip("virtual-keyboard");
+        ToolTip.SetTip(button, keyboardTip);
+        Avalonia.Automation.AutomationProperties.SetName(button, keyboardTip);
         button.Click += (_, _) => TouchKeyboard.Show(showKeyboard());
         if (box is TextBox text)
         {

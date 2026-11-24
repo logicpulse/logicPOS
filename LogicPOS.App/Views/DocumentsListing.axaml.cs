@@ -123,6 +123,9 @@ public partial class DocumentsListing : UserControl
             }
         }
 
+        ApplyTaggedToolTips();
+        RefreshRowToolTips();
+
         SetColumnHeader(1, Pref("global_document_date", "Data do documento"));
         SetColumnHeader(2, Pref("global_document_number", "Número do Doc."));
         SetColumnHeader(3, Pref("global_document_status", "Estado"));
@@ -152,6 +155,47 @@ public partial class DocumentsListing : UserControl
     {
         var text = PreferenceLabels.Text(key, fallback);
         return string.IsNullOrWhiteSpace(text) ? fallback : text.TrimStart('_');
+    }
+
+    /// <summary>
+    /// Rebinds Tag=docs-tip:* chrome tooltips plus touch/lookup tips so they follow
+    /// <see cref="UiCulture"/> when the language flag changes with the page open.
+    /// Row icons use bindings on <see cref="CheckedDocument"/> (see <see cref="RefreshRowToolTips"/>).
+    /// </summary>
+    private void ApplyTaggedToolTips()
+    {
+        const string prefix = "docs-tip:";
+        foreach (var button in this.GetVisualDescendants().OfType<Button>())
+        {
+            if (button.Tag is string tag && tag.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                ToolTip.SetTip(button, DocumentsListingText.Tip(tag[prefix.Length..]));
+            }
+            else if (button.Classes.Contains("bo_touch_key"))
+            {
+                var tip = DocumentsListingText.Tip("virtual-keyboard");
+                ToolTip.SetTip(button, tip);
+                Avalonia.Automation.AutomationProperties.SetName(button, tip);
+            }
+            else if (button.Classes.Contains("bo_lookup_chevron"))
+            {
+                ToolTip.SetTip(button, DocumentsListingText.Tip("open-list"));
+            }
+        }
+    }
+
+    /// <summary>Notifies visible/new grid rows so bound row-action tips pick up the active culture.</summary>
+    private void RefreshRowToolTips()
+    {
+        if (DocumentGrid.ItemsSource is not IEnumerable<CheckedDocument> rows)
+        {
+            return;
+        }
+
+        foreach (var row in rows)
+        {
+            row.NotifyTipsChanged();
+        }
     }
 
     private void SetActionLabel(int index, string text)
@@ -2001,6 +2045,26 @@ public partial class DocumentsListing : UserControl
         public bool CanCopy => true;
 
         public bool CanUseAsSource => Source.CanUseAsSource;
+
+        // Bound tips — evaluated on bind and again when NotifyTipsChanged runs after culture change.
+        public string CopyTip => DocumentsListingText.Tip("copy");
+
+        public string OriginDocumentTip => DocumentsListingText.Tip("origin-document");
+
+        public string ViewTip => DocumentsListingText.Tip("view");
+
+        public string PrintTip => DocumentsListingText.Tip("print");
+
+        public string EditTip => DocumentsListingText.Tip("edit");
+
+        public void NotifyTipsChanged()
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CopyTip)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OriginDocumentTip)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ViewTip)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PrintTip)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EditTip)));
+        }
 
         public void ApplySelected(bool selected)
         {

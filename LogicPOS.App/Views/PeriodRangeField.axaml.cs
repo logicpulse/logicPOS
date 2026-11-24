@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -42,10 +42,11 @@ public partial class PeriodRangeField : UserControl
         ApplyCulture();
     }
 
-    /// <summary>Updates the «Período» caption for the active <see cref="LogicPOS.Core.UiCulture"/>.</summary>
+    /// <summary>Updates the «Período» caption and calendar tip for the active <see cref="LogicPOS.Core.UiCulture"/>.</summary>
     public void ApplyCulture()
     {
         Caption.Text = DocumentsListingText.Period();
+        ToolTip.SetTip(CalendarButton, DocumentsListingText.Tip("choose-calendar"));
     }
 
     /// <summary>Raised after a committed range change (Aplicar or typed dates).</summary>

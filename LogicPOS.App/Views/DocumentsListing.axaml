@@ -78,7 +78,7 @@
                 <Button Classes="bo_mobile_bar_button" DockPanel.Dock="Right" Content="Filtros" Click="OnMobileFilterClick" />
                 <Border Classes="bo_listing_search">
                     <DockPanel>
-                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
+                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Tag="docs-tip:search" Click="OnSearchClick" ToolTip.Tip="Procurar">
                             <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
                         </Button>
                         <TextBox x:Name="MobileSearchBox"
@@ -100,29 +100,29 @@
                         <TextBlock Classes="bo_doc_label" Text="Tipo" />
                         <ComboBox x:Name="TypeBox" Classes="bo_doc_filter_combo" SelectionChanged="OnTypeFilterChanged" />
                     </StackPanel>
-                    <Button Classes="bo_listing_icon_button" Click="OnFilterClick" ToolTip.Tip="Filtrar">
+                    <Button Classes="bo_listing_icon_button" Tag="docs-tip:filter" Click="OnFilterClick" ToolTip.Tip="Filtrar">
                         <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_filtro_b.svg" />
                     </Button>
                     <TextBlock x:Name="SelectionLabel" Classes="bo_doc_count_inline" Text="0 documento(s) selecionado(s)" />
                 </StackPanel>
                 <DockPanel Classes="bo_listing_tools">
-                    <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnExportPdfClick" ToolTip.Tip="Exportar para PDF">
+                    <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Tag="docs-tip:export-pdf" Click="OnExportPdfClick" ToolTip.Tip="Exportar para PDF">
                         <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pdf.svg" />
                     </Button>
-                    <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnExportExcelClick" ToolTip.Tip="Exportar para Excel">
+                    <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Tag="docs-tip:export-excel" Click="OnExportExcelClick" ToolTip.Tip="Exportar para Excel">
                         <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_xlsx.svg" />
                     </Button>
                     <DockPanel HorizontalAlignment="Right">
-                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Click="OnClearFilterClick" ToolTip.Tip="Limpar filtro">
+                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Tag="docs-tip:clear-filter" Click="OnClearFilterClick" ToolTip.Tip="Limpar filtro">
                             <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_filtro_b.svg" />
                         </Button>
-                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Click="OnResetClick" ToolTip.Tip="Repor">
+                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Tag="docs-tip:reset" Click="OnResetClick" ToolTip.Tip="Repor">
                             <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_repor_b.svg" />
                         </Button>
                         <Button Classes="bo_listing_columns" DockPanel.Dock="Left" Content="Colunas ▾" Click="OnChooseColumnsClick" ToolTip.Tip="Colunas" />
                         <Border Classes="bo_listing_search">
                             <DockPanel>
-                                <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
+                                <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Tag="docs-tip:search" Click="OnSearchClick" ToolTip.Tip="Procurar">
                                     <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
                                 </Button>
                                 <TextBox x:Name="SearchBox"
@@ -145,11 +145,11 @@
                     <ComboBoxItem Content="20" />
                     <ComboBoxItem Content="50" />
                 </ComboBox>
-                <Button Classes="bo_doc_page_button" Content="&lt;&lt;" Click="OnFirstPageClick" ToolTip.Tip="Primeira página" />
-                <Button Classes="bo_doc_page_button" Content="&lt;" Click="OnPreviousPageClick" ToolTip.Tip="Anterior" />
+                <Button Classes="bo_doc_page_button" Content="&lt;&lt;" Tag="docs-tip:first-page" Click="OnFirstPageClick" ToolTip.Tip="Primeira página" />
+                <Button Classes="bo_doc_page_button" Content="&lt;" Tag="docs-tip:previous" Click="OnPreviousPageClick" ToolTip.Tip="Anterior" />
                 <TextBlock x:Name="PageLabel" Classes="bo_doc_page_label" Text="1 / 1" />
-                <Button Classes="bo_doc_page_button" Content="&gt;" Click="OnNextPageClick" ToolTip.Tip="Seguinte" />
-                <Button Classes="bo_doc_page_button" Content="&gt;&gt;" Click="OnLastPageClick" ToolTip.Tip="Última página" />
+                <Button Classes="bo_doc_page_button" Content="&gt;" Tag="docs-tip:next" Click="OnNextPageClick" ToolTip.Tip="Seguinte" />
+                <Button Classes="bo_doc_page_button" Content="&gt;&gt;" Tag="docs-tip:last-page" Click="OnLastPageClick" ToolTip.Tip="Última página" />
             </StackPanel>
         </Border>
 
@@ -196,19 +196,19 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:CompileBindings="False">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="0">
-                                    <Button Classes="bo_doc_icon_button" Click="OnRowCopyClick" IsVisible="{Binding CanCopy}" ToolTip.Tip="Copiar">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowCopyClick" IsVisible="{Binding CanCopy}" ToolTip.Tip="{Binding CopyTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_b.svg" />
                                     </Button>
-                                    <Button Classes="bo_doc_icon_button" Click="OnRowUseAsOriginClick" IsVisible="{Binding CanUseAsSource}" ToolTip.Tip="Documento de origem">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowUseAsOriginClick" IsVisible="{Binding CanUseAsSource}" ToolTip.Tip="{Binding OriginDocumentTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_origem_b.svg" />
                                     </Button>
-                                    <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" IsVisible="{Binding CanView}" ToolTip.Tip="Ver">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" IsVisible="{Binding CanView}" ToolTip.Tip="{Binding ViewTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg" />
                                     </Button>
-                                    <Button Classes="bo_doc_icon_button" Click="OnRowPrintClick" IsVisible="{Binding CanPrint}" ToolTip.Tip="Imprimir">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowPrintClick" IsVisible="{Binding CanPrint}" ToolTip.Tip="{Binding PrintTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_b.svg" />
                                     </Button>
-                                    <Button Classes="bo_doc_icon_button" Click="OnRowEditClick" IsVisible="{Binding CanEdit}" ToolTip.Tip="Editar">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowEditClick" IsVisible="{Binding CanEdit}" ToolTip.Tip="{Binding EditTip}">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
                                     </Button>
                                 </StackPanel>
