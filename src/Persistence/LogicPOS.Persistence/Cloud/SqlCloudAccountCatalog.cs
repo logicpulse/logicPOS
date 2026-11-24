@@ -58,7 +58,7 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
 
             using var command = connection.CreateCommand();
             command.CommandText = """
-                SELECT TOP 1 a.ConnectionString, a.ModuleStocks, a.ModuleOnlineInvoicing, a.ModuleSMS, a.Demo, a.PosOperationMode, c.name AS CountryName
+                SELECT TOP 1 a.ConnectionString, a.ModuleStocks, a.ModuleOnlineInvoicing, a.ModuleSMS, a.Demo, a.PosOperationMode, a.Login, a.[Password], c.name AS CountryName
                 FROM Accounts a
                 LEFT JOIN Countries c ON c.id = a.idCountry
                 WHERE a.state > 0
@@ -99,7 +99,9 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
                 ModuleSms = CloudAccountModuleFlag.FromDatabase(reader["ModuleSMS"]),
                 Demo = CloudAccountModuleFlag.FromDatabase(reader["Demo"]),
                 CountryCode2 = countryCode,
-                PosOperationMode = reader["PosOperationMode"]?.ToString()
+                PosOperationMode = reader["PosOperationMode"]?.ToString(),
+                Login = reader["Login"]?.ToString()?.Trim() ?? string.Empty,
+                Password = reader["Password"]?.ToString() ?? string.Empty
             };
         }
         catch (Exception ex)

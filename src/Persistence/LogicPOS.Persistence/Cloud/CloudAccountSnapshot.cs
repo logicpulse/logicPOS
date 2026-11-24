@@ -25,4 +25,10 @@ public sealed class CloudAccountSnapshot
 
     /// <summary>POS operation mode token from Accounts.PosOperationMode. Empty when the account has not chosen one.</summary>
     public string? PosOperationMode { get; init; }
+
+    /// <summary>Account login (Accounts.Login). Empty when the account has none.</summary>
+    public string Login { get; init; } = string.Empty;
+
+    /// <summary>Account password (Accounts.Password), as stored on the account. Empty when the account has none.</summary>
+    public string Password { get; init; } = string.Empty;
 }
