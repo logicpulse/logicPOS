@@ -80,10 +80,21 @@ public sealed class FirstEntryService : IFirstEntryService
             ?? (draft?.CountryId is { } draftCountry && company.Countries.Any(item => item.Id == draftCountry)
                 ? draftCountry
                 : (Guid?)null);
+        if (cloudPending && countryId is null)
+        {
+            countryId = company.Countries.FirstOrDefault(item =>
+                string.Equals(item.Code, "PT", StringComparison.OrdinalIgnoreCase))?.Id;
+        }
+
         var currencyId = draft?.CurrencyId is { } draftCurrency && company.Currencies.Any(item => item.Id == draftCurrency)
             ? draftCurrency
             : (Guid?)null;
         currencyId ??= await SuggestCurrencyIdAsync(countryId, cancellationToken);
+        if (cloudPending && currencyId is null)
+        {
+            currencyId = company.Currencies.FirstOrDefault(item =>
+                string.Equals(item.Code, "EUR", StringComparison.OrdinalIgnoreCase))?.Id;
+        }
 
         return new FirstEntryPending
         {

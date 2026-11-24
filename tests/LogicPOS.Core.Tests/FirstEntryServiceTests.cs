@@ -669,7 +669,9 @@ public sealed class FirstEntryServiceTests
             account.Mode = null;
             Assert.Null((await service.GetPendingAsync()).OperationMode);
             account.CountryCode2 = null;
-            Assert.Null((await service.GetPendingAsync()).CountryId);
+            var fallback = await service.GetPendingAsync();
+            Assert.Equal(countryId, fallback.CountryId);
+            Assert.Equal(currencyId, fallback.CurrencyId);
         }
         finally
         {
