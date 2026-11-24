@@ -8,7 +8,7 @@
         <DockPanel Classes="login_alert_inner">
             <Border Classes="login_alert_titlebar pos_pay_titlebar" DockPanel.Dock="Top">
                 <DockPanel>
-                    <Button x:Name="CloseButton" Classes="bo_window_button" DockPanel.Dock="Right" IsCancel="True" Click="OnCloseClick" ToolTip.Tip="Fechar">
+                    <Button Classes="bo_window_button" DockPanel.Dock="Right" IsCancel="True" Click="OnCloseClick" ToolTip.Tip="Fechar">
                         <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                     </Button>
                     <StackPanel Classes="login_alert_title_row">
@@ -92,7 +92,7 @@
                                     <TextBlock Classes="login_alert_action_text" Text="Ok" />
                                 </StackPanel>
                             </Button>
-                            <Button x:Name="ReprintCancelButton" Classes="login_alert_action action_secondary" Click="OnReprintCancelClick">
+                            <Button Classes="login_alert_action action_secondary" Click="OnReprintCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
