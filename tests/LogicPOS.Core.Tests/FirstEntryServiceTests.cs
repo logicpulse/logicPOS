@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using LogicPOS.Application.Features.System;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Persistence.Database;
@@ -427,7 +428,7 @@ public sealed class FirstEntryServiceTests
     }
 
     [Fact]
-    public async Task Database_that_already_has_articles_is_not_pending()
+    public async Task Sample_loaded_before_the_choice_still_asks_for_the_operation_mode()
     {
         var root = Directory.CreateTempSubdirectory("logicpos-firstentry-legacy-data-");
         try
@@ -439,6 +440,40 @@ public sealed class FirstEntryServiceTests
             {
                 var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
                 Assert.True(await database.Articles.AnyAsync(item => item.IsDeleted == false));
+                Assert.False(await database.FiscalYears.AnyAsync(item => item.IsDeleted == false));
+            }
+
+            var pending = await service.GetPendingAsync();
+            Assert.True(pending.IsPending);
+            Assert.Null(pending.OperationMode);
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Database_that_already_has_a_fiscal_year_is_not_pending()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-legacy-year-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var service = AppComposition.Services!.GetRequiredService<IFirstEntryService>();
+            await using (var scope = AppComposition.Services!.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                database.FiscalYears.Add(new FiscalYear
+                {
+                    Id = Guid.NewGuid(),
+                    Code = "2026",
+                    Order = 10,
+                    Designation = "2026",
+                    Year = 2026,
+                    Acronym = "A"
+                });
+                await database.SaveChangesAsync();
             }
 
             Assert.False((await service.GetPendingAsync()).IsPending);

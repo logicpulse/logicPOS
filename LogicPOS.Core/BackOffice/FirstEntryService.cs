@@ -12,7 +12,8 @@ namespace LogicPOS.Core.BackOffice;
 
 /// <summary>
 /// First entry (primeira entrada): one confirmation of operation mode, demo choice and company data.
-/// Pending while no confirmation mark exists and the database is still empty (no company, articles or fiscal year).
+/// Pending while no confirmation mark exists and the company is still unset.
+/// A demo sample loaded before the choice does not close it. A fiscal year does: that database is already in use.
 /// </summary>
 public sealed class FirstEntryService : IFirstEntryService
 {
@@ -303,14 +304,14 @@ public sealed class FirstEntryService : IFirstEntryService
             return false;
         }
 
-        // Update / legacy database: it already has its own company, catalogue or fiscal year.
+        // Update / legacy database: the company is already filled in, or a fiscal year exists.
+        // Articles and tables can come from a sample loaded before the person chose the mode.
         if (LocalCompanySetupService.IsCompanyConfigured(values.Select(item => (item.Token, item.Value))))
         {
             return false;
         }
 
-        if (await database.Articles.AsNoTracking().AnyAsync(item => item.IsDeleted == false, cancellationToken)
-            || await database.FiscalYears.AsNoTracking().AnyAsync(item => item.IsDeleted == false, cancellationToken))
+        if (await database.FiscalYears.AsNoTracking().AnyAsync(item => item.IsDeleted == false, cancellationToken))
         {
             return false;
         }

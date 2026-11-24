@@ -67,6 +67,13 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
     private void Initialize()
     {
         _dbSettings = DatabaseSettings.GetFromConfiguration(_configuration);
+        if (_dbSettings.UseCloud)
+        {
+            var tenantModule = _systemInformationService.GetModule();
+            if (string.IsNullOrWhiteSpace(tenantModule) == false)
+                _dbSettings.Module = tenantModule;
+        }
+
         _systemCountryCode2 = _systemInformationService.GetCountryCode2().ToLower();
         _logger.LogInformation("Using country code: {CountryCode}", _systemCountryCode2);
 

@@ -6,9 +6,13 @@ namespace LogicPOS.Persistence.Cloud;
 /// POS operation mode for the current request.
 /// Local mode and requests without a client id use DatabaseSettings.Module.
 /// A cloud tenant uses Accounts.PosOperationMode when it is a known token.
+/// An empty account does not inherit the server module: that file is often restaurant, and the person has not chosen yet.
 /// </summary>
 public static class CloudOperationMode
 {
+    /// <summary>Neutral module until the account has a known operation mode.</summary>
+    public const string NeutralModule = "default";
+
     private static readonly HashSet<string> KnownTokens = new(StringComparer.OrdinalIgnoreCase)
     {
         "default",
@@ -41,9 +45,9 @@ public static class CloudOperationMode
 
         var account = catalog.Find(clientId);
         if (account.Found == false)
-            return fallback;
+            return NeutralModule;
 
-        return NormalizeKnown(account.PosOperationMode) ?? fallback;
+        return NormalizeKnown(account.PosOperationMode) ?? NeutralModule;
     }
 
     public static string? NormalizeKnown(string? token)
