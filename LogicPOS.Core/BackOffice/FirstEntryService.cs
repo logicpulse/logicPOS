@@ -168,55 +168,65 @@ public sealed class FirstEntryService : IFirstEntryService
         var previousModule = _configuration["DatabaseSettings:Module"];
         _configuration["DatabaseSettings:Module"] = mode;
         var committed = false;
+        FirstEntryConfirmationResult? stopped = null;
         try
         {
             await using var scope = _scopes.CreateAsyncScope();
             var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-            await using var transaction = await database.Database.BeginTransactionAsync(cancellationToken);
+            // SqlServerRetryingExecutionStrategy forbids BeginTransaction unless wrapped.
+            var strategy = database.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
+            {
+                stopped = null;
+                database.ChangeTracker.Clear();
+                await using var transaction = await database.Database.BeginTransactionAsync(cancellationToken);
 
-            var saved = await _companySetup.SaveAsync(
-                database,
-                new CompanySetupRequest
-                {
-                    CountryId = request.CountryId.Value,
-                    CurrencyId = request.CurrencyId.Value,
-                    Values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                var saved = await _companySetup.SaveAsync(
+                    database,
+                    new CompanySetupRequest
                     {
-                        ["COMPANY_FISCALNUMBER"] = fiscalNumber
-                    }
-                },
-                cancellationToken);
-            if (saved.Succeeded == false)
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                return FirstEntryConfirmationResult.Incomplete;
-            }
-
-            await UpsertPreferenceAsync(database, OperationModeToken, mode, 90, cancellationToken);
-            await UpsertPreferenceAsync(database, ConfirmedToken, "1", 91, cancellationToken);
-            await database.SaveChangesAsync(cancellationToken);
-
-            if (request.DemoAccepted)
-            {
-                var loaded = false;
-                try
-                {
-                    loaded = await _loadDemoSample(scope.ServiceProvider, cancellationToken);
-                }
-                catch (Exception exception) when (exception is not OperationCanceledException)
-                {
-                    AppLogging.Error(exception, "First entry: demo sample failed to load; confirmation rolled back.");
-                }
-
-                if (loaded == false)
+                        CountryId = request.CountryId.Value,
+                        CurrencyId = request.CurrencyId.Value,
+                        Values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                        {
+                            ["COMPANY_FISCALNUMBER"] = fiscalNumber
+                        }
+                    },
+                    cancellationToken);
+                if (saved.Succeeded == false)
                 {
                     await transaction.RollbackAsync(cancellationToken);
-                    return FirstEntryConfirmationResult.DemoFailed;
+                    stopped = FirstEntryConfirmationResult.Incomplete;
+                    return;
                 }
-            }
 
-            await transaction.CommitAsync(cancellationToken);
-            committed = true;
+                await UpsertPreferenceAsync(database, OperationModeToken, mode, 90, cancellationToken);
+                await UpsertPreferenceAsync(database, ConfirmedToken, "1", 91, cancellationToken);
+                await database.SaveChangesAsync(cancellationToken);
+
+                if (request.DemoAccepted)
+                {
+                    var loaded = false;
+                    try
+                    {
+                        loaded = await _loadDemoSample(scope.ServiceProvider, cancellationToken);
+                    }
+                    catch (Exception exception) when (exception is not OperationCanceledException)
+                    {
+                        AppLogging.Error(exception, "First entry: demo sample failed to load; confirmation rolled back.");
+                    }
+
+                    if (loaded == false)
+                    {
+                        await transaction.RollbackAsync(cancellationToken);
+                        stopped = FirstEntryConfirmationResult.DemoFailed;
+                        return;
+                    }
+                }
+
+                await transaction.CommitAsync(cancellationToken);
+                committed = true;
+            });
         }
         finally
         {
@@ -224,6 +234,11 @@ public sealed class FirstEntryService : IFirstEntryService
             {
                 _configuration["DatabaseSettings:Module"] = previousModule;
             }
+        }
+
+        if (stopped is not null)
+        {
+            return stopped.Value;
         }
 
         // Cloud: the account is the shared source of the mode; no local appsettings to write.
