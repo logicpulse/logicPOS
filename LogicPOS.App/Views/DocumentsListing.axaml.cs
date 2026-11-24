@@ -207,6 +207,11 @@ public partial class DocumentsListing : UserControl
         }
 
         var button = buttons[index];
+        if (button.Tag is string tag && tag.StartsWith("docs-tip:", StringComparison.Ordinal))
+        {
+            ToolTip.SetTip(button, DocumentsListingText.Tip(tag["docs-tip:".Length..]));
+        }
+
         if (button.Content is StackPanel panel)
         {
             var label = panel.Children.OfType<Avalonia.Controls.TextBlock>()

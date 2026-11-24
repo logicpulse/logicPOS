@@ -66,12 +66,19 @@ public sealed class DocumentsListingTextTests
         foreach (var key in DocumentsListingText.TipKeys)
         {
             var pt = DocumentsListingText.Tip(key, "pt-PT");
+            Assert.NotEqual(key, pt);
             Assert.False(string.IsNullOrWhiteSpace(pt));
             Assert.Equal(pt, DocumentsListingText.Tip(key, "pt-AO"));
             Assert.Equal(pt, DocumentsListingText.Tip(key, "pt-MZ"));
-            Assert.False(string.IsNullOrWhiteSpace(DocumentsListingText.Tip(key, "en-US")));
-            Assert.False(string.IsNullOrWhiteSpace(DocumentsListingText.Tip(key, "fr-FR")));
-            Assert.False(string.IsNullOrWhiteSpace(DocumentsListingText.Tip(key, "es-ES")));
+            var en = DocumentsListingText.Tip(key, "en-US");
+            Assert.NotEqual(key, en);
+            Assert.False(string.IsNullOrWhiteSpace(en));
+            var fr = DocumentsListingText.Tip(key, "fr-FR");
+            Assert.NotEqual(key, fr);
+            Assert.False(string.IsNullOrWhiteSpace(fr));
+            var es = DocumentsListingText.Tip(key, "es-ES");
+            Assert.NotEqual(key, es);
+            Assert.False(string.IsNullOrWhiteSpace(es));
         }
 
         Assert.Equal("Exportar para PDF", DocumentsListingText.Tip("export-pdf", "pt-PT"));

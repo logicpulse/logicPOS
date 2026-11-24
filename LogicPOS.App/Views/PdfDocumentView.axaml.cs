@@ -1,7 +1,5 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using LogicPOS.App;
@@ -44,7 +42,6 @@ public partial class PdfDocumentView : UserControl
     public PdfDocumentView()
     {
         InitializeComponent();
-        AddHandler(KeyDownEvent, OnPdfKeyDown, RoutingStrategies.Tunnel);
         ListingNotice.BindToast(StatusText, this, skipProgress: true);
         PageScroll.SizeChanged += (_, _) => ApplyFit();
         AttachedToVisualTree += (_, _) =>
@@ -87,35 +84,10 @@ public partial class PdfDocumentView : UserControl
         _pageCount = 0;
         _renderGeneration++;
         ClearPages();
+        ReprintOverlay.IsVisible = false;
         _closed = new TaskCompletionSource<bool>();
-        FocusPdfChromeForEscape();
         _ = LoadAsync(path);
         return _closed.Task;
-    }
-
-    private void FocusPdfChromeForEscape()
-    {
-        // Focus close (IsCancel) so Escape dismisses the viewer like other login_alert overlays.
-        Dispatcher.UIThread.Post(() => CloseButton.Focus(), DispatcherPriority.Input);
-    }
-
-    private void OnPdfKeyDown(object? sender, KeyEventArgs e)
-    {
-        if (e.Key != Key.Escape)
-        {
-            return;
-        }
-
-        if (ReprintOverlay.IsVisible)
-        {
-            OnReprintCancelClick(sender, e);
-            e.Handled = true;
-            FocusPdfChromeForEscape();
-            return;
-        }
-
-        OnCloseClick(sender, e);
-        e.Handled = true;
     }
 
     private void LoadTemplateChoices()
@@ -422,7 +394,6 @@ public partial class PdfDocumentView : UserControl
                     string.IsNullOrWhiteSpace(_documentTitle) ? "—" : _documentTitle);
                 await BuildReprintOptionsAsync(documentId);
                 ReprintOverlay.IsVisible = true;
-                Dispatcher.UIThread.Post(() => ReprintCancelButton.Focus(), DispatcherPriority.Input);
                 return;
             }
 
@@ -614,6 +585,12 @@ public partial class PdfDocumentView : UserControl
 
     private void OnCloseClick(object? sender, RoutedEventArgs e)
     {
+        if (ReprintOverlay.IsVisible)
+        {
+            ReprintOverlay.IsVisible = false;
+            return;
+        }
+
         _renderGeneration++;
         Busy.Hide();
         _closed?.TrySetResult(true);
