@@ -134,7 +134,9 @@ public static class DocumentsListingText
     [
         "export-pdf", "export-excel", "clear-filter", "search", "first-page", "last-page",
         "print", "origin-document", "choose-calendar", "virtual-keyboard", "open-list",
-        "filter", "reset", "previous", "next", "copy", "view", "edit"
+        "filter", "reset", "previous", "next", "copy", "view", "edit", "open",
+        "action-new", "action-edit-draft", "action-cancel", "action-print-as",
+        "action-send-at", "action-send-email"
     ];
 
     /// <summary>Localized tooltip for a Documents listing tip key (pt-PT wording preserved; pt-AO/pt-MZ → pt).</summary>
@@ -262,6 +264,49 @@ public static class DocumentsListingText
                 "fr" => "Modifier",
                 "es" => "Editar",
                 _ => "Editar"
+            },
+            "open" => Open(cultureName),
+            "action-new" => language switch
+            {
+                "en" => "New",
+                "fr" => "Nouveau",
+                "es" => "Nuevo",
+                _ => "Novo"
+            },
+            "action-edit-draft" => language switch
+            {
+                "en" => "Edit draft",
+                "fr" => "Modifier le brouillon",
+                "es" => "Editar borrador",
+                _ => "Editar rascunho"
+            },
+            "action-cancel" => language switch
+            {
+                "en" => "Cancel document",
+                "fr" => "Annuler le document",
+                "es" => "Anular documento",
+                _ => "Anular"
+            },
+            "action-print-as" => language switch
+            {
+                "en" => "Print As",
+                "fr" => "Imprimer sous",
+                "es" => "Imprimir como",
+                _ => "Imprimir Como"
+            },
+            "action-send-at" => language switch
+            {
+                "en" => "Submit transport document to AT",
+                "fr" => "Communiquer le bon de transport à l'AT",
+                "es" => "Comunicar la guía a la AT",
+                _ => "Comunicar a guia à AT"
+            },
+            "action-send-email" => language switch
+            {
+                "en" => "Send email",
+                "fr" => "Envoyer un e-mail",
+                "es" => "Enviar correo",
+                _ => "Enviar Email"
             },
             _ => key
         };

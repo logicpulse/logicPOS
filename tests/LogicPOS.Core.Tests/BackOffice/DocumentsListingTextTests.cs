@@ -62,7 +62,7 @@ public sealed class DocumentsListingTextTests
     [Fact]
     public void Tip_keys_resolve_in_pt_en_fr_es_and_keep_pt_for_ao_mz()
     {
-        Assert.Equal(18, DocumentsListingText.TipKeys.Count);
+        Assert.Equal(25, DocumentsListingText.TipKeys.Count);
         foreach (var key in DocumentsListingText.TipKeys)
         {
             var pt = DocumentsListingText.Tip(key, "pt-PT");
@@ -82,5 +82,18 @@ public sealed class DocumentsListingTextTests
         Assert.Equal("On-screen keyboard", DocumentsListingText.Tip("virtual-keyboard", "en-US"));
         Assert.Equal("Abrir lista", DocumentsListingText.Tip("open-list", "pt-PT"));
         Assert.Equal("Open list", DocumentsListingText.Tip("open-list", "en-US"));
+    }
+
+    [Fact]
+    public void Action_bar_tip_keys_follow_culture()
+    {
+        Assert.Equal("Editar rascunho", DocumentsListingText.Tip("action-edit-draft", "pt-PT"));
+        Assert.Equal("Edit draft", DocumentsListingText.Tip("action-edit-draft", "en-US"));
+        Assert.Equal("Comunicar a guia à AT", DocumentsListingText.Tip("action-send-at", "pt-PT"));
+        Assert.Equal("Submit transport document to AT", DocumentsListingText.Tip("action-send-at", "en-US"));
+        Assert.Equal("Enviar Email", DocumentsListingText.Tip("action-send-email", "pt-PT"));
+        Assert.Equal("Send email", DocumentsListingText.Tip("action-send-email", "en-US"));
+        Assert.Equal("Abrir", DocumentsListingText.Tip("open", "pt-PT"));
+        Assert.Equal("Open", DocumentsListingText.Tip("open", "en-US"));
     }
 }

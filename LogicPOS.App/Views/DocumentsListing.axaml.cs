@@ -158,7 +158,7 @@ public partial class DocumentsListing : UserControl
     }
 
     /// <summary>
-    /// Rebinds Tag=docs-tip:* chrome tooltips plus touch/lookup tips so they follow
+    /// Rebinds Tag=docs-tip:* chrome tooltips (action bar, tools, pager, …) plus touch/lookup tips so they follow
     /// <see cref="UiCulture"/> when the language flag changes with the page open.
     /// Row icons use bindings on <see cref="CheckedDocument"/> (see <see cref="RefreshRowToolTips"/>).
     /// </summary>
@@ -207,7 +207,6 @@ public partial class DocumentsListing : UserControl
         }
 
         var button = buttons[index];
-        ToolTip.SetTip(button, text);
         if (button.Content is StackPanel panel)
         {
             var label = panel.Children.OfType<Avalonia.Controls.TextBlock>()
