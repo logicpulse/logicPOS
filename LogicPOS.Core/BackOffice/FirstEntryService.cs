@@ -204,6 +204,13 @@ public sealed class FirstEntryService : IFirstEntryService
                 await UpsertPreferenceAsync(database, ConfirmedToken, "1", 91, cancellationToken);
                 await database.SaveChangesAsync(cancellationToken);
 
+                var countryCode = await database.Countries.AsNoTracking()
+                    .Where(item => item.Id == request.CountryId)
+                    .Select(item => item.Code2)
+                    .FirstOrDefaultAsync(cancellationToken);
+                scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>()
+                    .PrepareConfirmedEntry(mode, countryCode);
+
                 if (request.DemoAccepted)
                 {
                     var loaded = false;

@@ -123,9 +123,40 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
     /// Unlike <see cref="ApplyAdditionalSeed"/> it does not repeat profiles or lookups from birth,
     /// and it reports failure so the caller can roll back.
     /// </summary>
+    public void PrepareConfirmedEntry(string operationMode, string? countryCode2)
+    {
+        _dbSettings.Module = ModuleSeedFiles.NormalizeModule(operationMode);
+        if (string.IsNullOrWhiteSpace(countryCode2) == false)
+            _systemCountryCode2 = countryCode2.Trim().ToLowerInvariant();
+
+        _logger.LogInformation(
+            "First entry confirmed for module {Module} and country {Country}.",
+            _dbSettings.Module,
+            _systemCountryCode2);
+
+        if (_database.VatRates.Any() == false)
+            VatRatesSeeder.SeedData(_database, _dbSettings, _systemCountryCode2, _logger);
+
+        if (_database.DocumentTypes.Any() == false)
+            DocumentTypesSeeder.SeedData(_database, _dbSettings, _systemCountryCode2, _logger);
+
+        if (_database.PaymentMethods.Any() == false)
+            PaymentMethodsSeeder.SeedData(_database, _dbSettings, _logger);
+
+        var portugal = string.Equals(_systemCountryCode2, "pt", StringComparison.OrdinalIgnoreCase);
+        PaymentMethodsSeeder.EnsureMultibancoAndMbWay(_database, portugal, _logger);
+        if (portugal)
+            SdrDepositArticleSeeder.EnsureConfigured(_database, _logger);
+    }
+
     public bool ApplyDemoSample()
     {
         _logger.LogInformation("Applying demo sample for module {Module}", _dbSettings.Module);
+        if (_database.Articles.Any())
+        {
+            _logger.LogInformation("Demo sample left in place because articles already exist.");
+            return true;
+        }
 
         return ArticleFamiliesSeeder.SeedData(_database, _dbSettings, _logger)
             && ArticleTypesSeeder.SeedData(_database, _dbSettings, _logger)

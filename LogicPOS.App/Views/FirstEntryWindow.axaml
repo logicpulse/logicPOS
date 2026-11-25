@@ -78,13 +78,13 @@
                     </StackPanel>
 
                     <StackPanel x:Name="DemoStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Base de dados de demonstração" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Usar dados demo" />
                         <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
-                                   Text="A demonstração traz artigos, mesas e clientes de exemplo. Por defeito é recusada e a base fica limpa, pronta a faturar." />
+                                   Text="Os dados demo trazem artigos, mesas e clientes de exemplo do modo escolhido. O IVA do país entra na mesma, com ou sem dados demo." />
                         <RadioButton x:Name="RbDemoRefuse" Classes="bo_entity_input" GroupName="FirstEntryDemo"
-                                     IsChecked="True" Content="Recusar (recomendado)" />
+                                     IsChecked="True" Content="Não" />
                         <RadioButton x:Name="RbDemoAccept" Classes="bo_entity_input" GroupName="FirstEntryDemo"
-                                     Content="Aceitar dados de demonstração" />
+                                     Content="Sim" />
                     </StackPanel>
 
                     <StackPanel x:Name="CompanyStep" Classes="bo_fiscal_wizard_form" IsVisible="False">

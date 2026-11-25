@@ -12,6 +12,13 @@ public interface IDatabaseSeeder
     bool ApplyDemoSample();
 
     /// <summary>
+    /// The database already exists when the person confirms the first entry.
+    /// Point the sample at the chosen mode and load the country's VAT, payment
+    /// methods and document types when that reference data is still missing.
+    /// </summary>
+    void PrepareConfirmedEntry(string operationMode, string? countryCode2);
+
+    /// <summary>
     /// Ensures mandatory auxiliary lookups (customer types, price types) exist even on older DBs.
     /// </summary>
     void EnsureMandatoryLookups();
