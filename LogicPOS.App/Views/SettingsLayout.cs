@@ -21,7 +21,10 @@ internal static class SettingsLayout
             new("Contactos", "phone", 3,
                 ["COMPANY_TELEPHONE", "COMPANY_MOBILEPHONE", "COMPANY_FAX", "COMPANY_EMAIL", "COMPANY_WEBSITE"]),
             new("Dados fiscais e registo", "coins", 3,
-                ["COMPANY_STOCK_CAPITAL", "COMPANY_CIVIL_REGISTRATION", "COMPANY_CIVIL_REGISTRATION_ID", "SYSTEM_CURRENCY"]),
+                [
+                    "COMPANY_STOCK_CAPITAL", "COMPANY_CIVIL_REGISTRATION", "COMPANY_CIVIL_REGISTRATION_ID",
+                    "SYSTEM_CURRENCY", "COMPANY_REGIME_ARTIGO_53", "COMPANY_VENDEDOR_AMBULANTE"
+                ]),
             new("AGT-FE", "lock", 1, ["AGT_FE_QRCODE_LOGO", AgtFePrivateKeyBox.Token])
         ],
         ["Relatórios"] =

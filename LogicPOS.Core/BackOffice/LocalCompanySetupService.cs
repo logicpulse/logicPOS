@@ -16,6 +16,7 @@ public sealed class LocalCompanySetupService : ICompanySetupService
 {
     public static readonly string[] RequiredTokens =
     [
+        "COMPANY_NAME",
         "COMPANY_COUNTRY_OID",
         "COMPANY_COUNTRY_CODE2",
         "COMPANY_FISCALNUMBER",
@@ -51,8 +52,9 @@ public sealed class LocalCompanySetupService : ICompanySetupService
     }
 
     /// <summary>
-    /// Company setup is done when NIF, country and currency are present.
+    /// Company setup is done when name, NIF, country and currency are present.
     /// Accept country/currency text tokens when the historical *_OID rows are empty or missing.
+    /// First entry only writes NIF/country/currency; the onboarding popup still asks for the name.
     /// </summary>
     public static bool IsCompanyConfigured(IEnumerable<(string Token, string? Value)> values)
     {
@@ -67,7 +69,8 @@ public sealed class LocalCompanySetupService : ICompanySetupService
             map[token] = value;
         }
 
-        return HasAny(map, "COMPANY_FISCALNUMBER")
+        return HasAny(map, "COMPANY_NAME")
+            && HasAny(map, "COMPANY_FISCALNUMBER")
             && HasAny(map, "COMPANY_COUNTRY_OID", "COMPANY_COUNTRY_CODE2", "COMPANY_COUNTRY")
             && HasAny(map, "SYSTEM_CURRENCY_OID", "SYSTEM_CURRENCY");
     }
@@ -131,7 +134,7 @@ public sealed class LocalCompanySetupService : ICompanySetupService
             {
                 Token = item.Token,
                 Label = PreferenceFieldLabel(item),
-                // Fresh DB: leave empty like GTK (except TAX_ENTITY / STOCK_CAPITAL defaults).
+                // Keep values already written (e.g. NIF/country from first entry); only default empty ones.
                 Value = DefaultFieldValue(item),
                 Required = item.Required
             })
@@ -295,6 +298,12 @@ public sealed class LocalCompanySetupService : ICompanySetupService
 
     private static string DefaultFieldValue(PreferenceParameter item)
     {
+        // Prefer what is already in the database (first entry writes COMPANY_FISCALNUMBER).
+        if (string.IsNullOrWhiteSpace(item.Value) == false)
+        {
+            return item.Value!;
+        }
+
         // GTK PosEditCompanyDetails defaults before the user fills / Demo.
         if (string.Equals(item.Token, "COMPANY_TAX_ENTITY", StringComparison.OrdinalIgnoreCase))
         {
@@ -303,7 +312,7 @@ public sealed class LocalCompanySetupService : ICompanySetupService
 
         if (string.Equals(item.Token, "COMPANY_STOCK_CAPITAL", StringComparison.OrdinalIgnoreCase))
         {
-            return string.IsNullOrWhiteSpace(item.Value) ? "1" : item.Value!;
+            return "1";
         }
 
         return string.Empty;

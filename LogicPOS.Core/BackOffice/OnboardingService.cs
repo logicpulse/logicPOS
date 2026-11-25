@@ -185,7 +185,9 @@ public sealed class OnboardingService : IOnboardingService
         var hasSeries = await database.DocumentSeries.AsNoTracking()
             .AnyAsync(item => item.IsDeleted == false, cancellationToken);
         var hasArticle = await database.Articles.AsNoTracking()
-            .AnyAsync(item => item.IsDeleted == false, cancellationToken);
+            .AnyAsync(
+                item => item.IsDeleted == false && item.Code != "SDRVDEP",
+                cancellationToken);
         var hasFinalConsumer = await database.Customers.AsNoTracking()
             .AnyAsync(item => item.IsDeleted == false && item.Name == FinalConsumerName, cancellationToken);
         var hasPlace = await database.Places.AsNoTracking()

@@ -69,7 +69,17 @@
 
             <ScrollViewer Classes="bo_fiscal_wizard_scroll">
                 <Panel>
-                    <StackPanel x:Name="ModeStep" Classes="bo_fiscal_wizard_form">
+                    <StackPanel x:Name="ProductStep" Classes="bo_fiscal_wizard_form">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Tipo de utilização" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
+                                   Text="Escolha POS para frente de loja, ou Faturação para emitir documentos sem terminal POS." />
+                        <RadioButton x:Name="RbProductPos" Classes="bo_entity_input" GroupName="FirstEntryProduct"
+                                     Content="POS" />
+                        <RadioButton x:Name="RbProductInvoice" Classes="bo_entity_input" GroupName="FirstEntryProduct"
+                                     Content="Faturação" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="ModeStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
                         <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Modo de operação" />
                         <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
                                    Text="Escolha o tipo de negócio. Define o módulo com que a base de dados é preparada." />

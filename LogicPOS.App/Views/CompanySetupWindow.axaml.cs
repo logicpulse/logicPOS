@@ -12,7 +12,7 @@ namespace LogicPOS.App.Views;
 public partial class CompanySetupWindow : Window
 {
     private readonly ICompanySetupService _service;
-    private readonly Dictionary<string, TextBox> _inputs = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, Control> _inputs = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, TextBlock> _captions = new(StringComparer.OrdinalIgnoreCase);
     private CompanySetupDraft? _draft;
     private ComboBox? _countryBox;
@@ -27,7 +27,8 @@ public partial class CompanySetupWindow : Window
         new("Identificação", "tag", 3, ["COMPANY_NAME", "COMPANY_BUSINESS_NAME", "COMPANY_FISCALNUMBER"]),
         new("Morada", "pin", 3, ["COMPANY_ADDRESS", "COMPANY_CITY", "COMPANY_POSTALCODE"]),
         new("Contactos", "phone", 3, ["COMPANY_TELEPHONE", "COMPANY_MOBILEPHONE", "COMPANY_FAX", "COMPANY_EMAIL", "COMPANY_WEBSITE"]),
-        new("Dados fiscais", "layers", 2, ["COMPANY_STOCK_CAPITAL", "COMPANY_TAX_ENTITY"]),
+        new("Dados fiscais", "layers", 2,
+            ["COMPANY_STOCK_CAPITAL", "COMPANY_TAX_ENTITY", "COMPANY_REGIME_ARTIGO_53", "COMPANY_VENDEDOR_AMBULANTE"]),
         new("AGT-FE", "lock", 1, ["AGT_FE_QRCODE_LOGO", AgtFePrivateKeyBox.Token])
     ];
 
@@ -119,17 +120,32 @@ public partial class CompanySetupWindow : Window
         ], portrait ? 1 : 2)));
 
         var blocks = new Dictionary<string, (Control Block, bool Wide)>(StringComparer.OrdinalIgnoreCase);
+        var toggles = new Dictionary<string, Control>(StringComparer.OrdinalIgnoreCase);
         foreach (var field in _draft.Fields)
         {
             var caption = new TextBlock { Classes = { "bo_new_doc_caption" } };
+            _captions[field.Token] = caption;
+
+            if (IsToggleToken(field.Token))
+            {
+                var toggle = CreateBooleanField(field.Value);
+                toggle.IsCheckedChanged += (_, _) => RefreshValidation();
+                _inputs[field.Token] = toggle;
+                toggles[field.Token] = ToggleRow(caption, toggle);
+                continue;
+            }
+
             // AGT-FE private key: expand-on-focus multiline for the full PEM, full card width.
             var wide = AgtFePrivateKeyBox.IsToken(field.Token);
             var box = wide
                 ? AgtFePrivateKeyBox.Create(field.Value)
                 : new TextBox { Classes = { "bo_entity_input" }, Text = field.Value };
-            box.TextChanged += (_, _) => RefreshValidation();
+            if (box is TextBox text)
+            {
+                text.TextChanged += (_, _) => RefreshValidation();
+            }
+
             _inputs[field.Token] = box;
-            _captions[field.Token] = caption;
             blocks[field.Token] = (Labelled(caption, FieldIcons.GetValueOrDefault(field.Token), box), wide);
         }
 
@@ -142,11 +158,27 @@ public partial class CompanySetupWindow : Window
                 .Where(blocks.ContainsKey)
                 .Select(token => blocks[token])
                 .ToList();
+            var cardToggles = card.Tokens
+                .Where(toggles.ContainsKey)
+                .Select(token => (toggles[token], false))
+                .ToList();
+            if (cardBlocks.Count == 0 && cardToggles.Count == 0)
+            {
+                continue;
+            }
+
+            var body = new StackPanel { Classes = { "bo_settings_card_body" } };
             if (cardBlocks.Count > 0)
             {
-                FieldsHost.Children.Add(EntityListing.ArticleSection(card.Title, card.Icon,
-                    CardGrid(cardBlocks, portrait ? 1 : card.Columns)));
+                body.Children.Add(CardGrid(cardBlocks, portrait ? 1 : card.Columns));
             }
+
+            if (cardToggles.Count > 0)
+            {
+                body.Children.Add(CardGrid(cardToggles, portrait ? 1 : Math.Min(2, card.Columns)));
+            }
+
+            FieldsHost.Children.Add(EntityListing.ArticleSection(card.Title, card.Icon, body));
         }
 
         TouchFields.Attach(FieldsHost);
@@ -156,13 +188,17 @@ public partial class CompanySetupWindow : Window
 
     private void AttachCompanyPostal()
     {
-        if (_inputs.TryGetValue("COMPANY_POSTALCODE", out var postal) == false || postal.Parent is not Panel postalHost)
+        if (_inputs.TryGetValue("COMPANY_POSTALCODE", out var postalControl) == false
+            || postalControl is not TextBox postal
+            || postal.Parent is not Panel postalHost)
         {
             return;
         }
 
-        _inputs.TryGetValue("COMPANY_ADDRESS", out var address);
-        _inputs.TryGetValue("COMPANY_CITY", out var city);
+        _inputs.TryGetValue("COMPANY_ADDRESS", out var addressControl);
+        _inputs.TryGetValue("COMPANY_CITY", out var cityControl);
+        var address = addressControl as TextBox;
+        var city = cityControl as TextBox;
         void ApplyMatch(PostalLocalityMatch match) => PostalZipSuggest.Apply(match, postal, address, null, city);
         PostalZipSuggest.Attach(postal, postalHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
         if (address?.Parent is Panel addressHost)
@@ -174,6 +210,36 @@ public partial class CompanySetupWindow : Window
         {
             PostalZipSuggest.Attach(city, cityHost, PostalZipSuggest.SearchCompanyAsync, ApplyMatch);
         }
+    }
+
+    private static bool IsToggleToken(string token) =>
+        string.Equals(token, "COMPANY_REGIME_ARTIGO_53", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(token, "COMPANY_VENDEDOR_AMBULANTE", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(token, "COMPANY_COMMUNICATE_TRANSPORT_DOCUMENTS", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsTruthy(string? value) =>
+        string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
+        || value == "1"
+        || string.Equals(value, "sim", StringComparison.OrdinalIgnoreCase);
+
+    private static ToggleSwitch CreateBooleanField(string value) =>
+        new()
+        {
+            Classes = { "bo_settings_toggle" },
+            IsChecked = IsTruthy(value),
+            OnContent = null,
+            OffContent = null
+        };
+
+    private static Control ToggleRow(TextBlock caption, ToggleSwitch toggle)
+    {
+        caption.Classes.Add("bo_settings_toggle_label");
+        caption.Tapped += (_, _) => toggle.IsChecked = toggle.IsChecked != true;
+        var row = new Grid { Classes = { "bo_settings_toggle_row" }, ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+        Grid.SetColumn(toggle, 1);
+        row.Children.Add(caption);
+        row.Children.Add(toggle);
+        return row;
     }
 
     private static ComboBox CreateCombo(IReadOnlyList<CompanySetupChoice> options, Guid? selectedId)
@@ -262,8 +328,8 @@ public partial class CompanySetupWindow : Window
                 continue;
             }
 
-            if (_inputs.TryGetValue(field.Token, out var box) == false ||
-                string.IsNullOrWhiteSpace(box.Text))
+            if (_inputs.TryGetValue(field.Token, out var input) == false
+                || string.IsNullOrWhiteSpace(ReadInput(input)))
             {
                 ok = false;
                 break;
@@ -271,6 +337,21 @@ public partial class CompanySetupWindow : Window
         }
 
         OkButton.IsEnabled = ok;
+    }
+
+    private static string ReadInput(Control input)
+    {
+        if (input is ToggleSwitch toggle)
+        {
+            return toggle.IsChecked == true ? "True" : "False";
+        }
+
+        if (AgtFePrivateKeyBox.TryRead(input, out var pem))
+        {
+            return pem;
+        }
+
+        return input is TextBox box ? box.Text?.Trim() ?? string.Empty : string.Empty;
     }
 
     private void RefreshFieldCaptions()
@@ -321,7 +402,16 @@ public partial class CompanySetupWindow : Window
 
         foreach (var pair in LocalCompanySetupService.DemoCompanyValues)
         {
-            if (_inputs.TryGetValue(pair.Key, out var box))
+            if (_inputs.TryGetValue(pair.Key, out var input) == false)
+            {
+                continue;
+            }
+
+            if (input is ToggleSwitch toggle)
+            {
+                toggle.IsChecked = IsTruthy(pair.Value);
+            }
+            else if (input is TextBox box)
             {
                 box.Text = pair.Value;
             }
@@ -342,9 +432,7 @@ public partial class CompanySetupWindow : Window
 
         var values = _inputs.ToDictionary(
             item => item.Key,
-            item => AgtFePrivateKeyBox.TryRead(item.Value, out var pem)
-                ? pem
-                : item.Value.Text?.Trim() ?? string.Empty,
+            item => ReadInput(item.Value),
             StringComparer.OrdinalIgnoreCase);
 
         Notice.Text = "A gravar...";
