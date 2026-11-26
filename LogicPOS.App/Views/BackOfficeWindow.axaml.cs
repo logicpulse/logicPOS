@@ -38,6 +38,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private bool _pendingLogout;
     private bool _portrait;
     private bool _drawerOpen;
+    private bool _autoUpdateChecked;
     private UiViewport _viewport;
     /// <summary>Portuguese page key for navigation; <see cref="PageTitle"/> shows the culture caption.</summary>
     private string _pageKey = string.Empty;
@@ -131,6 +132,44 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         RelayoutForViewport();
         await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
         RefreshSession();
+        _ = PromptForUpdateIfNewerAsync();
+    }
+
+    /// <summary>
+    /// On each back-office open, ask once when a published release is newer.
+    /// A failed lookup is retried the next time the office is shown.
+    /// </summary>
+    private async Task PromptForUpdateIfNewerAsync()
+    {
+        if (_autoUpdateChecked || UpdateOverlay.IsVisible)
+        {
+            return;
+        }
+
+        string? published;
+        try
+        {
+            published = await ApplicationUpdater.ReadPublishedVersionAsync();
+        }
+        catch (Exception exception)
+        {
+            AppLogging.Warning(exception, "Automatic update check failed");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(published))
+        {
+            return;
+        }
+
+        _autoUpdateChecked = true;
+        var decision = UpdatePromptDecision.For(published, ApplicationUpdater.ReadInstalledVersion());
+        if (decision.Ask == false || UpdateOverlay.IsVisible)
+        {
+            return;
+        }
+
+        await Dispatcher.UIThread.InvokeAsync(() => PresentUpdatePrompt(decision));
     }
 
     public bool TryRequestClose()
@@ -1864,6 +1903,11 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        PresentUpdatePrompt(decision);
+    }
+
+    private void PresentUpdatePrompt(UpdatePromptDecision decision)
+    {
         UpdateQuestion.Text = decision.Question;
         UpdateStatus.Text = "A configuração (appsettings) e a base de dados local não são substituídas.";
         UpdateProgress.IsVisible = false;
