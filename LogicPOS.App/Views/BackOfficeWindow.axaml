@@ -39,7 +39,8 @@
                     <svg:Svg Classes="bo_status_clock_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/icon_clock_w.svg" />
                     <TextBlock x:Name="ClockTimeLabel" Classes="bo_status_text" />
                 </StackPanel>
-                <StackPanel x:Name="WindowButtons" Grid.Column="3" Classes="bo_window_buttons">
+                <StackPanel x:Name="WindowButtons" Grid.Column="3" Classes="bo_window_buttons"
+                            KeyboardNavigation.TabNavigation="None">
                     <Button Classes="bo_window_button" Click="OnMinimizeClick" ToolTip.Tip="Minimizar">
                         <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_minimizar_w.svg" />
                     </Button>
