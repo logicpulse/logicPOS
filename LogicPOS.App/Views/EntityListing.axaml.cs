@@ -34,7 +34,10 @@ public partial class EntityListing : UserControl
     private TaskCompletionSource<bool>? _deleteConfirm;
     private bool _fillingFilters;
     private bool _filtersRequested;
+    private bool _articleFamilyFilterRequested;
     private Guid? _appliedCustomer;
+    private Guid? _articleSubfamilyFilter;
+    private Guid? _articleFamilyFilter;
     private string _importAction = string.Empty;
     private string _importFileName = string.Empty;
     private ExcelPreview.Sheet? _importSheet;
@@ -241,12 +244,27 @@ public partial class EntityListing : UserControl
         SearchBox.Text = string.Empty;
         Notice.Text = string.Empty;
         ResetDates();
-        DateFilters.IsVisible = UsesDateFilter(title);
+        DateFilters.IsVisible = UsesDateFilter(title) || IsArticlesListingTitle(title);
+        Period.IsVisible = UsesDateFilter(title);
         CustomerFilterField.IsVisible = title == "Recibos";
+        ArticleFamilyFilterField.IsVisible = IsArticlesListingTitle(title);
         if (title == "Recibos")
         {
             ResetCustomerFilter();
             EnsureCustomerFilter();
+        }
+
+        if (IsArticlesListingTitle(title))
+        {
+            ResetArticleFamilyFilter();
+            EnsureArticleFamilyFilter();
+        }
+        else
+        {
+            ArticleFamilyFilterHost.Content = null;
+            _articleFamilyFilterRequested = false;
+            _articleSubfamilyFilter = null;
+            _articleFamilyFilter = null;
         }
 
         _isDeviceListing = DeviceTitles.Contains(title);
@@ -255,6 +273,9 @@ public partial class EntityListing : UserControl
 
         await ReloadAsync();
     }
+
+    private static bool IsArticlesListingTitle(string title)
+        => title is "Artigos" or "Articles";
 
     /// <summary>Opens the fiscal-year wizard overlay (same as «Criar ano fiscal»).</summary>
     public async Task OpenFiscalYearWizardAsync()
@@ -322,6 +343,14 @@ public partial class EntityListing : UserControl
             return;
         }
 
+        if (IsArticlesListing())
+        {
+            ResetArticleFamilyFilter();
+            EnsureArticleFamilyFilter();
+            ApplyFilter();
+            return;
+        }
+
         if (_title == "Códigos-postais")
         {
             return;
@@ -335,6 +364,12 @@ public partial class EntityListing : UserControl
         SearchBox.Text = string.Empty;
         ResetDates();
         ResetCustomerFilter();
+        if (IsArticlesListing())
+        {
+            ResetArticleFamilyFilter();
+            EnsureArticleFamilyFilter();
+        }
+
         RestoreColumns();
         await ReloadAsync();
     }
@@ -401,6 +436,59 @@ public partial class EntityListing : UserControl
         ListingFilters.SelectEveryone(CustomerBox);
         _appliedCustomer = null;
         _fillingFilters = false;
+    }
+
+    private void EnsureArticleFamilyFilter()
+    {
+        if (_articleFamilyFilterRequested)
+            return;
+
+        _articleFamilyFilterRequested = true;
+        _ = LoadArticleFamilyFilterAsync();
+    }
+
+    private async Task LoadArticleFamilyFilterAsync()
+    {
+        var service = Service;
+        if (service is null)
+            return;
+
+        try
+        {
+            var groups = await service.LookupAsync("Subfamílias");
+            _fillingFilters = true;
+            _articleSubfamilyFilter = null;
+            _articleFamilyFilter = null;
+            ArticleFamilyFilterHost.Content = new ArticleSubfamilyPicker(
+                groups,
+                "",
+                false,
+                selected =>
+                {
+                    _articleSubfamilyFilter = selected?.Id;
+                    _articleFamilyFilter = selected?.FamilyId;
+                    ApplyFilter();
+                },
+                showFamilyIcon: true);
+        }
+        catch (Exception exception)
+        {
+            Notice.Text = exception.Message;
+        }
+        finally
+        {
+            _fillingFilters = false;
+        }
+    }
+
+    private void ResetArticleFamilyFilter()
+    {
+        _articleSubfamilyFilter = null;
+        _articleFamilyFilter = null;
+        if (ArticleFamilyFilterHost.Content is ArticleSubfamilyPicker)
+            ArticleFamilyFilterHost.Content = null;
+
+        _articleFamilyFilterRequested = false;
     }
 
     private async void OnExportExcelClick(object? sender, RoutedEventArgs e)
@@ -885,7 +973,7 @@ public partial class EntityListing : UserControl
     private void ApplyFilter()
     {
         var term = SearchBox.Text?.Trim();
-        var rows = _rows.Where(InDateRange).Where(row =>
+        var rows = _rows.Where(InDateRange).Where(MatchesArticleFamilyFilter).Where(row =>
             string.IsNullOrEmpty(term) || row.Values.Values.Any(value => TextSearch.Contains(value, term))).ToList();
         Grid.ItemsSource = rows;
         CardList.ItemsSource = rows;
@@ -898,6 +986,28 @@ public partial class EntityListing : UserControl
             && (string.IsNullOrEmpty(term) || _title == "Códigos-postais");
         Notice.Text = keepNotice ? _notice! : $"{rows.Count} registo(s)";
         RefreshPickAll();
+    }
+
+    private bool MatchesArticleFamilyFilter(ListingRow row)
+    {
+        if (IsArticlesListing() == false)
+            return true;
+
+        if (_articleSubfamilyFilter is Guid subfamilyId && subfamilyId != Guid.Empty)
+        {
+            return row.Values.TryGetValue("SubfamilyOid", out var raw)
+                && Guid.TryParse(raw, out var rowSubfamily)
+                && rowSubfamily == subfamilyId;
+        }
+
+        if (_articleFamilyFilter is Guid familyId && familyId != Guid.Empty)
+        {
+            return row.Values.TryGetValue("FamilyOid", out var raw)
+                && Guid.TryParse(raw, out var rowFamily)
+                && rowFamily == familyId;
+        }
+
+        return true;
     }
 
     private bool InDateRange(ListingRow row)
@@ -1151,13 +1261,16 @@ public partial class EntityListing : UserControl
         if (groups.Count > 1)
         {
             var imageField = fields.FirstOrDefault(field => field.Kind == "image");
+            // Articles: image lives in Identificação (web parity). Other entities keep it on the tab bar.
+            var imageInDetails = IsArticlesListing();
             var headers = new StackPanel { Classes = { "bo_entity_tab_headers" } };
             var pages = new ContentControl();
             _articlePages = pages;
             foreach (var group in groups)
             {
                 var groupFields = OrderEditorFields(
-                    fields.Where(item => EntityEditorLayout.TabOf(item) == group && item.Kind != "image"));
+                    fields.Where(item => EntityEditorLayout.TabOf(item) == group
+                        && (item.Kind != "image" || (imageInDetails && group == "Detalhes"))));
                 if (groupFields.Count == 0)
                 {
                     continue;
@@ -1187,7 +1300,7 @@ public partial class EntityListing : UserControl
             var strip = new Border { Classes = { "bo_article_tab_strip" }, Child = headers };
             Avalonia.Controls.Grid.SetColumn(strip, 0);
             bar.Children.Add(strip);
-            if (imageField is not null)
+            if (imageField is not null && imageInDetails == false)
             {
                 var tools = ImageToolsFor(imageField);
                 Avalonia.Controls.Grid.SetColumn(tools, 1);
@@ -1343,38 +1456,71 @@ public partial class EntityListing : UserControl
     }
 
     /// <summary>
-    /// Detalhes tab: Identificação, Classificação and Estado e composição cards; unknown fields land in Identificação.
+    /// Detalhes tab: Identificação, Classificação and Estado e composição cards (web ArticleEditDialog parity).
     /// </summary>
     private async Task AddArticleDetailSectionsAsync(IBackOfficeListingService service, Panel root, IReadOnlyList<ListingField> fields)
     {
         var used = new HashSet<string>(StringComparer.Ordinal);
         List<ListingField> Take(params string[] keys)
             => keys
-                .Select(key => fields.FirstOrDefault(field => field.Key == key && field.Kind != "bool"))
+                .Select(key => fields.FirstOrDefault(field => field.Key == key && field.Kind != "bool" && field.Kind != "image"))
                 .Where(field => field is not null && used.Add(field.Key))
                 .Select(field => field!)
                 .ToList();
 
-        var first = Take("Designation", "Code", "SubfamilyId");
-        var second = Take("TypeId", "Ord", "Order", "ButtonLabel");
+        var first = Take("Designation", "Code", "CodeDealer");
+        var family = Take("FamilyId", "SubfamilyId");
+        var second = Take("TypeId", "ButtonLabel", "Order", "Ord");
         var classification = Take("MeasurementUnitId", "SizeUnitId", "CommissionGroupId", "DiscountGroupId");
-        var extra = fields.Where(field => field.Kind != "bool" && used.Contains(field.Key) == false).ToList();
+        var image = fields.FirstOrDefault(field => field.Kind == "image" && used.Add(field.Key));
+        var extra = fields.Where(field => field.Kind is not ("bool" or "image") && used.Contains(field.Key) == false).ToList();
 
         var identity = new StackPanel { Classes = { "bo_article_rows" } };
-        identity.Children.Add(await ArticleRowAsync(service, first, first.Count == 3 ? "2*,*,1.3*" : null));
-        identity.Children.Add(await ArticleRowAsync(service, second, null));
+        if (first.Count > 0)
+        {
+            identity.Children.Add(await ArticleRowAsync(service, first, first.Count == 3 ? "2*,*,*" : null));
+        }
+
+        if (family.Count > 0)
+        {
+            identity.Children.Add(await ArticleRowAsync(service, family, null));
+        }
+
+        if (second.Count > 0)
+        {
+            identity.Children.Add(await ArticleRowAsync(service, second, null));
+        }
+
         foreach (var chunk in extra.Chunk(3))
         {
             identity.Children.Add(await ArticleRowAsync(service, chunk, "*,*,*"));
         }
 
+        if (image is not null)
+        {
+            var imageBlock = new StackPanel { Classes = { "bo_article_image_block" } };
+            imageBlock.Children.Add(FieldCaption(image));
+            imageBlock.Children.Add(ImageToolsFor(image));
+            identity.Children.Add(imageBlock);
+        }
+
         root.Children.Add(ArticleSection("Identificação", "tag", identity));
         if (classification.Count > 0)
         {
-            root.Children.Add(ArticleSection("Classificação", "layers", await ArticleRowAsync(service, classification, null)));
+            var classRows = new StackPanel { Classes = { "bo_article_rows" } };
+            foreach (var chunk in classification.Chunk(2))
+            {
+                classRows.Children.Add(await ArticleRowAsync(service, chunk, null));
+            }
+
+            root.Children.Add(ArticleSection("Classificação", "layers", classRows));
         }
 
-        string[] flagOrder = ["Favorite", "UseWeighingBalance", "IsComposed", "Disabled"];
+        string[] flagOrder =
+        [
+            "Favorite", "UseWeighingBalance", "IsComposed", "Disabled",
+            "IsSdrPackaging", "IsTicketing", "UniqueArticles"
+        ];
         var flags = fields
             .Where(field => field.Kind == "bool")
             .OrderBy(field =>
@@ -1783,7 +1929,8 @@ public partial class EntityListing : UserControl
         if (field.Kind == "lookup" && field.Lookup is not null)
         {
             var options = (await service.LookupAsync(field.Lookup)).ToList();
-            if (field.Key == "SubfamilyId" && (IsArticlesListing() || field.Required))
+            // Articles: Família + Subfamília are separate (web parity). Other required SubfamilyId keep the combined picker.
+            if (field.Key == "SubfamilyId" && IsArticlesListing() == false && field.Required)
             {
                 return new ArticleSubfamilyPicker(options, field.Value, field.ReadOnly);
             }
@@ -1797,7 +1944,8 @@ public partial class EntityListing : UserControl
             {
                 Classes = { "bo_entity_input" },
                 ItemsSource = options,
-                IsEnabled = field.ReadOnly == false
+                IsEnabled = field.ReadOnly == false,
+                Tag = field.Key == "SubfamilyId" && IsArticlesListing() ? options : null
             };
             ListingFilters.EnableLookupSearch(search);
             var hasStoredId = Guid.TryParse(field.Value, out var storedId) && storedId != Guid.Empty;
@@ -2604,6 +2752,7 @@ public partial class EntityListing : UserControl
 
     private void WireArticleRules()
     {
+        WireArticleFamilySubfamilyFilter();
         foreach (var input in _inputs)
         {
             if (input.Input is CheckBox check && input.Key is "IsComposed" or "UniqueArticles")
@@ -2691,7 +2840,7 @@ public partial class EntityListing : UserControl
         }
     }
 
-    private static TextBlock FieldCaption(ListingField field)
+    private TextBlock FieldCaption(ListingField field)
     {
         var caption = new TextBlock { Classes = { "bo_new_doc_caption" } };
         var label = LocalizedFieldLabel(field);
@@ -2708,9 +2857,18 @@ public partial class EntityListing : UserControl
         return caption;
     }
 
-    private static string LocalizedFieldLabel(ListingField field)
+    private string LocalizedFieldLabel(ListingField field)
     {
-        if (field.Key == "SubfamilyId") return "Família / Sub-família";
+        if (field.Key == "SubfamilyId")
+        {
+            return IsArticlesListing() ? "Subfamília" : "Família / Sub-família";
+        }
+
+        if (field.Key == "FamilyId" && IsArticlesListing())
+        {
+            return "Família";
+        }
+
         var fallback = field.Label ?? string.Empty;
         if (string.IsNullOrWhiteSpace(field.Key))
         {
@@ -2718,6 +2876,55 @@ public partial class EntityListing : UserControl
         }
 
         return PreferenceLabels.Text("bo_field_" + field.Key, fallback);
+    }
+
+    /// <summary>When Família changes, keep Subfamília options in that family (web ArticleEditDialog).</summary>
+    private void WireArticleFamilySubfamilyFilter()
+    {
+        if (IsArticlesListing() == false)
+        {
+            return;
+        }
+
+        var familyBox = LookupBox(_inputs.FirstOrDefault(item => item.Key == "FamilyId").Input);
+        var subfamilyBox = LookupBox(_inputs.FirstOrDefault(item => item.Key == "SubfamilyId").Input);
+        if (familyBox is null || subfamilyBox is null)
+        {
+            return;
+        }
+
+        var all = subfamilyBox.Tag as List<LookupOption>
+            ?? (subfamilyBox.ItemsSource as IEnumerable<LookupOption>)?.ToList()
+            ?? [];
+        if (all.Count == 0)
+        {
+            return;
+        }
+
+        subfamilyBox.Tag = all;
+
+        void ApplyFilter()
+        {
+            var family = ResolveLookup("FamilyId");
+            var filtered = family is null || family.Id == Guid.Empty
+                ? all
+                : all.Where(option => option.Id == Guid.Empty || option.FamilyId == family.Id).ToList();
+            var selected = ListingFilters.SelectedLookup(subfamilyBox);
+            subfamilyBox.ItemsSource = filtered;
+            if (selected is not null && filtered.All(option => option.Id != selected.Id))
+            {
+                ListingFilters.SelectLookup(subfamilyBox, null);
+            }
+        }
+
+        familyBox.PropertyChanged += (_, args) =>
+        {
+            if (args.Property == AutoCompleteBox.TextProperty || args.Property == AutoCompleteBox.SelectedItemProperty)
+            {
+                ApplyFilter();
+            }
+        };
+        ApplyFilter();
     }
 
     private static IReadOnlyList<ListingChoice> LocalizedEnumChoices(ListingField field)

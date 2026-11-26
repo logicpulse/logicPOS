@@ -145,8 +145,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["UnitMeasureId"] = "Unidade de medida",
         ["CurrencyId"] = "Moeda",
         ["UserId"] = "Utilizador",
-        ["FamilyId"] = "Família do artigo",
-        ["SubfamilyId"] = "Subfamília do artigo",
+        ["FamilyId"] = "Família",
+        ["SubfamilyId"] = "Subfamília",
         ["TypeId"] = "Tipo de artigo",
         ["ClassId"] = "Classe do artigo",
         ["VatOnTableId"] = "Imposto na mesa",
@@ -166,8 +166,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["ButtonLabel"] = "Etiqueta do botão",
         ["ButtonImage"] = "Imagem",
         ["SerialNotice"] = "Números de série",
-        ["IsSdrPackaging"] = "Embalagem SDR",
-        ["IsTicketing"] = "Bilhética",
+        ["IsSdrPackaging"] = "Embalagem Volta",
+        ["IsTicketing"] = "Artigo de parque / ticketing",
         // Remaining BO table fields — GTK Resx (pt-PT) only
         ["AccessCardNumber"] = "Número do cartão de acesso",
         ["BaudRate"] = "Bits por Segundo",
@@ -423,6 +423,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 countryField.Value = await CompanyCountryIdAsync(database, companyCountry.Value, cancellationToken);
             }
         }
+        if (entity is Article articleEntity)
+        {
+            await EnsureArticleFamilyFieldAsync(database, fields, articleEntity, cancellationToken);
+        }
+
         if (entity is Article article && id is Guid articleId && articleId != Guid.Empty)
         {
             await AddArticleExtrasAsync(database, fields, article, articleId, cancellationToken);
@@ -1095,13 +1100,21 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             : Describe(page, rows[0], false);
         // UpdatedAt is form-hidden but still listed in column profiles (GTK parity).
         var availableKeys = fields.Select(field => field.Key).Append("UpdatedAt");
-        var familyBySubfamily = new Dictionary<Guid, string>();
+        var familyNameBySubfamily = new Dictionary<Guid, string>();
+        var familyIdBySubfamily = new Dictionary<Guid, Guid>();
         if (page.EntityType == typeof(Article))
         {
             availableKeys = availableKeys.Append("FamilyId");
-            familyBySubfamily = await database.ArticleSubfamilies.AsNoTracking()
-                .Select(item => new { item.Id, Name = item.Family == null ? "" : item.Family.Designation })
-                .ToDictionaryAsync(item => item.Id, item => item.Name, cancellationToken);
+            var families = await database.ArticleSubfamilies.AsNoTracking()
+                .Select(item => new
+                {
+                    item.Id,
+                    item.FamilyId,
+                    Name = item.Family == null ? "" : item.Family.Designation
+                })
+                .ToListAsync(cancellationToken);
+            familyNameBySubfamily = families.ToDictionary(item => item.Id, item => item.Name);
+            familyIdBySubfamily = families.ToDictionary(item => item.Id, item => item.FamilyId);
         }
         var columns = ListingColumns.For(page.Title, availableKeys);
         var lookups = await LoadLookupsAsync(database, page.EntityType!, columns, cancellationToken);
@@ -1113,7 +1126,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 var row = ToRow(page, entity, columns, lookups);
                 if (entity is Article article)
                 {
-                    row.Values["FamilyId"] = familyBySubfamily.GetValueOrDefault(article.SubfamilyId) ?? string.Empty;
+                    row.Values["FamilyId"] = familyNameBySubfamily.GetValueOrDefault(article.SubfamilyId) ?? string.Empty;
+                    // Hidden filter keys for the family/subfamily picker (display columns keep designations).
+                    row.Values["SubfamilyOid"] = article.SubfamilyId == Guid.Empty
+                        ? string.Empty
+                        : article.SubfamilyId.ToString("D");
+                    row.Values["FamilyOid"] = familyIdBySubfamily.TryGetValue(article.SubfamilyId, out var familyId)
+                        && familyId != Guid.Empty
+                        ? familyId.ToString("D")
+                        : string.Empty;
                 }
                 return row;
             }).ToList()
@@ -1585,14 +1606,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         // 5) global_serial_number ("Número de série")
         return propertyName switch
         {
-            "Ord" or "Order" or "Code" or "Designation" or "FamilyId" or "SubfamilyId"
+            // Web ArticleEditDialog tab Detalhes: identification + classification + state flags
+            "Ord" or "Order" or "Code" or "CodeDealer" or "Designation" or "FamilyId" or "SubfamilyId"
                 or "TypeId" or "IsComposed" or "Favorite" or "UseWeighingBalance" or "Disabled"
+                or "IsSdrPackaging" or "IsTicketing" or "UniqueArticles"
                 or "MeasurementUnitId" or "SizeUnitId" or "CommissionGroupId" or "DiscountGroupId"
                 => "Detalhes",
             "Price1" or "Price2" or "Price3" or "Price4" or "Price5" or "PriceWithVat" or "Discount"
                 or "PVPVariable" or "ClassId" or "VatOnTableId" or "VatDirectSellingId" or "VatExemptionReasonId"
                 => "Detalhes financeiros",
-            "UniqueArticles" => "Número de série",
             // Barcode lives on GTK tab3 (Outros), not tab1
             _ => "Outros detalhes"
         };
@@ -2447,6 +2469,49 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return DateTime.TryParse(part, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)
             ? date.Date
             : DateTime.Today;
+    }
+
+    /// <summary>
+    /// Web ArticleEditDialog keeps Família and Subfamília as separate lookups; Article only stores SubfamilyId.
+    /// </summary>
+    private static async Task EnsureArticleFamilyFieldAsync(
+        LogicPOSDbContext database,
+        List<ListingField> fields,
+        Article article,
+        CancellationToken cancellationToken)
+    {
+        if (fields.Any(field => field.Key == "FamilyId"))
+        {
+            return;
+        }
+
+        Guid? familyId = null;
+        if (article.SubfamilyId != Guid.Empty)
+        {
+            familyId = await database.ArticleSubfamilies.AsNoTracking()
+                .Where(item => item.Id == article.SubfamilyId)
+                .Select(item => (Guid?)item.FamilyId)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        var familyField = new ListingField
+        {
+            Key = "FamilyId",
+            Label = Header("FamilyId"),
+            Kind = "lookup",
+            Lookup = nameof(ArticleFamily),
+            Value = familyId is Guid id && id != Guid.Empty ? id.ToString() : string.Empty,
+            Group = "Detalhes"
+        };
+        var subfamilyIndex = fields.FindIndex(field => field.Key == "SubfamilyId");
+        if (subfamilyIndex >= 0)
+        {
+            fields.Insert(subfamilyIndex, familyField);
+        }
+        else
+        {
+            fields.Add(familyField);
+        }
     }
 
     private static async Task AddArticleExtrasAsync(LogicPOSDbContext database, List<ListingField> fields, Article article, Guid articleId, CancellationToken cancellationToken)

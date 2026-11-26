@@ -46,6 +46,10 @@
                                 <TextBlock Classes="bo_doc_label" Text="Cliente" />
                                 <AutoCompleteBox x:Name="CustomerBox" Classes="bo_doc_filter_search" SelectionChanged="OnCustomerFilterChanged" />
                             </StackPanel>
+                            <StackPanel x:Name="ArticleFamilyFilterField" Classes="bo_doc_date_field" IsVisible="False">
+                                <TextBlock Classes="bo_doc_label" Text="Família / Sub-família" />
+                                <ContentControl x:Name="ArticleFamilyFilterHost" MaxWidth="240" />
+                            </StackPanel>
                             <Button Classes="bo_listing_icon_button" Click="OnFilterClick" ToolTip.Tip="Filtrar">
                                 <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_filtro_b.svg" />
                             </Button>
