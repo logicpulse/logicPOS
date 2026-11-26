@@ -18,7 +18,7 @@
                     </StackPanel>
                 </DockPanel>
             </Border>
-            <Border Classes="bo_pdf_body">
+            <Border x:Name="ViewerBody" Classes="bo_pdf_body">
                 <DockPanel>
                     <Border Classes="bo_pdf_bar" DockPanel.Dock="Top">
                         <DockPanel>
@@ -73,7 +73,8 @@
                 </DockPanel>
             </Border>
         </DockPanel>
-        <Panel x:Name="ReprintOverlay" Classes="login_alert_overlay" ZIndex="20" IsVisible="False">
+        <Panel x:Name="ReprintOverlay" Classes="login_alert_overlay" ZIndex="20" IsVisible="False"
+               KeyboardNavigation.TabNavigation="Cycle">
             <Border Classes="login_alert_frame bo_entity_prompt bo_reprint_prompt">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
@@ -101,7 +102,8 @@
                             </Button>
                         </StackPanel>
                     </Border>
-                    <StackPanel Classes="bo_entity_form" Spacing="10">
+                    <StackPanel Classes="bo_entity_form" Spacing="10"
+                                KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.TabIndex="0">
                         <TextBlock x:Name="ReprintCopiesLabel" Classes="bo_new_doc_caption" Text="Cópias" />
                         <StackPanel x:Name="ReprintCopyChecks" Spacing="4" />
                         <CheckBox x:Name="ReprintSecondCopy" Classes="bo_entity_input" Content="Segunda via" IsChecked="True" />

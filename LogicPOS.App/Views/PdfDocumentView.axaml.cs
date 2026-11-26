@@ -1,7 +1,9 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using LogicPOS.App;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
@@ -38,6 +40,9 @@ public partial class PdfDocumentView : UserControl
     private double _zoom = 1;
     private ZoomMode _zoomMode = ZoomMode.Page;
     private UiViewport _viewport;
+    private IInputElement? _reprintReturnFocus;
+    private bool _lastInputWasKeyboard;
+    private NavigationMethod _reprintFocusMethod;
 
     public PdfDocumentView()
     {
@@ -50,6 +55,24 @@ public partial class PdfDocumentView : UserControl
             LayoutUpdated += OnPdfLayoutUpdated;
         };
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnPdfLayoutUpdated;
+        ReprintOverlay.PropertyChanged += (_, e) =>
+        {
+            if (e.Property == IsVisibleProperty)
+            {
+                OnReprintOverlayVisibilityChanged(ReprintOverlay.IsVisible);
+            }
+        };
+        // A barcode-scanner Enter suffix must not toggle a copy checkbox; Space still toggles it.
+        ReprintOverlay.AddHandler(KeyDownEvent, (_, e) =>
+        {
+            if (e.Key == Key.Enter && e.Source is CheckBox)
+            {
+                e.Handled = true;
+            }
+        }, RoutingStrategies.Tunnel);
+        // Last input kind decides whether the overlay shows a focus ring (keyboard) or not (mouse/touch).
+        AddHandler(KeyDownEvent, (_, _) => _lastInputWasKeyboard = true, RoutingStrategies.Tunnel, handledEventsToo: true);
+        AddHandler(PointerPressedEvent, (_, _) => _lastInputWasKeyboard = false, RoutingStrategies.Tunnel, handledEventsToo: true);
     }
 
     public Task ShowAsync(
@@ -514,6 +537,45 @@ public partial class PdfDocumentView : UserControl
     }
 
     private void OnReprintSecondCopyChanged(object? sender, RoutedEventArgs e) => UpdateReprintMotiveState();
+
+    /// <summary>
+    /// Keeps keyboard focus inside the Segunda via overlay while it is shown (the viewer body is
+    /// disabled; the title bar stays enabled so the IsCancel close button still handles Escape)
+    /// and returns focus to the control that opened it when it closes.
+    /// </summary>
+    private void OnReprintOverlayVisibilityChanged(bool visible)
+    {
+        if (visible)
+        {
+            _reprintReturnFocus = TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement();
+            _reprintFocusMethod = _lastInputWasKeyboard ? NavigationMethod.Tab : NavigationMethod.Unspecified;
+            ViewerBody.IsEnabled = false;
+            // First input control, never Ok: Enter must not reprint by accident.
+            Dispatcher.UIThread.Post(() => FirstReprintInput()?.Focus(_reprintFocusMethod), DispatcherPriority.Loaded);
+            return;
+        }
+
+        ViewerBody.IsEnabled = true;
+        if (_reprintReturnFocus is Control { IsEffectivelyVisible: true, IsEffectivelyEnabled: true } target)
+        {
+            target.Focus(_lastInputWasKeyboard ? NavigationMethod.Tab : NavigationMethod.Unspecified);
+        }
+
+        _reprintReturnFocus = null;
+    }
+
+    private Control? FirstReprintInput()
+    {
+        if (ReprintOverlay.IsVisible == false)
+        {
+            return null;
+        }
+
+        return ReprintCopyChecks.Children.OfType<Control>()
+            .Append(ReprintSecondCopy)
+            .Append(ReprintMotive)
+            .FirstOrDefault(control => control.IsEffectivelyVisible && control.IsEffectivelyEnabled);
+    }
 
     private void UpdateReprintMotiveState()
     {
