@@ -56,6 +56,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     public BackOfficeWindow(string sessionLabel)
     {
         InitializeComponent();
+        // Enter opens a document row only here; the FrontOffice host keeps the scanner-safe default.
+        DocumentsHost.OpenRowOnEnter = true;
         DevEditionBanner.Apply(DevBanner);
         ArticleDashboardHost.OpenStockRequested += (_, _) => ShowPage("Gestão de Stocks");
         NewDocumentHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
@@ -1520,6 +1522,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         {
             DocumentsHost.IsVisible = true;
             _ = DocumentsHost.ReloadAsync();
+            Dispatcher.UIThread.Post(DocumentsHost.FocusListing, DispatcherPriority.Loaded);
             return;
         }
 

@@ -69,6 +69,8 @@ public partial class DocumentsListing : UserControl
         };
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnDocsLayoutUpdated;
         Period.PeriodChanged += (_, _) => ReloadFromFilter();
+        // Tunnel: DataGrid handles Enter itself (moves to the next row) before a bubbling handler runs.
+        DocumentGrid.AddHandler(KeyDownEvent, OnGridKeyDown, RoutingStrategies.Tunnel);
         ApplyCulture();
     }
 
@@ -1448,7 +1450,41 @@ public partial class DocumentsListing : UserControl
         }
 
         DocumentGrid.SelectedItem = item;
+        await OpenRowAsync(item);
+    }
 
+    /// <summary>
+    /// When true, Enter on the grid opens the single selected row. Off by default: the FrontOffice
+    /// stops scanner capture while this listing is open, so a scan's Enter suffix would open a document.
+    /// </summary>
+    public bool OpenRowOnEnter { get; set; }
+
+    private async void OnGridKeyDown(object? sender, KeyEventArgs e)
+    {
+        // Enter opens the selected row like a double-tap; buttons and checkboxes keep their own Enter.
+        if (OpenRowOnEnter == false
+            || e.Key != Key.Enter
+            || e.KeyModifiers != KeyModifiers.None
+            || e.Source is Button
+            || (e.Source as Visual)?.FindAncestorOfType<Button>() is not null
+            || DocumentGrid.SelectedItems.Count == 0
+            || DocumentGrid.SelectedItem is not CheckedDocument item)
+        {
+            return;
+        }
+
+        e.Handled = true;
+        // Several rows picked: swallow Enter so the grid does not move on and drop the multi-selection.
+        if (DocumentGrid.SelectedItems.Count > 1)
+        {
+            return;
+        }
+
+        await OpenRowAsync(item);
+    }
+
+    private async Task OpenRowAsync(CheckedDocument item)
+    {
         if (item.CanEdit)
         {
             await EditDraftAsync(item.Source);
@@ -1456,6 +1492,16 @@ public partial class DocumentsListing : UserControl
         }
 
         await OpenPdfAsync(item.Source);
+    }
+
+    /// <summary>Moves keyboard focus into the listing so Tab does not start at the window chrome.</summary>
+    public void FocusListing()
+    {
+        // Only the desktop grid takes focus; portrait cards get none, so no touch keyboard pops up.
+        if (DocumentGrid.IsVisible)
+        {
+            DocumentGrid.Focus();
+        }
     }
 
     private async void OnRowViewClick(object? sender, RoutedEventArgs e)
@@ -1751,8 +1797,19 @@ public partial class DocumentsListing : UserControl
         var items = _rows
             .Select(row => new CheckedDocument(this, row, _picked.Contains(row.Id)))
             .ToList();
-        DocumentGrid.ItemsSource = items;
+        // Swapping ItemsSource clears the grid selection; keep the checkbox picks instead of wiping them.
+        _syncingSelection = true;
+        try
+        {
+            DocumentGrid.ItemsSource = items;
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
+
         CardList.ItemsSource = items;
+        SyncGridSelectionFromPicks();
         PageLabel.Text = $"{_page} / {_totalPages}";
         EmptyLabel.IsVisible = _rows.Count == 0;
         if (_loadFailed == false
