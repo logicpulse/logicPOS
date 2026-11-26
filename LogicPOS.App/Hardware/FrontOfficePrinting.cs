@@ -117,6 +117,94 @@ internal static class FrontOfficePrinting
     }
 
     /// <summary>
+    /// Windows name of the terminal thermal printer, when that name is installed.
+    /// A4 documents use <see cref="PdfPrinterMemory.LastA4Printer"/>, the last choice in Imprimir como or the PDF preview.
+    /// </summary>
+    public static async Task<string?> DefaultWindowsPrinterAsync(bool thermalDocument)
+    {
+        if (thermalDocument && await IsBackOfficeOnlyAsync() == false)
+        {
+            var thermal = await TerminalThermalWindowsNameAsync();
+            if (string.IsNullOrWhiteSpace(thermal) == false)
+            {
+                return thermal;
+            }
+        }
+
+        return PdfPrinterMemory.LastA4Printer();
+    }
+
+    public static async Task<bool> NamesTerminalThermalPrinterAsync(string? printerName)
+    {
+        if (string.IsNullOrWhiteSpace(printerName))
+        {
+            return false;
+        }
+
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        var settings = source is null ? null : await source.GetTerminalPrinterAsync();
+        if (settings is null)
+        {
+            return false;
+        }
+
+        return string.Equals(settings.Designation, printerName.Trim(), StringComparison.OrdinalIgnoreCase)
+            || string.Equals(settings.NetworkName, printerName.Trim(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static async Task<string?> TerminalThermalWindowsNameAsync()
+    {
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        var settings = source is null ? null : await source.GetTerminalPrinterAsync();
+        if (settings is null)
+        {
+            return null;
+        }
+
+        IReadOnlyList<string> installed;
+        try
+        {
+            installed = WindowsPrinters.Installed();
+        }
+        catch
+        {
+            return null;
+        }
+
+        return MatchInstalled(installed, settings.Designation) ?? MatchInstalled(installed, settings.NetworkName);
+    }
+
+    private static string? MatchInstalled(IReadOnlyList<string> installed, string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+
+        return installed.FirstOrDefault(item => string.Equals(item, name.Trim(), StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// The PDF preview prints A4 when thermal did not take the job, or when the terminal has no usable thermal printer.
+    /// </summary>
+    public static bool YieldsToPdfPrint(bool handled, string? error)
+    {
+        if (handled == false)
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(error))
+        {
+            return false;
+        }
+
+        return error.Contains("não configurada", StringComparison.OrdinalIgnoreCase)
+            || error.Contains("Não há impressora térmica", StringComparison.OrdinalIgnoreCase)
+            || error.Contains("não encontrada", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
     /// Same as <see cref="PrintInvoiceAsync"/>, but also tells whether a thermal printer handled the document.
     /// </summary>
     public static async Task<(bool Handled, string? Error)> TryPrintInvoiceAsync(Guid documentId)

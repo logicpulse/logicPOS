@@ -672,6 +672,8 @@ public partial class NewDocumentWindow : UserControl
             {
                 SelectDocumentType("FS");
             }
+
+            RefreshCustomerPlaceholder();
         }
 
         if (conditions is not null)
@@ -739,16 +741,7 @@ public partial class NewDocumentWindow : UserControl
         await FillPreservingErrors(lookupErrors, async () => await ApplyOriginFromAsync(documents, customers));
         await FillPreservingErrors(lookupErrors, async () =>
         {
-            if (_customerId is not null)
-            {
-                return;
-            }
-
-            var customer = await customers.GetFinalConsumerAsync();
-            if (customer is not null)
-            {
-                ShowCustomer(customer);
-            }
+            await ApplyDefaultCustomerAsync(customers);
         });
         _filling = false;
         RefreshOriginPickerState();
@@ -1391,11 +1384,53 @@ public partial class NewDocumentWindow : UserControl
         }
 
         RefreshOriginPickerState();
+        RefreshCustomerPlaceholder();
         UpdateTransport(openPopup: _filling == false && PosDocumentRules.IsWayBill(type.Acronym));
-        if (_filling == false && PosDocumentRules.RequiresNamedCustomer(type.Acronym) && ShowsFinalConsumer())
+        if (_filling)
+        {
+            return;
+        }
+
+        if (PosDocumentRules.RequiresNamedCustomer(type.Acronym) && ShowsFinalConsumer())
         {
             ClearCustomer();
             ShowDocumentError("Escolha um cliente para este documento.");
+            return;
+        }
+
+        if (PosDocumentRules.DefaultsToFinalConsumer(type.Acronym) && _customerId is null && string.IsNullOrWhiteSpace(CustomerName.Text))
+        {
+            var customers = AppComposition.Services?.GetService<IPosCustomerService>();
+            if (customers is not null)
+            {
+                await ApplyDefaultCustomerAsync(customers);
+            }
+        }
+    }
+
+    private void RefreshCustomerPlaceholder()
+    {
+        CustomerName.PlaceholderText = PosDocumentRules.DefaultsToFinalConsumer(SelectedType()?.Acronym)
+            ? "Consumidor Final"
+            : "Nome ou NIF";
+    }
+
+    private async Task ApplyDefaultCustomerAsync(IPosCustomerService customers)
+    {
+        if (_customerId is not null || string.IsNullOrWhiteSpace(CustomerName.Text) == false)
+        {
+            return;
+        }
+
+        if (PosDocumentRules.DefaultsToFinalConsumer(SelectedType()?.Acronym) == false)
+        {
+            return;
+        }
+
+        var customer = await customers.GetFinalConsumerAsync();
+        if (customer is not null)
+        {
+            ShowCustomer(customer);
         }
     }
 
@@ -2968,6 +3003,13 @@ public partial class NewDocumentWindow : UserControl
         var services = AppComposition.Services;
         if (services is null)
         {
+            return;
+        }
+
+        if (PosDocumentRules.DefaultsToFinalConsumer(SelectedType()?.Acronym) == false)
+        {
+            ClearCustomer();
+            ClearDocumentError();
             return;
         }
 

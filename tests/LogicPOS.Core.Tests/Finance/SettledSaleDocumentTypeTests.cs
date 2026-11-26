@@ -103,6 +103,27 @@ public sealed class SettledSaleDocumentTypeTests
         Assert.Equal(required, PosDocumentRules.RequiresNamedCustomer(acronym));
     }
 
+    [Theory]
+    [InlineData("FS", true)]
+    [InlineData("FR", true)]
+    [InlineData("FT", false)]
+    [InlineData("ND", false)]
+    public void Only_simplified_and_invoice_receipt_default_to_final_consumer(string acronym, bool defaults)
+    {
+        Assert.Equal(defaults, PosDocumentRules.DefaultsToFinalConsumer(acronym));
+    }
+
+    [Theory]
+    [InlineData("FS", true)]
+    [InlineData("fr", true)]
+    [InlineData("FS A001/1", true)]
+    [InlineData("FT A001/1", false)]
+    [InlineData("NC", false)]
+    public void Only_simplified_and_invoice_receipt_use_the_thermal_printer(string acronym, bool thermal)
+    {
+        Assert.Equal(thermal, PosDocumentRules.UsesThermalPrinter(acronym));
+    }
+
     [Fact]
     public void Company_nif_above_cap_requires_named_customer()
     {

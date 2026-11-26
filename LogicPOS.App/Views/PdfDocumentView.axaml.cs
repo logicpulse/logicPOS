@@ -109,7 +109,7 @@ public partial class PdfDocumentView : UserControl
         ClearPages();
         ReprintOverlay.IsVisible = false;
         _closed = new TaskCompletionSource<bool>();
-        _ = LoadAsync(path);
+        _ = OpenAsync(path);
         return _closed.Task;
     }
 
@@ -147,6 +147,31 @@ public partial class PdfDocumentView : UserControl
         }
 
         return PdfPrinterMemory.LastA4Printer() ?? _preferredPrinter;
+    }
+
+    private async Task<string?> ResolvePreferredPrinterAsync()
+    {
+        if (_barcodeMode)
+        {
+            return ResolvePreferredPrinter();
+        }
+
+        var thermalDocument = PosDocumentRules.UsesThermalPrinter(_documentTitle);
+        return await FrontOfficePrinting.DefaultWindowsPrinterAsync(thermalDocument) ?? _preferredPrinter;
+    }
+
+    private async Task OpenAsync(string path)
+    {
+        try
+        {
+            LoadPrinterChoices(await ResolvePreferredPrinterAsync());
+        }
+        catch
+        {
+            LoadPrinterChoices(ResolvePreferredPrinter());
+        }
+
+        await LoadAsync(path);
     }
 
     private void LoadPrinterChoices(string? preferred)
@@ -406,6 +431,9 @@ public partial class PdfDocumentView : UserControl
             return;
         }
 
+        var printer = SelectedPrinter();
+        var thermalDocument = PosDocumentRules.UsesThermalPrinter(_documentTitle);
+        var selectedIsThermal = await FrontOfficePrinting.NamesTerminalThermalPrinterAsync(printer);
         var backOfficeOnly = await IsBackOfficeOnlyAsync();
         if (backOfficeOnly == false && _documentId is Guid documentId && documentId != Guid.Empty)
         {
@@ -420,35 +448,33 @@ public partial class PdfDocumentView : UserControl
                 return;
             }
 
-            Busy.Show("A imprimir...");
-            try
+            if (thermalDocument && (string.IsNullOrWhiteSpace(printer) || selectedIsThermal))
             {
-                var (handled, printError) = await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
-                if (handled && printError is null)
+                Busy.Show("A imprimir...");
+                try
                 {
-                    SetStatus(string.Empty);
-                    PrintUi.Success(this, "Documento enviado para a impressora.");
-                    return;
-                }
+                    var (handled, printError) = await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
+                    if (handled && printError is null)
+                    {
+                        SetStatus(string.Empty);
+                        PrintUi.Success(this, "Documento enviado para a impressora.");
+                        return;
+                    }
 
-                if (handled
-                    && printError is not null
-                    && printError.Contains("não configurada", StringComparison.OrdinalIgnoreCase) == false
-                    && printError.Contains("Não há impressora térmica", StringComparison.OrdinalIgnoreCase) == false
-                    && printError.Contains("não encontrada", StringComparison.OrdinalIgnoreCase) == false)
-                {
-                    SetStatus(string.Empty);
-                    PrintUi.Error(this, printError);
-                    return;
+                    if (FrontOfficePrinting.YieldsToPdfPrint(handled, printError) == false)
+                    {
+                        SetStatus(string.Empty);
+                        PrintUi.Error(this, printError!);
+                        return;
+                    }
                 }
-            }
-            finally
-            {
-                Busy.Hide();
+                finally
+                {
+                    Busy.Hide();
+                }
             }
         }
 
-        var printer = SelectedPrinter();
         float? labelWidthMm = null;
         float? labelHeightMm = null;
         if (_barcodeMode)
@@ -471,7 +497,7 @@ public partial class PdfDocumentView : UserControl
             {
                 PdfPrinterMemory.RememberTemplate(SelectedTemplate(), printer);
             }
-            else
+            else if (thermalDocument == false || selectedIsThermal == false)
             {
                 PdfPrinterMemory.RememberA4(printer);
             }

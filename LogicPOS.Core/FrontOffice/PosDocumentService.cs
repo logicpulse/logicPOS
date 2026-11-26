@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
@@ -403,6 +404,13 @@ public static class PosDocumentRules
         return acronym is "FT" or "ND";
     }
 
+    /// <summary>FS e FR abrem com Consumidor Final. A fatura (FT) e os restantes tipos abrem sem cliente.</summary>
+    public static bool DefaultsToFinalConsumer(string? acronym)
+    {
+        var token = NormalizeAcronym(acronym);
+        return token is "FS" or "FR";
+    }
+
     public const decimal ServiceSimplifiedInvoiceCap = 100m;
 
     public const decimal RetailSimplifiedInvoiceCap = 1000m;
@@ -616,10 +624,28 @@ public static class PosDocumentRules
     public static bool IsCreditNote(string? acronym)
         => string.Equals(acronym, "NC", StringComparison.OrdinalIgnoreCase);
 
+    /// <summary>FS and FR print on the terminal thermal printer. Accepts an acronym or a number such as "FS A001/1".</summary>
+    public static bool UsesThermalPrinter(string? acronymOrNumber)
+    {
+        var token = FirstToken(acronymOrNumber);
+        return string.Equals(token, "FS", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(token, "FR", StringComparison.OrdinalIgnoreCase);
+    }
+
     /// <summary>FS and FR are front-office tickets. A credit note of either follows that paper.</summary>
-    public static bool CreditNoteUsesTicket(string? sourceType)
-        => string.Equals(sourceType, "FS", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(sourceType, "FR", StringComparison.OrdinalIgnoreCase);
+    public static bool CreditNoteUsesTicket(string? sourceType) => UsesThermalPrinter(sourceType);
+
+    private static string? FirstToken(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        var token = value.Trim().Split([' ', '\t'], 2, StringSplitOptions.RemoveEmptyEntries)[0];
+        var slash = token.IndexOf('/');
+        return slash > 0 ? token[..slash] : token;
+    }
 
     /// <summary>Despacho n.º 8632/2014: printed documents do not show negative amounts.</summary>
     public static decimal CreditNotePaperAmount(decimal value) => Math.Abs(value);
@@ -1871,6 +1897,11 @@ public sealed class PosDocumentService : IPosDocumentService
         CancellationToken cancellationToken = default)
     {
         _ = sendReceipts;
+        if (documentIds.Count == 0)
+        {
+            return "Selecione um documento para enviar.";
+        }
+
         await using var scope = _scopes.CreateAsyncScope();
         var configuration = scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>();
         var host = configuration["LogicPOS:Mail:Host"];
@@ -1899,7 +1930,18 @@ public sealed class PosDocumentService : IPosDocumentService
                 return "Não foi possível criar o PDF do documento.";
             }
 
-            message.Attachments.Add(new Attachment(path));
+            var fileName = Path.GetFileName(path);
+            var attachment = new Attachment(path, MediaTypeNames.Application.Pdf)
+            {
+                Name = fileName
+            };
+            if (attachment.ContentDisposition is { } disposition)
+            {
+                disposition.FileName = fileName;
+                disposition.DispositionType = DispositionTypeNames.Attachment;
+            }
+
+            message.Attachments.Add(attachment);
         }
 
         using var client = new SmtpClient(host, port);

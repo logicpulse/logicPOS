@@ -50,6 +50,16 @@ public static class CloudOperationMode
         return NormalizeKnown(account.PosOperationMode) ?? NeutralModule;
     }
 
+    /// <summary>
+    /// Primeiros passos grava o modo na base do cliente. Essa escolha substitui o
+    /// <c>default</c> usado enquanto a ficha da conta ainda não tem modo.
+    /// </summary>
+    public static string? ApplyConfirmedChoice(string? configuredModule, string? confirmedMode)
+    {
+        var confirmed = NormalizeKnown(confirmedMode);
+        return confirmed ?? configuredModule;
+    }
+
     public static string? NormalizeKnown(string? token)
     {
         if (string.IsNullOrWhiteSpace(token))

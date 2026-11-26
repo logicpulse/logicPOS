@@ -21,6 +21,7 @@ public partial class DocumentsListing : UserControl
     private readonly List<PosDocumentRow> _rows = new();
     private readonly HashSet<Guid> _picked = new();
     private readonly List<Guid> _pendingPrintIds = new();
+    private readonly List<Guid> _pendingEmailIds = new();
     private readonly List<(DataGridColumn Column, bool Visible)> _columnSnapshot = new();
     private int _page = 1;
     private int _totalPages = 1;
@@ -715,6 +716,8 @@ public partial class DocumentsListing : UserControl
         EmailCc.Text = string.Empty;
         EmailBcc.Text = string.Empty;
         EmailBody.Text = draft.Body;
+        _pendingEmailIds.Clear();
+        _pendingEmailIds.AddRange(rows.Select(row => row.Id));
         EmailOverlay.IsVisible = true;
         TouchFields.Attach(EmailOverlay);
     }
@@ -743,12 +746,18 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
+        if (_pendingEmailIds.Count == 0)
+        {
+            EmailNotice.Text = "Selecione um documento para enviar.";
+            return;
+        }
+
         _sendingEmail = true;
         try
         {
             EmailNotice.Text = string.Empty;
             var error = await documents.SendDocumentsByEmailAsync(
-                SelectedIds(),
+                _pendingEmailIds.ToList(),
                 EmailTo.Text!.Trim(),
                 subject,
                 EmailBody.Text ?? string.Empty,
@@ -760,6 +769,7 @@ public partial class DocumentsListing : UserControl
                 return;
             }
 
+            _pendingEmailIds.Clear();
             EmailOverlay.IsVisible = false;
             Toast.Success(this, "O seu email foi enviado com sucesso!");
         }
@@ -769,7 +779,11 @@ public partial class DocumentsListing : UserControl
         }
     }
 
-    private void OnEmailCancelClick(object? sender, RoutedEventArgs e) => EmailOverlay.IsVisible = false;
+    private void OnEmailCancelClick(object? sender, RoutedEventArgs e)
+    {
+        _pendingEmailIds.Clear();
+        EmailOverlay.IsVisible = false;
+    }
 
     private static string? BlankToNull(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
@@ -981,7 +995,7 @@ public partial class DocumentsListing : UserControl
 
         if (kind == "print")
         {
-            var printer = PrinterBox.SelectedItem as string;
+            var printer = SelectedPromptPrinter();
             var rows = _rows.Where(row => _pendingPrintIds.Contains(row.Id)).ToList();
             if (string.IsNullOrWhiteSpace(printer) || rows.Count == 0)
             {
@@ -1284,10 +1298,11 @@ public partial class DocumentsListing : UserControl
         _pendingPrintIds.Clear();
         _pendingPrintIds.AddRange(rows.Select(row => row.Id));
         PrinterBox.ItemsSource = printers;
-        var remembered = PdfPrinterMemory.LastA4Printer();
-        var match = string.IsNullOrWhiteSpace(remembered)
+        var thermalDocument = rows.All(row => PosDocumentRules.UsesThermalPrinter(row.ResolvedType));
+        var preferred = await FrontOfficePrinting.DefaultWindowsPrinterAsync(thermalDocument);
+        var match = string.IsNullOrWhiteSpace(preferred)
             ? -1
-            : printers.FindIndex(item => string.Equals(item, remembered, StringComparison.OrdinalIgnoreCase));
+            : printers.FindIndex(item => string.Equals(item, preferred, StringComparison.OrdinalIgnoreCase));
         PrinterBox.SelectedIndex = match >= 0 ? match : 0;
         OpenPrompt("print", "Imprimir como", "Impressora");
     }
@@ -1302,8 +1317,8 @@ public partial class DocumentsListing : UserControl
         try
         {
             var backOfficeOnly = await IsBackOfficeOnlyAsync();
-            var useThermal = backOfficeOnly == false
-                && (string.IsNullOrWhiteSpace(printer) || await IsTerminalThermalPrinterAsync(printer));
+            var chosenIsThermal = string.IsNullOrWhiteSpace(printer) == false
+                && await FrontOfficePrinting.NamesTerminalThermalPrinterAsync(printer);
             var scopes = AppComposition.Services?.GetService<IServiceScopeFactory>();
             var system = AppComposition.Services?.GetService<ISystemInformationService>();
             foreach (var row in rows)
@@ -1321,10 +1336,13 @@ public partial class DocumentsListing : UserControl
                     }
                 }
 
-                if (useThermal)
+                var rowUsesThermal = backOfficeOnly == false
+                    && PosDocumentRules.UsesThermalPrinter(row.ResolvedType)
+                    && (string.IsNullOrWhiteSpace(printer) || chosenIsThermal);
+                if (rowUsesThermal)
                 {
                     var (handled, error) = await PrintThermalDocumentAsync(row.Id);
-                    if (handled)
+                    if (FrontOfficePrinting.YieldsToPdfPrint(handled, error) == false)
                     {
                         if (error is null)
                         {
@@ -1349,11 +1367,12 @@ public partial class DocumentsListing : UserControl
 
                 try
                 {
+                    var target = PreviewPrinter(printer);
                     await Task.Run(() =>
                     {
-                        if (PdfWindowsPrint.PrintOrOpen(path, printer) == false)
+                        if (PdfWindowsPrint.PrintOrOpen(path, target) == false)
                         {
-                            throw new InvalidOperationException("Não foi possível abrir o PDF para impressão.");
+                            throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
                         }
                     });
 
@@ -1371,14 +1390,16 @@ public partial class DocumentsListing : UserControl
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(printer) == false && (useThermal == false || thermal != sent))
+            var batchIsThermal = backOfficeOnly == false
+                && rows.All(row => PosDocumentRules.UsesThermalPrinter(row.ResolvedType));
+            if (string.IsNullOrWhiteSpace(printer) == false && (batchIsThermal == false || chosenIsThermal == false))
             {
                 PdfPrinterMemory.RememberA4(printer);
             }
 
-            var destination = useThermal && thermal == sent
+            var destination = thermal == sent && sent > 0
                 ? "a impressora térmica"
-                : string.IsNullOrWhiteSpace(printer) ? "a impressora selecionada" : printer;
+                : string.IsNullOrWhiteSpace(printer) ? (PdfPrinterMemory.LastA4Printer() ?? "a impressora") : printer;
             ActionNotice.Text = string.Empty;
             if (cancelled && sent == 0 && printError is null)
             {
@@ -1431,22 +1452,40 @@ public partial class DocumentsListing : UserControl
         return mode is not null && await mode.IsBackOfficeOnlyAsync();
     }
 
-    private static async Task<bool> IsTerminalThermalPrinterAsync(string? printerName)
+    private string? SelectedPromptPrinter()
     {
-        if (string.IsNullOrWhiteSpace(printerName))
+        if (PrinterBox.SelectedItem is string selected && string.IsNullOrWhiteSpace(selected) == false)
         {
-            return false;
+            return selected.Trim();
         }
 
-        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
-        var settings = source is null ? null : await source.GetTerminalPrinterAsync();
-        if (settings is null)
+        if (PrinterBox.SelectedIndex >= 0
+            && PrinterBox.ItemsSource is System.Collections.IList items
+            && PrinterBox.SelectedIndex < items.Count
+            && items[PrinterBox.SelectedIndex] is string indexed
+            && string.IsNullOrWhiteSpace(indexed) == false)
         {
-            return false;
+            return indexed.Trim();
         }
 
-        return string.Equals(settings.Designation, printerName, StringComparison.OrdinalIgnoreCase)
-            || string.Equals(settings.NetworkName, printerName, StringComparison.OrdinalIgnoreCase);
+        return null;
+    }
+
+    /// <summary>Same printer the PDF preview would send the A4 job to.</summary>
+    private static string? PreviewPrinter(string? chosen)
+    {
+        if (string.IsNullOrWhiteSpace(chosen) == false)
+        {
+            return chosen.Trim();
+        }
+
+        var remembered = PdfPrinterMemory.LastA4Printer();
+        if (string.IsNullOrWhiteSpace(remembered) == false)
+        {
+            return remembered;
+        }
+
+        return InstalledPrinters().FirstOrDefault();
     }
 
     private static List<string> InstalledPrinters()

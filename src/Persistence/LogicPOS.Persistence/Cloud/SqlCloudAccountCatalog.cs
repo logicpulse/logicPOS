@@ -46,6 +46,37 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
         _cache.Remove(CacheKeyPrefix + clientId.Trim());
     }
 
+    public void SetOperationMode(string clientId, string mode)
+    {
+        var token = CloudOperationMode.NormalizeKnown(mode);
+        if (string.IsNullOrWhiteSpace(clientId) || token is null)
+            throw new InvalidOperationException("Modo de operação da conta inválido.");
+
+        if (string.IsNullOrWhiteSpace(_settings.CloudConnectionString))
+            throw new InvalidOperationException("A ligação ao catálogo cloud não está configurada.");
+
+        var id = clientId.Trim();
+        using var connection = new SqlConnection(_settings.CloudConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            UPDATE Accounts
+            SET PosOperationMode = @Mode
+            WHERE state > 0
+              AND AccountType_id = @AccountType
+              AND ExpirationDate >= @Now
+              AND (LOWER(Account_id) = LOWER(@Id) OR LOWER(Client_id) = LOWER(@Id))
+            """;
+        command.Parameters.Add(new SqlParameter("@Mode", token));
+        command.Parameters.Add(new SqlParameter("@AccountType", CloudAccountTypes.LogicPosCloudService));
+        command.Parameters.Add(new SqlParameter("@Now", DateTime.Today));
+        command.Parameters.Add(new SqlParameter("@Id", id));
+        var updated = command.ExecuteNonQuery();
+        Invalidate(id);
+        if (updated == 0)
+            throw new InvalidOperationException($"A conta '{id}' não foi atualizada com o modo '{token}'.");
+    }
+
     private CloudAccountSnapshot Query(string clientId)
     {
         if (string.IsNullOrWhiteSpace(_settings.CloudConnectionString))
