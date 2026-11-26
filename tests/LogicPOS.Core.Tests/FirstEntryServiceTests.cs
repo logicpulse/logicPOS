@@ -373,6 +373,17 @@ public sealed class FirstEntryServiceTests
         {
             ConfigureApp(root, module: "default", useSeed: false);
             var services = AppComposition.Services!;
+            // First entry only writes NIF/country/currency; seed the name so the company
+            // step is complete and this test can check the remaining onboarding steps.
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var companyName = await database.PreferenceParameters
+                    .SingleAsync(item => item.IsDeleted == false && item.Token == "COMPANY_NAME");
+                companyName.Value = "Test Company";
+                await database.SaveChangesAsync();
+            }
+
             var service = services.GetRequiredService<IFirstEntryService>();
             var (countryId, currencyId) = await PortugalAndEuroAsync(service);
             Assert.Equal(

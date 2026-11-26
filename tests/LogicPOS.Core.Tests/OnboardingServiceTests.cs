@@ -346,6 +346,15 @@ public sealed class OnboardingServiceTests
     {
         Assert.True(LocalCompanySetupService.IsCompanyConfigured(
         [
+            ("COMPANY_NAME", "Test Company"),
+            ("COMPANY_FISCALNUMBER", "999999990"),
+            ("COMPANY_COUNTRY", "Portugal"),
+            ("COMPANY_COUNTRY_CODE2", "PT"),
+            ("SYSTEM_CURRENCY", "EUR")
+        ]));
+
+        Assert.False(LocalCompanySetupService.IsCompanyConfigured(
+        [
             ("COMPANY_FISCALNUMBER", "999999990"),
             ("COMPANY_COUNTRY", "Portugal"),
             ("COMPANY_COUNTRY_CODE2", "PT"),
