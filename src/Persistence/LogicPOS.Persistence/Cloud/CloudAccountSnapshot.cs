@@ -31,4 +31,7 @@ public sealed class CloudAccountSnapshot
 
     /// <summary>Account password (Accounts.Password), as stored on the account. Empty when the account has none.</summary>
     public string Password { get; init; } = string.Empty;
+
+    /// <summary>Concurrent seats from Accounts.AvailableDevices. Zero means the account has no quota set.</summary>
+    public int AvailableDevices { get; init; }
 }

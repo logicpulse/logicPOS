@@ -9,7 +9,8 @@ public sealed record CloudAccountLicense(
     bool ModuleStocks,
     bool ModuleOnlineInvoicing,
     bool ModuleSms,
-    bool Demo = false)
+    bool Demo = false,
+    int NumberOfDevices = 0)
 {
     public static CloudAccountLicense Inactive { get; } = new(false, false, false, false, false);
 }

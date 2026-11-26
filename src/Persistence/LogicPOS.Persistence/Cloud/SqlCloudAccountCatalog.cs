@@ -77,6 +77,17 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
             throw new InvalidOperationException($"A conta '{id}' não foi atualizada com o modo '{token}'.");
     }
 
+    private static int ReadDeviceCount(object? value)
+    {
+        if (value is null || value is DBNull)
+            return 0;
+
+        if (value is int count)
+            return count;
+
+        return int.TryParse(value.ToString(), out var parsed) ? parsed : 0;
+    }
+
     private CloudAccountSnapshot Query(string clientId)
     {
         if (string.IsNullOrWhiteSpace(_settings.CloudConnectionString))
@@ -89,7 +100,7 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
 
             using var command = connection.CreateCommand();
             command.CommandText = """
-                SELECT TOP 1 a.ConnectionString, a.ModuleStocks, a.ModuleOnlineInvoicing, a.ModuleSMS, a.Demo, a.PosOperationMode, a.Login, a.[Password], c.name AS CountryName
+                SELECT TOP 1 a.ConnectionString, a.ModuleStocks, a.ModuleOnlineInvoicing, a.ModuleSMS, a.Demo, a.PosOperationMode, a.Login, a.[Password], a.AvailableDevices, c.name AS CountryName
                 FROM Accounts a
                 LEFT JOIN Countries c ON c.id = a.idCountry
                 WHERE a.state > 0
@@ -132,7 +143,8 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
                 CountryCode2 = countryCode,
                 PosOperationMode = reader["PosOperationMode"]?.ToString(),
                 Login = reader["Login"]?.ToString()?.Trim() ?? string.Empty,
-                Password = reader["Password"]?.ToString() ?? string.Empty
+                Password = reader["Password"]?.ToString() ?? string.Empty,
+                AvailableDevices = ReadDeviceCount(reader["AvailableDevices"])
             };
         }
         catch (Exception ex)
