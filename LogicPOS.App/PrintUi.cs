@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using LogicPOS.App.Hardware;
 using LogicPOS.App.Views;
 
 namespace LogicPOS.App;
@@ -14,6 +15,10 @@ internal static class PrintUi
         {
             await print();
             Toast.Success(source, successMessage);
+        }
+        catch (PrintCancelledException)
+        {
+            // The user cancelled the print: not an error, so no toast.
         }
         catch (Exception exception)
         {

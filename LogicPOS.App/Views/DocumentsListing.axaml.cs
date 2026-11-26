@@ -1283,6 +1283,7 @@ public partial class DocumentsListing : UserControl
         Busy.Show("A imprimir...");
         var sent = 0;
         var thermal = 0;
+        var cancelled = false;
         string? printError = null;
         try
         {
@@ -1344,6 +1345,12 @@ public partial class DocumentsListing : UserControl
 
                     sent++;
                 }
+                catch (PrintCancelledException)
+                {
+                    // The user cancelled the print dialog: stop the batch instead of asking again per document.
+                    cancelled = true;
+                    break;
+                }
                 catch (Exception exception)
                 {
                     printError ??= exception.Message;
@@ -1359,6 +1366,11 @@ public partial class DocumentsListing : UserControl
                 ? "a impressora térmica"
                 : string.IsNullOrWhiteSpace(printer) ? "a impressora selecionada" : printer;
             ActionNotice.Text = string.Empty;
+            if (cancelled && sent == 0 && printError is null)
+            {
+                return;
+            }
+
             if (sent == rows.Count && printError is null)
             {
                 PrintUi.Success(this, $"{sent} documento(s) enviado(s) para {destination}.");

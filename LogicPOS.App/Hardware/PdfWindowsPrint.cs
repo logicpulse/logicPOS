@@ -114,6 +114,9 @@ internal static class PdfWindowsPrint
     }
 }
 
+/// <summary>The user cancelled the print job (e.g. closed the driver's Save As dialog).</summary>
+internal sealed class PrintCancelledException() : OperationCanceledException("The user cancelled the print job.");
+
 /// <summary>Minimal Win32 bitmap printing via gdi32/winspool — no System.Drawing.</summary>
 file static class WinSpoolBitmapPrint
 {
@@ -126,6 +129,7 @@ file static class WinSpoolBitmapPrint
     private const int DmPaperWidth = 0x00000008;
     private const short DmPaperUser = 256;
     private const short DmOrientPortrait = 1;
+    private const int ErrorCancelled = 1223;
 
     // DEVMODEW fixed-header offsets (Unicode).
     private const int OffDmFields = 72;
@@ -165,6 +169,12 @@ file static class WinSpoolBitmapPrint
             };
             if (StartDoc(hdc, ref gdiDoc) <= 0)
             {
+                // ERROR_CANCELLED: the user closed the driver's dialog (e.g. Save As of Microsoft Print to PDF).
+                if (Marshal.GetLastWin32Error() == ErrorCancelled)
+                {
+                    throw new PrintCancelledException();
+                }
+
                 throw new InvalidOperationException("Falha ao iniciar o trabalho de impressão.");
             }
 
@@ -371,7 +381,7 @@ file static class WinSpoolBitmapPrint
     [DllImport("gdi32.dll")]
     private static extern bool DeleteDC(IntPtr hdc);
 
-    [DllImport("gdi32.dll", CharSet = CharSet.Unicode)]
+    [DllImport("gdi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern int StartDoc(IntPtr hdc, ref DocInfoW docInfo);
 
     [DllImport("gdi32.dll")]
