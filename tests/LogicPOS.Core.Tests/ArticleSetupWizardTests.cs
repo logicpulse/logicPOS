@@ -53,6 +53,16 @@ public sealed class ArticleSetupWizardTests
             Assert.True(await database.ArticleSubfamilies.AnyAsync(item => item.IsDeleted == false && item.Designation == "Café"));
             var article = await database.Articles.SingleAsync(item => item.IsDeleted == false && item.Designation == "Expresso");
             Assert.Equal(1.20m, article.Price1.Value);
+
+            var listing = services.GetRequiredService<IBackOfficeListingService>();
+            var subfamilies = await listing.LookupAsync(nameof(ArticleSubfamily));
+            var option = Assert.Single(subfamilies, item => item.Id == article.SubfamilyId);
+            var familyId = await database.ArticleSubfamilies.Where(item => item.Id == article.SubfamilyId)
+                .Select(item => item.FamilyId).SingleAsync();
+            Assert.Equal(familyId, option.FamilyId);
+            Assert.Equal("Bebidas", option.FamilyLabel);
+            var snapshot = await listing.QueryAsync("Artigos");
+            Assert.Equal("ButtonImage", snapshot.Columns[0].Key);
         }
         finally
         {

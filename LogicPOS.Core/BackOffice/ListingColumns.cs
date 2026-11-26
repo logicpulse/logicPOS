@@ -68,7 +68,7 @@ public static class ListingColumns
             ("Designation", "Designação"),
             ("Disabled", "Inativo"),
             ("IsComposed", "Artigo composto"),
-            ("SubfamilyId", "Subfamília do artigo"),
+            ("FamilyId", "Família"), ("SubfamilyId", "Subfamília do artigo"),
             ("TypeId", "Tipo de artigo"),
             ("UpdatedAt", "Atualizado em")
         ],

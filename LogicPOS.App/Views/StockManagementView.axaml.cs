@@ -1101,6 +1101,8 @@ public partial class StockManagementView : UserControl
 
         var suppliers = await service.LookupSuppliersAsync();
         var articles = await service.LookupArticlesAsync();
+        var listing = AppComposition.Services?.GetService<IBackOfficeListingService>();
+        _stockGroups = listing is null ? [] : await listing.LookupAsync("Subfamílias");
         var locations = await service.GetLocationsAsync();
         if (suppliers.Count == 0)
         {
@@ -1430,6 +1432,8 @@ public partial class StockManagementView : UserControl
         }
 
         var articles = await service.LookupArticlesAsync();
+        var listing = AppComposition.Services?.GetService<IBackOfficeListingService>();
+        _stockGroups = listing is null ? [] : await listing.LookupAsync("Subfamílias");
         var locations = await service.GetLocationsAsync();
         var suppliers = await service.LookupSuppliersAsync();
         if (articles.Count == 0 || locations.Count == 0)
@@ -1461,6 +1465,7 @@ public partial class StockManagementView : UserControl
         _documentBox.PlaceholderText = "Número do documento do fornecedor";
 
         EditorHost.Children.Add(Label("Artigo"));
+        EditorHost.Children.Add(StockGroupFilter(_articleBox, articles));
         EditorHost.Children.Add(_articleBox);
         EditorHost.Children.Add(serialField);
         EditorHost.Children.Add(Label("Localização"));
@@ -1476,6 +1481,16 @@ public partial class StockManagementView : UserControl
         EditorHost.Children.Add(_dateBox);
         EditorHost.Children.Add(documentField);
         EditorOverlay.IsVisible = true;
+    }
+
+    private IReadOnlyList<LookupOption> _stockGroups = [];
+    private ArticleSubfamilyPicker StockGroupFilter(AutoCompleteBox box, IReadOnlyList<LookupOption> articles)
+    {
+        return new ArticleSubfamilyPicker(_stockGroups, "", false, selected =>
+        {
+            box.ItemsSource = articles.Where(item => selected is null || item.Id == Guid.Empty || item.SubfamilyId == selected.Id).ToList();
+            ListingFilters.SelectLookup(box, null);
+        });
     }
 
     private Border BuildDraftComposer(IReadOnlyList<LookupOption> articles, IReadOnlyList<StockLocationOption> locations)
@@ -1507,6 +1522,7 @@ public partial class StockManagementView : UserControl
 
         var body = new StackPanel { Classes = { "bo_stock_card_body" } };
         body.Children.Add(Label("Artigo"));
+        body.Children.Add(StockGroupFilter(article, articles));
         body.Children.Add(article);
         body.Children.Add(Label("Quantidade"));
         body.Children.Add(qtyRow);
@@ -2324,8 +2340,12 @@ public partial class StockManagementView : UserControl
         }
 
         var articles = await service.LookupArticlesAsync();
+        var listing = AppComposition.Services?.GetService<IBackOfficeListingService>();
+        _stockGroups = listing is null ? [] : await listing.LookupAsync("Subfamílias");
         var suppliers = await service.LookupSuppliersAsync();
-        FilterArticle.ItemsSource = WithAll(articles);
+        var choices = WithAll(articles);
+        FilterArticle.ItemsSource = choices;
+        StockClassification.Content = StockGroupFilter(FilterArticle, choices);
         FilterCustomer.ItemsSource = WithAll(suppliers);
         ListingFilters.EnableLookupSearch(FilterArticle);
         ListingFilters.SelectLookup(FilterArticle, null);

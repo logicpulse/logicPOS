@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using Avalonia;
@@ -49,6 +49,7 @@ public partial class EntityListing : UserControl
     private readonly List<ListingRow> _rows = new();
     private DispatcherTimer? _postalSearchTimer;
     private int _postalQuery;
+    private int _receiptQuery;
     private ListingLoad _load = null!;
     private readonly Dictionary<string, string> _columnKeys = new(StringComparer.Ordinal);
     private readonly Dictionary<string, bool> _defaultVisible = new(StringComparer.Ordinal);
@@ -91,6 +92,9 @@ public partial class EntityListing : UserControl
         InitializeComponent();
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
+        DocumentListingRefresh.Attach(this, ReloadAsync,
+            () => _title == "Recibos" && _load.IsRunning == false,
+            () => ReloadCoreAsync(background: true), () => _title == "Recibos");
         ListingNotice.BindToast(Notice, this, keepCountsInline: true, skipProgress: true);
         ListingNotice.BindToast(EditorNotice, this);
         ListingNotice.BindToast(BulkNotice, this);
@@ -229,6 +233,8 @@ public partial class EntityListing : UserControl
     public async Task ShowAsync(string title)
     {
         _title = title;
+        _receiptQuery++;
+        ReceiptRefreshButton.IsVisible = MobileReceiptRefreshButton.IsVisible = title == "Recibos";
         _picked.Clear();
         TitleText.Text = title;
         BackOfficePageIcons.Apply(TitleIcon, title);
@@ -517,9 +523,11 @@ public partial class EntityListing : UserControl
         return null;
     }
 
-    private Task ReloadAsync() => _load.RunAsync(ReloadCoreAsync);
+    private async void OnReceiptRefreshClick(object? sender, RoutedEventArgs e) => await ReloadAsync();
 
-    private async Task ReloadCoreAsync()
+    private Task ReloadAsync() => _load.RunAsync(() => ReloadCoreAsync());
+
+    private async Task ReloadCoreAsync(bool background = false)
     {
         var service = Service;
         if (service is null)
@@ -528,19 +536,23 @@ public partial class EntityListing : UserControl
             return;
         }
 
+        var title = _title;
+        var receipts = title == "Recibos";
+        var receiptQuery = receipts ? ++_receiptQuery : 0;
         try
         {
-            var postal = _title == "Códigos-postais";
+            var postal = title == "Códigos-postais";
             var generation = postal ? ++_postalQuery : 0;
             var snapshot = await service.QueryAsync(
-                _title,
+                title,
                 postal ? SearchBox.Text : null,
                 _mode,
-                customerId: _title == "Recibos" ? ListingFilters.CustomerId(CustomerBox) : null);
-            if (postal && generation != _postalQuery)
+                customerId: receipts ? ListingFilters.CustomerId(CustomerBox) : null);
+            if ((postal && generation != _postalQuery) || (receipts && receiptQuery != _receiptQuery))
             {
                 return;
             }
+            var selectedReceiptId = background && Grid.SelectedItem is ListingRow selected ? selected.Id : (Guid?)null;
             _canEdit = snapshot.CanEdit;
             _deviceCanEdit = snapshot.CanEdit;
             _deviceCanDelete = snapshot.CanDelete;
@@ -552,10 +564,17 @@ public partial class EntityListing : UserControl
             BindActions(snapshot);
             BindColumns(snapshot);
             ApplyFilter();
+            if (selectedReceiptId is Guid receiptId && Grid.ItemsSource is IEnumerable<ListingRow> visibleRows)
+            {
+                Grid.SelectedItem = visibleRows.FirstOrDefault(row => row.Id == receiptId);
+            }
         }
         catch (Exception exception)
         {
-            Notice.Text = exception.Message;
+            if (background == false && (receipts == false || receiptQuery == _receiptQuery))
+            {
+                Notice.Text = exception.Message;
+            }
         }
     }
 
@@ -695,7 +714,8 @@ public partial class EntityListing : UserControl
         _cardKeys.Clear();
         Grid.Columns.Clear();
         _pickAll = null;
-        if (picks)
+        var imageFirst = IsArticlesListing() && snapshot.Columns.FirstOrDefault()?.Key == "ButtonImage";
+        if (picks && imageFirst == false)
         {
             Grid.Columns.Add(PickColumn());
         }
@@ -709,6 +729,11 @@ public partial class EntityListing : UserControl
                 Grid.Columns.Add(ThumbnailColumn(title));
                 _columnKeys[title] = column.Key;
                 _defaultVisible[title] = column.Visible;
+                if (picks && imageFirst)
+                {
+                    Grid.Columns.Add(PickColumn());
+                }
+
                 continue;
             }
 
@@ -768,7 +793,7 @@ public partial class EntityListing : UserControl
         }
     }
 
-    private static DataGridTemplateColumn ThumbnailColumn(string header)
+    private DataGridTemplateColumn ThumbnailColumn(string header)
     {
         return new DataGridTemplateColumn
         {
@@ -784,9 +809,9 @@ public partial class EntityListing : UserControl
                 var image = new Image
                 {
                     Classes = { "bo_listing_thumb" },
-                    Width = 40,
-                    Height = 40,
-                    Stretch = Stretch.UniformToFill
+                    Width = 30,
+                    Height = 30,
+                    Stretch = Stretch.Uniform
                 };
                 var frame = new Border
                 {
@@ -794,9 +819,24 @@ public partial class EntityListing : UserControl
                     Child = image,
                     ClipToBounds = true
                 };
-                void Apply()
+                async void Apply()
                 {
-                    var data = frame.DataContext is ListingRow row ? row["ButtonImage"] : string.Empty;
+                    image.Source = null;
+                    if (frame.DataContext is not ListingRow row) return;
+                    if (!row.Values.TryGetValue("ButtonImage", out var data))
+                    {
+                        var catalog = AppComposition.Services?.GetService<IPosCatalogService>();
+                        if (catalog is null) return;
+                        var kind = _title switch
+                        {
+                            "Famílias" or "Families" => ButtonImageKind.Family,
+                            "Subfamílias" or "Subfamilies" => ButtonImageKind.Subfamily,
+                            _ => ButtonImageKind.Article
+                        };
+                        try { data = await catalog.GetButtonImageAsync(kind, row.Id); }
+                        catch (Exception) { return; }
+                        if (!ReferenceEquals(frame.DataContext, row)) return;
+                    }
                     image.Source = string.IsNullOrWhiteSpace(data) ? null : DecodeImage(data);
                 }
 
@@ -1743,6 +1783,11 @@ public partial class EntityListing : UserControl
         if (field.Kind == "lookup" && field.Lookup is not null)
         {
             var options = (await service.LookupAsync(field.Lookup)).ToList();
+            if (field.Key == "SubfamilyId" && (IsArticlesListing() || field.Required))
+            {
+                return new ArticleSubfamilyPicker(options, field.Value, field.ReadOnly);
+            }
+
             if (field.Required == false)
             {
                 options.Insert(0, new LookupOption { Id = Guid.Empty, Label = "(nenhum)" });
@@ -1767,6 +1812,20 @@ public partial class EntityListing : UserControl
                 ListingFilters.SelectLookup(search, current);
             }
 
+            if (field.Lookup is "Article" or "Artigos" && !field.ReadOnly)
+            {
+                var group = await service.LookupAsync("Subfamílias");
+                var articlePanel = new DockPanel();
+                var filter = new ArticleSubfamilyPicker(group, "", false, selected =>
+                {
+                    ListingFilters.SelectLookup(search, null);
+                    search.ItemsSource = options.Where(item => selected is null || item.Id == Guid.Empty || item.SubfamilyId == selected.Id).ToList();
+                });
+                DockPanel.SetDock(filter, Dock.Top);
+                articlePanel.Children.Add(filter);
+                articlePanel.Children.Add(search);
+                return articlePanel;
+            }
             if (field.Required == false && field.ReadOnly == false)
             {
                 return WrapLookupClear(search);
@@ -2265,6 +2324,11 @@ public partial class EntityListing : UserControl
             return ListingFilters.SelectedLookup(box);
         }
 
+        if (input is ArticleSubfamilyPicker picker)
+        {
+            return picker.Selected;
+        }
+
         return input is ComboBox combo && combo.SelectedItem is LookupOption option && option.Id != Guid.Empty
             ? option
             : null;
@@ -2294,6 +2358,11 @@ public partial class EntityListing : UserControl
         {
             var picked = ListingFilters.SelectedLookup(input as AutoCompleteBox);
             return picked is null ? string.Empty : picked.Id.ToString();
+        }
+
+        if (input is ArticleSubfamilyPicker picker)
+        {
+            return picker.Selected?.Id.ToString() ?? string.Empty;
         }
 
         if (input is ComboBox combo && combo.SelectedItem is LookupOption option)
@@ -2641,6 +2710,7 @@ public partial class EntityListing : UserControl
 
     private static string LocalizedFieldLabel(ListingField field)
     {
+        if (field.Key == "SubfamilyId") return "Família / Sub-família";
         var fallback = field.Label ?? string.Empty;
         if (string.IsNullOrWhiteSpace(field.Key))
         {
@@ -3506,6 +3576,11 @@ public partial class EntityListing : UserControl
         }
 
         var result = await service.RunActionAsync(action, id, extra);
+        if (result.Succeeded && action == "undo-receipt")
+        {
+            DocumentListingRefresh.NotifyChanged(this);
+        }
+
         if (result.Succeeded && string.IsNullOrWhiteSpace(result.Message) == false && File.Exists(result.Message))
         {
             Process.Start(new ProcessStartInfo(result.Message) { UseShellExecute = true });

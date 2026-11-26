@@ -1132,6 +1132,7 @@ public partial class PaymentWindow : Window
                 title = "Fatura";
             }
 
+            DocumentListingRefresh.NotifyChanged(this);
             var printError = await FrontOfficePrinting.PrintInvoiceAsync(result.DocumentId);
             if (printError is not null)
             {

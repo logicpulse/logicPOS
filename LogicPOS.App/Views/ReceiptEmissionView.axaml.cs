@@ -46,6 +46,9 @@ public partial class ReceiptEmissionView : UserControl
         InitializeComponent();
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
+        DocumentListingRefresh.Attach(this, ReloadAsync,
+            () => _datesReady && _load.IsRunning == false && PaymentSelectionInUse() == false,
+            () => LoadCoreAsync(background: true));
         ListingNotice.BindToast(Notice, this);
         ListingNotice.BindToast(PayError, this);
         DocumentGrid.ItemsSource = _visible;
@@ -256,6 +259,8 @@ public partial class ReceiptEmissionView : UserControl
         }
     }
 
+    private async void OnRefreshClick(object? sender, RoutedEventArgs e) => await ReloadAsync();
+
     private async void OnFilterClick(object? sender, RoutedEventArgs e)
     {
         _page = 1;
@@ -403,8 +408,9 @@ public partial class ReceiptEmissionView : UserControl
             }
 
             PayOverlay.IsVisible = false;
-            Notice.Text = result.Message;
+            DocumentListingRefresh.NotifyChanged(this);
             await LoadAsync();
+            Notice.Text = result.Message;
             if (string.IsNullOrWhiteSpace(result.PdfPath) == false && OfficeSurface.Find(this) is { } office)
             {
                 await office.ShowPdfAsync(result.PdfPath, "Recibo");
@@ -529,7 +535,7 @@ public partial class ReceiptEmissionView : UserControl
 
     private void OnAmountChanged(object? sender, TextChangedEventArgs e) => ApplyAmounts();
 
-    private Task LoadAsync() => _load.RunAsync(LoadCoreAsync);
+    private Task LoadAsync() => _load.RunAsync(() => LoadCoreAsync());
 
     private void QueueSearch()
     {
@@ -559,7 +565,9 @@ public partial class ReceiptEmissionView : UserControl
         await LoadAsync();
     }
 
-    private async Task LoadCoreAsync()
+    private bool PaymentSelectionInUse() => PayOverlay.IsVisible || _visible.Any(row => row.IsSelected);
+
+    private async Task LoadCoreAsync(bool background = false)
     {
         var start = Period.Start;
         var end = Period.End;
@@ -574,32 +582,34 @@ public partial class ReceiptEmissionView : UserControl
         try
         {
             var service = AppComposition.Services?.GetService<IReceiptEmission>();
-            _rows.Clear();
             if (service is not null)
             {
                 var page = await service.ListAsync(start, end, _page, PageSize(), search, customerId: ListingFilters.CustomerId(CustomerBox));
-                if (generation != _loadGeneration)
+                if (generation != _loadGeneration || (background && PaymentSelectionInUse()))
                 {
                     return;
                 }
 
+                _rows.Clear();
                 _rows.AddRange(page.Items);
                 _page = Math.Max(1, page.Page);
                 _totalPages = Math.Max(1, page.TotalPages);
             }
 
             _loadedSearch = search ?? string.Empty;
-            Notice.Text = string.Empty;
+            if (background == false)
+            {
+                Notice.Text = string.Empty;
+            }
+
             ApplySearch();
         }
         catch (Exception exception)
         {
-            if (generation != _loadGeneration)
+            if (generation == _loadGeneration && background == false)
             {
-                return;
+                Notice.Text = exception.Message;
             }
-
-            Notice.Text = exception.Message;
         }
     }
 

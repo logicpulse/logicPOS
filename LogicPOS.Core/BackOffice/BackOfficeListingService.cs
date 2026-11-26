@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using LogicPOS.Application.Features.Finance.Documents;
@@ -486,13 +486,30 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 .ToList();
         }
 
+        if (type == typeof(ArticleSubfamily))
+        {
+            return await (from subfamily in database.ArticleSubfamilies.AsNoTracking()
+                          where subfamily.IsDeleted == false && subfamily.Id != Guid.Empty
+                          join family in database.ArticleFamilies.AsNoTracking()
+                              on subfamily.FamilyId equals family.Id into families
+                          from family in families.DefaultIfEmpty()
+                          orderby subfamily.Designation
+                          select new LookupOption
+                          {
+                              Id = subfamily.Id,
+                              Label = subfamily.Designation,
+                              FamilyId = subfamily.FamilyId,
+                              FamilyLabel = family == null ? null : family.Designation
+                          }).ToListAsync(cancellationToken);
+        }
+
         var rows = await MaterializeAsync(database, type, cancellationToken);
         var articles = type.Name == "Article";
         return rows
             .Cast<object>()
             .Where(row => ReadBool(row, "IsDeleted") == false)
             .Select(row => articles
-                ? LookupOption.FromArticle(ReadGuid(row, "Id"), ReadString(row, "Code"), ReadString(row, "Designation"), ReadString(row, "Barcode"))
+                ? LookupOption.FromArticle(ReadGuid(row, "Id"), ReadString(row, "Code"), ReadString(row, "Designation"), ReadString(row, "Barcode"), ReadGuid(row, "SubfamilyId"))
                 : new LookupOption
                 {
                     Id = ReadGuid(row, "Id"),
@@ -1078,12 +1095,28 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             : Describe(page, rows[0], false);
         // UpdatedAt is form-hidden but still listed in column profiles (GTK parity).
         var availableKeys = fields.Select(field => field.Key).Append("UpdatedAt");
+        var familyBySubfamily = new Dictionary<Guid, string>();
+        if (page.EntityType == typeof(Article))
+        {
+            availableKeys = availableKeys.Append("FamilyId");
+            familyBySubfamily = await database.ArticleSubfamilies.AsNoTracking()
+                .Select(item => new { item.Id, Name = item.Family == null ? "" : item.Family.Designation })
+                .ToDictionaryAsync(item => item.Id, item => item.Name, cancellationToken);
+        }
         var columns = ListingColumns.For(page.Title, availableKeys);
         var lookups = await LoadLookupsAsync(database, page.EntityType!, columns, cancellationToken);
         return new ListingSnapshot
         {
             Columns = columns,
-            Rows = rows.Select(row => ToRow(page, row, columns, lookups)).ToList()
+            Rows = rows.Select(entity =>
+            {
+                var row = ToRow(page, entity, columns, lookups);
+                if (entity is Article article)
+                {
+                    row.Values["FamilyId"] = familyBySubfamily.GetValueOrDefault(article.SubfamilyId) ?? string.Empty;
+                }
+                return row;
+            }).ToList()
         };
     }
 

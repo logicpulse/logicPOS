@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -302,7 +302,7 @@ public partial class ReportsWindow : UserControl
         WarehousePanel.IsVisible = report?.ShowWarehouse == true;
         ArticlePanel.IsVisible = report?.ShowArticle == true;
         FamilyPanel.IsVisible = report?.ShowFamily == true;
-        SubfamilyPanel.IsVisible = report?.ShowSubfamily == true;
+        SubfamilyPanel.IsVisible = report?.ShowSubfamily == true || report?.ShowArticle == true;
         SerialPanel.IsVisible = report?.ShowSerial == true;
         DocumentNumberPanel.IsVisible = report?.ShowDocumentNumber == true;
         PackFilterRow(DatesRow, PeriodPanel, DocumentTypePanel, TerminalPanel);
@@ -348,20 +348,20 @@ public partial class ReportsWindow : UserControl
         var template = new FuncDataTemplate<LookupOption>((item, _) => new TextBlock { Text = item?.Label ?? string.Empty });
         foreach (var box in new[]
                  {
-                     CustomerBox, ArticleBox, DocumentTypeBox, TerminalBox, VatBox, WarehouseBox, FamilyBox, SubfamilyBox
+                     CustomerBox, ArticleBox, DocumentTypeBox, TerminalBox, VatBox, WarehouseBox, FamilyBox
                  })
         {
             box.ItemTemplate = template;
         }
 
         CustomerBox.ItemsSource = WithAllOption(await listing.LookupAsync("Clientes"));
-        ArticleBox.ItemsSource = WithAllOption(await listing.LookupAsync("Artigos"));
+        _reportArticles = await listing.LookupAsync("Artigos");
         DocumentTypeBox.ItemsSource = WithAllOption(await listing.LookupAsync("Tipo de documento"));
         TerminalBox.ItemsSource = WithAllOption(await listing.LookupAsync("Terminais"));
         VatBox.ItemsSource = WithAllOption(await listing.LookupAsync("Taxas de imposto"));
         WarehouseBox.ItemsSource = WithAllOption(await listing.LookupAsync("Armazém"));
         FamilyBox.ItemsSource = WithAllOption(await listing.LookupAsync("Famílias"));
-        SubfamilyBox.ItemsSource = WithAllOption(await listing.LookupAsync("Subfamílias"));
+        _reportGroups = await listing.LookupAsync("Subfamílias");
         ResetFilterDefaults();
         _lookupsLoaded = true;
     }
@@ -373,13 +373,22 @@ public partial class ReportsWindow : UserControl
         return list;
     }
 
+    private IReadOnlyList<LookupOption> _reportArticles = [];
+    private IReadOnlyList<LookupOption> _reportGroups = [];
+
     private void ResetFilterDefaults()
     {
         var month = DefaultPeriods.Month(DateTime.Today);
         Period.SetRange(month.Start, month.End);
+        ArticleBox.ItemsSource = WithAllOption(_reportArticles);
+        ReportClassification.Content = new ArticleSubfamilyPicker(_reportGroups, "", false, selected =>
+        {
+            ArticleBox.ItemsSource = WithAllOption(_reportArticles.Where(item => selected is null || item.SubfamilyId == selected.Id).ToList());
+            ArticleBox.SelectedIndex = 0;
+        });
         foreach (var box in new[]
                  {
-                     CustomerBox, ArticleBox, DocumentTypeBox, TerminalBox, VatBox, WarehouseBox, FamilyBox, SubfamilyBox
+                     CustomerBox, ArticleBox, DocumentTypeBox, TerminalBox, VatBox, WarehouseBox, FamilyBox
                  })
         {
             if (box.ItemCount > 0)
@@ -484,7 +493,7 @@ public partial class ReportsWindow : UserControl
             VatRateId = SelectedId(VatBox),
             WarehouseId = SelectedId(WarehouseBox),
             FamilyId = SelectedId(FamilyBox),
-            SubfamilyId = SelectedId(SubfamilyBox),
+            SubfamilyId = SubfamilyPanel.IsVisible ? (ReportClassification.Content as ArticleSubfamilyPicker)?.Selected?.Id : null,
             SerialNumber = SerialBox.Text?.Trim() ?? string.Empty,
             DocumentNumber = DocumentNumberBox.Text?.Trim() ?? string.Empty
         };

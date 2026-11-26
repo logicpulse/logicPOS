@@ -1,4 +1,4 @@
-﻿namespace LogicPOS.Core.BackOffice;
+namespace LogicPOS.Core.BackOffice;
 
 public sealed class ListingColumn
 {
@@ -215,9 +215,18 @@ public sealed class LookupOption
 
     public string? Search { get; init; }
 
+    public Guid? SubfamilyId { get; init; }
+
+    public Guid? FamilyId { get; init; }
+
+    public string? FamilyLabel { get; init; }
+
     public override string ToString() => Label;
 
     public static LookupOption FromArticle(Guid id, string? code, string? designation, string? barcode)
+        => FromArticle(id, code, designation, barcode, null);
+
+    public static LookupOption FromArticle(Guid id, string? code, string? designation, string? barcode, Guid? subfamilyId)
     {
         var number = (code ?? string.Empty).Trim();
         var name = (designation ?? string.Empty).Trim();
@@ -234,6 +243,7 @@ public sealed class LookupOption
         {
             Id = id,
             Label = label,
+            SubfamilyId = subfamilyId,
             Search = string.Join(' ', parts.Where(part => part.Length > 0))
         };
     }

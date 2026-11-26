@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using LogicPOS.Core;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities;
@@ -1169,10 +1169,10 @@ public sealed class LocalStockService : IStockManagementService
         var rows = await database.Articles.AsNoTracking()
             .Where(item => item.IsDeleted == false)
             .OrderBy(item => item.Code)
-            .Select(item => new { item.Id, item.Code, item.Designation, item.Barcode })
+            .Select(item => new { item.Id, item.Code, item.Designation, item.Barcode, item.SubfamilyId })
             .ToListAsync(cancellationToken);
         return rows
-            .Select(item => LookupOption.FromArticle(item.Id, item.Code, item.Designation, item.Barcode))
+            .Select(item => LookupOption.FromArticle(item.Id, item.Code, item.Designation, item.Barcode, item.SubfamilyId))
             .ToList();
     }
 

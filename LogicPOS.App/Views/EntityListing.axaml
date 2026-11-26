@@ -22,6 +22,9 @@
                     </Border>
                     <DockPanel x:Name="MobileBar" Classes="bo_mobile_bar" IsVisible="False">
                         <Button Classes="bo_mobile_bar_button" DockPanel.Dock="Right" Content="Mais" Click="OnMobileMoreClick" />
+                        <Button x:Name="MobileReceiptRefreshButton" Classes="bo_listing_icon_button" DockPanel.Dock="Right" IsVisible="False" Click="OnReceiptRefreshClick" ToolTip.Tip="Atualizar lista" AutomationProperties.Name="Atualizar lista">
+                            <TextBlock Text="&#x21BB;" FontSize="18" />
+                        </Button>
                         <Button Classes="bo_mobile_bar_button" DockPanel.Dock="Right" Content="Filtros" Click="OnMobileFilterClick" />
                         <Border Classes="bo_listing_search">
                             <DockPanel>
@@ -77,6 +80,9 @@
                                 </Button>
                                 <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Click="OnResetClick" ToolTip.Tip="Repor">
                                     <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_repor_b.svg" />
+                                </Button>
+                                <Button x:Name="ReceiptRefreshButton" Classes="bo_listing_icon_button" DockPanel.Dock="Left" IsVisible="False" Click="OnReceiptRefreshClick" ToolTip.Tip="Atualizar lista" AutomationProperties.Name="Atualizar lista">
+                                    <TextBlock Text="&#x21BB;" FontSize="18" />
                                 </Button>
                                 <Button Classes="bo_listing_columns" DockPanel.Dock="Left" Content="Colunas ▾" Click="OnChooseColumnsClick" ToolTip.Tip="Colunas" />
                                 <Border Classes="bo_listing_search">

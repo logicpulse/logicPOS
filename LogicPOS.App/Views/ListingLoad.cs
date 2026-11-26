@@ -169,6 +169,8 @@ internal sealed class ListingLoad
     private readonly Control _overlay;
     private int _depth;
 
+    public bool IsRunning => _depth > 0;
+
     public ListingLoad(Control overlay) => _overlay = overlay;
 
     public async Task RunAsync(Func<Task> action)

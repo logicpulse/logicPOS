@@ -33,6 +33,9 @@
                         </DockPanel>
                     </Border>
                     <DockPanel x:Name="MobileBar" Classes="bo_mobile_bar" IsVisible="False">
+                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnRefreshClick" ToolTip.Tip="Atualizar lista" AutomationProperties.Name="Atualizar lista">
+                            <TextBlock Text="&#x21BB;" FontSize="18" />
+                        </Button>
                         <Button Classes="bo_mobile_bar_button" DockPanel.Dock="Right" Content="Filtros" Click="OnMobileFilterClick" />
                         <Border Classes="bo_listing_search">
                             <DockPanel>
@@ -60,7 +63,10 @@
                             <TextBlock x:Name="SelectionLabel" Classes="bo_doc_count_inline" Text="(0) = 0,00" />
                         </StackPanel>
                         <DockPanel Classes="bo_listing_tools">
-                            <Border Classes="bo_listing_search">
+                                <Button Classes="bo_listing_icon_button" DockPanel.Dock="Left" Click="OnRefreshClick" ToolTip.Tip="Atualizar lista" AutomationProperties.Name="Atualizar lista">
+                                    <TextBlock Text="&#x21BB;" FontSize="18" />
+                                </Button>
+                                <Border Classes="bo_listing_search">
                                 <DockPanel>
                                     <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
                                         <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />

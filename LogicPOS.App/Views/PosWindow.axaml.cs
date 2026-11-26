@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.IO;
 using Avalonia;
 using Avalonia.Controls;
@@ -1910,7 +1910,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     /// <summary>
     /// Decode Base64 / ficheiro sem tocar no cache de instância (seguro em Task.Run).
     /// </summary>
-    private static Bitmap? DecodeBitmapOffUi(string? imageBase64)
+    internal static Bitmap? DecodeBitmapOffUi(string? imageBase64)
     {
         if (string.IsNullOrWhiteSpace(imageBase64))
         {
@@ -2274,11 +2274,6 @@ public partial class PosWindow : UserControl, IOfficeSurface
         NewDocumentOverlay.IsVisible = false;
         if (created)
         {
-            if (DocumentsOverlay.IsVisible)
-            {
-                await DocumentsHost.ReloadAsync();
-            }
-
             if (string.IsNullOrEmpty(NewDocumentHost.CreatedPdfPath) == false)
             {
                 await ShowPdfAsync(NewDocumentHost.CreatedPdfPath, NewDocumentHost.CreatedPdfTitle);
@@ -4233,6 +4228,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 return;
             }
 
+            DocumentListingRefresh.NotifyChanged(this);
             VoltaOverlay.IsVisible = false;
             var printError = await FrontOfficePrinting.PrintInvoiceAsync(result.DocumentId);
             var message = printError is null

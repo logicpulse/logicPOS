@@ -52,6 +52,9 @@ public partial class DocumentsListing : UserControl
         SendToAtButton.IsVisible = FiscalFeatures.ShowsAtCommunication(FiscalFeatures.Current);
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
+        DocumentListingRefresh.Attach(this, ReloadAsync,
+            () => _datesReady && _load.IsRunning == false,
+            () => LoadCoreAsync(background: true));
         ListingNotice.BindToast(ActionNotice, this, skipProgress: true);
         ListingNotice.BindToast(EmailNotice, this);
         TouchFields.Attach(this);
@@ -384,6 +387,8 @@ public partial class DocumentsListing : UserControl
         _fillingFilters = false;
     }
 
+    private async void OnRefreshClick(object? sender, RoutedEventArgs e) => await ReloadAsync();
+
     private async void OnFilterClick(object? sender, RoutedEventArgs e)
     {
         _page = 1;
@@ -644,6 +649,7 @@ public partial class DocumentsListing : UserControl
             }
 
             await documents.DeleteDraftAsync(row.Id);
+            DocumentListingRefresh.NotifyChanged(this);
             Toast.Success(this, "Rascunho eliminado com sucesso.");
             await ReloadAsync();
             return;
@@ -1003,8 +1009,14 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        ActionNotice.Text = await documents.CancelDocumentAsync(row.Id, value) ?? "Documento anulado.";
-        await ReloadAsync();
+        var error = await documents.CancelDocumentAsync(row.Id, value);
+        if (error is null)
+        {
+            DocumentListingRefresh.NotifyChanged(this);
+            await ReloadAsync();
+        }
+
+        ActionNotice.Text = error ?? "Documento anulado.";
     }
 
     private void OnPromptCancelClick(object? sender, RoutedEventArgs e)
@@ -1184,6 +1196,8 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
+        DocumentListingRefresh.NotifyChanged(this);
+        await ReloadAsync();
         var path = await CreatePdfAsync(row);
         if (path is not null && OfficeSurface.Find(this) is { } office)
         {
@@ -1699,7 +1713,7 @@ public partial class DocumentsListing : UserControl
         ActionNotice.Text = "Não foi possível abrir o documento.";
     }
 
-    private Task LoadAsync() => _load.RunAsync(LoadCoreAsync);
+    private Task LoadAsync() => _load.RunAsync(() => LoadCoreAsync());
 
     private void QueueSearch()
     {
@@ -1729,7 +1743,7 @@ public partial class DocumentsListing : UserControl
         await LoadAsync();
     }
 
-    private async Task LoadCoreAsync()
+    private async Task LoadCoreAsync(bool background = false)
     {
         var services = AppComposition.Services;
         if (services is null)
@@ -1738,7 +1752,10 @@ public partial class DocumentsListing : UserControl
         }
 
         // Do not leave the empty-state label covering the spinner while a load is in flight.
-        EmptyLabel.IsVisible = false;
+        if (background == false)
+        {
+            EmptyLabel.IsVisible = false;
+        }
 
         var generation = ++_loadGeneration;
         var start = Period.Start;
@@ -1781,6 +1798,11 @@ public partial class DocumentsListing : UserControl
                 return;
             }
 
+            if (background)
+            {
+                return;
+            }
+
             _rows.Clear();
             _picked.Clear();
             _totalPages = 1;
@@ -1788,7 +1810,11 @@ public partial class DocumentsListing : UserControl
             EmptyLabel.Text = exception.Message;
         }
 
-        ActionNotice.Text = string.Empty;
+        if (background == false)
+        {
+            ActionNotice.Text = string.Empty;
+        }
+
         ShowPage();
     }
 

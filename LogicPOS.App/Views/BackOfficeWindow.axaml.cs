@@ -296,7 +296,6 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         NewDocumentOverlay.IsVisible = false;
         if (created)
         {
-            await DocumentsHost.ReloadAsync();
             if (string.IsNullOrEmpty(NewDocumentHost.CreatedPdfPath) == false)
             {
                 await ShowPdfAsync(NewDocumentHost.CreatedPdfPath, NewDocumentHost.CreatedPdfTitle);
