@@ -5470,13 +5470,20 @@
     </Style>
 
     <Style Selector="Border.bo_listing_thumb_frame">
-        <Setter Property="Width" Value="44" />
-        <Setter Property="Height" Value="44" />
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Background" Value="#F0F0F0" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="Border.bo_line_editor_thumb">
+        <Setter Property="Width" Value="48" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Image.bo_listing_thumb">
@@ -6067,7 +6074,7 @@
     <Style Selector="ScrollViewer.bo_new_doc_pad_scroll">
         <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
-        <Setter Property="Height" Value="84" />
+        <Setter Property="Height" Value="52" />
     </Style>
 
     <Style Selector="StackPanel.bo_new_doc_pad_row">
@@ -6080,20 +6087,30 @@
         <Setter Property="Margin" Value="0,8,0,0" />
     </Style>
 
-    <Style Selector="Button.pos_menu_button.bo_new_doc_pad_button">
-        <Setter Property="MinWidth" Value="148" />
-        <Setter Property="MinHeight" Value="72" />
-        <Setter Property="Margin" Value="4" />
-        <Setter Property="FontSize" Value="13" />
+    <Style Selector="Button.doc_catalog_tile">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="#22303A"/>
+        <Setter Property="BorderBrush" Value="#CDD6DC"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}"
+                    Padding="{TemplateBinding Padding}" Content="{TemplateBinding Content}"
+                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="Center"/>
+            </ControlTemplate>
+        </Setter>
     </Style>
-
-    <Style Selector="Button.pos_menu_button.bo_new_doc_pad_button TextBlock.pos_menu_caption">
-        <Setter Property="FontSize" Value="13" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="MaxHeight" Value="64" />
+    <Style Selector="Button.doc_catalog_tile:pointerover, Button.doc_catalog_tile:focus-visible">
+        <Setter Property="BorderBrush" Value="#71962C"/>
+        <Setter Property="Background" Value="#F5F8EE"/>
     </Style>
-
-    <!-- Preview PDF: mesmo chrome das janelas de pagamentos / relatórios. -->
+    <Style Selector="Button.doc_catalog_tile.selected">
+        <Setter Property="Background" Value="#E7F1CD"/>
+        <Setter Property="BorderBrush" Value="#73952D"/>
+    </Style>
+<!-- Preview PDF: mesmo chrome das janelas de pagamentos / relatórios. -->
     <Style Selector="Border.bo_pdf_dialog">
         <Setter Property="Background" Value="#3D3D3D" />
         <Setter Property="BorderBrush" Value="#5A5A5A" />
@@ -6298,7 +6315,7 @@
         <Setter Property="CornerRadius" Value="8" />
     </Style>
 
-    <Style Selector="ComboBox.bo_entity_input">
+    <Style Selector="ComboBox.bo_entity_input, Button.bo_subfamily_picker">
         <Setter Property="MinHeight" Value="32" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="Normal" />

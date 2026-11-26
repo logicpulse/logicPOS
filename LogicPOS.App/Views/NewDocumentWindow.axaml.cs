@@ -2,9 +2,12 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using LogicPOS.App;
 using LogicPOS.Core;
@@ -75,6 +78,7 @@ public partial class NewDocumentWindow : UserControl
     private bool _editorOpen;
     private NewDocumentLine? _editing;
     private LineSnapshot? _editSnapshot;
+    private CancellationTokenSource? _editImageLoad;
 
     public string? CreatedPdfPath { get; private set; }
 
@@ -103,6 +107,7 @@ public partial class NewDocumentWindow : UserControl
     public NewDocumentWindow()
     {
         InitializeComponent();
+        InstallLineImageColumn();
         CustomerSuggest.PlacementTarget = CustomerName;
         if (EditorZip.Parent is Control zipParent && zipParent.Parent is Panel zipHost)
         {
@@ -619,6 +624,17 @@ public partial class NewDocumentWindow : UserControl
         if (catalog is not null)
         {
             _posCatalog = catalog;
+            _searchSubfamily = null;
+            SearchFamilyFilter.Content = new ArticleSubfamilyPicker(
+                DocumentSubfamilies(),
+                "",
+                false,
+                option =>
+                {
+                    _searchSubfamily = option?.Id;
+                    _ = ApplyFilterAsync();
+                },
+                showFamilyIcon: true);
             _catalog.Clear();
             _catalog.AddRange(_posCatalog.Articles.Select(article => new CatalogChoice(article, FamilyName(_posCatalog, article))));
             _ = ApplyFilterAsync();
@@ -1762,14 +1778,8 @@ public partial class NewDocumentWindow : UserControl
         NewArticleName.Text = string.Empty;
         NewArticlePrice.Text = "0";
         NewArticleUnique.IsChecked = false;
-        var families = _posCatalog.Subfamilies
-            .Select(item => new LookupOption { Id = item.Id, Label = item.Text })
-            .OrderBy(item => item.Label)
-            .ToList();
-        NewArticleFamily.ItemsSource = families;
-        ListingFilters.EnableLookupSearch(NewArticleFamily);
-        NewArticleFamily.PlaceholderText = "Subfamília";
-        ListingFilters.SelectLookup(NewArticleFamily, families.FirstOrDefault());
+        var families = DocumentSubfamilies();
+        NewArticleFamily.Content = new ArticleSubfamilyPicker(families, families.FirstOrDefault()?.Id.ToString() ?? "", false);
         NewArticleVat.ItemsSource = _vatRates;
         NewArticleVat.SelectedItem = _vatRates.FirstOrDefault(item => item.Percentage == 23m) ?? _vatRates.FirstOrDefault();
         NewArticleOverlay.IsVisible = true;
@@ -1798,7 +1808,7 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        var family = ListingFilters.SelectedLookup(NewArticleFamily);
+        var family = (NewArticleFamily.Content as ArticleSubfamilyPicker)?.Selected;
         if (family is null)
         {
             NewArticleError.Text = "Escolha a subfamília.";
@@ -1982,12 +1992,25 @@ public partial class NewDocumentWindow : UserControl
         FocusArticleSearch();
     }
 
+    private Guid? _searchSubfamily;
+    private IReadOnlyList<LookupOption> DocumentSubfamilies()
+    {
+        var families = _posCatalog.Families.ToDictionary(item => item.Id, item => item.Text);
+        return _posCatalog.Subfamilies.Select(item => new LookupOption
+        {
+            Id = item.Id, Label = item.Text, FamilyId = item.ParentId,
+            FamilyLabel = families.GetValueOrDefault(item.ParentId)
+        }).ToList();
+    }
+
     private void OnOpenArticlePad(object? sender, RoutedEventArgs e)
     {
+        PadSearch.Clear();
         _padFamilyId = _posCatalog.Families.FirstOrDefault()?.Id;
         _padSubfamilyId = SubfamiliesForPad().FirstOrDefault()?.Id;
         BuildArticlePad();
         ArticlePad.IsVisible = true;
+        PadSearch.Focus();
     }
 
     private void OnArticlePadClose(object? sender, RoutedEventArgs e)
@@ -1997,6 +2020,12 @@ public partial class NewDocumentWindow : UserControl
 
     private void BuildArticlePad()
     {
+        PadClassification.Content = new ArticleSubfamilyPicker(DocumentSubfamilies(), _padSubfamilyId?.ToString() ?? "", false, option =>
+        {
+            _padFamilyId = option?.FamilyId;
+            _padSubfamilyId = option?.Id;
+            BuildArticlePad();
+        });
         PadFamilies.Children.Clear();
         foreach (var family in _posCatalog.Families)
         {
@@ -2024,33 +2053,85 @@ public partial class NewDocumentWindow : UserControl
             PadSubfamilies.Children.Add(button);
         }
 
+        RefreshPadArticles();
+    }
+
+    private void OnPadSearchChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (ArticlePad?.IsVisible == true) RefreshPadArticles();
+    }
+
+    private void RefreshPadArticles()
+    {
         PadArticles.Children.Clear();
-        foreach (var article in PadArticleChoices())
+        var term = PadSearch.Text?.Trim();
+        foreach (var article in PadArticleChoices().Where(item => TextSearch.ContainsAny(term, item.Code, item.Designation)))
         {
             var choice = article;
-            var button = PadButton(choice.Designation, false, () => AddChoice(choice));
-            button.Classes.Remove("pos_menu_button_green");
-            button.Classes.Add("pos_menu_button_grey");
-            PadArticles.Children.Add(button);
+            PadArticles.Children.Add(ArticleCard(choice));
         }
+        if (PadArticles.Children.Count == 0 && !string.IsNullOrEmpty(term))
+        {
+            PadArticles.Children.Add(new TextBlock { Text = "Nenhum artigo encontrado." });
+        }
+    }
+
+    private Button ArticleCard(CatalogChoice choice)
+    {
+        var name = choice.Designation;
+        var initials = string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Take(2).Select(word => word[0])).ToUpperInvariant();
+        var preview = new Border
+        {
+            Width = 56, Height = 56, CornerRadius = new CornerRadius(7),
+            Background = Brush.Parse("#EEF3E6"), ClipToBounds = true,
+            Child = new TextBlock { Text = initials, FontSize = 18, Foreground = Brush.Parse("#506735"),
+                VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center }
+        };
+        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*"), ColumnSpacing = 12 };
+        grid.Children.Add(preview);
+        var details = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Spacing = 4 };
+        details.Children.Add(new TextBlock { Text = choice.Code, FontSize = 11, Foreground = Brush.Parse("#52636E") });
+        details.Children.Add(new TextBlock { Text = name, FontSize = 13, FontWeight = FontWeight.SemiBold,
+            TextWrapping = TextWrapping.Wrap, MaxLines = 3, TextTrimming = TextTrimming.CharacterEllipsis });
+        Grid.SetColumn(details, 1);
+        grid.Children.Add(details);
+        var button = new Button { Classes = { "doc_catalog_tile" }, Content = grid, Width = 220, Height = 90,
+            Margin = new Thickness(0, 0, 8, 8), Padding = new Thickness(10), HorizontalContentAlignment = HorizontalAlignment.Stretch };
+        ToolTip.SetTip(button, name);
+        button.Click += (_, _) => AddChoice(choice);
+        var service = AppComposition.Services?.GetService<IPosCatalogService>();
+        if (service is not null)
+        {
+            var tokenSource = new CancellationTokenSource();
+            button.DetachedFromVisualTree += (_, _) => tokenSource.Cancel();
+            _ = LoadPhotoAsync();
+            async Task LoadPhotoAsync()
+            {
+                try
+                {
+                    var data = await service.GetButtonImageAsync(ButtonImageKind.Article, choice.Article.Id, tokenSource.Token);
+                    if (string.IsNullOrWhiteSpace(data) || tokenSource.IsCancellationRequested) return;
+                    var bitmap = await Task.Run(() => PosWindow.DecodeBitmapOffUi(data));
+                    if (bitmap is null) return;
+                    if (tokenSource.IsCancellationRequested) { bitmap.Dispose(); return; }
+                    preview.Child = new Image { Source = bitmap, Stretch = Stretch.Uniform };
+                    button.DetachedFromVisualTree += (_, _) => bitmap.Dispose();
+                }
+                catch (Exception) { /* The article remains selectable with its initials. */ }
+            }
+        }
+        return button;
     }
 
     private Button PadButton(string text, bool selected, Action click)
     {
-        var button = new Button
-        {
-            Classes = { "pos_menu_button", "pos_menu_button_green", "bo_new_doc_pad_button" },
-            Content = new TextBlock { Classes = { "pos_menu_caption" }, Text = text }
-        };
-        if (selected)
-        {
-            button.Classes.Add("pos_menu_button_selected");
-        }
-
+        var button = new Button { Classes = { "doc_catalog_tile" }, Content = text, Height = 36,
+            Padding = new Thickness(12, 4), Margin = new Thickness(0, 0, 4, 0), FontSize = 13 };
+        if (selected) button.Classes.Add("selected");
         button.Click += (_, _) => click();
         return button;
     }
-
     private IReadOnlyList<PosMenuItem> SubfamiliesForPad()
     {
         if (_padFamilyId is null)
@@ -2104,6 +2185,7 @@ public partial class NewDocumentWindow : UserControl
         _editorOpen = true;
         EditQuantity.IsReadOnly = string.IsNullOrWhiteSpace(line.SerialNumber) == false;
         FillEditor(line.Code, line.Designation, line.Family, line.Price, line.Quantity, line.Discount, line.VatRateId, line.Notes, line.SerialNumber, line.VatExemptionId);
+        LoadEditArticleImage(line.ArticleId);
         LineEditor.IsVisible = true;
     }
 
@@ -2304,6 +2386,13 @@ public partial class NewDocumentWindow : UserControl
 
     private void CloseEditor()
     {
+        _editImageLoad?.Cancel();
+        if (EditArticleImage.Source is IDisposable previous)
+        {
+            previous.Dispose();
+        }
+
+        EditArticleImage.Source = null;
         EditQuantity.IsReadOnly = false;
         LineEditor.IsVisible = false;
         _editorOpen = false;
@@ -2378,7 +2467,7 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        _matches.AddRange(_catalog.Where(item => TextSearch.Contains(item.SearchText, term)).Take(8));
+        _matches.AddRange(_catalog.Where(item => (_searchSubfamily is null || item.Article.SubfamilyId == _searchSubfamily) && TextSearch.Contains(item.SearchText, term)).Take(8));
         foreach (var choice in _matches)
         {
             var match = choice;
@@ -2414,7 +2503,7 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        foreach (var row in rows.Take(8))
+        foreach (var row in rows.Where(row => _searchSubfamily is null || _catalog.Any(item => item.Article.Id == row.ArticleId && item.Article.SubfamilyId == _searchSubfamily)).Take(8))
         {
             var serial = row;
             _serialMatches.Add(serial);
@@ -2427,6 +2516,7 @@ public partial class NewDocumentWindow : UserControl
     private Button SuggestArticle(CatalogChoice match)
     {
         return SuggestRow(
+            match.Article.Id,
             "Artigo",
             "bo_suggest_kind_article",
             match.Code,
@@ -2438,6 +2528,7 @@ public partial class NewDocumentWindow : UserControl
     private Button SuggestSerial(StockSerialChoice serial)
     {
         return SuggestRow(
+            serial.ArticleId,
             "Série",
             "bo_suggest_kind_serial",
             serial.SerialNumber,
@@ -2446,7 +2537,14 @@ public partial class NewDocumentWindow : UserControl
             () => AddSerial(serial));
     }
 
-    private static Button SuggestRow(string kind, string kindClass, string title, bool serial, string detail, Action click)
+    private Button SuggestRow(
+        Guid articleId,
+        string kind,
+        string kindClass,
+        string title,
+        bool serial,
+        string detail,
+        Action click)
     {
         var text = new StackPanel { Spacing = 0, VerticalAlignment = VerticalAlignment.Center };
         text.Children.Add(new TextBlock
@@ -2455,12 +2553,14 @@ public partial class NewDocumentWindow : UserControl
             Text = title
         });
         text.Children.Add(new TextBlock { Classes = { "bo_suggest_meta" }, Text = detail });
+        var thumb = CreateArticleThumb(articleId);
         var body = new StackPanel
         {
             Orientation = Orientation.Horizontal,
             Spacing = 10,
             Children =
             {
+                thumb,
                 new Border
                 {
                     Classes = { "bo_suggest_badge", kindClass },
@@ -2477,6 +2577,167 @@ public partial class NewDocumentWindow : UserControl
         };
         button.Click += (_, _) => click();
         return button;
+    }
+
+    private void InstallLineImageColumn()
+    {
+        // Columns: Ref. | image | Descrição | ...
+        if (LinesGrid.Columns.Count < 2 || LinesGrid.Columns[1] is not DataGridTemplateColumn)
+        {
+            return;
+        }
+
+        LinesGrid.Columns.RemoveAt(1);
+        LinesGrid.Columns.Insert(1, new DataGridTemplateColumn
+        {
+            Header = string.Empty,
+            Width = new DataGridLength(52),
+            MinWidth = 52,
+            MaxWidth = 52,
+            CanUserResize = false,
+            CanUserSort = false,
+            CanUserReorder = false,
+            CellTemplate = new FuncDataTemplate<NewDocumentLine>((line, _) => CreateArticleThumb(line.ArticleId), supportsRecycling: false)
+        });
+    }
+
+    private Border CreateArticleThumb(Guid articleId)
+    {
+        var image = new Image
+        {
+            Classes = { "bo_listing_thumb" },
+            Width = 30,
+            Height = 30,
+            Stretch = Stretch.Uniform
+        };
+        var frame = new Border
+        {
+            Classes = { "bo_listing_thumb_frame" },
+            Child = image,
+            ClipToBounds = true,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        BindArticleThumb(frame, articleId);
+        return frame;
+    }
+
+    private void BindArticleThumb(Border frame, Guid articleId)
+    {
+        if (frame.Child is not Image image)
+        {
+            return;
+        }
+
+        image.Source = null;
+        if (articleId == Guid.Empty)
+        {
+            return;
+        }
+
+        var service = AppComposition.Services?.GetService<IPosCatalogService>();
+        if (service is null)
+        {
+            return;
+        }
+
+        var tokenSource = new CancellationTokenSource();
+        frame.DetachedFromVisualTree += (_, _) => tokenSource.Cancel();
+        _ = LoadAsync();
+
+        async Task LoadAsync()
+        {
+            try
+            {
+                var data = await service.GetButtonImageAsync(ButtonImageKind.Article, articleId, tokenSource.Token);
+                if (string.IsNullOrWhiteSpace(data) || tokenSource.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                var bitmap = await Task.Run(() => PosWindow.DecodeBitmapOffUi(data), tokenSource.Token);
+                if (bitmap is null || tokenSource.IsCancellationRequested)
+                {
+                    bitmap?.Dispose();
+                    return;
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (tokenSource.IsCancellationRequested)
+                    {
+                        bitmap.Dispose();
+                        return;
+                    }
+
+                    image.Source = bitmap;
+                    frame.DetachedFromVisualTree += (_, _) => bitmap.Dispose();
+                });
+            }
+            catch (Exception)
+            {
+                // Keep the empty thumb when the article has no image.
+            }
+        }
+    }
+
+    private void LoadEditArticleImage(Guid articleId)
+    {
+        _editImageLoad?.Cancel();
+        _editImageLoad?.Dispose();
+        _editImageLoad = new CancellationTokenSource();
+        EditArticleImage.Source = null;
+        if (articleId == Guid.Empty)
+        {
+            return;
+        }
+
+        var service = AppComposition.Services?.GetService<IPosCatalogService>();
+        if (service is null)
+        {
+            return;
+        }
+
+        var token = _editImageLoad.Token;
+        _ = LoadAsync();
+
+        async Task LoadAsync()
+        {
+            try
+            {
+                var data = await service.GetButtonImageAsync(ButtonImageKind.Article, articleId, token);
+                if (string.IsNullOrWhiteSpace(data) || token.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                var bitmap = await Task.Run(() => PosWindow.DecodeBitmapOffUi(data), token);
+                if (bitmap is null || token.IsCancellationRequested)
+                {
+                    bitmap?.Dispose();
+                    return;
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        bitmap.Dispose();
+                        return;
+                    }
+
+                    if (EditArticleImage.Source is IDisposable previous)
+                    {
+                        previous.Dispose();
+                    }
+
+                    EditArticleImage.Source = bitmap;
+                });
+            }
+            catch (Exception)
+            {
+                // Editor stays usable without a thumbnail.
+            }
+        }
     }
 
     private static string FamilyName(PosCatalog catalog, PosArticle article)
@@ -3341,6 +3602,7 @@ public partial class NewDocumentWindow : UserControl
         {
             await documents.DeleteDraftAsync(previous);
             _previewDraftId = null;
+            DocumentListingRefresh.NotifyChanged(this);
         }
 
         var saleLines = _lines.Select(line => new PosSaleLine(
@@ -3379,6 +3641,7 @@ public partial class NewDocumentWindow : UserControl
 
                 var draftId = SaveLocalDraft(type, customerId, _lines.Sum(line => line.GrossTotal));
                 _previewDraftId = draftId;
+                DocumentListingRefresh.NotifyChanged(this);
                 if (close == false)
                 {
                     var preview = await WriteLocalPreviewAsync(documents);
@@ -3432,6 +3695,7 @@ public partial class NewDocumentWindow : UserControl
             _previewDraftId = issued.DocumentId;
         }
 
+        DocumentListingRefresh.NotifyChanged(this);
         var path = await documents.CreateA4FileAsync(issued.DocumentId);
         if (close)
         {

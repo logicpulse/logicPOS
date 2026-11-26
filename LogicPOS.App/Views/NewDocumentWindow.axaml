@@ -221,6 +221,7 @@
                         <StackPanel DockPanel.Dock="Bottom" Classes="bo_new_doc_articles_footer">
                             <DockPanel Classes="bo_new_doc_search">
                                 <StackPanel Classes="bo_new_doc_article_tools" DockPanel.Dock="Right">
+                                    <ContentControl x:Name="SearchFamilyFilter" MaxWidth="220" VerticalAlignment="Center" />
                                     <Button Classes="bo_new_doc_tool" Click="OnNewArticleClick" ToolTip.Tip="Novo artigo">
                                         <StackPanel Orientation="Horizontal" Spacing="4">
                                             <svg:Svg Classes="bo_line_icon_image"
@@ -301,6 +302,7 @@
                                       LoadingRow="OnLineLoading">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Ref." Binding="{Binding Code}" Width="80" MinWidth="70" />
+                                    <DataGridTemplateColumn Header="" Width="52" MinWidth="52" MaxWidth="52" CanUserResize="False" CanUserSort="False" />
                                     <DataGridTextColumn Header="Descrição" Binding="{Binding Designation}" Width="*" MinWidth="140" />
                                     <DataGridTextColumn Header="Nº série" Binding="{Binding SerialText}" Width="140" MinWidth="110" />
                                     <DataGridTextColumn Header="Qtd." Binding="{Binding QuantityText}" Width="80" MinWidth="70" />
@@ -399,7 +401,21 @@
                             <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_tipos_artigo_b.svg" />
                             <TextBlock Classes="bo_new_doc_caption" Text="Código" />
                         </StackPanel>
-                        <TextBox x:Name="EditCode" Classes="bo_line_editor_input" IsReadOnly="True" />
+                        <DockPanel>
+                            <Border x:Name="EditArticleImageFrame"
+                                    Classes="bo_listing_thumb_frame bo_line_editor_thumb"
+                                    DockPanel.Dock="Left"
+                                    Width="48"
+                                    Height="48"
+                                    Margin="0,0,8,0">
+                                <Image x:Name="EditArticleImage"
+                                       Classes="bo_listing_thumb"
+                                       Width="44"
+                                       Height="44"
+                                       Stretch="Uniform" />
+                            </Border>
+                            <TextBox x:Name="EditCode" Classes="bo_line_editor_input" IsReadOnly="True" />
+                        </DockPanel>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Grid.ColumnSpan="2">
                         <StackPanel Classes="bo_new_doc_label">
@@ -418,7 +434,7 @@
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
                         <StackPanel Classes="bo_new_doc_label">
                             <svg:Svg Classes="bo_new_doc_label_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_familas_b.svg" />
-                            <TextBlock Classes="bo_new_doc_caption" Text="Família" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Família / Sub-família" />
                         </StackPanel>
                         <TextBox x:Name="EditFamily" Classes="bo_line_editor_input" IsReadOnly="True" />
                     </StackPanel>
@@ -658,15 +674,22 @@
                     </StackPanel>
                 </Border>
                 <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                    <Button Classes="login_alert_action action_secondary" Click="OnArticlePadClose">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <TextBox x:Name="PadSearch" Classes="bo_entity_input" MaxWidth="420"
+                                 HorizontalAlignment="Left" Width="360" VerticalAlignment="Center"
+                                 PlaceholderText="Pesquisar por código ou designação"
+                                 TextChanged="OnPadSearchChanged"/>
+                    <Button Grid.Column="1" Classes="login_alert_action action_secondary" Click="OnArticlePadClose">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
                                    Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                         </StackPanel>
                     </Button>
+                    </Grid>
                 </Border>
                 <DockPanel Classes="bo_new_doc_pad">
+                    <ContentControl x:Name="PadClassification" DockPanel.Dock="Top" HorizontalAlignment="Left" MinWidth="220" />
                     <ScrollViewer x:Name="PadFamilyScroll" Classes="bo_new_doc_pad_scroll" DockPanel.Dock="Top">
                         <StackPanel x:Name="PadFamilies" Classes="bo_new_doc_pad_row" />
                     </ScrollViewer>
@@ -951,8 +974,8 @@
                         <TextBox x:Name="NewArticleName" Classes="bo_entity_input" />
                         <TextBlock Classes="bo_new_doc_caption" Text="Preço" />
                         <TextBox x:Name="NewArticlePrice" Classes="bo_entity_input bo_numeric" Text="0" />
-                        <TextBlock Classes="bo_new_doc_caption" Text="Subfamília" />
-                        <AutoCompleteBox x:Name="NewArticleFamily" Classes="bo_entity_input" />
+                        <TextBlock Classes="bo_new_doc_caption" Text="Família / Sub-família" />
+                        <ContentControl x:Name="NewArticleFamily" />
                         <TextBlock Classes="bo_new_doc_caption" Text="IVA" />
                         <ComboBox x:Name="NewArticleVat" Classes="bo_entity_input" />
                         <CheckBox x:Name="NewArticleUnique" Classes="bo_entity_input" Content="Artigos únicos (número de série)" />
