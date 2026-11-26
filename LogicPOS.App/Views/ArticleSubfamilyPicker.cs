@@ -38,10 +38,14 @@ internal sealed class ArticleSubfamilyPicker : Button
             TextTrimming = TextTrimming.CharacterEllipsis,
             VerticalAlignment = VerticalAlignment.Center
         };
-        var chevron = new TextBlock
+        var chevron = new PathIcon
         {
-            Text = "⌄",
+            Width = 12,
+            Height = 12,
             Margin = new Thickness(8, 0, 0, 0),
+            Data = StreamGeometry.Parse("M1939 486L2029 576L1024 1581L19 576L109 486L1024 1401L1939 486Z"),
+            Foreground = new SolidColorBrush(Color.Parse("#666666")),
+            IsHitTestVisible = false,
             VerticalAlignment = VerticalAlignment.Center
         };
         DockPanel.SetDock(chevron, Dock.Right);

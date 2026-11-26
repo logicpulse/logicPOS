@@ -28,6 +28,7 @@ public partial class EntityListing : UserControl
     private readonly List<(string Key, Control Input, string Kind)> _inputs = new();
     private string _title = string.Empty;
     private string? _mode;
+    private bool _showInactive;
     private Guid? _editingId;
     private string? _pendingAction;
     private string? _pendingRestorePath;
@@ -62,7 +63,6 @@ public partial class EntityListing : UserControl
     private UiViewport _viewport;
     private readonly List<string> _cardKeys = new();
     private Panel? _dateFiltersHome;
-    private Panel? _modeBoxHome;
     private readonly List<(Button Header, Control Page, string? ShowWhen)> _articleTabs = new();
     private readonly List<(Control Block, string ShowWhen)> _articleFieldBlocks = new();
     private ContentControl? _articlePages;
@@ -236,6 +236,7 @@ public partial class EntityListing : UserControl
     public async Task ShowAsync(string title)
     {
         _title = title;
+        _mode = null;
         _receiptQuery++;
         ReceiptRefreshButton.IsVisible = MobileReceiptRefreshButton.IsVisible = title == "Recibos";
         _picked.Clear();
@@ -258,9 +259,14 @@ public partial class EntityListing : UserControl
         {
             ResetArticleFamilyFilter();
             EnsureArticleFamilyFilter();
+            _showInactive = false;
+            _mode = "Ativo";
+            SyncShowDisabledButton();
+            ShowDisabledButton.IsVisible = true;
         }
         else
         {
+            ShowDisabledButton.IsVisible = false;
             ArticleFamilyFilterHost.Content = null;
             _articleFamilyFilterRequested = false;
             _articleSubfamilyFilter = null;
@@ -368,6 +374,9 @@ public partial class EntityListing : UserControl
         {
             ResetArticleFamilyFilter();
             EnsureArticleFamilyFilter();
+            _showInactive = false;
+            _mode = "Ativo";
+            SyncShowDisabledButton();
         }
 
         RestoreColumns();
@@ -512,6 +521,22 @@ public partial class EntityListing : UserControl
         await ImportAsync(_title == "Clientes" ? "import-customers" : "import-articles");
 
     private async void OnExportPdfClick(object? sender, RoutedEventArgs e) => await ExportAsync(false);
+
+    private async void OnShowDisabledClick(object? sender, RoutedEventArgs e)
+    {
+        _showInactive = _showInactive == false;
+        _mode = _showInactive ? "Todos" : "Ativo";
+        SyncShowDisabledButton();
+        await ReloadAsync();
+    }
+
+    private void SyncShowDisabledButton()
+    {
+        ShowDisabledLabel.Text = _showInactive ? "Ocultar Desativados" : "Mostrar Desativados";
+        ToolTip.SetTip(
+            ShowDisabledButton,
+            _showInactive ? "Ocultar registos desactivados" : "Incluir registos desactivados na lista");
+    }
 
     private async void OnModeChanged(object? sender, SelectionChangedEventArgs e)
     {
@@ -668,8 +693,19 @@ public partial class EntityListing : UserControl
 
     private void BindModes(IReadOnlyList<string> modes)
     {
+        if (IsArticlesListing())
+        {
+            ModeBox.IsVisible = false;
+            ArticleStatusFilterField.IsVisible = false;
+            ShowDisabledButton.IsVisible = true;
+            SyncShowDisabledButton();
+            return;
+        }
+
+        ShowDisabledButton.IsVisible = false;
         var visible = modes.Count > 0;
         ModeBox.IsVisible = visible;
+        ArticleStatusFilterField.IsVisible = visible;
         if (visible == false)
         {
             return;
@@ -911,7 +947,8 @@ public partial class EntityListing : UserControl
                 {
                     image.Source = null;
                     if (frame.DataContext is not ListingRow row) return;
-                    if (!row.Values.TryGetValue("ButtonImage", out var data))
+                    if (row.Values.TryGetValue("ButtonImage", out var data) == false
+                        || string.IsNullOrWhiteSpace(data))
                     {
                         var catalog = AppComposition.Services?.GetService<IPosCatalogService>();
                         if (catalog is null) return;
@@ -1468,8 +1505,10 @@ public partial class EntityListing : UserControl
                 .Select(field => field!)
                 .ToList();
 
+        // FamilyId is synthetic for grid filters; editor keeps the grouped Família/Sub-família picker.
+        used.Add("FamilyId");
         var first = Take("Designation", "Code", "CodeDealer");
-        var family = Take("FamilyId", "SubfamilyId");
+        var family = Take("SubfamilyId");
         var second = Take("TypeId", "ButtonLabel", "Order", "Ord");
         var classification = Take("MeasurementUnitId", "SizeUnitId", "CommissionGroupId", "DiscountGroupId");
         var image = fields.FirstOrDefault(field => field.Kind == "image" && used.Add(field.Key));
@@ -1483,7 +1522,7 @@ public partial class EntityListing : UserControl
 
         if (family.Count > 0)
         {
-            identity.Children.Add(await ArticleRowAsync(service, family, null));
+            identity.Children.Add(await ArticleRowAsync(service, family, family.Count == 1 ? "2*" : null));
         }
 
         if (second.Count > 0)
@@ -1534,7 +1573,13 @@ public partial class EntityListing : UserControl
             var wrap = new WrapPanel { Classes = { "bo_entity_flags" } };
             foreach (var field in flags)
             {
-                wrap.Children.Add(await CreateFieldBlockAsync(service, field, caption: false));
+                var block = await CreateFieldBlockAsync(service, field, caption: false);
+                if (field.Key == "Disabled" && block is CheckBox disabled)
+                {
+                    disabled.Content = "Desactivado";
+                }
+
+                wrap.Children.Add(block);
             }
 
             root.Children.Add(ArticleSection("Estado e composição", "gear", wrap));
@@ -1929,8 +1974,7 @@ public partial class EntityListing : UserControl
         if (field.Kind == "lookup" && field.Lookup is not null)
         {
             var options = (await service.LookupAsync(field.Lookup)).ToList();
-            // Articles: Família + Subfamília are separate (web parity). Other required SubfamilyId keep the combined picker.
-            if (field.Key == "SubfamilyId" && IsArticlesListing() == false && field.Required)
+            if (field.Key == "SubfamilyId" && (IsArticlesListing() || field.Required))
             {
                 return new ArticleSubfamilyPicker(options, field.Value, field.ReadOnly);
             }
@@ -1944,8 +1988,7 @@ public partial class EntityListing : UserControl
             {
                 Classes = { "bo_entity_input" },
                 ItemsSource = options,
-                IsEnabled = field.ReadOnly == false,
-                Tag = field.Key == "SubfamilyId" && IsArticlesListing() ? options : null
+                IsEnabled = field.ReadOnly == false
             };
             ListingFilters.EnableLookupSearch(search);
             var hasStoredId = Guid.TryParse(field.Value, out var storedId) && storedId != Guid.Empty;
@@ -2752,7 +2795,6 @@ public partial class EntityListing : UserControl
 
     private void WireArticleRules()
     {
-        WireArticleFamilySubfamilyFilter();
         foreach (var input in _inputs)
         {
             if (input.Input is CheckBox check && input.Key is "IsComposed" or "UniqueArticles")
@@ -2861,12 +2903,7 @@ public partial class EntityListing : UserControl
     {
         if (field.Key == "SubfamilyId")
         {
-            return IsArticlesListing() ? "Subfamília" : "Família / Sub-família";
-        }
-
-        if (field.Key == "FamilyId" && IsArticlesListing())
-        {
-            return "Família";
+            return "Família / Sub-família";
         }
 
         var fallback = field.Label ?? string.Empty;
@@ -2876,55 +2913,6 @@ public partial class EntityListing : UserControl
         }
 
         return PreferenceLabels.Text("bo_field_" + field.Key, fallback);
-    }
-
-    /// <summary>When Família changes, keep Subfamília options in that family (web ArticleEditDialog).</summary>
-    private void WireArticleFamilySubfamilyFilter()
-    {
-        if (IsArticlesListing() == false)
-        {
-            return;
-        }
-
-        var familyBox = LookupBox(_inputs.FirstOrDefault(item => item.Key == "FamilyId").Input);
-        var subfamilyBox = LookupBox(_inputs.FirstOrDefault(item => item.Key == "SubfamilyId").Input);
-        if (familyBox is null || subfamilyBox is null)
-        {
-            return;
-        }
-
-        var all = subfamilyBox.Tag as List<LookupOption>
-            ?? (subfamilyBox.ItemsSource as IEnumerable<LookupOption>)?.ToList()
-            ?? [];
-        if (all.Count == 0)
-        {
-            return;
-        }
-
-        subfamilyBox.Tag = all;
-
-        void ApplyFilter()
-        {
-            var family = ResolveLookup("FamilyId");
-            var filtered = family is null || family.Id == Guid.Empty
-                ? all
-                : all.Where(option => option.Id == Guid.Empty || option.FamilyId == family.Id).ToList();
-            var selected = ListingFilters.SelectedLookup(subfamilyBox);
-            subfamilyBox.ItemsSource = filtered;
-            if (selected is not null && filtered.All(option => option.Id != selected.Id))
-            {
-                ListingFilters.SelectLookup(subfamilyBox, null);
-            }
-        }
-
-        familyBox.PropertyChanged += (_, args) =>
-        {
-            if (args.Property == AutoCompleteBox.TextProperty || args.Property == AutoCompleteBox.SelectedItemProperty)
-            {
-                ApplyFilter();
-            }
-        };
-        ApplyFilter();
     }
 
     private static IReadOnlyList<ListingChoice> LocalizedEnumChoices(ListingField field)
@@ -4150,29 +4138,18 @@ public partial class EntityListing : UserControl
     private void OnMobileFilterClick(object? sender, RoutedEventArgs e)
     {
         _dateFiltersHome ??= DateFilters.Parent as Panel;
-        _modeBoxHome ??= ModeBox.Parent as Panel;
         if (DateFilters.Parent is Panel dateParent)
         {
             dateParent.Children.Remove(DateFilters);
         }
 
-        DateFilters.IsVisible = UsesDateFilter(_title) || CustomerFilterField.IsVisible;
+        DateFilters.IsVisible = UsesDateFilter(_title)
+            || CustomerFilterField.IsVisible
+            || ArticleFamilyFilterField.IsVisible
+            || ArticleStatusFilterField.IsVisible;
         if (FilterSheetHost.Children.Contains(DateFilters) == false)
         {
             FilterSheetHost.Children.Add(DateFilters);
-        }
-
-        if (ModeBox.IsVisible)
-        {
-            if (ModeBox.Parent is Panel modeParent)
-            {
-                modeParent.Children.Remove(ModeBox);
-            }
-
-            if (FilterSheetHost.Children.Contains(ModeBox) == false)
-            {
-                FilterSheetHost.Children.Add(ModeBox);
-            }
         }
 
         FilterSheet.IsVisible = true;
@@ -4200,12 +4177,6 @@ public partial class EntityListing : UserControl
             DockPanel.SetDock(DateFilters, Dock.Left);
         }
 
-        if (ModeBox.Parent == FilterSheetHost)
-        {
-            FilterSheetHost.Children.Remove(ModeBox);
-            _modeBoxHome?.Children.Insert(Math.Max(0, _modeBoxHome.Children.IndexOf(Notice)), ModeBox);
-            DockPanel.SetDock(ModeBox, Dock.Left);
-        }
     }
 
     private void OnMobileMoreClick(object? sender, RoutedEventArgs e)
