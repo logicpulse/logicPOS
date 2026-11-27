@@ -1,4 +1,4 @@
-using LogicPOS.Application.Features.Finance.Documents;
+﻿using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
@@ -16,21 +16,23 @@ public sealed class LocalReceiptAtQrPersistenceTests
     [Fact]
     public void DocumentAtQrPayload_supports_RC_receipt_document_type()
     {
-        var payload = DocumentAtQrPayload.Build(
-            issuerFiscalNumber: "502757191",
-            customerFiscalNumber: "999999990",
-            customerCountry: "PT",
-            documentType: "RC",
-            status: "N",
-            dateYyyyMmDd: "2026-11-27",
-            uniqueDocumentId: "RC 2026/1",
-            atcud: "TESTE001-1",
-            totalNet: 80m,
-            totalTax: 20m,
-            totalFinal: 100m,
-            hash4: "AbCd");
+        var payload = DocumentAtQrPayload.Build(new AtQrPayloadInput(
+            IssuerFiscalNumber: "502757191",
+            CustomerFiscalNumber: "999999990",
+            CustomerCountry: "PT",
+            DocumentType: "RC",
+            Status: "N",
+            DateYyyyMmDd: "2026-11-27",
+            UniqueDocumentId: "RC 2026/1",
+            Atcud: "TESTE001-1",
+            TaxBreakdown: AtQrTaxBreakdown.FromUndiscriminatedPayment(80m),
+            TotalTax: 20m,
+            TotalFinal: 100m,
+            Hash4: "AbCd"));
         Assert.Contains("D:RC*", payload, StringComparison.Ordinal);
+        Assert.Contains("*I1:0*L:80.00*", payload, StringComparison.Ordinal);
         Assert.StartsWith("A:502757191*", payload, StringComparison.Ordinal);
+        Assert.False(payload.EndsWith('*'));
     }
 
     [Fact]

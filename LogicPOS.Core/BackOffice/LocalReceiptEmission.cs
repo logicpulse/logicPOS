@@ -273,7 +273,8 @@ public sealed class LocalReceiptEmission : IReceiptEmission
 
             var customer = documents[0].Customer;
             var totalNet = receipt.Amount - receipt.TaxPayable;
-            receipt.QrCode = DocumentAtQrPayload.Build(
+            // Spec v1.1: RC/RG without per-rate lines → I1:0 + L (undiscriminated); N/O from payment totals.
+            receipt.QrCode = DocumentAtQrPayload.Build(new AtQrPayloadInput(
                 PosDocumentRules.AtQrIssuerFiscalNumber(issuerFiscalNumber),
                 PosDocumentRules.AtQrCustomerFiscalNumber(customer.FiscalNumber),
                 customer.Country ?? "PT",
@@ -282,10 +283,13 @@ public sealed class LocalReceiptEmission : IReceiptEmission
                 receipt.Date,
                 refNo,
                 receipt.Atcud,
-                totalNet,
+                AtQrTaxBreakdown.FromUndiscriminatedPayment(totalNet),
                 receipt.TaxPayable,
                 receipt.Amount,
-                hash4);
+                hash4,
+                WithholdingTaxAmount: receipt.WithholdingTaxAmount,
+                CurrencyAcronym: receipt.CurrencyCode,
+                ExchangeRate: receipt.ExchangeRate));
         }
 
         database.Receipts.Add(receipt);
