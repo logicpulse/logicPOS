@@ -308,9 +308,9 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
         return IsOn(value);
     }
 
-    public async Task RegisterPrintAsync(Guid documentId, CancellationToken cancellationToken = default)
+    public async Task RegisterPrintAsync(Guid documentId, bool isThermalPrint = true, CancellationToken cancellationToken = default)
     {
-        await AddPrintAsync(documentId, 1, null, secondPrint: false, cancellationToken);
+        await AddPrintAsync(documentId, 1, null, secondPrint: false, isThermalPrint, cancellationToken);
     }
 
     public async Task<bool> WasPrintedAsync(Guid documentId, CancellationToken cancellationToken = default)
@@ -321,10 +321,22 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             .AnyAsync(item => item.IsDeleted == false && item.DocumentId == documentId, cancellationToken);
     }
 
-    public Task RegisterReprintAsync(Guid documentId, int copies, string reason, CancellationToken cancellationToken = default)
-        => AddPrintAsync(documentId, Math.Max(1, copies), reason, secondPrint: true, cancellationToken);
+    public Task RegisterReprintAsync(
+        Guid documentId,
+        int copies,
+        string reason,
+        bool isThermalPrint = true,
+        bool secondPrint = true,
+        CancellationToken cancellationToken = default)
+        => AddPrintAsync(documentId, Math.Max(1, copies), reason, secondPrint, isThermalPrint, cancellationToken);
 
-    private async Task AddPrintAsync(Guid documentId, int copies, string? reason, bool secondPrint, CancellationToken cancellationToken)
+    private async Task AddPrintAsync(
+        Guid documentId,
+        int copies,
+        string? reason,
+        bool secondPrint,
+        bool isThermalPrint,
+        CancellationToken cancellationToken)
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
@@ -334,7 +346,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             PrintCopies = copies,
             PrintMotive = reason,
             SecondPrint = secondPrint,
-            IsThermalPrint = true,
+            IsThermalPrint = isThermalPrint,
             Designation = secondPrint ? "Segunda via" : "Original"
         });
         await database.SaveChangesAsync(cancellationToken);

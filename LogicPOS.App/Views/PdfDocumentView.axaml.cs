@@ -436,7 +436,7 @@ public partial class PdfDocumentView : UserControl
         var thermalDocument = PosDocumentRules.UsesThermalPrinter(_documentTitle);
         var selectedIsThermal = await FrontOfficePrinting.NamesTerminalThermalPrinterAsync(printer);
         var backOfficeOnly = await IsBackOfficeOnlyAsync();
-        if (backOfficeOnly == false && _documentId is Guid documentId && documentId != Guid.Empty)
+        if (_documentId is Guid documentId && documentId != Guid.Empty)
         {
             var source = AppComposition.Services?.GetService<IThermalPrintSource>();
             if (source is not null && await source.WasPrintedAsync(documentId))
@@ -449,7 +449,7 @@ public partial class PdfDocumentView : UserControl
                 return;
             }
 
-            if (thermalDocument && (string.IsNullOrWhiteSpace(printer) || selectedIsThermal))
+            if (backOfficeOnly == false && thermalDocument && (string.IsNullOrWhiteSpace(printer) || selectedIsThermal))
             {
                 Busy.Show("A imprimir...");
                 try
@@ -501,6 +501,13 @@ public partial class PdfDocumentView : UserControl
             else if (thermalDocument == false || selectedIsThermal == false)
             {
                 PdfPrinterMemory.RememberA4(printer);
+            }
+
+            if (_barcodeMode == false && _documentId is Guid documentId && documentId != Guid.Empty)
+            {
+                var printSource = AppComposition.Services?.GetService<IThermalPrintSource>();
+                var wasPrinted = printSource is not null && await printSource.WasPrintedAsync(documentId);
+                await FrontOfficePrinting.TryRegisterA4PrintAsync(documentId, secondPrint: wasPrinted);
             }
 
             SetStatus(string.Empty);
@@ -650,7 +657,25 @@ public partial class PdfDocumentView : UserControl
         Busy.Show("A imprimir...");
         try
         {
-            var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
+            var useA4 = await FrontOfficePrinting.ShouldUseA4PrintAsync(_documentTitle);
+            string? reprintError;
+            if (useA4)
+            {
+                var printer = SelectedPrinter();
+                var (_, a4Error, cancelled) = await FrontOfficePrinting.TryReprintA4Async(
+                    documentId, copies, reason, secondCopy, printer);
+                reprintError = a4Error;
+                if (cancelled)
+                {
+                    SetStatus(string.Empty);
+                    return;
+                }
+            }
+            else
+            {
+                (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
+            }
+
             SetStatus(string.Empty);
             if (reprintError is null)
             {

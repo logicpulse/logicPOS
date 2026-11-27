@@ -165,9 +165,15 @@ public interface IThermalPrintSource
     /// <summary>System parameter TICKET_PRINT_TICKET: print the kitchen ticket when an order is finished.</summary>
     Task<bool> IsOrderTicketEnabledAsync(CancellationToken cancellationToken = default);
 
-    Task RegisterPrintAsync(Guid documentId, CancellationToken cancellationToken = default);
+    Task RegisterPrintAsync(Guid documentId, bool isThermalPrint = true, CancellationToken cancellationToken = default);
 
     Task<bool> WasPrintedAsync(Guid documentId, CancellationToken cancellationToken = default);
 
-    Task RegisterReprintAsync(Guid documentId, int copies, string reason, CancellationToken cancellationToken = default);
+    Task RegisterReprintAsync(
+        Guid documentId,
+        int copies,
+        string reason,
+        bool isThermalPrint = true,
+        bool secondPrint = true,
+        CancellationToken cancellationToken = default);
 }

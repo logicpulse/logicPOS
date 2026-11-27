@@ -539,6 +539,10 @@ public interface IStockManagementService
 
     Task<string?> SaveSaleDocumentPdfAsync(string documentNumber, CancellationToken cancellationToken = default);
 
+    /// <summary>Default keeps other implementations (e.g. cloud) compiling; they skip print registration.</summary>
+    Task<Guid?> ResolveSaleDocumentIdAsync(string documentNumber, CancellationToken cancellationToken = default)
+        => Task.FromResult<Guid?>(null);
+
     Task<StockPageResult<StockHistoryRow>> GetHistoryAsync(StockPageRequest request, CancellationToken cancellationToken = default);
 
     Task<BarcodeLabelPrintResult?> GenerateBarcodeLabelsAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default);

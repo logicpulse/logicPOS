@@ -21,6 +21,7 @@ public partial class DocumentsListing : UserControl
     private readonly List<PosDocumentRow> _rows = new();
     private readonly HashSet<Guid> _picked = new();
     private readonly List<Guid> _pendingPrintIds = new();
+    private string? _pendingReprintPrinter;
     private readonly List<Guid> _pendingEmailIds = new();
     private readonly List<(DataGridColumn Column, bool Visible)> _columnSnapshot = new();
     private int _page = 1;
@@ -631,7 +632,7 @@ public partial class DocumentsListing : UserControl
 
     private async void OnCancelClick(object? sender, RoutedEventArgs e)
     {
-        if (FocusedRow() is not PosDocumentRow row || row.CanDelete == false)
+        if (FocusedRow() is not PosDocumentRow row || row.CanCancel == false)
         {
             ActionNotice.Text = "Selecione um documento que possa ser anulado.";
             return;
@@ -844,6 +845,7 @@ public partial class DocumentsListing : UserControl
 
     private async Task OpenReprintPromptAsync(PosDocumentRow row)
     {
+        _pendingReprintPrinter = null;
         _pendingPrintIds.Clear();
         _pendingPrintIds.Add(row.Id);
         OpenPrompt("reprint", string.Format(PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nº: {0}"), row.Number), string.Empty);
@@ -934,6 +936,7 @@ public partial class DocumentsListing : UserControl
             if (documentId == Guid.Empty)
             {
                 ActionNotice.Text = "Selecione um documento.";
+                _pendingReprintPrinter = null;
                 PromptOverlay.IsVisible = false;
                 return;
             }
@@ -957,11 +960,32 @@ public partial class DocumentsListing : UserControl
             Busy.Show("A imprimir...");
             try
             {
-                var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
+                var printRow = _rows.FirstOrDefault(item => item.Id == documentId);
+                var useA4 = await FrontOfficePrinting.ShouldUseA4PrintAsync(printRow?.ResolvedType);
+                string? reprintError;
+                if (useA4)
+                {
+                    var printer = _pendingReprintPrinter ?? PdfPrinterMemory.LastA4Printer();
+                    _pendingReprintPrinter = null;
+                    var (_, a4Error, cancelled) = await FrontOfficePrinting.TryReprintA4Async(
+                        documentId, copies, reason, secondCopy, printer);
+                    reprintError = a4Error;
+                    if (cancelled)
+                    {
+                        ActionNotice.Text = string.Empty;
+                        return;
+                    }
+                }
+                else
+                {
+                    (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
+                }
+
                 ActionNotice.Text = string.Empty;
                 if (reprintError is null)
                 {
-                    PrintUi.Success(this, $"{copies} cópia(s) enviada(s) para a impressora térmica.");
+                    var destination = useA4 ? "a impressora" : "a impressora térmica";
+                    PrintUi.Success(this, $"{copies} cópia(s) enviada(s) para {destination}.");
                 }
                 else
                 {
@@ -1004,6 +1028,14 @@ public partial class DocumentsListing : UserControl
                 return;
             }
 
+            if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
+            {
+                PromptOverlay.IsVisible = false;
+                await OpenReprintPromptAsync(rows[0]);
+                _pendingReprintPrinter = printer;
+                return;
+            }
+
             await PrintRowsAsync(rows, printer);
             return;
         }
@@ -1036,6 +1068,11 @@ public partial class DocumentsListing : UserControl
 
     private void OnPromptCancelClick(object? sender, RoutedEventArgs e)
     {
+        if (string.Equals(_promptKind, "reprint", StringComparison.Ordinal))
+        {
+            _pendingReprintPrinter = null;
+        }
+
         _pendingOriginDocumentId = null;
         PromptOverlay.IsVisible = false;
     }
@@ -1283,12 +1320,6 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
-        {
-            await OpenReprintPromptAsync(rows[0]);
-            return;
-        }
-
         var printers = InstalledPrinters();
         if (printers.Count == 0)
         {
@@ -1378,6 +1409,9 @@ public partial class DocumentsListing : UserControl
                     });
 
                     sent++;
+                    var printSource = AppComposition.Services?.GetService<IThermalPrintSource>();
+                    var wasPrinted = printSource is not null && await printSource.WasPrintedAsync(row.Id);
+                    await FrontOfficePrinting.TryRegisterA4PrintAsync(row.Id, secondPrint: wasPrinted);
                 }
                 catch (PrintCancelledException)
                 {
@@ -1438,11 +1472,6 @@ public partial class DocumentsListing : UserControl
 
     private static async Task<bool> NeedsReprintDialogAsync(Guid documentId)
     {
-        if (await IsBackOfficeOnlyAsync())
-        {
-            return false;
-        }
-
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         return source is not null && await source.WasPrintedAsync(documentId);
     }
