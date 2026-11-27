@@ -4,165 +4,44 @@ using LogicPOS.Shared.Features.Software;
 namespace LogicPOS.Application.Features.Finance.Documents;
 
 /// <summary>
-/// One VAT / tax bucket for the AT QR payload (fields I/J/K).
-/// <paramref name="TaxCode"/> is the SAF-T code: ISE, RED, INT, NOR (or other → L).
+/// One VAT bucket for AT QR fields I/J/K (SAF-T TaxCountryRegion + TaxCode).
 /// </summary>
-public readonly record struct DocumentAtQrTaxTotal(
+public readonly record struct AtQrTaxBucket(
     string CountryRegion,
     string TaxCode,
     decimal TaxableBase,
     decimal TaxAmount);
 
 /// <summary>
-/// Builds the Portuguese AT QR Code payload (fields A–S) per Portaria 195/2020 v1.1.
-/// Shared by the API <c>DocumentQrCodeGenerator</c> and the certified fiscal plugin.
+/// Aggregated tax spaces (I/J/K) plus non-subject amount for field L.
+/// Amounts are in document currency; <see cref="DocumentAtQrPayload.Build"/> converts to EUR.
 /// </summary>
-public static class DocumentAtQrPayload
+public sealed record AtQrTaxBreakdown(
+    IReadOnlyList<AtQrTaxBucket> Buckets,
+    decimal NonSubjectAmount = 0m)
 {
-    private static readonly string[] RegionOrder = ["PT", "PT-AC", "PT-MA"];
-    private static readonly string[] SpaceLetters = ["I", "J", "K"];
+    public static AtQrTaxBreakdown Empty { get; } = new([], 0m);
 
     /// <summary>
-    /// Compatibility overload used by callers that only have document totals.
-    /// Prefer <see cref="Build(string?,string?,string?,string,string,string,string,string?,System.Collections.Generic.IEnumerable{DocumentAtQrTaxTotal},decimal,decimal,string?,decimal,decimal,decimal,string?,decimal,string?,string?)"/>
-    /// with per-line (region, tax code) totals. Without a breakdown, a positive tax amount is
-    /// mapped to PT/NOR and a zero-tax positive base to PT/ISE (INT/RED and non-PT regions require the new overload).
+    /// Groups line totals by <c>(CountryRegion, TaxCode)</c>.
+    /// Unknown tax codes (not ISE/RED/INT/NOR) are summed into <see cref="NonSubjectAmount"/> (field L).
     /// </summary>
-    public static string Build(
-        string? issuerFiscalNumber,
-        string? customerFiscalNumber,
-        string? customerCountry,
-        string documentType,
-        string status,
-        string dateYyyyMmDd,
-        string uniqueDocumentId,
-        string? atcud,
-        decimal totalNet,
-        decimal totalTax,
-        decimal totalFinal,
-        string? hash4)
+    public static AtQrTaxBreakdown FromLines(
+        IEnumerable<(string CountryRegion, string TaxCode, decimal TotalNet, decimal TotalTax)> lines)
     {
-        DocumentAtQrTaxTotal[] taxTotals;
-        if (totalNet == 0m && totalTax == 0m)
-        {
-            taxTotals = [];
-        }
-        else if (totalTax == 0m)
-        {
-            taxTotals = [new DocumentAtQrTaxTotal("PT", "ISE", totalNet, 0m)];
-        }
-        else
-        {
-            taxTotals = [new DocumentAtQrTaxTotal("PT", "NOR", totalNet, totalTax)];
-        }
-
-        return Build(
-            issuerFiscalNumber,
-            customerFiscalNumber,
-            customerCountry,
-            documentType,
-            status,
-            dateYyyyMmDd,
-            uniqueDocumentId,
-            atcud,
-            taxTotals,
-            totalTax,
-            totalFinal,
-            hash4);
-    }
-
-    /// <summary>
-    /// Builds the AT QR payload string per Portaria 195/2020 v1.1.
-    /// Callers supply the four hash characters (positions 1/11/21/31) and tax totals
-    /// grouped by <c>(CountryRegion, TaxCode)</c> from the document lines.
-    /// </summary>
-    public static string Build(
-        string? issuerFiscalNumber,
-        string? customerFiscalNumber,
-        string? customerCountry,
-        string documentType,
-        string status,
-        string dateYyyyMmDd,
-        string uniqueDocumentId,
-        string? atcud,
-        IEnumerable<DocumentAtQrTaxTotal> taxTotals,
-        decimal totalTax,
-        decimal totalFinal,
-        string? hash4,
-        decimal withholdingTaxAmount = 0m,
-        decimal nonSubjectAmount = 0m,
-        decimal stampDutyAmount = 0m,
-        string? currencyAcronym = null,
-        decimal exchangeRate = 1m,
-        string? otherInfo = null,
-        string? certificateNumber = null)
-    {
-        var toEur = CreateEurConverter(currencyAcronym, exchangeRate);
-        var fields = new List<string>
-        {
-            "A:" + issuerFiscalNumber,
-            "B:" + customerFiscalNumber,
-            "C:" + customerCountry,
-            "D:" + documentType,
-            "E:" + status,
-            "F:" + dateYyyyMmDd.Replace("-", "", StringComparison.Ordinal),
-            "G:" + uniqueDocumentId,
-            "H:" + (string.IsNullOrWhiteSpace(atcud) ? "0" : atcud)
-        };
-
-        AppendFiscalSpaces(fields, taxTotals, toEur);
-
-        var nonSubject = toEur(nonSubjectAmount);
-        if (nonSubject != 0m)
-        {
-            fields.Add("L:" + FormatAmount(nonSubject));
-        }
-
-        var stampDuty = toEur(stampDutyAmount);
-        if (stampDuty != 0m)
-        {
-            fields.Add("M:" + FormatAmount(stampDuty));
-        }
-
-        fields.Add("N:" + FormatAmount(toEur(totalTax)));
-        fields.Add("O:" + FormatAmount(toEur(totalFinal)));
-
-        var withholding = toEur(withholdingTaxAmount);
-        if (withholding != 0m)
-        {
-            fields.Add("P:" + FormatAmount(withholding));
-        }
-
-        fields.Add("Q:" + hash4);
-        fields.Add("R:" + (certificateNumber ?? SoftwareInfo.Portugal.SaftCertificateNumber));
-
-        if (string.IsNullOrWhiteSpace(otherInfo) == false)
-        {
-            fields.Add("S:" + otherInfo);
-        }
-
-        return string.Join("*", fields);
-    }
-
-    /// <summary>
-    /// Aggregates document-line tax amounts by <c>(CountryRegion, TaxCode)</c>.
-    /// Unknown tax codes (not ISE/RED/INT/NOR) are summed into <paramref name="nonSubjectAmount"/> (field L).
-    /// </summary>
-    public static DocumentAtQrTaxTotal[] AggregateTaxTotals(
-        IEnumerable<(string CountryRegion, string TaxCode, decimal TotalNet, decimal TotalTax)> lines,
-        out decimal nonSubjectAmount)
-    {
-        nonSubjectAmount = 0m;
         var buckets = new Dictionary<(string Region, string Code), (decimal Net, decimal Tax)>(
             RegionCodeComparer.Instance);
+        var nonSubject = 0m;
 
         foreach (var line in lines)
         {
             var region = string.IsNullOrWhiteSpace(line.CountryRegion) ? "PT" : line.CountryRegion.Trim();
-            var code = string.IsNullOrWhiteSpace(line.TaxCode) ? string.Empty : line.TaxCode.Trim().ToUpperInvariant();
+            var code = string.IsNullOrWhiteSpace(line.TaxCode)
+                ? string.Empty
+                : line.TaxCode.Trim().ToUpperInvariant();
             if (code is not ("ISE" or "RED" or "INT" or "NOR"))
             {
-                nonSubjectAmount += Math.Abs(line.TotalNet);
+                nonSubject += Math.Abs(line.TotalNet);
                 continue;
             }
 
@@ -177,14 +56,193 @@ public static class DocumentAtQrPayload
             }
         }
 
-        return buckets
-            .Select(pair => new DocumentAtQrTaxTotal(pair.Key.Region, pair.Key.Code, pair.Value.Net, pair.Value.Tax))
+        var list = buckets
+            .Select(pair => new AtQrTaxBucket(pair.Key.Region, pair.Key.Code, pair.Value.Net, pair.Value.Tax))
             .ToArray();
+        return new AtQrTaxBreakdown(list, nonSubject);
+    }
+
+    /// <summary>
+    /// Payment / receipt with no per-rate VAT discrimination (spec field L — “recibos gerais
+    /// sem discriminação de imposto”). Yields empty I/J/K buckets so the builder emits <c>I1:0</c>
+    /// and places <paramref name="amountWithoutRateSplit"/> in L.
+    /// </summary>
+    public static AtQrTaxBreakdown FromUndiscriminatedPayment(decimal amountWithoutRateSplit)
+        => new([], Math.Abs(amountWithoutRateSplit));
+
+    private sealed class RegionCodeComparer : IEqualityComparer<(string Region, string Code)>
+    {
+        public static RegionCodeComparer Instance { get; } = new();
+
+        public bool Equals((string Region, string Code) x, (string Region, string Code) y)
+            => string.Equals(x.Region, y.Region, StringComparison.OrdinalIgnoreCase)
+               && string.Equals(x.Code, y.Code, StringComparison.Ordinal);
+
+        public int GetHashCode((string Region, string Code) obj)
+            => HashCode.Combine(
+                StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Region),
+                StringComparer.Ordinal.GetHashCode(obj.Code));
+    }
+}
+
+/// <summary>
+/// Pure in-memory input for the AT QR payload (no database access).
+/// Monetary fields are in document currency unless <see cref="CurrencyAcronym"/> is EUR/null
+/// (then treated as already EUR). The builder multiplies by <see cref="ExchangeRate"/> when
+/// the acronym is a foreign currency (same convention as <c>Document.ExchangeRate</c>).
+/// </summary>
+public sealed record AtQrPayloadInput(
+    string? IssuerFiscalNumber,
+    string? CustomerFiscalNumber,
+    string? CustomerCountry,
+    string DocumentType,
+    string Status,
+    string DateYyyyMmDd,
+    string UniqueDocumentId,
+    string? Atcud,
+    AtQrTaxBreakdown TaxBreakdown,
+    decimal TotalTax,
+    decimal TotalFinal,
+    string? Hash4,
+    decimal WithholdingTaxAmount = 0m,
+    decimal StampDutyAmount = 0m,
+    string? CurrencyAcronym = null,
+    decimal ExchangeRate = 1m,
+    string? OtherInfo = null,
+    string? CertificateNumber = null);
+
+/// <summary>
+/// Builds the Portuguese AT QR Code payload (fields A–S) per Portaria 195/2020 v1.1.
+/// Shared by the API <c>DocumentQrCodeGenerator</c>, the certified fiscal plugin, and Desktop.
+/// </summary>
+public static class DocumentAtQrPayload
+{
+    private static readonly string[] RegionOrder = ["PT", "PT-AC", "PT-MA"];
+    private static readonly string[] SpaceLetters = ["I", "J", "K"];
+
+    /// <summary>Preferred entry point: pure <see cref="AtQrPayloadInput"/> (no DB).</summary>
+    public static string Build(AtQrPayloadInput input)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        var breakdown = input.TaxBreakdown ?? AtQrTaxBreakdown.Empty;
+        var toEur = CreateEurConverter(input.CurrencyAcronym, input.ExchangeRate);
+
+        var fields = new List<string>
+        {
+            "A:" + input.IssuerFiscalNumber,
+            "B:" + input.CustomerFiscalNumber,
+            "C:" + input.CustomerCountry,
+            "D:" + input.DocumentType,
+            "E:" + input.Status,
+            "F:" + input.DateYyyyMmDd.Replace("-", "", StringComparison.Ordinal),
+            "G:" + input.UniqueDocumentId,
+            "H:" + (string.IsNullOrWhiteSpace(input.Atcud) ? "0" : input.Atcud)
+        };
+
+        AppendFiscalSpaces(fields, breakdown.Buckets, toEur);
+
+        var nonSubject = toEur(breakdown.NonSubjectAmount);
+        if (nonSubject != 0m)
+        {
+            fields.Add("L:" + FormatAmount(nonSubject));
+        }
+
+        var stampDuty = toEur(input.StampDutyAmount);
+        if (stampDuty != 0m)
+        {
+            fields.Add("M:" + FormatAmount(stampDuty));
+        }
+
+        fields.Add("N:" + FormatAmount(toEur(input.TotalTax)));
+        fields.Add("O:" + FormatAmount(toEur(input.TotalFinal)));
+
+        var withholding = toEur(input.WithholdingTaxAmount);
+        if (withholding != 0m)
+        {
+            fields.Add("P:" + FormatAmount(withholding));
+        }
+
+        fields.Add("Q:" + input.Hash4);
+        fields.Add("R:" + (input.CertificateNumber ?? SoftwareInfo.Portugal.SaftCertificateNumber));
+
+        if (string.IsNullOrWhiteSpace(input.OtherInfo) == false)
+        {
+            fields.Add("S:" + input.OtherInfo);
+        }
+
+        return string.Join("*", fields);
+    }
+
+    /// <summary>
+    /// Obsolete compatibility overload for callers that only have document totals.
+    /// Prefer <see cref="Build(AtQrPayloadInput)"/>. Maps tax&gt;0 → PT/NOR, tax==0 and net&gt;0 → PT/ISE,
+    /// both 0 → empty breakdown (<c>I1:0</c>). Does not fix INT/RED/PT-AC without line totals.
+    /// </summary>
+    [Obsolete("Use DocumentAtQrPayload.Build(AtQrPayloadInput) with AtQrTaxBreakdown.FromLines or FromUndiscriminatedPayment.")]
+    public static string Build(
+        string? issuerFiscalNumber,
+        string? customerFiscalNumber,
+        string? customerCountry,
+        string documentType,
+        string status,
+        string dateYyyyMmDd,
+        string uniqueDocumentId,
+        string? atcud,
+        decimal totalNet,
+        decimal totalTax,
+        decimal totalFinal,
+        string? hash4)
+    {
+        AtQrTaxBreakdown breakdown;
+        if (totalNet == 0m && totalTax == 0m)
+        {
+            breakdown = AtQrTaxBreakdown.Empty;
+        }
+        else if (totalTax == 0m)
+        {
+            breakdown = new AtQrTaxBreakdown([new AtQrTaxBucket("PT", "ISE", totalNet, 0m)]);
+        }
+        else
+        {
+            breakdown = new AtQrTaxBreakdown([new AtQrTaxBucket("PT", "NOR", totalNet, totalTax)]);
+        }
+
+        return Build(new AtQrPayloadInput(
+            issuerFiscalNumber,
+            customerFiscalNumber,
+            customerCountry,
+            documentType,
+            status,
+            dateYyyyMmDd,
+            uniqueDocumentId,
+            atcud,
+            breakdown,
+            totalTax,
+            totalFinal,
+            hash4));
+    }
+
+    /// <summary>
+    /// Converts a document-currency amount to EUR using the document exchange rate.
+    /// <paramref name="currencyAcronym"/> null/empty/EUR → no conversion; otherwise amount × rate.
+    /// </summary>
+    public static decimal ToEur(decimal amount, string? currencyAcronym, decimal exchangeRate)
+        => CreateEurConverter(currencyAcronym, exchangeRate)(amount);
+
+    /// <summary>Obsolete alias — use <see cref="AtQrTaxBreakdown.FromLines"/>.</summary>
+    [Obsolete("Use AtQrTaxBreakdown.FromLines.")]
+    public static AtQrTaxBucket[] AggregateTaxTotals(
+        IEnumerable<(string CountryRegion, string TaxCode, decimal TotalNet, decimal TotalTax)> lines,
+        out decimal nonSubjectAmount)
+    {
+        var breakdown = AtQrTaxBreakdown.FromLines(lines);
+        nonSubjectAmount = breakdown.NonSubjectAmount;
+        return breakdown.Buckets.ToArray();
     }
 
     private static void AppendFiscalSpaces(
         List<string> fields,
-        IEnumerable<DocumentAtQrTaxTotal> taxTotals,
+        IReadOnlyList<AtQrTaxBucket> taxTotals,
         Func<decimal, decimal> toEur)
     {
         var byRegion = new Dictionary<string, Dictionary<string, (decimal Base, decimal Tax)>>(
@@ -344,18 +402,4 @@ public static class DocumentAtQrPayload
 
     private static string FormatAmount(decimal amount)
         => amount.To2DecimalPlacesString();
-
-    private sealed class RegionCodeComparer : IEqualityComparer<(string Region, string Code)>
-    {
-        public static RegionCodeComparer Instance { get; } = new();
-
-        public bool Equals((string Region, string Code) x, (string Region, string Code) y)
-            => string.Equals(x.Region, y.Region, StringComparison.OrdinalIgnoreCase)
-               && string.Equals(x.Code, y.Code, StringComparison.Ordinal);
-
-        public int GetHashCode((string Region, string Code) obj)
-            => HashCode.Combine(
-                StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Region),
-                StringComparer.Ordinal.GetHashCode(obj.Code));
-    }
 }
