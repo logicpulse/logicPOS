@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
+using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.ValueObjects;
 using QrCodes;
@@ -688,6 +689,17 @@ public abstract class DocumentModel : IDocument
                         .PaddingBottom(3)
                         .AlignRight()
                         .Text(Data.Document.FiscalCodeLine)
+                        .FontSize(6);
+                }
+
+                var atcud = Data.Document.Atcud;
+                if (AtcudFormat.ShouldPrint(atcud) && (hasCodeLine || string.IsNullOrWhiteSpace(payload) == false))
+                {
+                    tb.Cell()
+                        .PaddingLeft(20)
+                        .PaddingBottom(3)
+                        .AlignRight()
+                        .Text($"ATCUD: {atcud}")
                         .FontSize(6);
                 }
 
