@@ -380,6 +380,7 @@ internal static class FrontOfficePrinting
             {
                 try
                 {
+                    var wasPrinted = await source.WasPrintedAsync(documentId);
                     var motive = string.IsNullOrWhiteSpace(reason)
                         ? (isSecondCopy ? "Segunda via" : "Reimpressão")
                         : reason.Trim();
@@ -388,7 +389,7 @@ internal static class FrontOfficePrinting
                         copiesSent,
                         motive,
                         isThermalPrint: false,
-                        secondPrint: isSecondCopy);
+                        secondPrint: wasPrinted);
                 }
                 catch
                 {

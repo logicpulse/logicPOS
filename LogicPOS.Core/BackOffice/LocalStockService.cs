@@ -400,6 +400,22 @@ public sealed class LocalStockService : IStockManagementService
         return document is null ? null : await _documents.CreateA4FileAsync(document.Id, cancellationToken);
     }
 
+    public async Task<Guid?> ResolveSaleDocumentIdAsync(string documentNumber, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(documentNumber))
+        {
+            return null;
+        }
+
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var id = await database.Documents.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Number == documentNumber)
+            .Select(item => item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        return id == Guid.Empty ? null : id;
+    }
+
     public async Task<StockPageResult<StockHistoryRow>> GetHistoryAsync(StockPageRequest request, CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();

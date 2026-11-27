@@ -539,6 +539,8 @@ public interface IStockManagementService
 
     Task<string?> SaveSaleDocumentPdfAsync(string documentNumber, CancellationToken cancellationToken = default);
 
+    Task<Guid?> ResolveSaleDocumentIdAsync(string documentNumber, CancellationToken cancellationToken = default);
+
     Task<StockPageResult<StockHistoryRow>> GetHistoryAsync(StockPageRequest request, CancellationToken cancellationToken = default);
 
     Task<BarcodeLabelPrintResult?> GenerateBarcodeLabelsAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default);
