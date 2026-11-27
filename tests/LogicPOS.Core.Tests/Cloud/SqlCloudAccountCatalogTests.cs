@@ -1,10 +1,13 @@
 ﻿using System.Data.Common;
+using System.Reflection;
 using LogicPOS.Application.Features.System.Licensing;
 using LogicPOS.Persistence.Cloud;
 using LogicPOS.Persistence.Database;
+using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
+using MySqlConnector;
 
 namespace LogicPOS.Core.Tests.Cloud;
 
@@ -13,6 +16,7 @@ public class SqlCloudAccountCatalogTests : IDisposable
     private readonly string _sharedConnectionString =
         $"Data Source=u08-catalog-{Guid.NewGuid():N};Mode=Memory;Cache=Shared";
     private readonly SqliteConnection _keepAlive;
+    private DateTimeOffset _utcNow = new(2026, 11, 27, 12, 0, 0, TimeSpan.Zero);
 
     public SqlCloudAccountCatalogTests()
     {
@@ -98,6 +102,38 @@ public class SqlCloudAccountCatalogTests : IDisposable
     }
 
     [Fact]
+    public void Find_AfterMissingColumn_CacheExpiresAndReadsNewColumnWithoutRestart()
+    {
+        CreateSchema(includeAvailableDevices: false);
+        InsertAccount(availableDevices: null);
+
+        var catalog = CreateCatalog();
+        Assert.True(catalog.Find("acme").Found);
+        Assert.Equal(0, catalog.Find("acme").AvailableDevices);
+
+        using (var connection = new SqliteConnection(_sharedConnectionString))
+        {
+            connection.Open();
+            using var command = connection.CreateCommand();
+            command.CommandText = """
+                ALTER TABLE Accounts ADD COLUMN AvailableDevices INTEGER;
+                UPDATE Accounts SET AvailableDevices = 7 WHERE Account_id = 'acme';
+                """;
+            command.ExecuteNonQuery();
+        }
+
+        catalog.Invalidate("acme");
+        Assert.Equal(0, catalog.Find("acme").AvailableDevices);
+
+        _utcNow = _utcNow.Add(SqlCloudAccountCatalog.MissingColumnCacheTtl).AddSeconds(1);
+        catalog.Invalidate("acme");
+
+        var afterExpiry = catalog.Find("acme");
+        Assert.True(afterExpiry.Found);
+        Assert.Equal(7, afterExpiry.AvailableDevices);
+    }
+
+    [Fact]
     public void Find_UnknownAccount_ReturnsNotFound()
     {
         CreateSchema(includeAvailableDevices: true);
@@ -120,6 +156,8 @@ public class SqlCloudAccountCatalogTests : IDisposable
         InsertAccount(availableDevices: null);
 
         var snapshot = CreateCatalog().Find("acme");
+        Assert.True(snapshot.Found);
+
         var cloud = new CloudAccountLicense(
             IsActive: snapshot.Found,
             ModuleStocks: snapshot.ModuleStocks,
@@ -134,6 +172,62 @@ public class SqlCloudAccountCatalogTests : IDisposable
         Assert.Equal(localDevices, effective);
     }
 
+    [Theory]
+    [InlineData("SQLite Error 1: 'no such column: a.AvailableDevices'.", true)]
+    [InlineData("SQLite Error 1: 'no such column: AvailableDevices'.", true)]
+    [InlineData("SQLite Error 1: 'no such column: a.PosOperationMode'.", false)]
+    [InlineData("SQLite Error 1: 'no such table: Accounts'.", false)]
+    public void Detector_Sqlite_RequiresNoSuchColumnAndAvailableDevices(string message, bool expected)
+    {
+        var ex = CreateSqliteException(message);
+        Assert.Equal(expected, SqlCloudAccountCatalog.IsMissingAvailableDevicesColumn(ex));
+    }
+
+    [Theory]
+    [InlineData(207, "Invalid column name 'AvailableDevices'.", true)]
+    [InlineData(207, "Invalid column name 'PosOperationMode'.", false)]
+    [InlineData(208, "Invalid object name 'Accounts'.", false)]
+    public void Detector_SqlServer_Requires207AndAvailableDevices(int number, string message, bool expected)
+    {
+        var ex = CreateSqlException(number, message);
+        Assert.Equal(expected, SqlCloudAccountCatalog.IsMissingAvailableDevicesColumn(ex));
+    }
+
+    [Theory]
+    [InlineData(1054, "Unknown column 'AvailableDevices' in 'field list'", true)]
+    [InlineData(1054, "Unknown column 'a.AvailableDevices' in 'field list'", true)]
+    [InlineData(1054, "Unknown column 'PosOperationMode' in 'field list'", false)]
+    [InlineData(1146, "Table 'Accounts' doesn't exist", false)]
+    public void Detector_MySql_Requires1054AndAvailableDevices(int number, string message, bool expected)
+    {
+        var ex = CreateMySqlException(number, message);
+        Assert.Equal(expected, SqlCloudAccountCatalog.IsMissingAvailableDevicesColumn(ex));
+    }
+
+    [Fact]
+    public void Detector_Sqlite_RealMissingOtherColumn_IsFalse()
+    {
+        CreateSchema(includeAvailableDevices: true);
+        using var connection = new SqliteConnection(_sharedConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = "SELECT a.NotARealColumn FROM Accounts a LIMIT 1";
+        var ex = Assert.Throws<SqliteException>(() => command.ExecuteReader());
+        Assert.False(SqlCloudAccountCatalog.IsMissingAvailableDevicesColumn(ex));
+    }
+
+    [Fact]
+    public void Detector_Sqlite_RealMissingAvailableDevices_IsTrue()
+    {
+        CreateSchema(includeAvailableDevices: false);
+        using var connection = new SqliteConnection(_sharedConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = "SELECT a.AvailableDevices FROM Accounts a LIMIT 1";
+        var ex = Assert.Throws<SqliteException>(() => command.ExecuteReader());
+        Assert.True(SqlCloudAccountCatalog.IsMissingAvailableDevicesColumn(ex));
+    }
+
     private SqlCloudAccountCatalog CreateCatalog(Func<string, DbConnection>? connectionFactory = null)
     {
         return new SqlCloudAccountCatalog(
@@ -144,7 +238,8 @@ public class SqlCloudAccountCatalogTests : IDisposable
             },
             new MemoryCache(new MemoryCacheOptions()),
             NullLogger<SqlCloudAccountCatalog>.Instance,
-            connectionFactory ?? (_ => new SqliteConnection(_sharedConnectionString)));
+            connectionFactory ?? (_ => new SqliteConnection(_sharedConnectionString)),
+            utcNow: () => _utcNow);
     }
 
     private void CreateSchema(bool includeAvailableDevices)
@@ -237,5 +332,68 @@ public class SqlCloudAccountCatalogTests : IDisposable
         command.Parameters.Add(expiration);
 
         command.ExecuteNonQuery();
+    }
+
+    private static SqliteException CreateSqliteException(string message)
+    {
+        var ctor = typeof(SqliteException).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            null,
+            new[] { typeof(string), typeof(int), typeof(int) },
+            null);
+        if (ctor is not null)
+            return (SqliteException)ctor.Invoke(new object[] { message, 1, 1 });
+
+        ctor = typeof(SqliteException).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            null,
+            new[] { typeof(string), typeof(int) },
+            null);
+        Assert.NotNull(ctor);
+        return (SqliteException)ctor!.Invoke(new object[] { message, 1 });
+    }
+
+    private static SqlException CreateSqlException(int number, string message)
+    {
+        var errorCtor = typeof(SqlError).GetConstructor(
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            null,
+            new[]
+            {
+                typeof(int), typeof(byte), typeof(byte), typeof(string), typeof(string),
+                typeof(string), typeof(int), typeof(Exception)
+            },
+            null);
+        Assert.NotNull(errorCtor);
+        var error = (SqlError)errorCtor!.Invoke(
+            new object?[] { number, (byte)16, (byte)1, "server", message, "proc", 1, null });
+
+        var collection = (SqlErrorCollection)Activator.CreateInstance(
+            typeof(SqlErrorCollection),
+            nonPublic: true)!;
+        typeof(SqlErrorCollection)
+            .GetMethod("Add", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(collection, new object[] { error });
+
+        var create = typeof(SqlException).GetMethod(
+            "CreateException",
+            BindingFlags.Static | BindingFlags.NonPublic,
+            null,
+            new[] { typeof(SqlErrorCollection), typeof(string) },
+            null);
+        Assert.NotNull(create);
+        return (SqlException)create!.Invoke(null, new object[] { collection, "11.0.0" })!;
+    }
+
+    private static MySqlException CreateMySqlException(int number, string message)
+    {
+        var code = number == 1054 ? MySqlErrorCode.BadFieldError : (MySqlErrorCode)number;
+        var ctor = typeof(MySqlException).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            null,
+            new[] { typeof(MySqlErrorCode), typeof(string) },
+            null);
+        Assert.NotNull(ctor);
+        return (MySqlException)ctor!.Invoke(new object[] { code, message });
     }
 }
