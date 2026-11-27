@@ -1419,12 +1419,6 @@ public partial class DocumentsListing : UserControl
                     cancelled = true;
                     break;
                 }
-                catch (PrintCancelledException)
-                {
-                    // The user cancelled the print dialog: stop the batch instead of asking again per document.
-                    cancelled = true;
-                    break;
-                }
                 catch (Exception exception)
                 {
                     printError ??= exception.Message;
