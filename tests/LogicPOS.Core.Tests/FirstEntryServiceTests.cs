@@ -1,4 +1,4 @@
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Core.Authentication;
@@ -1175,14 +1175,43 @@ public sealed class FirstEntryServiceTests
         return json?["DatabaseSettings"]?["Module"]?.GetValue<string>();
     }
 
-    private static void ConfigureApp(DirectoryInfo root, string module, bool useSeed)
+    [Fact]
+    public async Task Installer_country_preselects_that_country_and_its_currency()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-installer-country-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false, country: "ao");
+            var service = AppComposition.Services!.GetRequiredService<IFirstEntryService>();
+
+            var pending = await service.GetPendingAsync();
+            var angola = pending.Countries.Single(item => item.Code == "AO");
+            var kwanza = pending.Currencies.Single(item => item.Code == "AOA");
+            Assert.Equal(angola.Id, pending.CountryId);
+            Assert.Equal(kwanza.Id, pending.CurrencyId);
+
+            var portugal = pending.Countries.Single(item => item.Code == "PT").Id;
+            var euro = pending.Currencies.Single(item => item.Code == "EUR").Id;
+            FirstEntryDraftStore.Write(root.FullName, new FirstEntryDraft { CountryId = portugal });
+            pending = await service.GetPendingAsync();
+            Assert.Equal(portugal, pending.CountryId);
+            Assert.Equal(euro, pending.CurrencyId);
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    private static void ConfigureApp(DirectoryInfo root, string module, bool useSeed, string? country = null)
     {
         var databasePath = Path.Combine(root.FullName, "logicpos.db");
+        var countryLine = string.IsNullOrWhiteSpace(country) ? string.Empty : $"  \"Country\": \"{country}\",\n";
         File.WriteAllText(
             Path.Combine(root.FullName, "appsettings.json"),
             $$"""
             {
-              "Culture": "pt-PT",
+            {{countryLine}}  "Culture": "pt-PT",
               "DatabaseSettings": {
                 "DatabaseType": "Sqlite",
                 "ConnectionString": "Data Source={{databasePath.Replace("\\", "\\\\")}}",

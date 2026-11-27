@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         x:Class="LogicPOS.App.Views.FirstEntryWindow"
@@ -83,8 +83,7 @@
                         <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Modo de operação" />
                         <TextBlock Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap"
                                    Text="Escolha o tipo de negócio. Define o módulo com que a base de dados é preparada." />
-                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Modo" />
-                        <ComboBox x:Name="CmbMode" Classes="bo_entity_input" />
+                        <UniformGrid x:Name="ModeGrid" Columns="3" Classes="bo_first_entry_modes" />
                     </StackPanel>
 
                     <StackPanel x:Name="DemoStep" Classes="bo_fiscal_wizard_form" IsVisible="False">

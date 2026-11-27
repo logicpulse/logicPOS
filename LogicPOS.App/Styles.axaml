@@ -1,4 +1,4 @@
-<Styles xmlns="https://github.com/avaloniaui"
+﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia">
     <!-- CheckBox-only Fluent keys, so toggles and accent buttons keep SystemAccentColor. -->
@@ -7269,6 +7269,55 @@
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Margin" Value="0,8,0,4" />
+    </Style>
+
+    <Style Selector="UniformGrid.bo_first_entry_modes">
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="Border.bo_first_entry_mode">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#E0E0E0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="8,8,8,10" />
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="Border.bo_first_entry_mode:pointerover">
+        <Setter Property="BorderBrush" Value="#9BBE1D" />
+    </Style>
+
+    <Style Selector="Border.bo_first_entry_mode.bo_first_entry_mode_on">
+        <Setter Property="BorderBrush" Value="#9BBE1D" />
+        <Setter Property="Background" Value="#F4F8E8" />
+    </Style>
+
+    <Style Selector="Border.bo_first_entry_mode_shot">
+        <Setter Property="Height" Value="58" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="BorderBrush" Value="#E0E0E0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="#F4F4F4" />
+    </Style>
+
+    <Style Selector="Image.bo_first_entry_mode_image">
+        <Setter Property="Height" Value="58" />
+        <Setter Property="Stretch" Value="UniformToFill" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_first_entry_mode_label">
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_first_entry_mode_on TextBlock.bo_first_entry_mode_label">
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
     <Style Selector="UniformGrid.bo_fiscal_wizard_checklist">

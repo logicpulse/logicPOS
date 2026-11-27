@@ -205,8 +205,16 @@ Marcação na ficha da empresa. Fora da restauração, do café e do estacioname
 _Avoid_: modo de retalho como sinónimo, 1000 € na restauração
 
 **Anulação (fatura)**:
-Estado de uma FT, FS ou FR já emitida. Exige motivo. Só cabe se não houver recibo, nota de crédito nem estado faturado. O número mantém-se na série. Devolução ou desconto faz-se por nota de crédito. O rascunho apaga-se.
-_Avoid_: apagar o número, anular com recibo, nota de crédito se a certificação o exigir
+Estado de uma FT, FS ou FR já emitida, quando a operação não existiu ou o erro é só formal (NIF, morada, identificação). Exige motivo. O número mantém-se na série. Devolução, desconto ou erro de valor ou de IVA faz-se por nota de crédito. O rascunho apaga-se.
+_Avoid_: apagar o número, nota de crédito para corrigir o NIF, anular uma venda que aconteceu, recibo
+
+**Segunda via**:
+Reimpressão de um documento já emitido. Conserva o conteúdo da emissão, incluindo o ATCUD e o QR AT, e indica que não é o original.
+_Avoid_: original repetido, cópia sem identificação, documento novo
+
+**Documento de conferência**:
+Papel da conta antes do documento fiscal. Traz a menção de que não serve de fatura. Não é fatura, nem FS, nem FR.
+_Avoid_: Confêrencia, fatura, talão de estacionamento
 
 **Guia de transporte**:
 Documento que acompanha bens em circulação. Na ficha da empresa, quem teve volume de negócios acima de 100 000 € no ano anterior marca essa obrigação. Com a marcação, a guia só circula com o código da AT e com hora de início posterior à comunicação; sem rede, os bens não saem. Sem a marcação, a guia imprime-se sem esperar pelo código.
@@ -215,6 +223,14 @@ _Avoid_: código AT em toda a empresa, guia válida depois da hora de início, c
 **Série comunicada (ATCUD)**:
 Com o módulo fiscal presente, em Portugal, a FT, a FS, a FR, a nota de crédito, o recibo e a guia só se emitem se a série tiver código AT. O ATCUD é esse código mais o número. Sem o módulo, a emissão local mantém-se e o arranque avisa.
 _Avoid_: ATCUD vazio com o módulo presente, recusar a versão GitHub
+
+**QR AT**:
+O código que a AT lê num documento fiscal português impresso. Não é o número do documento nem o talão de estacionamento. Na impressão acompanha o ATCUD.
+_Avoid_: QR do número do documento, talão de estacionamento, talão cloud
+
+**Retenção**:
+Imposto retido na fonte num documento fiscal. O QR AT leva o valor da emissão, também na reimpressão.
+_Avoid_: recalcular na impressão, recibo
 
 **Estacionamento (venda)**:
 O talão de pagamento fecha a venda e dispensa fatura. A fatura simplificada só sai se alguém a pedir, e fica sujeita ao teto de 100 €.
@@ -265,8 +281,8 @@ Documento fiscal que reduz ou anula uma venda já emitida, sempre a partir do do
 _Avoid_: NC como único nome, valor em dívida na linha da nota, valores negativos no papel, exigir NIF ao consumidor final, fatura, recibo
 
 **Recibo**:
-O documento que liquida uma fatura (FT). O número é a sigla da série e o sequencial. O método de pagamento por omissão é Numerário.
-_Avoid_: carimbo de data/hora, cartão cliente por omissão, RG em Portugal
+O documento que liquida uma fatura (FT). Não é fatura: traz a menção de que não serve de fatura. Não anula a fatura nem a substitui. O número é a sigla da série e o sequencial. O método de pagamento por omissão é Numerário.
+_Avoid_: carimbo de data/hora, cartão cliente por omissão, RG em Portugal, anulação, nota de crédito
 
 **Portal**:
 A interface web do logicPOS no posto (pasta Portal). Corre como serviço Windows, não como consola. Em Cloud pode existir sem API local.

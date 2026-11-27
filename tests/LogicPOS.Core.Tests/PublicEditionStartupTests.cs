@@ -1,4 +1,4 @@
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
@@ -428,6 +428,82 @@ public sealed class PublicEditionStartupTests
         finally
         {
             CleanupPublicEdition(root, pdfPath);
+        }
+    }
+
+    [Fact]
+    public async Task Refused_simplified_invoice_is_not_stored()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-fs-cap-");
+        try
+        {
+            var services = await ConfigurePublicEditionReadyToIssueAsync(root);
+            var customer = await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync(CancellationToken.None);
+            Assert.NotNull(customer);
+            var catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync(CancellationToken.None);
+            var article = catalog.Articles.First();
+            var documents = services.GetRequiredService<IPosDocumentService>();
+
+            int nextNumber;
+            int stored;
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                nextNumber = await database.DocumentSeries
+                    .Where(item => item.IsDeleted == false && item.DocumentType!.Acronym == "FS")
+                    .Select(item => item.NextNumber)
+                    .SingleAsync();
+                stored = await database.Documents.CountAsync(item => item.IsDeleted == false && item.Type == "FS");
+            }
+
+            var aboveCap = new PosSaleLine(article.Id, 1, 200, 0, article.VatRateId);
+            var fromDocument = await documents.IssueDocumentAsync(
+                "FS",
+                customer.Id,
+                [aboveCap],
+                new PosDocumentHeader { PaymentToken = "MONEY" },
+                cancellationToken: CancellationToken.None);
+            var fromPayment = await documents.IssueSimplifiedInvoiceAsync(
+                customer.Id,
+                "MONEY",
+                0,
+                200,
+                null,
+                [aboveCap],
+                cancellationToken: CancellationToken.None);
+
+            Assert.False(fromDocument.Succeeded);
+            Assert.False(fromPayment.Succeeded);
+            Assert.Equal(
+                "A fatura simplificada não cabe neste total para o modo e o cliente indicados.",
+                fromDocument.Error);
+            Assert.Equal(fromDocument.Error, fromPayment.Error);
+
+            var withinCap = new PosSaleLine(article.Id, 1, 10, 0, article.VatRateId);
+            var issued = await documents.IssueDocumentAsync(
+                "FS",
+                customer.Id,
+                [withinCap],
+                new PosDocumentHeader { PaymentToken = "MONEY" },
+                cancellationToken: CancellationToken.None);
+            Assert.True(issued.Succeeded, issued.Error);
+
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var count = await database.Documents.CountAsync(item => item.IsDeleted == false && item.Type == "FS");
+                var number = await database.DocumentSeries
+                    .Where(item => item.IsDeleted == false && item.DocumentType!.Acronym == "FS")
+                    .Select(item => item.NextNumber)
+                    .SingleAsync();
+                Assert.Equal(stored + 1, count);
+                Assert.Equal(nextNumber + 1, number);
+                Assert.Contains($"/{nextNumber}", issued.Number, StringComparison.Ordinal);
+            }
+        }
+        finally
+        {
+            CleanupPublicEdition(root, null);
         }
     }
 

@@ -1,4 +1,4 @@
-namespace LogicPOS.Domain.Entities.Dtos;
+﻿namespace LogicPOS.Domain.Entities.Dtos;
 
 public record CreateUserDto(Guid ProfileId,
                             Guid? CommissionGroupId,
@@ -24,4 +24,5 @@ public record CreateUserDto(Guid ProfileId,
                             bool? IsDeleted,
                             bool Imported = false,
                             string? PortalPassword = null,
-                            bool Need2FA = false);
+                            bool Need2FA = false,
+                            string? AccessPin = null);

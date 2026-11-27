@@ -9,6 +9,7 @@ using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.Licensing;
 using LogicPOS.Domain.Entities.Finance.Calculations;
+using LogicPOS.Domain.Entities.Finance.Documents.Documents.Create;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Documents;
 using LogicPOS.Domain.Entities.Dtos;
@@ -441,7 +442,7 @@ public static class PosDocumentRules
     public static bool UsesRetailMode(string? module)
     {
         var token = NormalizeModule(module);
-        return token is "default" or "retail" or "bakery" or "butchery" or "clothingstore" or "hardwarestore"
+        return token is "retail" or "bakery" or "butchery" or "clothingstore" or "hardwarestore"
             or "seafoodstore" or "shoestore";
     }
 
@@ -1247,6 +1248,23 @@ public sealed class PosDocumentService : IPosDocumentService
         var buyerIsFinalConsumer = buyer is not null
             && string.Equals(buyer.Name, "Consumidor Final", StringComparison.OrdinalIgnoreCase);
 
+        var capRefusal = await RefuseSimplifiedInvoiceOutsideCapAsync(
+            scope.ServiceProvider,
+            database,
+            documentType,
+            isDraft: false,
+            customerId,
+            discountPercent,
+            currencyId: null,
+            exchangeRate: 1,
+            details,
+            invoiceFaceFiscalNumber,
+            cancellationToken);
+        if (capRefusal is not null)
+        {
+            return PosDocumentResult.Fail(capRefusal);
+        }
+
         var created = await Document.CreateAsync(
             dto,
             references.DocumentRepository,
@@ -1551,6 +1569,97 @@ public sealed class PosDocumentService : IPosDocumentService
         }
 
         await database.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<string?> RefuseSimplifiedInvoiceOutsideCapAsync(
+        IServiceProvider services,
+        LogicPOSDbContext database,
+        string documentType,
+        bool isDraft,
+        Guid customerId,
+        decimal discountPercent,
+        Guid? currencyId,
+        decimal? exchangeRate,
+        IReadOnlyList<CreateDocumentDetailDto> details,
+        string? invoiceFaceFiscalNumber,
+        CancellationToken cancellationToken)
+    {
+        if (isDraft || string.Equals(documentType, SimplifiedInvoice, StringComparison.OrdinalIgnoreCase) == false)
+        {
+            return null;
+        }
+
+        if (_systemInformation.IsPortugal() == false)
+        {
+            return null;
+        }
+
+        var marks = await database.PreferenceParameters.AsNoTracking()
+            .Where(item => item.IsDeleted == false
+                && (item.Token == CompanyFiscalMarkTokens.RegimeArtigo53
+                    || item.Token == CompanyFiscalMarkTokens.VendedorAmbulante))
+            .Select(item => new { item.Token, item.Value })
+            .ToListAsync(cancellationToken);
+        var state = CompanyFiscalMarks.Read(marks.Select(item => (item.Token, item.Value)));
+
+        var articleIds = details.Select(item => item.ArticleId).Distinct().ToList();
+        var classes = await database.Articles.AsNoTracking()
+            .Where(article => articleIds.Contains(article.Id))
+            .Select(article => new { article.Id, Acronym = article.Class!.Acronym })
+            .ToListAsync(cancellationToken);
+        var classByArticle = classes.ToDictionary(item => item.Id, item => (string?)item.Acronym);
+        var lineClasses = details.Select(item =>
+            classByArticle.TryGetValue(item.ArticleId, out var acronym) ? acronym : null);
+
+        var cardFiscalNumber = await database.Customers.AsNoTracking()
+            .Where(item => item.Id == customerId && item.IsDeleted == false)
+            .Select(item => item.FiscalNumber)
+            .FirstOrDefaultAsync(cancellationToken);
+        var buyerFiscalNumber = PosDocumentRules.ResolveBuyerFiscalNumberForCap(
+            invoiceFaceFiscalNumber,
+            isFinalConsumer: false,
+            cardFiscalNumber);
+
+        var references = new DocumentReferences(
+            services.GetRequiredService<IDocumentRepository>(),
+            services.GetRequiredService<IPaymentMethodRepository>(),
+            services.GetRequiredService<IDocumentSeriesRepository>(),
+            services.GetRequiredService<ICurrencyRepository>(),
+            services.GetRequiredService<ICustomerRepository>(),
+            services.GetRequiredService<IPaymentConditionRepository>(),
+            services.GetRequiredService<IArticleRepository>(),
+            services.GetRequiredService<IVatRateRepository>(),
+            services.GetRequiredService<IVatExemptionReasonRepository>());
+        var preview = await Document.CreatePreviewAsync(
+            new CreateDocumentPreviewDto(
+                documentType,
+                currencyId,
+                null,
+                null,
+                discountPercent,
+                exchangeRate,
+                null,
+                null,
+                details),
+            references,
+            SystemCountry,
+            cancellationToken);
+        if (preview.IsFailure)
+        {
+            return Explain(preview.Error.Message);
+        }
+
+        var context = new PosDocumentRules.SettledSaleContext(
+            _systemInformation.GetModule(),
+            DocumentMoneyTotal.Canonical(preview.Value!.TotalFinal),
+            false,
+            state.RegimeArtigo53,
+            state.VendedorAmbulante,
+            PosDocumentRules.AllLinesAreProducts(lineClasses),
+            buyerFiscalNumber);
+        return PosDocumentRules.CanIssueSimplifiedInvoice(context)
+            ? null
+            : "A fatura simplificada não cabe neste total para o modo e o cliente indicados.";
     }
 
     private static string Explain(string message)
@@ -2510,6 +2619,23 @@ public sealed class PosDocumentService : IPosDocumentService
             {
                 return PosDocumentResult.Fail(Explain(atSeriesRefusal));
             }
+        }
+
+        var capRefusal = await RefuseSimplifiedInvoiceOutsideCapAsync(
+            scope.ServiceProvider,
+            database,
+            documentType,
+            isDraft,
+            customerId,
+            header?.DiscountPercent ?? 0,
+            currencyId,
+            exchangeRate,
+            details,
+            invoiceFaceFiscalNumber: null,
+            cancellationToken);
+        if (capRefusal is not null)
+        {
+            return PosDocumentResult.Fail(capRefusal);
         }
 
         var created = await Document.CreateAsync(

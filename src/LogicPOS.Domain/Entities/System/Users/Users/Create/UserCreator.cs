@@ -1,4 +1,4 @@
-using LogicPOS.Domain.Entities.Common.Utilities;
+﻿using LogicPOS.Domain.Entities.Common.Utilities;
 using LogicPOS.Domain.Entities.Dtos;
 using LogicPOS.Domain.Repositories;
 using LogicPOS.Domain.Results;
@@ -31,8 +31,17 @@ internal class UserCreator : EntityCreator<User>
         _entity.ProfileId = _dto.ProfileId;
         _entity.Name = _dto.Name;
         _entity.Login = _dto.Login;
-        _entity.AccessPin = _passwordHasher.HashPassword(User.DefaultAccessPin);
-        _entity.PasswordReset = true;
+        if (string.IsNullOrWhiteSpace(_dto.AccessPin))
+        {
+            _entity.AccessPin = _passwordHasher.HashPassword(User.DefaultAccessPin);
+            _entity.PasswordReset = true;
+        }
+        else
+        {
+            _entity.AccessPin = _passwordHasher.HashPassword(_dto.AccessPin.Trim());
+            _entity.PasswordReset = false;
+            _entity.PasswordResetDate = DateTime.Now;
+        }
         _entity.Need2FA = _dto.Need2FA;
         if (string.IsNullOrWhiteSpace(_dto.PortalPassword) == false)
             _entity.Password = _passwordHasher.HashPassword(_dto.PortalPassword.Trim());

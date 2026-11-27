@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Domain.Entities;
@@ -70,7 +70,8 @@ public sealed class FirstEntryService : IFirstEntryService
 
         // Only an open first entry shows a preselection. Cloud has no installer: the account supplies
         // mode and country, the demo starts refused and the demo-account mark is not read.
-        // Local: the installer draft. Invalid values are ignored.
+        // Local: the installer draft, then the country the installer wrote in appsettings (Country).
+        // Invalid values are ignored. The currency follows the country when the draft has none.
         var cloudPending = _account.IsCloudAccount && isPending;
         var draft = isPending && _account.IsCloudAccount == false ? FirstEntryDraftStore.Read(_baseDirectory) : null;
         var mode = (cloudPending ? _account.AccountOperationMode : draft?.OperationMode)?.Trim().ToLowerInvariant();
@@ -86,6 +87,16 @@ public sealed class FirstEntryService : IFirstEntryService
         {
             countryId = company.Countries.FirstOrDefault(item =>
                 string.Equals(item.Code, "PT", StringComparison.OrdinalIgnoreCase))?.Id;
+        }
+
+        if (countryId is null && isPending && _account.IsCloudAccount == false)
+        {
+            var configured = _configuration["Country"]?.Trim();
+            if (string.IsNullOrWhiteSpace(configured) == false)
+            {
+                countryId = company.Countries.FirstOrDefault(item =>
+                    string.Equals(item.Code, configured, StringComparison.OrdinalIgnoreCase))?.Id;
+            }
         }
 
         var currencyId = draft?.CurrencyId is { } draftCurrency && company.Currencies.Any(item => item.Id == draftCurrency)

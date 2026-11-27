@@ -1,6 +1,8 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +21,9 @@ public partial class FirstEntryWindow : Window
     private static readonly string[] InvoiceSteps = ["Tipo", "Empresa"];
 
     private readonly IFirstEntryService _service;
+    private readonly Dictionary<string, Bitmap> _modeBitmaps = new(StringComparer.OrdinalIgnoreCase);
     private IReadOnlyList<string> _posModes = [];
+    private string? _selectedMode;
     private int _stepIndex;
     private bool _busy;
     private bool _loaded;
@@ -76,28 +80,29 @@ public partial class FirstEntryWindow : Window
         _posModes = pending.Modes
             .Where(mode => string.Equals(mode, InvoiceMode, StringComparison.OrdinalIgnoreCase) == false)
             .ToList();
-        CmbMode.ItemsSource = _posModes;
 
         var mode = pending.OperationMode?.Trim();
         if (string.Equals(mode, InvoiceMode, StringComparison.OrdinalIgnoreCase))
         {
             RbProductInvoice.IsChecked = true;
             RbProductPos.IsChecked = false;
-            CmbMode.SelectedItem = null;
+            _selectedMode = null;
         }
         else if (string.IsNullOrWhiteSpace(mode) == false)
         {
             RbProductPos.IsChecked = true;
             RbProductInvoice.IsChecked = false;
-            CmbMode.SelectedItem = _posModes.FirstOrDefault(item =>
+            _selectedMode = _posModes.FirstOrDefault(item =>
                 string.Equals(item, mode, StringComparison.OrdinalIgnoreCase));
         }
         else
         {
             RbProductPos.IsChecked = false;
             RbProductInvoice.IsChecked = false;
-            CmbMode.SelectedItem = null;
+            _selectedMode = null;
         }
+
+        ShowModes();
 
         RbDemoAccept.IsChecked = pending.DemoAccepted && IsInvoiceSelected == false;
         RbDemoRefuse.IsChecked = RbDemoAccept.IsChecked != true;
@@ -135,14 +140,16 @@ public partial class FirstEntryWindow : Window
 
         if (IsInvoiceSelected)
         {
-            CmbMode.SelectedItem = null;
+            _selectedMode = null;
             RbDemoRefuse.IsChecked = true;
             RbDemoAccept.IsChecked = false;
         }
-        else if (CmbMode.SelectedItem is null)
+        else if (string.IsNullOrEmpty(_selectedMode))
         {
-            CmbMode.SelectedItem = _posModes.FirstOrDefault();
+            _selectedMode = _posModes.FirstOrDefault();
         }
+
+        ShowModes();
 
         if (_stepIndex >= ActiveSteps.Length)
         {
@@ -177,7 +184,7 @@ public partial class FirstEntryWindow : Window
 
     private FirstEntryRequest BuildRequest() => new()
     {
-        OperationMode = IsInvoiceSelected ? InvoiceMode : CmbMode.SelectedItem as string,
+        OperationMode = IsInvoiceSelected ? InvoiceMode : _selectedMode,
         DemoAccepted = IsInvoiceSelected == false && RbDemoAccept.IsChecked == true,
         CountryId = (CmbCountry.SelectedItem as CompanySetupChoice)?.Id,
         CurrencyId = (CmbCurrency.SelectedItem as CompanySetupChoice)?.Id,
@@ -254,7 +261,7 @@ public partial class FirstEntryWindow : Window
             return;
         }
 
-        if (current == "Modo" && CmbMode.SelectedItem is null)
+        if (current == "Modo" && string.IsNullOrEmpty(_selectedMode))
         {
             LblStatus.Text = "Selecione o modo de operação.";
             return;
@@ -316,6 +323,95 @@ public partial class FirstEntryWindow : Window
         {
             Close();
         }
+    }
+
+    private void ShowModes()
+    {
+        ModeGrid.Children.Clear();
+        foreach (var mode in _posModes)
+        {
+            var selected = string.Equals(mode, _selectedMode, StringComparison.OrdinalIgnoreCase);
+            var card = new Border
+            {
+                Classes = { "bo_first_entry_mode" },
+                Tag = mode
+            };
+            if (selected)
+            {
+                card.Classes.Add("bo_first_entry_mode_on");
+            }
+
+            card.PointerPressed += OnModePressed;
+
+            var body = new StackPanel { Spacing = 6 };
+            var bitmap = ModeBitmap(mode);
+            if (bitmap is not null)
+            {
+                body.Children.Add(new Border
+                {
+                    Classes = { "bo_first_entry_mode_shot" },
+                    Child = new Image
+                    {
+                        Classes = { "bo_first_entry_mode_image" },
+                        Source = bitmap
+                    }
+                });
+            }
+
+            body.Children.Add(new TextBlock
+            {
+                Classes = { "bo_first_entry_mode_label" },
+                Text = FirstEntryModeText.Label(mode)
+            });
+            card.Child = body;
+            ModeGrid.Children.Add(card);
+        }
+    }
+
+    private void OnModePressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (_busy || sender is not Border { Tag: string mode })
+        {
+            return;
+        }
+
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed == false)
+        {
+            return;
+        }
+
+        _selectedMode = mode;
+        LblStatus.Text = string.Empty;
+        ShowModes();
+        e.Handled = true;
+    }
+
+    private Bitmap? ModeBitmap(string mode)
+    {
+        var token = mode.Trim().ToLowerInvariant();
+        if (_modeBitmaps.TryGetValue(token, out var cached))
+        {
+            return cached;
+        }
+
+        var bitmap = OpenModeBitmap(token) ?? OpenModeBitmap("default");
+        if (bitmap is not null)
+        {
+            _modeBitmaps[token] = bitmap;
+        }
+
+        return bitmap;
+    }
+
+    private static Bitmap? OpenModeBitmap(string token)
+    {
+        var uri = new Uri($"avares://LogicPOS.App/Assets/Images/OperationModes/{token}.bmp");
+        if (AssetLoader.Exists(uri) == false)
+        {
+            return null;
+        }
+
+        return new Bitmap(AssetLoader.Open(uri));
     }
 
     private void OnTitlePointerPressed(object? sender, PointerPressedEventArgs e)

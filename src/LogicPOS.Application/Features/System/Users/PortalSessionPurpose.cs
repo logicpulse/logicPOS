@@ -1,4 +1,6 @@
-﻿namespace LogicPOS.Application.Features.System.Users;
+﻿using LogicPOS.Domain.Entities;
+
+namespace LogicPOS.Application.Features.System.Users;
 
 /// <summary>
 /// JWT purpose for the portal sign-in steps. A missing claim is a full session (Windows PIN login).
@@ -43,6 +45,27 @@ public static class PortalLimitedSessionGate
         }
 
         return false;
+    }
+}
+
+public static class AccessPinRules
+{
+    public const int MinimumLength = 4;
+
+    /// <summary>Null when the PIN is empty (keep current) or valid for the Avalonia terminal.</summary>
+    public static string? Validate(string? pin)
+    {
+        var value = (pin ?? string.Empty).Trim();
+        if (value.Length == 0)
+            return null;
+
+        if (value.Length < MinimumLength || value.Any(character => char.IsDigit(character) == false))
+            return "O PIN deve ter pelo menos 4 dígitos.";
+
+        if (value == User.DefaultAccessPin)
+            return "Escolha um PIN diferente de 0000.";
+
+        return null;
     }
 }
 

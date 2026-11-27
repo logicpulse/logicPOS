@@ -1,4 +1,4 @@
-using LogicPOS.Core.FrontOffice;
+﻿using LogicPOS.Core.FrontOffice;
 
 namespace LogicPOS.Core.Tests.Finance;
 
@@ -159,5 +159,47 @@ public sealed class SettledSaleDocumentTypeTests
     {
         var context = Ctx("bakery", 1500);
         Assert.False(PosDocumentRules.CanIssueSimplifiedInvoice(context));
+    }
+
+    [Theory]
+    [InlineData("default", 100, true, false, null, "FS")]
+    [InlineData("default", 100.01, true, false, null, "FR")]
+    [InlineData("default", 1000, true, true, null, "FS")]
+    [InlineData("default", 1000.01, true, true, null, "FR")]
+    [InlineData("default", 150, false, true, null, "FR")]
+    [InlineData("default", 150, true, true, "512345678", "FR")]
+    [InlineData("restaurant", 100, true, false, null, "FS")]
+    [InlineData("restaurant", 100.01, true, true, null, "FR")]
+    [InlineData("cafe", 150, true, true, null, "FR")]
+    [InlineData("parking", 150, true, true, null, "FR")]
+    [InlineData("retail", 1000, true, false, null, "FS")]
+    [InlineData("retail", 1000.01, true, false, null, "FR")]
+    [InlineData("bakery", 1000, true, false, "123456789", "FS")]
+    [InlineData("butchery", 150, true, false, "512345678", "FR")]
+    [InlineData("butchery", 80, true, false, "612345678", "FS")]
+    [InlineData("clothingstore", 1000, true, false, null, "FS")]
+    [InlineData("hardwarestore", 1000.01, true, false, null, "FR")]
+    [InlineData("seafoodstore", 100, false, false, null, "FS")]
+    [InlineData("seafoodstore", 100.01, false, false, null, "FR")]
+    [InlineData("shoestore", 1000, true, false, null, "FS")]
+    [InlineData("unknown-mode", 150, true, false, null, "FR")]
+    public void Settled_sale_type_matches_artigo_40(
+        string module,
+        decimal total,
+        bool allProducts,
+        bool ambulante,
+        string? buyerNif,
+        string expected)
+    {
+        var context = Ctx(module, total, ambulante: ambulante, allProducts: allProducts, buyerNif: buyerNif);
+        Assert.Equal(expected, PosDocumentRules.ResolveSettledSaleDocumentType(context));
+        Assert.Equal(expected == "FS", PosDocumentRules.CanIssueSimplifiedInvoice(context));
+    }
+
+    [Fact]
+    public void Unmarked_exemption_restores_the_cap()
+    {
+        Assert.Equal("FR", PosDocumentRules.ResolveSettledSaleDocumentType(Ctx("restaurant", 5000)));
+        Assert.Equal("FS", PosDocumentRules.ResolveSettledSaleDocumentType(Ctx("restaurant", 5000, artigo53: true)));
     }
 }
