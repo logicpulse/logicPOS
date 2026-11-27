@@ -143,6 +143,9 @@ public sealed class ThermalInvoiceJob
 
     public bool PrintQrCode { get; init; } = true;
 
+    /// <summary>Portugal with an available fiscal plugin (certified closed edition).</summary>
+    public bool PortugalCertifiedFiscalEdition { get; init; }
+
     /// <summary>0 = ESC/POS native QR (GS k); 1 = bitmap image (GTK default / QRCODE_METHOD).</summary>
     public int QrCodeMethod { get; init; } = 1;
 

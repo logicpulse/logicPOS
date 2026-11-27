@@ -1,3 +1,4 @@
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Domain.Entities;
@@ -198,6 +199,11 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
                 .AnyAsync(item => item.IsDeleted == false && item.Acronym == document.Type && item.PrintOpenDrawer, cancellationToken);
 
         var qrMethod = int.TryParse(Value("QRCODE_METHOD"), out var parsedMethod) ? parsedMethod : 1;
+        var system = scope.ServiceProvider.GetRequiredService<ISystemInformationService>();
+        var fiscalModule = scope.ServiceProvider.GetService<IFiscalModule>();
+        var portugalCertified = ThermalFiscalPrintRules.IsPortugalCertifiedFiscalEdition(
+            fiscalModule,
+            system.IsPortugal());
 
         return new ThermalInvoiceJob
         {
@@ -206,6 +212,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             TerminalName = terminal!.Designation,
             OpenDrawer = openDrawer,
             PrintQrCode = bool.TryParse(Value("PRINT_QRCODE"), out var printQr) == false || printQr,
+            PortugalCertifiedFiscalEdition = portugalCertified,
             QrCodeMethod = qrMethod,
             Company = new ThermalCompany
             {

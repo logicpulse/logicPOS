@@ -57,13 +57,18 @@ public sealed class FiscalMarksPrintTests
     }
 
     [Theory]
-    [InlineData(false, "A:1*B:2*", false)]
-    [InlineData(true, "A:1*B:2*", true)]
-    [InlineData(true, null, false)]
-    [InlineData(true, "", false)]
-    public void ShouldPrintQrImage_only_gates_qr_image(bool printQr, string? payload, bool expected)
+    [InlineData(false, "A:1*B:2*", false, false)]
+    [InlineData(false, "A:1*B:2*", true, true)]
+    [InlineData(true, "A:1*B:2*", false, true)]
+    [InlineData(true, "A:1*B:2*", true, true)]
+    [InlineData(true, null, true, false)]
+    public void ShouldPrintQrImage_respects_certified_portugal_edition(
+        bool printQr,
+        string? payload,
+        bool portugalCertified,
+        bool expected)
     {
-        Assert.Equal(expected, ThermalFiscalPrintRules.ShouldPrintQrImage(printQr, payload));
+        Assert.Equal(expected, ThermalFiscalPrintRules.ShouldPrintQrImage(printQr, payload, portugalCertified));
     }
 
     [Fact]
@@ -96,7 +101,10 @@ public sealed class FiscalMarksPrintTests
                 var atcud = AtcudFormat.OrFallback(document.ATCUD, "TESTE005", document.Number);
                 Assert.True(AtcudFormat.ShouldPrint(atcud));
                 Assert.False(string.IsNullOrWhiteSpace(document.ATQRCode));
-                Assert.False(ThermalFiscalPrintRules.ShouldPrintQrImage(printQrCodePreference: false, document.ATQRCode));
+                Assert.True(ThermalFiscalPrintRules.ShouldPrintQrImage(
+                    printQrCodePreference: false,
+                    document.ATQRCode,
+                    portugalCertifiedFiscalEdition: true));
             }
 
             pdfPath = await services.GetRequiredService<IPosDocumentService>()
@@ -130,6 +138,9 @@ public sealed class FiscalMarksPrintTests
             Assert.DoesNotContain("ATCUD:", pdf, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("MARK ", pdf, StringComparison.Ordinal);
             Assert.DoesNotContain("programa certificado", pdf, StringComparison.OrdinalIgnoreCase);
+            Assert.False(ThermalFiscalPrintRules.IsPortugalCertifiedFiscalEdition(
+                services.GetRequiredService<IFiscalModule>(),
+                AppComposition.Services!.GetRequiredService<LogicPOS.Application.Features.System.ISystemInformationService>().IsPortugal()));
         }
         finally
         {

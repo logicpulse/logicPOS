@@ -385,7 +385,10 @@ internal sealed class ThermalInvoiceRenderer
             Feed();
         }
 
-        if (ThermalFiscalPrintRules.ShouldPrintQrImage(_job.PrintQrCode, document.AtQrCode) == false)
+        if (ThermalFiscalPrintRules.ShouldPrintQrImage(
+                _job.PrintQrCode,
+                document.AtQrCode,
+                _job.PortugalCertifiedFiscalEdition) == false)
         {
             return;
         }
