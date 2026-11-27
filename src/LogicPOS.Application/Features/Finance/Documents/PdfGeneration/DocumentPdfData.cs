@@ -83,6 +83,7 @@ public record Document
     public string? PaymentCondition { get; set; }
     public List<PaymentMethod>? PaymentMethods { get; set; }
     public string Currency { get; set; } = null!;
+    public decimal ExchangeRate { get; set; } = 1m;
     public string Hash { get; set; } = null!;
     public decimal Discount { get; set; }
     public decimal TotalDiscount { get; set; }

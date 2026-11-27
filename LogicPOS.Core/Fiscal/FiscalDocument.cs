@@ -29,6 +29,10 @@ public sealed class FiscalDocument
 
     public decimal TotalFinal { get; init; }
 
+    public decimal? WithholdingTaxAmount { get; init; }
+    public string? CurrencyAcronym { get; init; }
+    public decimal ExchangeRate { get; init; } = 1m;
+
     public DateTime Date { get; init; }
 
     public string? CustomerFiscalNumber { get; init; }

@@ -133,6 +133,10 @@ public sealed class ThermalDocument
 
     public string? AtQrCode { get; set; }
 
+    public decimal? WithholdingTaxAmount { get; init; }
+    public string? CurrencyAcronym { get; init; }
+    public decimal ExchangeRate { get; init; } = 1m;
+
     public string? FiscalCodeLine { get; set; }
 }
 

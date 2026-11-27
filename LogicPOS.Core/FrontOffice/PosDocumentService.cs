@@ -1330,9 +1330,15 @@ public sealed class PosDocumentService : IPosDocumentService
 
         if (string.IsNullOrWhiteSpace(document.ATQRCode))
         {
+            var currency = document.Currency?.Acronym;
+            if (currency is null && document.ExchangeRate > 0m && document.ExchangeRate != 1m)
+            {
+                currency = await services.GetRequiredService<ICurrencyRepository>()
+                    .GetAcronymAsync(document.CurrencyId, cancellationToken);
+            }
             var mark = FiscalMarks.Read(
                 services.GetService<IFiscalModule>(),
-                ToFiscalDocument(document, issuerFiscalNumber));
+                ToFiscalDocument(document, issuerFiscalNumber, currency));
             if (string.IsNullOrWhiteSpace(mark.QrPayload) == false)
             {
                 document.ATQRCode = mark.QrPayload;
@@ -1340,7 +1346,7 @@ public sealed class PosDocumentService : IPosDocumentService
         }
     }
 
-    private static FiscalDocument ToFiscalDocument(Document document, string? issuerFiscalNumber)
+    private static FiscalDocument ToFiscalDocument(Document document, string? issuerFiscalNumber, string? currency)
         => new()
         {
             Type = document.Type,
@@ -1349,6 +1355,9 @@ public sealed class PosDocumentService : IPosDocumentService
             Status = document.Status,
             Atcud = document.ATCUD,
             QrPayload = document.ATQRCode,
+            WithholdingTaxAmount = document.WithholdingTaxAmount,
+            CurrencyAcronym = currency,
+            ExchangeRate = document.ExchangeRate,
             TotalNet = document.TotalNet,
             TotalTax = document.TotalTax,
             TotalFinal = document.TotalFinal,
@@ -2550,6 +2559,7 @@ public sealed class PosDocumentService : IPosDocumentService
                 Customer = doc.Customer,
                 CustomerId = doc.CustomerId,
                 Currency = doc.Currency!.Acronym,
+                ExchangeRate = doc.ExchangeRate,
                 Hash = doc.Hash,
                 Discount = doc.Discount,
                 TotalDiscount = doc.TotalDiscount,
@@ -2606,6 +2616,7 @@ public sealed class PosDocumentService : IPosDocumentService
         document.RelatedDocuments = parent is { } source ? [source.Number] : [];
 
         var country = SystemCountry;
+        var fiscalWithholding = document.WithholdingTaxAmount;
         document.WithholdingTaxAmount = DocumentLineCalculator.EffectiveServiceWithholding(
             country, document.WithholdingTaxAmount);
         UseCreditNotePaperAmounts(document);
@@ -2627,6 +2638,9 @@ public sealed class PosDocumentService : IPosDocumentService
                 Number = document.Number,
                 Hash = document.Hash,
                 QrPayload = storedAtQr,
+                WithholdingTaxAmount = fiscalWithholding,
+                CurrencyAcronym = document.Currency,
+                ExchangeRate = document.ExchangeRate,
                 Status = document.Status,
                 Atcud = document.Atcud,
                 TotalNet = document.TotalNet,

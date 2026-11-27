@@ -104,7 +104,7 @@ public sealed record AtQrPayloadInput(
     decimal TotalTax,
     decimal TotalFinal,
     string? Hash4,
-    decimal WithholdingTaxAmount = 0m,
+    decimal? WithholdingTaxAmount = null,
     decimal StampDutyAmount = 0m,
     string? CurrencyAcronym = null,
     decimal ExchangeRate = 1m,
@@ -156,10 +156,10 @@ public static class DocumentAtQrPayload
         fields.Add("N:" + FormatAmount(toEur(input.TotalTax)));
         fields.Add("O:" + FormatAmount(toEur(input.TotalFinal)));
 
-        var withholding = toEur(input.WithholdingTaxAmount);
-        if (withholding != 0m)
+        var withholding = input.WithholdingTaxAmount is decimal amount ? toEur(amount).Round() : (decimal?)null;
+        if (withholding is decimal retained && retained != 0m)
         {
-            fields.Add("P:" + FormatAmount(withholding));
+            fields.Add("P:" + FormatAmount(retained));
         }
 
         fields.Add("Q:" + input.Hash4);
