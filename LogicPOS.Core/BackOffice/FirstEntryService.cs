@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
+using LogicPOS.Persistence.Cloud;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -296,6 +297,19 @@ public sealed class FirstEntryService : IFirstEntryService
             .FirstOrDefaultAsync(cancellationToken);
 
         var account = _account.IsCloudAccount ? _account.AccountOperationMode?.Trim().ToLowerInvariant() : null;
+        if (account is not null
+            && string.Equals(account, CloudOperationMode.NeutralModule, StringComparison.OrdinalIgnoreCase) == false
+            && ValidModes.Contains(account))
+        {
+            return account;
+        }
+
+        var normalizedStored = string.IsNullOrWhiteSpace(stored) ? null : stored.Trim().ToLowerInvariant();
+        if (normalizedStored is not null && ValidModes.Contains(normalizedStored))
+        {
+            return normalizedStored;
+        }
+
         return account is not null && ValidModes.Contains(account) ? account : stored;
     }
 

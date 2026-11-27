@@ -718,6 +718,187 @@ public sealed class FirstEntryServiceTests
     }
 
     [Fact]
+    public async Task Resolved_mode_after_confirmation_prefers_tenant_over_account_default()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-stored-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "default", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            Assert.Equal("restaurant", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_after_confirmation_keeps_tenant_when_account_store_fails_and_stays_default()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-failstore-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "default", CountryCode2 = "PT", FailStore = true };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            Assert.Equal("default", account.Mode);
+            Assert.Equal("restaurant", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_normalizes_stored_casing_when_account_is_neutral()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-casing-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "default", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            await using (var scope = AppComposition.Services!.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var row = await database.PreferenceParameters
+                    .SingleAsync(item => item.IsDeleted == false && item.Token == "SYSTEM_OPERATION_MODE");
+                row.Value = "Restaurant";
+                await database.SaveChangesAsync();
+            }
+
+            Assert.Equal("restaurant", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_invalid_stored_falls_back_to_neutral_account_default()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-invalid-stored-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "default", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            account.Mode = "default";
+
+            await using (var scope = AppComposition.Services!.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var row = await database.PreferenceParameters
+                    .SingleAsync(item => item.IsDeleted == false && item.Token == "SYSTEM_OPERATION_MODE");
+                row.Value = "not-a-real-mode";
+                await database.SaveChangesAsync();
+            }
+
+            Assert.Equal("default", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_after_confirmation_explicit_account_mode_wins_regardless_of_stored()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-fallback-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "cafe", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("cafe", countryId, currencyId)));
+
+            await using (var scope = AppComposition.Services!.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var row = await database.PreferenceParameters
+                    .SingleAsync(item => item.IsDeleted == false && item.Token == "SYSTEM_OPERATION_MODE");
+                row.Value = "not-a-real-mode";
+                await database.SaveChangesAsync();
+            }
+
+            account.Mode = "bakery";
+            Assert.Equal("bakery", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_is_null_before_first_entry_is_confirmed()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-pending-");
+        try
+        {
+            ConfigureApp(root, module: "restaurant", useSeed: false);
+            var account = new FakeAccount { Mode = "restaurant", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+
+            Assert.True((await service.GetPendingAsync()).IsPending);
+            Assert.Null(await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_for_local_account_uses_tenant_stored_only()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-local-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var service = AppComposition.Services!.GetRequiredService<IFirstEntryService>();
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            Assert.Equal("restaurant", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
     public async Task Cloud_confirmation_stores_the_mode_on_the_account_even_when_it_is_unchanged()
     {
         var root = Directory.CreateTempSubdirectory("logicpos-firstentry-cloud-store-");
