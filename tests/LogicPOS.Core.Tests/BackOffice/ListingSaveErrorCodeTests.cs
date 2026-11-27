@@ -1,4 +1,4 @@
-using LogicPOS.Core.BackOffice;
+﻿using LogicPOS.Core.BackOffice;
 using LogicPOS.Persistence.Database;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
