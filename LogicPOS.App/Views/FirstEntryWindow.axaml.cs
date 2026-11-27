@@ -286,6 +286,9 @@ public partial class FirstEntryWindow : Window
                     Completed = result == FirstEntryConfirmationResult.Confirmed;
                     Close();
                     break;
+                case FirstEntryConfirmationResult.InvalidFiscalNumber:
+                    LblStatus.Text = "Indique um valor válido para o NIF.";
+                    break;
                 case FirstEntryConfirmationResult.Incomplete:
                     LblStatus.Text = "Indique o tipo, o país, a moeda e o NIF.";
                     break;

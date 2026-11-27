@@ -117,6 +117,40 @@ public sealed class FirstEntryServiceTests
     }
 
     [Fact]
+    public async Task Invalid_portuguese_nif_returns_InvalidFiscalNumber_and_writes_nothing()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-invalid-nif-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var service = AppComposition.Services!.GetRequiredService<IFirstEntryService>();
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+
+            var result = await service.ConfirmAsync(new FirstEntryRequest
+            {
+                OperationMode = "restaurant",
+                DemoAccepted = false,
+                CountryId = countryId,
+                CurrencyId = currencyId,
+                FiscalNumber = "123456780"
+            });
+
+            Assert.Equal(FirstEntryConfirmationResult.InvalidFiscalNumber, result);
+            Assert.True((await service.GetPendingAsync()).IsPending);
+            await using var scope = AppComposition.Services!.CreateAsyncScope();
+            var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+            Assert.Null(await TokenValueAsync(database, "FIRST_ENTRY_CONFIRMED"));
+            Assert.Null(await TokenValueAsync(database, "SYSTEM_OPERATION_MODE"));
+            Assert.True(string.IsNullOrWhiteSpace(await TokenValueAsync(database, "COMPANY_FISCALNUMBER")));
+            Assert.Equal("default", ReadModuleFromAppSettings(root));
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
     public async Task Closing_without_confirming_leaves_the_first_entry_pending()
     {
         var root = Directory.CreateTempSubdirectory("logicpos-firstentry-closed-");

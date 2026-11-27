@@ -6,8 +6,11 @@ public enum FirstEntryConfirmationResult
     /// <summary>Mode, company data and confirmation mark were written.</summary>
     Confirmed,
 
-    /// <summary>Mode, country, currency or fiscal number missing or invalid. Nothing was written.</summary>
+    /// <summary>Required fields missing, an unknown operation mode, or country or currency not found. Nothing was written.</summary>
     Incomplete,
+
+    /// <summary>Invalid Portuguese fiscal number (NIF); nothing was written.</summary>
+    InvalidFiscalNumber,
 
     /// <summary>The first entry is not open (already confirmed, or an existing database). Nothing was written.</summary>
     AlreadyConfirmed,
