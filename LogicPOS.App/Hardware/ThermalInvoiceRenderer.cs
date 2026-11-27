@@ -390,7 +390,7 @@ internal sealed class ThermalInvoiceRenderer
             Feed();
         }
 
-        var content = string.IsNullOrWhiteSpace(document.AtQrCode) ? document.Number : document.AtQrCode;
+        var content = document.AtQrCode;
         if (string.IsNullOrWhiteSpace(content))
         {
             return;
