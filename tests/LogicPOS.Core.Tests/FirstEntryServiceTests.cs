@@ -718,6 +718,100 @@ public sealed class FirstEntryServiceTests
     }
 
     [Fact]
+    public async Task Resolved_mode_after_confirmation_prefers_tenant_over_account_default()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-stored-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "default", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            Assert.Equal("restaurant", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_after_confirmation_falls_back_to_account_when_tenant_stored_is_invalid()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-fallback-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "cafe", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("cafe", countryId, currencyId)));
+
+            await using (var scope = AppComposition.Services!.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var row = await database.PreferenceParameters
+                    .SingleAsync(item => item.IsDeleted == false && item.Token == "SYSTEM_OPERATION_MODE");
+                row.Value = "not-a-real-mode";
+                await database.SaveChangesAsync();
+            }
+
+            account.Mode = "bakery";
+            Assert.Equal("bakery", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_is_null_before_first_entry_is_confirmed()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-pending-");
+        try
+        {
+            ConfigureApp(root, module: "restaurant", useSeed: false);
+            var account = new FakeAccount { Mode = "restaurant", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+
+            Assert.True((await service.GetPendingAsync()).IsPending);
+            Assert.Null(await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_for_local_account_uses_tenant_stored_only()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-local-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var service = AppComposition.Services!.GetRequiredService<IFirstEntryService>();
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            Assert.Equal("restaurant", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
     public async Task Cloud_confirmation_stores_the_mode_on_the_account_even_when_it_is_unchanged()
     {
         var root = Directory.CreateTempSubdirectory("logicpos-firstentry-cloud-store-");
@@ -798,7 +892,7 @@ public sealed class FirstEntryServiceTests
             account.Mode = "bakery";
 
             Assert.False((await service.GetPendingAsync()).IsPending);
-            Assert.Equal("bakery", await service.GetResolvedOperationModeAsync());
+            Assert.Equal("parking", await service.GetResolvedOperationModeAsync());
             await using (var scope = AppComposition.Services!.CreateAsyncScope())
             {
                 var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
