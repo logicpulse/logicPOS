@@ -2229,8 +2229,9 @@ public partial class EntityListing : UserControl
         }
 
         var result = await service.SaveAsync(_title, _editingId, fields);
-        EditorNotice.Text = result.Error ?? string.Empty;
-        ShowResultToast(result.Succeeded, result.Error, result.Message ?? "Registo gravado com sucesso.");
+        var saveError = GtkFormRules.ResolveListingSaveError(result);
+        EditorNotice.Text = saveError ?? string.Empty;
+        ShowResultToast(result.Succeeded, saveError, result.Message ?? "Registo gravado com sucesso.");
         if (result.Succeeded)
         {
             ClearCatalogImageCacheIfNeeded();

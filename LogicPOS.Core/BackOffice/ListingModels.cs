@@ -81,11 +81,19 @@ public sealed class ListingSnapshot
     public string? Notice { get; init; }
 }
 
+public static class ListingSaveErrorCodes
+{
+    public const string InvalidFiscalNumberCode = "invalid-fiscal-number";
+}
+
 public sealed class ListingSaveResult
 {
     public bool Succeeded { get; init; }
 
     public string? Error { get; init; }
+
+    /// <summary>Stable, machine-readable code for errors the UI translates.</summary>
+    public string? ErrorCode { get; init; }
 
     public string? Message { get; init; }
 
@@ -120,10 +128,11 @@ public sealed class ListingSaveResult
         Ids = ids
     };
 
-    public static ListingSaveResult Fail(string error) => new()
+    public static ListingSaveResult Fail(string error, string? errorCode = null) => new()
     {
         Succeeded = false,
-        Error = error
+        Error = error,
+        ErrorCode = errorCode
     };
 }
 

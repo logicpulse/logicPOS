@@ -205,8 +205,8 @@ public sealed class FirstEntryService : IFirstEntryService
                 {
                     await transaction.RollbackAsync(cancellationToken);
                     stopped = string.Equals(
-                        saved.Error,
-                        "Invalid Portuguese fiscal number (NIF).",
+                        saved.ErrorCode,
+                        ListingSaveErrorCodes.InvalidFiscalNumberCode,
                         StringComparison.Ordinal)
                         ? FirstEntryConfirmationResult.InvalidFiscalNumber
                         : FirstEntryConfirmationResult.Incomplete;

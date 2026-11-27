@@ -5,6 +5,8 @@ namespace LogicPOS.Core.BackOffice;
 
 public static class GtkFormRules
 {
+    public const string InvalidFiscalNumberUserMessage = "Indique um valor válido para o NIF.";
+
     // Patterns copied from the GTK SettingsApp dialogs.
     private const string NamePattern = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]{1,200}$";
     private const string AddressPattern = @"^[0-9A-Za-zÀ-ÿ&ºª,;'./\\* _-]*$";
@@ -112,10 +114,10 @@ public static class GtkFormRules
             // Consolidated with Domain PortugueseNif (U-12); keep the PT UI message.
             return PortugueseNif.IsValid(text)
                 ? null
-                : "Indique um valor válido para o NIF.";
+                : InvalidFiscalNumberUserMessage;
         }
 
-        return Regex.IsMatch(text, ForeignFiscalPattern) ? null : "Indique um valor válido para o NIF.";
+        return Regex.IsMatch(text, ForeignFiscalPattern) ? null : InvalidFiscalNumberUserMessage;
     }
 
     private static string? RequiredLookup(IReadOnlyDictionary<string, string> fields, string key, string label)
@@ -126,6 +128,22 @@ public static class GtkFormRules
         }
 
         return string.IsNullOrWhiteSpace(value) ? $"Indique {label}." : null;
+    }
+
+    /// <summary>User-facing save error; maps stable <see cref="ListingSaveResult.ErrorCode"/> values.</summary>
+    public static string? ResolveListingSaveError(ListingSaveResult result)
+    {
+        if (result.Succeeded)
+        {
+            return null;
+        }
+
+        if (string.Equals(result.ErrorCode, ListingSaveErrorCodes.InvalidFiscalNumberCode, StringComparison.Ordinal))
+        {
+            return InvalidFiscalNumberUserMessage;
+        }
+
+        return result.Error;
     }
 
     // Customer/user Email is a single persisted string; multiple addresses use ',' or ';'

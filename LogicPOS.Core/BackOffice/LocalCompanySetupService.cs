@@ -217,7 +217,9 @@ public sealed class LocalCompanySetupService : ICompanySetupService
         if (PortugueseNif.AppliesToCountry(country.Code2)
             && PortugueseNif.IsValid(fiscal) == false)
         {
-            return ListingSaveResult.Fail("Invalid Portuguese fiscal number (NIF).");
+            return ListingSaveResult.Fail(
+                "Invalid Portuguese fiscal number (NIF).",
+                ListingSaveErrorCodes.InvalidFiscalNumberCode);
         }
 
         var values = new Dictionary<string, string>(request.Values, StringComparer.OrdinalIgnoreCase)

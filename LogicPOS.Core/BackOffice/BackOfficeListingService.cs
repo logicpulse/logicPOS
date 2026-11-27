@@ -678,7 +678,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 var fiscalError = await ValidateCustomerFiscalNumberAsync(database, customerFiscal, cancellationToken);
                 if (fiscalError is not null)
                 {
-                    return ListingSaveResult.Fail(fiscalError);
+                    return ListingSaveResult.Fail(
+                        fiscalError,
+                        ListingSaveErrorCodes.InvalidFiscalNumberCode);
                 }
             }
 
