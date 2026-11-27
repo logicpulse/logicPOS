@@ -21,6 +21,7 @@ public partial class DocumentsListing : UserControl
     private readonly List<PosDocumentRow> _rows = new();
     private readonly HashSet<Guid> _picked = new();
     private readonly List<Guid> _pendingPrintIds = new();
+    private string? _pendingReprintPrinter;
     private readonly List<Guid> _pendingEmailIds = new();
     private readonly List<(DataGridColumn Column, bool Visible)> _columnSnapshot = new();
     private int _page = 1;
@@ -961,7 +962,8 @@ public partial class DocumentsListing : UserControl
                 string? reprintError;
                 if (useA4)
                 {
-                    var printer = PdfPrinterMemory.LastA4Printer();
+                    var printer = _pendingReprintPrinter ?? PdfPrinterMemory.LastA4Printer();
+                    _pendingReprintPrinter = null;
                     var (_, error, cancelled) = await FrontOfficePrinting.TryReprintA4Async(
                         documentId, copies, reason, secondCopy, printer);
                     reprintError = error;
@@ -1020,6 +1022,14 @@ public partial class DocumentsListing : UserControl
             if (string.IsNullOrWhiteSpace(printer) || rows.Count == 0)
             {
                 ActionNotice.Text = "Selecione a impressora.";
+                return;
+            }
+
+            if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
+            {
+                _pendingReprintPrinter = printer;
+                PromptOverlay.IsVisible = false;
+                await OpenReprintPromptAsync(rows[0]);
                 return;
             }
 
@@ -1286,6 +1296,7 @@ public partial class DocumentsListing : UserControl
 
         if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
         {
+            _pendingReprintPrinter = null;
             await OpenReprintPromptAsync(rows[0]);
             return;
         }
@@ -1299,12 +1310,6 @@ public partial class DocumentsListing : UserControl
         if (rows.Count == 0)
         {
             ActionNotice.Text = "Selecione um ou mais documentos.";
-            return;
-        }
-
-        if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
-        {
-            await OpenReprintPromptAsync(rows[0]);
             return;
         }
 
