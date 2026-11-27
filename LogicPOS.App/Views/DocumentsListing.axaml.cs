@@ -844,6 +844,7 @@ public partial class DocumentsListing : UserControl
 
     private async Task OpenReprintPromptAsync(PosDocumentRow row)
     {
+        _pendingReprintPrinter = null;
         _pendingPrintIds.Clear();
         _pendingPrintIds.Add(row.Id);
         OpenPrompt("reprint", string.Format(PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nº: {0}"), row.Number), string.Empty);
@@ -934,6 +935,7 @@ public partial class DocumentsListing : UserControl
             if (documentId == Guid.Empty)
             {
                 ActionNotice.Text = "Selecione um documento.";
+                _pendingReprintPrinter = null;
                 PromptOverlay.IsVisible = false;
                 return;
             }
@@ -1027,9 +1029,9 @@ public partial class DocumentsListing : UserControl
 
             if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
             {
-                _pendingReprintPrinter = printer;
                 PromptOverlay.IsVisible = false;
                 await OpenReprintPromptAsync(rows[0]);
+                _pendingReprintPrinter = printer;
                 return;
             }
 
@@ -1065,6 +1067,11 @@ public partial class DocumentsListing : UserControl
 
     private void OnPromptCancelClick(object? sender, RoutedEventArgs e)
     {
+        if (string.Equals(_promptKind, "reprint", StringComparison.Ordinal))
+        {
+            _pendingReprintPrinter = null;
+        }
+
         _pendingOriginDocumentId = null;
         PromptOverlay.IsVisible = false;
     }
@@ -1296,7 +1303,6 @@ public partial class DocumentsListing : UserControl
 
         if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
         {
-            _pendingReprintPrinter = null;
             await OpenReprintPromptAsync(rows[0]);
             return;
         }
