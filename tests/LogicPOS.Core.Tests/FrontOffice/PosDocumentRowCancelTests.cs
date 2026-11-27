@@ -1,4 +1,4 @@
-using LogicPOS.Core.FrontOffice;
+﻿using LogicPOS.Core.FrontOffice;
 
 namespace LogicPOS.Core.Tests.FrontOffice;
 

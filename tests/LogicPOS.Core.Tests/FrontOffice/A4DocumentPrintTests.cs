@@ -1,4 +1,4 @@
-using LogicPOS.Core;
+﻿using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Persistence.Database;
