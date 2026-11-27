@@ -1,4 +1,4 @@
-using LogicPOS.Application.Features.Finance.Documents;
+﻿using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Shared.Features.Software;
 
 namespace LogicPOS.Core.Tests;
