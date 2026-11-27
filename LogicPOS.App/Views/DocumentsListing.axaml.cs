@@ -964,9 +964,9 @@ public partial class DocumentsListing : UserControl
                 {
                     var printer = _pendingReprintPrinter ?? PdfPrinterMemory.LastA4Printer();
                     _pendingReprintPrinter = null;
-                    var (_, error, cancelled) = await FrontOfficePrinting.TryReprintA4Async(
+                    var (_, a4Error, cancelled) = await FrontOfficePrinting.TryReprintA4Async(
                         documentId, copies, reason, secondCopy, printer);
-                    reprintError = error;
+                    reprintError = a4Error;
                     if (cancelled)
                     {
                         ActionNotice.Text = string.Empty;

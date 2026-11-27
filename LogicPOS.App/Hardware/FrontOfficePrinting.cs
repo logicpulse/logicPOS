@@ -325,13 +325,13 @@ internal static class FrontOfficePrinting
         var blocked = PrintBlockedMessage();
         if (blocked is not null)
         {
-            return (false, blocked);
+            return (false, blocked, false);
         }
 
         var circulation = await TryTransportCirculationBlockAsync(documentId);
         if (circulation is not null)
         {
-            return (true, circulation);
+            return (true, circulation, false);
         }
 
         var documents = AppComposition.Services?.GetService<IPosDocumentService>();
