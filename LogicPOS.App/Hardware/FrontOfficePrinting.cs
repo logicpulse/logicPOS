@@ -95,7 +95,7 @@ internal static class FrontOfficePrinting
                 var motive = string.IsNullOrWhiteSpace(reason)
                     ? (isSecondCopy ? "Segunda via" : "Reimpressão")
                     : reason.Trim();
-                await source.RegisterReprintAsync(documentId, count, motive);
+                await source.RegisterReprintAsync(documentId, count, motive, secondPrint: isSecondCopy);
             }
             catch
             {
@@ -281,6 +281,112 @@ internal static class FrontOfficePrinting
         {
             return (true, exception.Message);
         }
+    }
+
+    /// <summary>Records a successful A4/PDF spooler job (not used for save-to-file or e-mail).</summary>
+    public static async Task TryRegisterA4PrintAsync(Guid documentId)
+    {
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        if (source is null || documentId == Guid.Empty)
+        {
+            return;
+        }
+
+        try
+        {
+            await source.RegisterPrintAsync(documentId, isThermalPrint: false);
+        }
+        catch
+        {
+            // The document is already on paper; a failed audit must not surface as a print error.
+        }
+    }
+
+    /// <summary>Reprints via the Windows A4/PDF path (BackOffice and non-ticket documents).</summary>
+    public static async Task<(bool Handled, string? Error)> TryReprintA4Async(
+        Guid documentId,
+        int copies,
+        string reason,
+        bool isSecondCopy,
+        string? printer)
+    {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return (false, blocked);
+        }
+
+        var circulation = await TryTransportCirculationBlockAsync(documentId);
+        if (circulation is not null)
+        {
+            return (true, circulation);
+        }
+
+        var documents = AppComposition.Services?.GetService<IPosDocumentService>();
+        if (documents is null || documentId == Guid.Empty)
+        {
+            return (true, "Não foi possível gerar o PDF.");
+        }
+
+        try
+        {
+            var path = await documents.CreateA4FileAsync(documentId);
+            if (path is null)
+            {
+                return (true, "Não foi possível gerar o PDF.");
+            }
+
+            var count = Math.Max(1, copies);
+            for (var copy = 0; copy < count; copy++)
+            {
+                var ok = await Task.Run(() => PdfWindowsPrint.PrintOrOpen(path, printer));
+                if (ok == false)
+                {
+                    throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
+                }
+            }
+
+            var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+            if (source is not null)
+            {
+                try
+                {
+                    var motive = string.IsNullOrWhiteSpace(reason)
+                        ? (isSecondCopy ? "Segunda via" : "Reimpressão")
+                        : reason.Trim();
+                    await source.RegisterReprintAsync(
+                        documentId,
+                        count,
+                        motive,
+                        isThermalPrint: false,
+                        secondPrint: isSecondCopy);
+                }
+                catch
+                {
+                    // Copies are already on paper.
+                }
+            }
+
+            return (true, null);
+        }
+        catch (PrintCancelledException)
+        {
+            return (true, null);
+        }
+        catch (Exception exception)
+        {
+            return (true, exception.Message);
+        }
+    }
+
+    public static async Task<bool> ShouldUseA4PrintAsync(string? acronymOrNumber)
+    {
+        if (await IsBackOfficeOnlyAsync())
+        {
+            return true;
+        }
+
+        return PosDocumentRules.UsesThermalPrinter(acronymOrNumber) == false;
     }
 
     /// <summary>

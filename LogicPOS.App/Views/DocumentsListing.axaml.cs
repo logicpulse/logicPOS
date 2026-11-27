@@ -956,11 +956,25 @@ public partial class DocumentsListing : UserControl
             Busy.Show("A imprimir...");
             try
             {
-                var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
+                var printRow = _rows.FirstOrDefault(item => item.Id == documentId);
+                var useA4 = await FrontOfficePrinting.ShouldUseA4PrintAsync(printRow?.ResolvedType);
+                string? reprintError;
+                if (useA4)
+                {
+                    var printer = PdfPrinterMemory.LastA4Printer();
+                    (_, reprintError) = await FrontOfficePrinting.TryReprintA4Async(
+                        documentId, copies, reason, secondCopy, printer);
+                }
+                else
+                {
+                    (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
+                }
+
                 ActionNotice.Text = string.Empty;
                 if (reprintError is null)
                 {
-                    PrintUi.Success(this, $"{copies} cópia(s) enviada(s) para a impressora térmica.");
+                    var destination = useA4 ? "a impressora" : "a impressora térmica";
+                    PrintUi.Success(this, $"{copies} cópia(s) enviada(s) para {destination}.");
                 }
                 else
                 {
@@ -1377,6 +1391,7 @@ public partial class DocumentsListing : UserControl
                     });
 
                     sent++;
+                    await FrontOfficePrinting.TryRegisterA4PrintAsync(row.Id);
                 }
                 catch (PrintCancelledException)
                 {
@@ -1437,11 +1452,6 @@ public partial class DocumentsListing : UserControl
 
     private static async Task<bool> NeedsReprintDialogAsync(Guid documentId)
     {
-        if (await IsBackOfficeOnlyAsync())
-        {
-            return false;
-        }
-
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         return source is not null && await source.WasPrintedAsync(documentId);
     }
