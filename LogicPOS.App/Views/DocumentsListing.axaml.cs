@@ -630,7 +630,7 @@ public partial class DocumentsListing : UserControl
 
     private async void OnCancelClick(object? sender, RoutedEventArgs e)
     {
-        if (FocusedRow() is not PosDocumentRow row || row.CanDelete == false)
+        if (FocusedRow() is not PosDocumentRow row || row.CanCancel == false)
         {
             ActionNotice.Text = "Selecione um documento que possa ser anulado.";
             return;
