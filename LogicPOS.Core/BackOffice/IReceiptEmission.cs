@@ -146,10 +146,11 @@ public readonly record struct ReceiptPaySetup(ReceiptPayOption? Currency, decima
 public static class ReceiptEmissionDefaults
 {
     /// <summary>
-    /// Pending product decision (Carlos): Undiscriminated (spec field L) vs Proportional.
+    /// Product decision (Carlos, 2026-11-27): VAT on partial payments is proportional to the amount paid;
+    /// rounding adjusted on the largest base.
     /// </summary>
     public const AtQrPartialPaymentAllocation ReceiptAtQrPartialPaymentAllocation =
-        AtQrPartialPaymentAllocation.Undiscriminated;
+        AtQrPartialPaymentAllocation.Proportional;
 
     public const string CashCode = "NU";
 

@@ -85,7 +85,7 @@ public sealed class LocalReceiptAtQrDiscriminatedTests
     }
 
     [Fact]
-    public async Task Local_receipt_partial_after_prior_payment_uses_Undiscriminated_L()
+    public async Task Local_receipt_partial_after_prior_payment_uses_proportional_NOR_buckets()
     {
         var root = Directory.CreateTempSubdirectory("logicpos-rc-qr-partial-");
         try
@@ -133,9 +133,83 @@ public sealed class LocalReceiptAtQrDiscriminatedTests
             }
 
             var qr = await PayReceiptAndReadQrAsync(services, issued.DocumentId);
-            Assert.Contains("*I1:0*L:73.00*", qr, StringComparison.Ordinal);
-            Assert.DoesNotContain("I7:", qr, StringComparison.Ordinal);
+            // Prior 50 € on FT 123 € (100 net NOR + 23 tax). This receipt pays 73 € → scale 73/123.
+            // I7 = 100×73/123 = 59.35; I8 = 23×73/123 = 13.65; N/O from receipt settlement.
+            Assert.Contains("*I1:PT*I7:59.35*I8:13.65*", qr, StringComparison.Ordinal);
+            Assert.Contains("*N:13.65*", qr, StringComparison.Ordinal);
             Assert.Contains("*O:73.00*", qr, StringComparison.Ordinal);
+            Assert.DoesNotContain("*L:", qr, StringComparison.Ordinal);
+            Assert.DoesNotContain("I1:0", qr, StringComparison.Ordinal);
+            AssertStoredQrMatchesPdfSourceField(services, qr);
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Local_receipt_partial_multi_rate_rounding_adjusts_largest_base()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-rc-qr-partial-multi-");
+        try
+        {
+            var services = await ConfigureWithFiscalPluginAsync(root);
+            var articleId = await FirstArticleIdAsync(services);
+            var customer = await services.GetRequiredService<IPosCustomerService>()
+                .GetFinalConsumerAsync(CancellationToken.None);
+            Assert.NotNull(customer);
+
+            var issued = await IssueDeferredFtAsync(
+                services,
+                customer!.Id,
+                articleId,
+                [
+                    new PosSaleLine(articleId, 1, 4m, 0, VatRed6),
+                    new PosSaleLine(articleId, 1, 10m, 0, VatInt13),
+                    new PosSaleLine(articleId, 1, 10m, 0, VatNor23),
+                ]);
+            Assert.Null(issued.Error);
+
+            var catalogPay = await services.GetRequiredService<IReceiptEmission>().CatalogAsync();
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var prior = new Receipt
+                {
+                    PaymentMethodId = catalogPay.PaymentMethods.First().Id,
+                    DocumentType = "RC",
+                    RefNo = "RC PREV/2",
+                    Amount = 10m,
+                    TaxPayable = 0m,
+                    AmountInWords = "dez",
+                    CurrencyCode = "EUR",
+                    CurrencyAmount = 10m,
+                    ExchangeRate = 1m,
+                    Mechanism = "NU",
+                    SourceId = "test-prior-multi"
+                };
+                database.Receipts.Add(prior);
+                await database.SaveChangesAsync(cancellationToken: CancellationToken.None);
+                database.Payments.Add(new Payment
+                {
+                    ReceiptId = prior.Id,
+                    DocumentId = issued.DocumentId,
+                    CreditAmount = 10m
+                });
+                await database.SaveChangesAsync(cancellationToken: CancellationToken.None);
+            }
+
+            var qr = await PayReceiptAndReadQrAsync(services, issued.DocumentId);
+            // FT gross 27.84 €; prior 10 € leaves 17.84 €. Scale = 17.84/27.84.
+            // Rounded buckets: RED 2.56+0.15, INT 6.42+0.83 (largest base +0.01), NOR 6.41+1.47 → sum 17.84.
+            Assert.Contains("*I3:2.56*I4:0.15*", qr, StringComparison.Ordinal);
+            Assert.Contains("*I5:6.42*I6:0.83*", qr, StringComparison.Ordinal);
+            Assert.Contains("*I7:6.41*I8:1.47*", qr, StringComparison.Ordinal);
+            Assert.Contains("*O:17.84*", qr, StringComparison.Ordinal);
+            Assert.DoesNotContain("*L:", qr, StringComparison.Ordinal);
+            Assert.DoesNotContain("I1:0", qr, StringComparison.Ordinal);
+            AssertStoredQrMatchesPdfSourceField(services, qr);
         }
         finally
         {
@@ -146,6 +220,10 @@ public sealed class LocalReceiptAtQrDiscriminatedTests
     [Fact]
     public void Receipt_partial_proportional_constant_changes_breakdown_vs_Undiscriminated()
     {
+        Assert.Equal(
+            AtQrPartialPaymentAllocation.Proportional,
+            ReceiptEmissionDefaults.ReceiptAtQrPartialPaymentAllocation);
+
         var settlement = new AtQrReceiptSettlement(
             ReceiptAmount: 61.50m,
             ReceiptTaxPayable: 11.50m,
@@ -159,10 +237,10 @@ public sealed class LocalReceiptAtQrDiscriminatedTests
 
         var undiscriminated = AtQrReceiptBreakdown.FromSettledDocuments(
             settlement,
-            ReceiptEmissionDefaults.ReceiptAtQrPartialPaymentAllocation);
+            AtQrPartialPaymentAllocation.Undiscriminated);
         var proportional = AtQrReceiptBreakdown.FromSettledDocuments(
             settlement,
-            AtQrPartialPaymentAllocation.Proportional);
+            ReceiptEmissionDefaults.ReceiptAtQrPartialPaymentAllocation);
 
         Assert.Contains("L:", DocumentAtQrPayload.Build(BuildPayload("Und", undiscriminated)), StringComparison.Ordinal);
         var proportionalPayload = DocumentAtQrPayload.Build(BuildPayload("Pro", proportional));
