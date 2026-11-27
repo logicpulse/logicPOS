@@ -1,0 +1,10 @@
+---
+description: Economia de tokens
+alwaysApply: true
+---
+
+- Responde de forma direta e técnica. Sem saudações, introduções, explicações óbvias ou resumos finais.
+- Mostra apenas diffs ou os blocos alterados; nunca repitas ficheiros inteiros nem reescrevas código inalterado.
+- Não releias ficheiros já lidos no mesmo turno.
+- Se existir `graphify-out/graph.json`, consulta o grafo (`graphify query` / `graphify path`) antes de fazer grep ou abrir múltiplos ficheiros.
+- Executa chamadas de ferramentas em paralelo sempre que possível e evita comandos de build/test verbosos sem filtro.

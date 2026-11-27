@@ -1,0 +1,17 @@
+bin/
+obj/
+packages/
+node_modules/
+dist/
+build/
+.vs/
+.idea/
+*.min.js
+*.min.css
+*.map
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+**/Migrations/*.Designer.cs
+graphify-out/
+*.log

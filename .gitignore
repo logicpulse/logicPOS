@@ -412,3 +412,17 @@ skills-lock.json
 # Local planning / agent docs (do not publish)
 .plan/
 docs/superpowers/
+bin/
+obj/
+packages/
+dist/
+build/
+.idea/
+*.min.js
+*.min.css
+*.map
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+**/Migrations/*.Designer.cs
+graphify-out/
