@@ -45,8 +45,8 @@ public sealed class FiscalMarksPrintTests
 
             pdfPath = await services.GetRequiredService<IPosDocumentService>()
                 .CreateA4FileAsync(issued.DocumentId, CancellationToken.None);
-            Assert.False(string.IsNullOrWhiteSpace(pdfPath));
-            var pdf = ReadPdfText(pdfPath!);
+            Assert.NotNull(pdfPath);
+            var pdf = ReadPdfText(pdfPath);
             Assert.Contains("ATCUD: TESTE005-", pdf, StringComparison.Ordinal);
             Assert.Contains("MARK ", pdf, StringComparison.Ordinal);
         }
@@ -109,8 +109,8 @@ public sealed class FiscalMarksPrintTests
 
             pdfPath = await services.GetRequiredService<IPosDocumentService>()
                 .CreateA4FileAsync(issued.DocumentId, CancellationToken.None);
-            Assert.False(string.IsNullOrWhiteSpace(pdfPath));
-            var pdf = ReadPdfText(pdfPath!);
+            Assert.NotNull(pdfPath);
+            var pdf = ReadPdfText(pdfPath);
             Assert.Contains("ATCUD: TESTE005-", pdf, StringComparison.Ordinal);
             Assert.Contains("MARK ", pdf, StringComparison.Ordinal);
         }
@@ -133,8 +133,8 @@ public sealed class FiscalMarksPrintTests
 
             pdfPath = await services.GetRequiredService<IPosDocumentService>()
                 .CreateA4FileAsync(issued.DocumentId, CancellationToken.None);
-            Assert.False(string.IsNullOrWhiteSpace(pdfPath));
-            var pdf = ReadPdfText(pdfPath!);
+            Assert.NotNull(pdfPath);
+            var pdf = ReadPdfText(pdfPath);
             Assert.DoesNotContain("ATCUD:", pdf, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("MARK ", pdf, StringComparison.Ordinal);
             Assert.DoesNotContain("programa certificado", pdf, StringComparison.OrdinalIgnoreCase);
