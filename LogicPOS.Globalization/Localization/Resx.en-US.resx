@@ -4011,4 +4011,7 @@ Note: You can only open documents issued on A4 printer or Export to PDF</value>
   <data name="enum_StockMode_In" xml:space="preserve">
     <value>In</value>
   </data>
+  <data name="global_short_price" xml:space="preserve">
+    <value>Unit price</value>
+  </data>
 </root>

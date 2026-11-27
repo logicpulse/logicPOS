@@ -9,6 +9,7 @@ public partial class ListingBusy : UserControl
     public ListingBusy()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         // Listings / popups: card only — no white/dark scrim over the grid.
         UseTransparentScrim();
     }

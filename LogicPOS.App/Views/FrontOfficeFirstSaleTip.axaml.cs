@@ -8,6 +8,7 @@ public partial class FrontOfficeFirstSaleTip : UserControl
     public FrontOfficeFirstSaleTip()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
     }
 
     public event EventHandler? Dismissed;

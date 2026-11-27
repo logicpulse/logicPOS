@@ -107,6 +107,7 @@ public partial class NewDocumentWindow : UserControl
     public NewDocumentWindow()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         InstallLineImageColumn();
         CustomerSuggest.PlacementTarget = CustomerName;
         if (EditorZip.Parent is Control zipParent && zipParent.Parent is Panel zipHost)

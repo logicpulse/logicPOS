@@ -35,6 +35,7 @@ public partial class RegistrationWindow : Window
             ShowContinue = requireRegistration == false
         };
         InitializeComponent();
+        EnglishUi.Apply(this);
         DataContext = _form;
         TouchFields.Attach(this);
         Opened += (_, _) => CoverOwner();

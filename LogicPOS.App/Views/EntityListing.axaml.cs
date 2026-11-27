@@ -93,6 +93,7 @@ public partial class EntityListing : UserControl
     public EntityListing()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
         DocumentListingRefresh.Attach(this, ReloadAsync,
@@ -847,12 +848,12 @@ public partial class EntityListing : UserControl
         var starred = false;
         foreach (var column in snapshot.Columns)
         {
-            var title = column.Header ?? string.Empty;
+            var source = column.Header ?? string.Empty;
+            var title = UiCaption.Display(source);
             if (column.Key == "ButtonImage")
             {
                 Grid.Columns.Add(ThumbnailColumn(title));
-                _columnKeys[title] = column.Key;
-                _defaultVisible[title] = column.Visible;
+                RememberColumn(source, title, column.Key, column.Visible);
                 if (picks && imageFirst)
                 {
                     Grid.Columns.Add(PickColumn());
@@ -874,7 +875,7 @@ public partial class EntityListing : UserControl
                 TextTrimming = TextTrimming.CharacterEllipsis,
                 TextWrapping = TextWrapping.NoWrap
             };
-            ToolTip.SetTip(headerBlock, ListingLabelTips.Tooltip(title));
+            ToolTip.SetTip(headerBlock, UiCaption.Display(ListingLabelTips.Tooltip(source)));
             Grid.Columns.Add(new DataGridTextColumn
             {
                 Header = headerBlock,
@@ -886,8 +887,7 @@ public partial class EntityListing : UserControl
                     ? new DataGridLength(1, DataGridLengthUnitType.Star)
                     : new DataGridLength(1, DataGridLengthUnitType.Auto)
             });
-            _columnKeys[title] = column.Key;
-            _defaultVisible[title] = column.Visible;
+            RememberColumn(source, title, column.Key, column.Visible);
             if (column.Visible && _cardKeys.Count < 3)
             {
                 _cardKeys.Add(column.Key);
@@ -986,7 +986,7 @@ public partial class EntityListing : UserControl
             CellTemplate = new FuncDataTemplate<ListingRow>((row, _) =>
             {
                 var button = new Button { Classes = { "bo_doc_icon_button" }, IsEnabled = enabled(row) };
-                ToolTip.SetTip(button, ListingLabelTips.Tooltip(tip));
+                ToolTip.SetTip(button, UiCaption.Display(ListingLabelTips.Tooltip(tip)));
                 button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
                 {
                     Classes = { "bo_doc_row_icon" },
@@ -1084,6 +1084,60 @@ public partial class EntityListing : UserControl
         return true;
     }
 
+    private void RememberColumn(string source, string title, string key, bool visible)
+    {
+        _columnKeys[source] = key;
+        _defaultVisible[source] = visible;
+        if (string.Equals(source, title, StringComparison.Ordinal) == false)
+        {
+            _columnKeys[title] = key;
+            _defaultVisible[title] = visible;
+        }
+    }
+
+    /// <summary>Retitles grid headers after the UI culture changes, and keeps export keys aligned.</summary>
+    internal void ApplyColumnCulture()
+    {
+        foreach (var column in Grid.Columns)
+        {
+            switch (column.Header)
+            {
+                case TextBlock block:
+                    Retitle(block.Text, next =>
+                    {
+                        block.Text = next;
+                        ToolTip.SetTip(block, UiCaption.Display(ListingLabelTips.Tooltip(next)));
+                    });
+                    break;
+                case string text when text.Length > 0:
+                    Retitle(text, next => column.Header = next);
+                    break;
+            }
+        }
+    }
+
+    private void Retitle(string? current, Action<string> set)
+    {
+        var text = current ?? string.Empty;
+        var next = UiCaption.ForUi(text);
+        if (string.Equals(next, text, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        if (_columnKeys.TryGetValue(text, out var key))
+        {
+            _columnKeys[next] = key;
+        }
+
+        if (_defaultVisible.TryGetValue(text, out var visible))
+        {
+            _defaultVisible[next] = visible;
+        }
+
+        set(next);
+    }
+
     private static string ColumnHeaderText(DataGridColumn column)
         => column.Header switch
         {
@@ -1113,7 +1167,7 @@ public partial class EntityListing : UserControl
         var columns = ChoosableColumns().ToList();
         var selectAll = new CheckBox
         {
-            Content = "Selecionar tudo",
+            Content = UiCaption.Display("Selecionar tudo"),
             IsChecked = columns.All(column => column.IsVisible)
         };
         selectAll.IsCheckedChanged += OnSelectAllColumnsChanged;
@@ -2885,8 +2939,9 @@ public partial class EntityListing : UserControl
     private TextBlock FieldCaption(ListingField field)
     {
         var caption = new TextBlock { Classes = { "bo_new_doc_caption" } };
-        var label = LocalizedFieldLabel(field);
-        ToolTip.SetTip(caption, ListingLabelTips.Tooltip(label));
+        var source = FieldLabelSource(field);
+        var label = UiCaption.Display(source);
+        ToolTip.SetTip(caption, UiCaption.Display(ListingLabelTips.Tooltip(source)));
         caption.Inlines.Add(new Avalonia.Controls.Documents.Run(label));
         if (field.Required)
         {
@@ -2899,7 +2954,9 @@ public partial class EntityListing : UserControl
         return caption;
     }
 
-    private string LocalizedFieldLabel(ListingField field)
+    private string LocalizedFieldLabel(ListingField field) => UiCaption.Display(FieldLabelSource(field));
+
+    private string FieldLabelSource(ListingField field)
     {
         if (field.Key == "SubfamilyId")
         {

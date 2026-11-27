@@ -36,6 +36,7 @@ public partial class FirstEntryWindow : Window
     {
         _service = service;
         InitializeComponent();
+        EnglishUi.Apply(this);
         TouchFields.Attach(this);
         ListingNotice.BindToast(LblStatus, this);
         RbProductPos.IsCheckedChanged += OnProductChanged;

@@ -111,6 +111,7 @@ public partial class StockManagementView : UserControl
     public StockManagementView()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         Grid.SelectionChanged += OnGridSelectionChanged;
         _load = new ListingLoad(Busy);
         ListingNotice.BindToast(Notice, this, skipProgress: true);

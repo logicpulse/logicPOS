@@ -10,6 +10,7 @@ public partial class LoginShellWindow : Window
     public LoginShellWindow()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         DevEditionBanner.Apply(DevBanner);
         Opened += async (_, _) => await Login.ActivateHostedAsync();
     }

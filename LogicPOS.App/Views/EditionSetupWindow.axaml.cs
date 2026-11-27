@@ -38,6 +38,7 @@ public partial class EditionSetupWindow : Window
     public EditionSetupWindow()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         var logicPulse = FiscalModuleLoader.IsPresent(AppContext.BaseDirectory);
         CommunityIntro.Text = CommunityFirstRunCopy.Intro(logicPulse);
         CommunityFeature.Text = CommunityFirstRunCopy.Feature(logicPulse);

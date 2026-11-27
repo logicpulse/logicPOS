@@ -57,6 +57,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     public BackOfficeWindow(string sessionLabel)
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         // Enter opens a document row only here; the FrontOffice host keeps the scanner-safe default.
         DocumentsHost.OpenRowOnEnter = true;
         DevEditionBanner.Apply(DevBanner);
@@ -1513,6 +1514,11 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        if (UiCaption.IsEnglish)
+        {
+            Dispatcher.UIThread.Post(EnglishUi.ApplyOpenWindows, DispatcherPriority.Background);
+        }
+
         if (title is "Séries AGT" or "Documentos AGT" && IsAngola() == false)
         {
             return;
@@ -1644,7 +1650,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        var wasEnglish = UiCaption.IsEnglish;
         UiCulture.Apply(culture);
+        if (wasEnglish && UiCaption.IsEnglish == false)
+        {
+            EnglishUi.RevertOpenWindows();
+        }
+
         MarkFlag(culture);
         MenuHost.Children.Clear();
         _sectionPanels.Clear();
@@ -1660,6 +1672,11 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         }
 
         DocumentsHost.ApplyCulture();
+        if (UiCaption.IsEnglish)
+        {
+            EnglishUi.ApplyOpenWindows();
+        }
+
         // Startup banners were built at first open — rebuild so message/Open follow culture.
         _ = RefreshSetupAlertsAsync();
     }

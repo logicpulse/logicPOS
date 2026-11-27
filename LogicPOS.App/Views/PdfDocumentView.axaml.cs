@@ -47,6 +47,7 @@ public partial class PdfDocumentView : UserControl
     public PdfDocumentView()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         ListingNotice.BindToast(StatusText, this, skipProgress: true);
         PageScroll.SizeChanged += (_, _) => ApplyFit();
         AttachedToVisualTree += (_, _) =>

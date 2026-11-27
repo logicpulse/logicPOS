@@ -16,6 +16,7 @@ public partial class MobileHostView : UserControl
     public MobileHostView()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         _current = this;
         DevEditionBanner.Apply(DevBanner);
         AttachedToVisualTree += (_, _) =>

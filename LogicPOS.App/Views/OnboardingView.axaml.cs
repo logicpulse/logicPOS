@@ -16,6 +16,7 @@ public partial class OnboardingView : UserControl
     public OnboardingView()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
     }
 
     public event EventHandler<OnboardingStep>? StepRequested;

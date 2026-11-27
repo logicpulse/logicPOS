@@ -8,6 +8,7 @@ public partial class StartupLoadingWindow : Window
     public StartupLoadingWindow()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         ApplyMessage(DatabaseStartup.ShowFirstTimeDatabaseMessage() == false);
     }
 

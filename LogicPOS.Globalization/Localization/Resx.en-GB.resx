@@ -2406,7 +2406,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Vat on table</value>
   </data>
   <data name="global_vat_rate" xml:space="preserve">
-    <value>Taxa </value>
+    <value>VAT </value>
   </data>
   <data name="global_vat_rates" xml:space="preserve">
     <value>Vat rates</value>
@@ -3487,7 +3487,7 @@ To proceed you must change the old password!</value>
     <value>Change user</value>
   </data>
   <data name="window_title_dialog_clone_documents_confirmation" xml:space="preserve">
-    <value>Confirm clone folloing documents?
+    <value>Confirm clone following documents?
 
 {0}</value>
   </data>
@@ -4007,5 +4007,8 @@ Note: You can only open documents issued on A4 printer or Export to PDF</value>
   </data>
   <data name="enum_StockMode_In" xml:space="preserve">
     <value>In</value>
+  </data>
+  <data name="global_short_price" xml:space="preserve">
+    <value>Unit price</value>
   </data>
 </root>

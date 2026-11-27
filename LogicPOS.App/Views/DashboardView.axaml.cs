@@ -35,6 +35,7 @@ public partial class DashboardView : UserControl
     public DashboardView()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         ListingNotice.BindToast(StatusText, this);
         var nameBinding = new Avalonia.Data.Binding(nameof(FilterItem.Name));
         PlaceBox.DisplayMemberBinding = nameBinding;

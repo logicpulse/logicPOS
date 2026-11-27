@@ -18,6 +18,7 @@ public partial class PrinterSetupWizard : UserControl
     public PrinterSetupWizard()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         TouchFields.Attach(this);
         ListingNotice.BindToast(Notice, this);
     }

@@ -44,6 +44,7 @@ public partial class ReceiptEmissionView : UserControl
     public ReceiptEmissionView()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         ListingFilters.EnableCustomerSearch(CustomerBox);
         _load = new ListingLoad(Busy);
         DocumentListingRefresh.Attach(this, ReloadAsync,
