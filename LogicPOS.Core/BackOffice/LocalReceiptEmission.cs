@@ -154,6 +154,8 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         }
 
         var documents = await database.Documents
+            .Include(item => item.Currency)
+            .Include(item => item.Details)
             .Where(item => request.DocumentIds.Contains(item.Id) && item.IsDeleted == false)
             .ToListAsync(cancellationToken);
         if (documents.Count != request.DocumentIds.Distinct().Count())
@@ -272,8 +274,17 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             }
 
             var customer = documents[0].Customer;
-            var totalNet = receipt.Amount - receipt.TaxPayable;
-            // Spec v1.1: RC/RG without per-rate lines → I1:0 + L (undiscriminated); N/O from payment totals.
+            var settledDocuments = BuildAtQrSettledDocuments(allocations, documents);
+            var settlement = new AtQrReceiptSettlement(
+                receipt.Amount,
+                receipt.TaxPayable,
+                receipt.WithholdingTaxAmount,
+                receipt.CurrencyCode,
+                receipt.ExchangeRate,
+                settledDocuments);
+            var breakdown = AtQrReceiptBreakdown.FromSettledDocuments(
+                settlement,
+                ReceiptEmissionDefaults.ReceiptAtQrPartialPaymentAllocation);
             receipt.QrCode = DocumentAtQrPayload.Build(new AtQrPayloadInput(
                 PosDocumentRules.AtQrIssuerFiscalNumber(issuerFiscalNumber),
                 PosDocumentRules.AtQrCustomerFiscalNumber(customer.FiscalNumber),
@@ -283,13 +294,13 @@ public sealed class LocalReceiptEmission : IReceiptEmission
                 receipt.Date,
                 refNo,
                 receipt.Atcud,
-                AtQrTaxBreakdown.FromUndiscriminatedPayment(totalNet),
-                receipt.TaxPayable,
-                receipt.Amount,
+                breakdown.TaxBreakdown,
+                breakdown.TotalTax,
+                breakdown.TotalFinal,
                 hash4,
-                WithholdingTaxAmount: receipt.WithholdingTaxAmount,
-                CurrencyAcronym: receipt.CurrencyCode,
-                ExchangeRate: receipt.ExchangeRate));
+                WithholdingTaxAmount: breakdown.WithholdingTaxAmount,
+                CurrencyAcronym: breakdown.CurrencyAcronym,
+                ExchangeRate: breakdown.ExchangeRate));
         }
 
         database.Receipts.Add(receipt);
@@ -315,6 +326,53 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         }
         await database.SaveChangesAsync(cancellationToken);
         return ReceiptPayResult.Done("Recibo emitido.");
+    }
+
+    private static IReadOnlyList<AtQrSettledDocument> BuildAtQrSettledDocuments(
+        IReadOnlyList<DocumentSettlementService.InvoicePaymentAllocation> allocations,
+        IReadOnlyList<Document> documents)
+    {
+        var byId = documents.ToDictionary(item => item.Id);
+        var settled = new List<AtQrSettledDocument>();
+        foreach (var allocation in allocations)
+        {
+            if (allocation.AmountToPay <= 0)
+            {
+                continue;
+            }
+
+            if (byId.TryGetValue(allocation.DocumentId, out var document) == false)
+            {
+                continue;
+            }
+
+            // NC credits are applied via the settlement pool only; they are not AT QR settled lines.
+            if (string.Equals(document.Type, "NC", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var lines = (document.Details ?? Array.Empty<DocumentDetail>())
+                .Select(detail => new AtQrSettledDocumentLine(
+                    detail.Tax.CountryRegion,
+                    detail.Tax.Code,
+                    detail.TotalNet,
+                    detail.TotalTax))
+                .ToList();
+
+            var currencyCode = document.Currency?.Acronym;
+            var exchangeRate = document.ExchangeRate > 0m ? document.ExchangeRate : 1m;
+            settled.Add(new AtQrSettledDocument(
+                allocation.AmountToPay,
+                document.TotalFinal,
+                document.TotalTax,
+                document.WithholdingTaxAmount,
+                lines,
+                currencyCode,
+                exchangeRate));
+        }
+
+        return settled;
     }
 
     private static async Task<string?> MissingSeriesAsync(LogicPOSDbContext database, string documentType, CancellationToken cancellationToken)

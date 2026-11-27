@@ -1,3 +1,4 @@
+using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
@@ -144,6 +145,12 @@ public readonly record struct ReceiptPaySetup(ReceiptPayOption? Currency, decima
 
 public static class ReceiptEmissionDefaults
 {
+    /// <summary>
+    /// Pending product decision (Carlos): Undiscriminated (spec field L) vs Proportional.
+    /// </summary>
+    public const AtQrPartialPaymentAllocation ReceiptAtQrPartialPaymentAllocation =
+        AtQrPartialPaymentAllocation.Undiscriminated;
+
     public const string CashCode = "NU";
 
     public const string CashName = "Numerário";
