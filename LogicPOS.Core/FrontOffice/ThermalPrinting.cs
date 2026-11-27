@@ -122,6 +122,10 @@ public sealed class ThermalDocument
 
     public string? OriginNumber { get; set; }
 
+    public string? Hash { get; set; }
+
+    public string? Status { get; set; }
+
     public string? Atcud { get; set; }
 
     /// <summary>Series ATDocCodeValidationSeries. Empty in public edition without AT registration.</summary>
@@ -141,6 +145,9 @@ public sealed class ThermalInvoiceJob
     public required ThermalDocument Document { get; init; }
 
     public bool PrintQrCode { get; init; } = true;
+
+    /// <summary>Portugal with an available fiscal plugin (certified closed edition).</summary>
+    public bool PortugalCertifiedFiscalEdition { get; init; }
 
     /// <summary>0 = ESC/POS native QR (GS k); 1 = bitmap image (GTK default / QRCODE_METHOD).</summary>
     public int QrCodeMethod { get; init; } = 1;

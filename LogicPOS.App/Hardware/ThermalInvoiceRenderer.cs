@@ -378,11 +378,6 @@ internal sealed class ThermalInvoiceRenderer
             Feed();
         }
 
-        if (_job.PrintQrCode == false)
-        {
-            return;
-        }
-
         if (string.IsNullOrWhiteSpace(document.FiscalCodeLine) == false)
         {
             Center();
@@ -390,11 +385,15 @@ internal sealed class ThermalInvoiceRenderer
             Feed();
         }
 
-        var content = string.IsNullOrWhiteSpace(document.AtQrCode) ? document.Number : document.AtQrCode;
-        if (string.IsNullOrWhiteSpace(content))
+        if (ThermalFiscalPrintRules.ShouldPrintQrImage(
+                _job.PrintQrCode,
+                document.AtQrCode,
+                _job.PortugalCertifiedFiscalEdition) == false)
         {
             return;
         }
+
+        var content = document.AtQrCode;
 
         Center();
         // QRCODE_METHOD: 0 = native ESC/POS, 1 = bitmap (default in seeds; works on Generic/60mm).

@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
+using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.ValueObjects;
 using QrCodes;
@@ -16,6 +17,9 @@ namespace LogicPOS.Core.FrontOffice.Pdf;
 
 public abstract class DocumentModel : IDocument
 {
+    /// <summary>Minimum AT QR size on A4 (Portaria 195/2020 — 30×30 mm).</summary>
+    public const float PortugalAtQrSizeMillimetres = 31f;
+
     public int Copy { get; set; } = 1;
     public bool IsSecondCopy;
     private int ItemIndex { get; set; }
@@ -674,8 +678,11 @@ public abstract class DocumentModel : IDocument
             return;
         }
 
+        var qrHeightMillimetres = string.IsNullOrWhiteSpace(payload) == false
+            ? PortugalAtQrSizeMillimetres
+            : 10f;
         table.Cell()
-            .Height(hasCodeLine && string.IsNullOrWhiteSpace(payload) ? 1f : 3.5f, Unit.Centimetre)
+            .MinHeight(qrHeightMillimetres / 10f, Unit.Centimetre)
             .PaddingLeft(0)
             .Table(tb =>
             {
@@ -691,12 +698,24 @@ public abstract class DocumentModel : IDocument
                         .FontSize(6);
                 }
 
+                var atcud = Data.Document.Atcud;
+                if (AtcudFormat.ShouldPrint(atcud) && (hasCodeLine || string.IsNullOrWhiteSpace(payload) == false))
+                {
+                    tb.Cell()
+                        .PaddingLeft(20)
+                        .PaddingBottom(3)
+                        .AlignRight()
+                        .Text($"ATCUD: {atcud}")
+                        .FontSize(6);
+                }
+
                 if (string.IsNullOrWhiteSpace(payload) == false)
                 {
                     tb.Cell().AlignRight()
                         .Padding(1)
-                        .Image(GetQrCode(payload))
-                        .FitArea();
+                        .Width(PortugalAtQrSizeMillimetres, Unit.Millimetre)
+                        .Height(PortugalAtQrSizeMillimetres, Unit.Millimetre)
+                        .Image(GetQrCode(payload));
                 }
             });
     }

@@ -1,4 +1,5 @@
-﻿using LogicPOS.Application.Features.Finance.Documents;
+﻿using LogicPOS.Application.Features.Company;
+using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Core.Fiscal;
@@ -6,6 +7,8 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Domain.Repositories;
+using LogicPOS.Domain.Services;
+using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
@@ -151,6 +154,8 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         }
 
         var documents = await database.Documents
+            .Include(item => item.Currency)
+            .Include(item => item.Details)
             .Where(item => request.DocumentIds.Contains(item.Id) && item.IsDeleted == false)
             .ToListAsync(cancellationToken);
         if (documents.Count != request.DocumentIds.Distinct().Count())
@@ -236,6 +241,68 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             receipt.Atcud = $"{series.ATDocCodeValidationSeries}-{series.NextNumber - 1}";
         }
 
+        if (fiscal?.IsAvailable == true && _systemInformation.IsPortugal())
+        {
+            var hasher = scope.ServiceProvider.GetRequiredService<IDocumentHasher>();
+            var lastReceiptNumber = $"{series.Acronym}/{series.NextNumber - 1}";
+            receipt.Hash = await hasher.GenerateReceiptHashAsync(
+                lastReceiptNumber,
+                refNo,
+                receipt.Date,
+                receipt.SystemEntryDate,
+                receipt.Amount,
+                cancellationToken);
+            var hash4 = hasher.GenerateHash4Chars(receipt.Hash);
+            if (string.IsNullOrWhiteSpace(hash4))
+            {
+                hash4 = DocumentCertificationText.ExtractHash4Chars(receipt.Hash);
+            }
+
+            string? issuerFiscalNumber = null;
+            var companyInformation = scope.ServiceProvider.GetService<ICompanyInformationService>();
+            if (companyInformation is not null)
+            {
+                var company = await companyInformation.GetCompanyInformationAsync(cancellationToken);
+                issuerFiscalNumber = company.FiscalNumber;
+            }
+            else
+            {
+                issuerFiscalNumber = await database.PreferenceParameters.AsNoTracking()
+                    .Where(item => item.Token == "COMPANY_FISCALNUMBER")
+                    .Select(item => item.Value)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+
+            var customer = documents[0].Customer;
+            var settledDocuments = BuildAtQrSettledDocuments(allocations, documents);
+            var settlement = new AtQrReceiptSettlement(
+                receipt.Amount,
+                receipt.TaxPayable,
+                receipt.WithholdingTaxAmount,
+                receipt.CurrencyCode,
+                receipt.ExchangeRate,
+                settledDocuments);
+            var breakdown = AtQrReceiptBreakdown.FromSettledDocuments(
+                settlement,
+                ReceiptEmissionDefaults.ReceiptAtQrPartialPaymentAllocation);
+            receipt.QrCode = DocumentAtQrPayload.Build(new AtQrPayloadInput(
+                PosDocumentRules.AtQrIssuerFiscalNumber(issuerFiscalNumber),
+                PosDocumentRules.AtQrCustomerFiscalNumber(customer.FiscalNumber),
+                customer.Country ?? "PT",
+                documentType,
+                receipt.Status,
+                receipt.Date,
+                refNo,
+                receipt.Atcud,
+                breakdown.TaxBreakdown,
+                breakdown.TotalTax,
+                breakdown.TotalFinal,
+                hash4,
+                WithholdingTaxAmount: breakdown.WithholdingTaxAmount,
+                CurrencyAcronym: breakdown.CurrencyAcronym,
+                ExchangeRate: breakdown.ExchangeRate));
+        }
+
         database.Receipts.Add(receipt);
         foreach (var allocation in allocations)
         {
@@ -259,6 +326,53 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         }
         await database.SaveChangesAsync(cancellationToken);
         return ReceiptPayResult.Done("Recibo emitido.");
+    }
+
+    private static IReadOnlyList<AtQrSettledDocument> BuildAtQrSettledDocuments(
+        IReadOnlyList<DocumentSettlementService.InvoicePaymentAllocation> allocations,
+        IReadOnlyList<Document> documents)
+    {
+        var byId = documents.ToDictionary(item => item.Id);
+        var settled = new List<AtQrSettledDocument>();
+        foreach (var allocation in allocations)
+        {
+            if (allocation.AmountToPay <= 0)
+            {
+                continue;
+            }
+
+            if (byId.TryGetValue(allocation.DocumentId, out var document) == false)
+            {
+                continue;
+            }
+
+            // NC credits are applied via the settlement pool only; they are not AT QR settled lines.
+            if (string.Equals(document.Type, "NC", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var lines = (document.Details ?? Array.Empty<DocumentDetail>())
+                .Select(detail => new AtQrSettledDocumentLine(
+                    detail.Tax.CountryRegion,
+                    detail.Tax.Code,
+                    detail.TotalNet,
+                    detail.TotalTax))
+                .ToList();
+
+            var currencyCode = document.Currency?.Acronym;
+            var exchangeRate = document.ExchangeRate > 0m ? document.ExchangeRate : 1m;
+            settled.Add(new AtQrSettledDocument(
+                allocation.AmountToPay,
+                document.TotalFinal,
+                document.TotalTax,
+                document.WithholdingTaxAmount,
+                lines,
+                currencyCode,
+                exchangeRate));
+        }
+
+        return settled;
     }
 
     private static async Task<string?> MissingSeriesAsync(LogicPOSDbContext database, string documentType, CancellationToken cancellationToken)

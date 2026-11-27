@@ -268,18 +268,20 @@ public static class ThermalTicketPdf
                 column.Item().AlignCenter().Text($"ATCUD: {document.Atcud}").FontSize(7);
             }
 
-            var hashPreview = HashPreview(document.Hash);
-            if (string.IsNullOrWhiteSpace(hashPreview) == false)
-            {
-                column.Item().AlignCenter().Text($"{hashPreview}-Processado por programa certificado").FontSize(6);
-            }
-
             if (string.IsNullOrWhiteSpace(document.FiscalCodeLine) == false)
             {
                 column.Item().AlignCenter().Text(document.FiscalCodeLine).FontSize(7);
             }
+            else
+            {
+                var hashPreview = HashPreview(document.Hash);
+                if (string.IsNullOrWhiteSpace(hashPreview) == false)
+                {
+                    column.Item().AlignCenter().Text($"{hashPreview}-Processado por programa certificado").FontSize(6);
+                }
+            }
 
-            var qrPayload = string.IsNullOrWhiteSpace(document.AtQRCode) ? document.Number : document.AtQRCode;
+            var qrPayload = document.AtQRCode;
             if (string.IsNullOrWhiteSpace(qrPayload) == false)
             {
                 var qr = ThermalQrPng.Render(qrPayload, size: 220);

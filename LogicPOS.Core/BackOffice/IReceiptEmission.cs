@@ -1,3 +1,4 @@
+using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
@@ -144,6 +145,13 @@ public readonly record struct ReceiptPaySetup(ReceiptPayOption? Currency, decima
 
 public static class ReceiptEmissionDefaults
 {
+    /// <summary>
+    /// Product decision (Carlos, 2026-11-27): VAT on partial payments is proportional to the amount paid;
+    /// rounding adjusted on the largest base.
+    /// </summary>
+    public const AtQrPartialPaymentAllocation ReceiptAtQrPartialPaymentAllocation =
+        AtQrPartialPaymentAllocation.Proportional;
+
     public const string CashCode = "NU";
 
     public const string CashName = "Numerário";

@@ -1,3 +1,4 @@
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Domain.Entities;
@@ -112,6 +113,8 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
                 TotalTax = doc.TotalTax,
                 TotalFinal = doc.TotalFinal,
                 Notes = doc.Notes,
+                Hash = doc.Hash,
+                Status = doc.Status,
                 Atcud = doc.ATCUD,
                 AtQrCode = doc.ATQRCode
             })
@@ -147,33 +150,49 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             ApplyCreditNotePaperAmounts(document);
         }
 
-        var mark = FiscalMarks.Read(scope.ServiceProvider.GetService<IFiscalModule>(), new FiscalDocument
-        {
-            Type = document.Type,
-            Number = document.Number,
-            QrPayload = document.AtQrCode,
-            TotalNet = document.TotalNet,
-            TotalTax = document.TotalTax,
-            TotalFinal = document.TotalFinal,
-            Date = document.Date,
-            CustomerFiscalNumber = document.CustomerFiscalNumber,
-            CountryCode = document.CustomerCountry
-        });
-        if (string.IsNullOrWhiteSpace(mark.CodeLine) == false)
-        {
-            document.FiscalCodeLine = mark.CodeLine;
-        }
-
-        if (string.IsNullOrWhiteSpace(mark.QrPayload) == false)
-        {
-            document.AtQrCode = mark.QrPayload;
-        }
-
         var parameters = await database.PreferenceParameters
             .AsNoTracking()
             .Select(item => new { item.Token, item.Value })
             .ToListAsync(cancellationToken);
         string? Value(string token) => parameters.FirstOrDefault(item => item.Token == token)?.Value;
+
+        var storedCustomerFiscal = await database.Documents.AsNoTracking()
+            .Where(item => item.Id == documentId)
+            .Select(item => item.Customer.FiscalNumber)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var storedAtQr = document.AtQrCode;
+        FiscalQrOnPrint.ResolveForPrint(
+            storedAtQr,
+            scope.ServiceProvider.GetService<IFiscalModule>(),
+            new FiscalDocument
+            {
+                Type = document.Type,
+                Number = document.Number,
+                Hash = document.Hash,
+                Status = document.Status,
+                Atcud = document.Atcud,
+                QrPayload = storedAtQr,
+                TotalNet = document.TotalNet,
+                TotalTax = document.TotalTax,
+                TotalFinal = document.TotalFinal,
+                Date = document.Date,
+                CustomerFiscalNumber = PosDocumentRules.AtQrCustomerFiscalNumber(storedCustomerFiscal),
+                CustomerCountry = document.CustomerCountry,
+                IssuerFiscalNumber = PosDocumentRules.AtQrIssuerFiscalNumber(Value("COMPANY_FISCALNUMBER")),
+                CountryCode = document.CustomerCountry
+            },
+            out var fiscalCodeLine,
+            out var atQrForPrint);
+        if (string.IsNullOrWhiteSpace(fiscalCodeLine) == false)
+        {
+            document.FiscalCodeLine = fiscalCodeLine;
+        }
+
+        if (string.IsNullOrWhiteSpace(atQrForPrint) == false)
+        {
+            document.AtQrCode = atQrForPrint;
+        }
 
         var openDrawer = PosDocumentRules.IsCreditNote(document.Type) == false
             && await database.DocumentTypes
@@ -181,6 +200,11 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
                 .AnyAsync(item => item.IsDeleted == false && item.Acronym == document.Type && item.PrintOpenDrawer, cancellationToken);
 
         var qrMethod = int.TryParse(Value("QRCODE_METHOD"), out var parsedMethod) ? parsedMethod : 1;
+        var system = scope.ServiceProvider.GetRequiredService<ISystemInformationService>();
+        var fiscalModule = scope.ServiceProvider.GetService<IFiscalModule>();
+        var portugalCertified = ThermalFiscalPrintRules.IsPortugalCertifiedFiscalEdition(
+            fiscalModule,
+            system.IsPortugal());
 
         return new ThermalInvoiceJob
         {
@@ -189,6 +213,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             TerminalName = terminal!.Designation,
             OpenDrawer = openDrawer,
             PrintQrCode = bool.TryParse(Value("PRINT_QRCODE"), out var printQr) == false || printQr,
+            PortugalCertifiedFiscalEdition = portugalCertified,
             QrCodeMethod = qrMethod,
             Company = new ThermalCompany
             {
