@@ -1,4 +1,6 @@
-﻿namespace LogicPOS.Core.FrontOffice;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace LogicPOS.Core.FrontOffice;
 
 /// <summary>
 /// Which thermal ticket fiscal sections are gated by PRINT_QRCODE vs always-on marks.
@@ -9,6 +11,6 @@ public static class ThermalFiscalPrintRules
     /// ATCUD and the certification line always print when data and plugin supply them.
     /// Only the QR image obeys the PRINT_QRCODE preference.
     /// </summary>
-    public static bool ShouldPrintQrImage(bool printQrCodePreference, string? atQrPayload)
+    public static bool ShouldPrintQrImage(bool printQrCodePreference, [NotNullWhen(true)] string? atQrPayload)
         => printQrCodePreference && string.IsNullOrWhiteSpace(atQrPayload) == false;
 }
