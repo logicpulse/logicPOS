@@ -213,6 +213,15 @@ public sealed class LocalCompanySetupService : ICompanySetupService
             return ListingSaveResult.Fail("Indique o NIF da empresa.");
         }
 
+        // U-12: Portuguese NIF check on company/issuer save (Core desktop path).
+        if (PortugueseNif.AppliesToCountry(country.Code2)
+            && PortugueseNif.IsValid(fiscal) == false)
+        {
+            return ListingSaveResult.Fail(
+                "Invalid Portuguese fiscal number (NIF).",
+                ListingSaveErrorCodes.InvalidFiscalNumberCode);
+        }
+
         var values = new Dictionary<string, string>(request.Values, StringComparer.OrdinalIgnoreCase)
         {
             ["COMPANY_COUNTRY"] = country.Designation,

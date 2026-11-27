@@ -287,6 +287,9 @@ public partial class FirstEntryWindow : Window
                     Completed = result == FirstEntryConfirmationResult.Confirmed;
                     Close();
                     break;
+                case FirstEntryConfirmationResult.InvalidFiscalNumber:
+                    LblStatus.Text = GtkFormRules.InvalidFiscalNumberUserMessage;
+                    break;
                 case FirstEntryConfirmationResult.Incomplete:
                     LblStatus.Text = "Indique o tipo, o país, a moeda e o NIF.";
                     break;

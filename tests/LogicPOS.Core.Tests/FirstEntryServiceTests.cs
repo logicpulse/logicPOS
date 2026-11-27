@@ -117,6 +117,40 @@ public sealed class FirstEntryServiceTests
     }
 
     [Fact]
+    public async Task Invalid_portuguese_nif_returns_InvalidFiscalNumber_and_writes_nothing()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-invalid-nif-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var service = AppComposition.Services!.GetRequiredService<IFirstEntryService>();
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+
+            var result = await service.ConfirmAsync(new FirstEntryRequest
+            {
+                OperationMode = "restaurant",
+                DemoAccepted = false,
+                CountryId = countryId,
+                CurrencyId = currencyId,
+                FiscalNumber = "123456780"
+            });
+
+            Assert.Equal(FirstEntryConfirmationResult.InvalidFiscalNumber, result);
+            Assert.True((await service.GetPendingAsync()).IsPending);
+            await using var scope = AppComposition.Services!.CreateAsyncScope();
+            var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+            Assert.Null(await TokenValueAsync(database, "FIRST_ENTRY_CONFIRMED"));
+            Assert.Null(await TokenValueAsync(database, "SYSTEM_OPERATION_MODE"));
+            Assert.True(string.IsNullOrWhiteSpace(await TokenValueAsync(database, "COMPANY_FISCALNUMBER")));
+            Assert.Equal("default", ReadModuleFromAppSettings(root));
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
     public async Task Closing_without_confirming_leaves_the_first_entry_pending()
     {
         var root = Directory.CreateTempSubdirectory("logicpos-firstentry-closed-");
@@ -935,9 +969,10 @@ public sealed class FirstEntryServiceTests
             var service = CloudService(root, account);
             var (countryId, currencyId) = await PortugalAndEuroAsync(service);
 
+            // Fake but mod-11-valid NIFs (U-12 company save rejects invalid check digits).
             var results = await Task.WhenAll(
-                service.ConfirmAsync(Request("restaurant", countryId, currencyId, nif: "111111111", demo: true)),
-                service.ConfirmAsync(Request("parking", countryId, currencyId, nif: "222222222", demo: true)));
+                service.ConfirmAsync(Request("restaurant", countryId, currencyId, nif: "111111110", demo: true)),
+                service.ConfirmAsync(Request("parking", countryId, currencyId, nif: "222222220", demo: true)));
 
             Assert.Single(results, FirstEntryConfirmationResult.Confirmed);
             Assert.Single(results, FirstEntryConfirmationResult.AlreadyConfirmed);
@@ -946,7 +981,7 @@ public sealed class FirstEntryServiceTests
             var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
             Assert.Equal(winner, await TokenValueAsync(database, "SYSTEM_OPERATION_MODE"));
             Assert.Equal(
-                winner == "restaurant" ? "111111111" : "222222222",
+                winner == "restaurant" ? "111111110" : "222222220",
                 await TokenValueAsync(database, "COMPANY_FISCALNUMBER"));
             var seeds = Path.Combine(DatabaseStartup.ResolveSeedPath(root.FullName), "modules", winner);
             Assert.Equal(SeedItemCount(seeds, "tables.json"), await database.Tables.CountAsync());

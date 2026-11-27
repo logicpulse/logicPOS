@@ -451,7 +451,7 @@ public partial class CompanySetupWindow : Window
             _saving = false;
             if (result.Succeeded == false)
             {
-                Notice.Text = result.Error ?? "Não foi possível gravar.";
+                Notice.Text = GtkFormRules.ResolveListingSaveError(result) ?? "Não foi possível gravar.";
                 DemoButton.IsEnabled = true;
                 RefreshValidation();
                 return;

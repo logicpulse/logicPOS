@@ -4,6 +4,7 @@ using LogicPOS.Application.Features.System;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Persistence.Cloud;
+using LogicPOS.Domain.ValueObjects;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -164,6 +165,13 @@ public sealed class FirstEntryService : IFirstEntryService
             return FirstEntryConfirmationResult.Incomplete;
         }
 
+        var countryCode = company.Countries.First(item => item.Id == request.CountryId).Code;
+        if (PortugueseNif.AppliesToCountry(countryCode)
+            && PortugueseNif.IsValid(fiscalNumber) == false)
+        {
+            return FirstEntryConfirmationResult.InvalidFiscalNumber;
+        }
+
         // The seeder reads the module from configuration when it is built, so the confirmed mode
         // must be there before the scope below resolves it. Restored unless the confirmation commits.
         var previousModule = _configuration["DatabaseSettings:Module"];
@@ -197,7 +205,12 @@ public sealed class FirstEntryService : IFirstEntryService
                 if (saved.Succeeded == false)
                 {
                     await transaction.RollbackAsync(cancellationToken);
-                    stopped = FirstEntryConfirmationResult.Incomplete;
+                    stopped = string.Equals(
+                        saved.ErrorCode,
+                        ListingSaveErrorCodes.InvalidFiscalNumberCode,
+                        StringComparison.Ordinal)
+                        ? FirstEntryConfirmationResult.InvalidFiscalNumber
+                        : FirstEntryConfirmationResult.Incomplete;
                     return;
                 }
 

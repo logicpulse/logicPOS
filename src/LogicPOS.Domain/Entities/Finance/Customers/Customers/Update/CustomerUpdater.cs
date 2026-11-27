@@ -2,6 +2,7 @@ using LogicPOS.Domain.Entities.Common.Utilities;
 using LogicPOS.Domain.Entities.Dtos;
 using LogicPOS.Domain.Repositories;
 using LogicPOS.Domain.Results;
+using LogicPOS.Domain.ValueObjects;
 
 namespace LogicPOS.Domain.Entities.Utilities;
 
@@ -24,6 +25,12 @@ internal class CustomerUpdater : EntityUpdater<Customer>
 
     protected override async Task<Result> CheckForConflictsAsync(CancellationToken ct = default)
     {
+        var fiscalResult = await ValidateFiscalNumberAsync(ct);
+        if (fiscalResult.IsFailure)
+        {
+            return fiscalResult;
+        }
+
         if (_dto.FiscalNumber != _entity.FiscalNumber &&
             await (_repository as ICustomerRepository)!.FiscalNumberExistsAsync(_dto.FiscalNumber, ct))
         {
@@ -51,7 +58,21 @@ internal class CustomerUpdater : EntityUpdater<Customer>
         return Result.Success();
     }
 
+    private async Task<Result> ValidateFiscalNumberAsync(CancellationToken ct)
+    {
+        var countryCode2 = await _dependencies.CountryRepository.GetCode2Async(_dto.CountryId, ct);
+        if (PortugueseNif.AppliesToCountry(countryCode2) == false)
+        {
+            return Result.Success();
+        }
 
+        if (PortugueseNif.IsValid(_dto.FiscalNumber))
+        {
+            return Result.Success();
+        }
+
+        return Result.Validation("Invalid Portuguese fiscal number (NIF).");
+    }
 
     protected override async Task<Result> CheckForExistenceAsync(CancellationToken ct = default)
     {
