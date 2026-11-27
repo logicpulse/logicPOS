@@ -401,6 +401,63 @@ public sealed class DocumentAtQrPayloadTests
     }
 
     [Fact]
+    public void Build_supports_RC_receipt_with_discriminated_vat()
+    {
+        // SAF-T PaymentType RC — field D; G is PaymentRefNo; tax from settled invoices may be split in I*.
+        var payload = DocumentAtQrPayload.Build(
+            issuerFiscalNumber: "503504564",
+            customerFiscalNumber: "501442600",
+            customerCountry: "PT",
+            documentType: "RC",
+            status: "N",
+            dateYyyyMmDd: "20261127",
+            uniqueDocumentId: "RC 2026A1/1",
+            atcud: "TESTE160-1",
+            taxTotals:
+            [
+                new DocumentAtQrTaxTotal("PT", "NOR", 100.00m, 23.00m)
+            ],
+            totalTax: 23.00m,
+            totalFinal: 123.00m,
+            hash4: "RcH4");
+
+        Assert.Equal(
+            "A:503504564*B:501442600*C:PT*D:RC*E:N*F:20261127*G:RC 2026A1/1*H:TESTE160-1*I1:PT*I7:100.00*I8:23.00*N:23.00*O:123.00*Q:RcH4*R:2543",
+            payload);
+        Assert.Contains("D:RC*", payload, StringComparison.Ordinal);
+        Assert.False(payload.EndsWith('*'));
+    }
+
+    [Fact]
+    public void Build_supports_RG_receipt_without_tax_discrimination_uses_L_and_I1_0()
+    {
+        // Spec field L: general receipts without tax discrimination; I1:0 when no VAT rate table applies.
+        var payload = DocumentAtQrPayload.Build(
+            issuerFiscalNumber: "503504564",
+            customerFiscalNumber: "999999990",
+            customerCountry: "PT",
+            documentType: "RG",
+            status: "N",
+            dateYyyyMmDd: "20261127",
+            uniqueDocumentId: "RG 2026A1/1",
+            atcud: "TESTE161-1",
+            taxTotals: [],
+            totalTax: 0m,
+            totalFinal: 50.00m,
+            hash4: "RgH4",
+            nonSubjectAmount: 50.00m);
+
+        Assert.Equal(
+            "A:503504564*B:999999990*C:PT*D:RG*E:N*F:20261127*G:RG 2026A1/1*H:TESTE161-1*I1:0*L:50.00*N:0.00*O:50.00*Q:RgH4*R:2543",
+            payload);
+        Assert.Contains("D:RG*", payload, StringComparison.Ordinal);
+        Assert.Contains("*I1:0*", payload, StringComparison.Ordinal);
+        Assert.Contains("*L:50.00*", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("I7:", payload, StringComparison.Ordinal);
+        Assert.False(payload.EndsWith('*'));
+    }
+
+    [Fact]
     public void Certification_line_includes_hash4_and_AT_certificate_number()
     {
         var hash = HashWithFourChars('A', 'B', 'C', 'D');
