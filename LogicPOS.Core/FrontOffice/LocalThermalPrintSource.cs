@@ -112,6 +112,8 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
                 TotalTax = doc.TotalTax,
                 TotalFinal = doc.TotalFinal,
                 Notes = doc.Notes,
+                Hash = doc.Hash,
+                Status = doc.Status,
                 Atcud = doc.ATCUD,
                 AtQrCode = doc.ATQRCode
             })
@@ -146,16 +148,27 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             ApplyCreditNotePaperAmounts(document);
         }
 
+        var parameters = await database.PreferenceParameters
+            .AsNoTracking()
+            .Select(item => new { item.Token, item.Value })
+            .ToListAsync(cancellationToken);
+        string? Value(string token) => parameters.FirstOrDefault(item => item.Token == token)?.Value;
+
         var mark = FiscalMarks.Read(scope.ServiceProvider.GetService<IFiscalModule>(), new FiscalDocument
         {
             Type = document.Type,
             Number = document.Number,
+            Hash = document.Hash,
+            Status = document.Status,
+            Atcud = document.Atcud,
             QrPayload = document.AtQrCode,
             TotalNet = document.TotalNet,
             TotalTax = document.TotalTax,
             TotalFinal = document.TotalFinal,
             Date = document.Date,
             CustomerFiscalNumber = document.CustomerFiscalNumber,
+            CustomerCountry = document.CustomerCountry,
+            IssuerFiscalNumber = Value("COMPANY_FISCALNUMBER"),
             CountryCode = document.CustomerCountry
         });
         if (string.IsNullOrWhiteSpace(mark.CodeLine) == false)
@@ -167,12 +180,6 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
         {
             document.AtQrCode = mark.QrPayload;
         }
-
-        var parameters = await database.PreferenceParameters
-            .AsNoTracking()
-            .Select(item => new { item.Token, item.Value })
-            .ToListAsync(cancellationToken);
-        string? Value(string token) => parameters.FirstOrDefault(item => item.Token == token)?.Value;
 
         var openDrawer = PosDocumentRules.IsCreditNote(document.Type) == false
             && await database.DocumentTypes

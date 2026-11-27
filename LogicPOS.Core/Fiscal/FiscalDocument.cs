@@ -15,6 +15,14 @@ public sealed class FiscalDocument
 
     public string? SeriesCode { get; init; }
 
+    public string? Status { get; init; }
+
+    public string? Atcud { get; init; }
+
+    public string? CustomerCountry { get; init; }
+
+    public string? IssuerFiscalNumber { get; init; }
+
     public decimal TotalNet { get; init; }
 
     public decimal TotalTax { get; init; }

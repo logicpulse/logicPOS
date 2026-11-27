@@ -122,6 +122,10 @@ public sealed class ThermalDocument
 
     public string? OriginNumber { get; set; }
 
+    public string? Hash { get; set; }
+
+    public string? Status { get; set; }
+
     public string? Atcud { get; set; }
 
     public string? AtQrCode { get; set; }
