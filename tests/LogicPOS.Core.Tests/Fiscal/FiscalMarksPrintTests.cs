@@ -45,7 +45,8 @@ public sealed class FiscalMarksPrintTests
 
             pdfPath = await services.GetRequiredService<IPosDocumentService>()
                 .CreateA4FileAsync(issued.DocumentId, CancellationToken.None);
-            var pdf = ReadPdfText(pdfPath);
+            Assert.False(string.IsNullOrWhiteSpace(pdfPath));
+            var pdf = ReadPdfText(pdfPath!);
             Assert.Contains("ATCUD: TESTE005-", pdf, StringComparison.Ordinal);
             Assert.Contains("MARK ", pdf, StringComparison.Ordinal);
         }
@@ -100,7 +101,8 @@ public sealed class FiscalMarksPrintTests
 
             pdfPath = await services.GetRequiredService<IPosDocumentService>()
                 .CreateA4FileAsync(issued.DocumentId, CancellationToken.None);
-            var pdf = ReadPdfText(pdfPath);
+            Assert.False(string.IsNullOrWhiteSpace(pdfPath));
+            var pdf = ReadPdfText(pdfPath!);
             Assert.Contains("ATCUD: TESTE005-", pdf, StringComparison.Ordinal);
             Assert.Contains("MARK ", pdf, StringComparison.Ordinal);
         }
@@ -123,7 +125,8 @@ public sealed class FiscalMarksPrintTests
 
             pdfPath = await services.GetRequiredService<IPosDocumentService>()
                 .CreateA4FileAsync(issued.DocumentId, CancellationToken.None);
-            var pdf = ReadPdfText(pdfPath);
+            Assert.False(string.IsNullOrWhiteSpace(pdfPath));
+            var pdf = ReadPdfText(pdfPath!);
             Assert.DoesNotContain("ATCUD:", pdf, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("MARK ", pdf, StringComparison.Ordinal);
             Assert.DoesNotContain("programa certificado", pdf, StringComparison.OrdinalIgnoreCase);
@@ -157,10 +160,12 @@ public sealed class FiscalMarksPrintTests
         await WriteAppSettingsAsync(root);
         AppComposition.Configure(root.FullName);
         Assert.Null(AppComposition.StartupError);
-        Assert.True(AppComposition.Services!.GetRequiredService<IFiscalModule>().IsAvailable);
+        var services = AppComposition.Services;
+        Assert.NotNull(services);
+        Assert.True(services.GetRequiredService<IFiscalModule>().IsAvailable);
 
-        await FinishCompanyAndFiscalYearAsync(AppComposition.Services);
-        return AppComposition.Services;
+        await FinishCompanyAndFiscalYearAsync(services);
+        return services;
     }
 
     private static async Task<IServiceProvider> ConfigurePublicEditionAsync(DirectoryInfo root)
@@ -168,10 +173,12 @@ public sealed class FiscalMarksPrintTests
         await WriteAppSettingsAsync(root);
         AppComposition.Configure(root.FullName);
         Assert.Null(AppComposition.StartupError);
-        Assert.False(AppComposition.Services!.GetRequiredService<IFiscalModule>().IsAvailable);
+        var services = AppComposition.Services;
+        Assert.NotNull(services);
+        Assert.False(services.GetRequiredService<IFiscalModule>().IsAvailable);
 
-        await FinishCompanyAndFiscalYearAsync(AppComposition.Services);
-        return AppComposition.Services;
+        await FinishCompanyAndFiscalYearAsync(services);
+        return services;
     }
 
     private static async Task WriteAppSettingsAsync(DirectoryInfo root)
