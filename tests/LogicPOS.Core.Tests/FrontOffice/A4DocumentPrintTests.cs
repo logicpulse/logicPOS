@@ -182,6 +182,51 @@ public sealed class A4DocumentPrintTests
         }
     }
 
+    [Fact]
+    public async Task A4_reprint_registration_stores_copy_count_from_spooler()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-reprint-copies-");
+        try
+        {
+            var services = await ConfigureReadyToIssueFtAsync(root);
+            var customer = await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync(CancellationToken.None);
+            Assert.NotNull(customer);
+            var catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync(CancellationToken.None);
+            var article = catalog.Articles.First();
+            var documents = services.GetRequiredService<IPosDocumentService>();
+            var issued = await documents.IssueDocumentAsync(
+                "FT",
+                customer.Id,
+                [new PosSaleLine(article.Id, 1, article.CatalogPrice, 0, article.VatRateId)],
+                new PosDocumentHeader { PaymentToken = "MONEY" },
+                cancellationToken: CancellationToken.None);
+
+            Assert.Null(issued.Error);
+            var printSource = services.GetRequiredService<IThermalPrintSource>();
+            await printSource.RegisterPrintAsync(issued.DocumentId, isThermalPrint: false);
+            await printSource.RegisterReprintAsync(
+                issued.DocumentId,
+                1,
+                "Uma cópia",
+                isThermalPrint: false,
+                secondPrint: true);
+
+            await using var scope = services.CreateAsyncScope();
+            var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+            var last = await database.DocumentPrints
+                .AsNoTracking()
+                .Where(item => item.IsDeleted == false && item.DocumentId == issued.DocumentId)
+                .OrderByDescending(item => item.CreatedAt)
+                .FirstAsync();
+
+            Assert.Equal(1, last.PrintCopies);
+        }
+        finally
+        {
+            Cleanup(root, null, null);
+        }
+    }
+
     private static async Task<IServiceProvider> ConfigureReadyToIssueFtAsync(DirectoryInfo root)
     {
         var databasePath = Path.Combine(root.FullName, "logicpos.db");

@@ -315,7 +315,7 @@ internal static class FrontOfficePrinting
     }
 
     /// <summary>Reprints via the Windows A4/PDF path (BackOffice and non-ticket documents).</summary>
-    public static async Task<(bool Handled, string? Error)> TryReprintA4Async(
+    public static async Task<(bool Handled, string? Error, bool Cancelled)> TryReprintA4Async(
         Guid documentId,
         int copies,
         string reason,
@@ -337,7 +337,7 @@ internal static class FrontOfficePrinting
         var documents = AppComposition.Services?.GetService<IPosDocumentService>();
         if (documents is null || documentId == Guid.Empty)
         {
-            return (true, "Não foi possível gerar o PDF.");
+            return (true, "Não foi possível gerar o PDF.", false);
         }
 
         try
@@ -345,17 +345,34 @@ internal static class FrontOfficePrinting
             var path = await documents.CreateA4FileAsync(documentId);
             if (path is null)
             {
-                return (true, "Não foi possível gerar o PDF.");
+                return (true, "Não foi possível gerar o PDF.", false);
             }
 
             var count = Math.Max(1, copies);
+            var copiesSent = 0;
+            var cancelled = false;
             for (var copy = 0; copy < count; copy++)
             {
-                var ok = await Task.Run(() => PdfWindowsPrint.PrintOrOpen(path, printer));
-                if (ok == false)
+                try
                 {
-                    throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
+                    var ok = await Task.Run(() => PdfWindowsPrint.PrintOrOpen(path, printer));
+                    if (ok == false)
+                    {
+                        throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
+                    }
+
+                    copiesSent++;
                 }
+                catch (PrintCancelledException)
+                {
+                    cancelled = true;
+                    break;
+                }
+            }
+
+            if (copiesSent == 0)
+            {
+                return (true, null, cancelled);
             }
 
             var source = AppComposition.Services?.GetService<IThermalPrintSource>();
@@ -368,7 +385,7 @@ internal static class FrontOfficePrinting
                         : reason.Trim();
                     await source.RegisterReprintAsync(
                         documentId,
-                        count,
+                        copiesSent,
                         motive,
                         isThermalPrint: false,
                         secondPrint: isSecondCopy);
@@ -379,15 +396,11 @@ internal static class FrontOfficePrinting
                 }
             }
 
-            return (true, null);
-        }
-        catch (PrintCancelledException)
-        {
-            return (true, null);
+            return (true, null, cancelled);
         }
         catch (Exception exception)
         {
-            return (true, exception.Message);
+            return (true, exception.Message, false);
         }
     }
 

@@ -661,8 +661,14 @@ public partial class PdfDocumentView : UserControl
             if (useA4)
             {
                 var printer = SelectedPrinter();
-                (_, reprintError) = await FrontOfficePrinting.TryReprintA4Async(
+                var (_, error, cancelled) = await FrontOfficePrinting.TryReprintA4Async(
                     documentId, copies, reason, secondCopy, printer);
+                reprintError = error;
+                if (cancelled)
+                {
+                    SetStatus(string.Empty);
+                    return;
+                }
             }
             else
             {
