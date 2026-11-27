@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Text;
 using LogicPOS.Application.Features.System.Users;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,11 +13,15 @@ public sealed class SoftwareProducerAuthTests : IDisposable
     public SoftwareProducerAuthTests()
     {
         SoftwareProducerAuth.ResetConfiguration();
+        SoftwareProducerPasswordVerifier.ResetNotConfiguredLogForTests();
+        SoftwareProducerPbkdf2.ResetBadVerifierLogForTests();
     }
 
     public void Dispose()
     {
         SoftwareProducerAuth.ResetConfiguration();
+        SoftwareProducerPasswordVerifier.ResetNotConfiguredLogForTests();
+        SoftwareProducerPbkdf2.ResetBadVerifierLogForTests();
     }
 
     [Fact]
@@ -54,7 +60,30 @@ public sealed class SoftwareProducerAuthTests : IDisposable
     }
 
     [Fact]
-    public void No_verifier_configured_refuses_and_logs_warning()
+    public void Matches_without_configuration_refuses_all_candidates()
+    {
+        SoftwareProducerAuth.ResetConfiguration();
+
+        Assert.False(SoftwareProducerAuth.Matches(SoftwareProducerAuth.Login, null));
+        Assert.False(SoftwareProducerAuth.Matches(SoftwareProducerAuth.Login, string.Empty));
+        Assert.False(SoftwareProducerAuth.Matches(SoftwareProducerAuth.Login, " "));
+        Assert.False(SoftwareProducerAuth.Matches(SoftwareProducerAuth.Login, CreateThrowawayPassword()));
+        Assert.False(SoftwareProducerAuth.Matches(SoftwareProducerAuth.Login, CreateThrowawayPassword()));
+
+        // Empty / whitespace verifier must also refuse (fail-open mutation guard).
+        var (emptyAuth, _) = CreateConfigured(string.Empty);
+        SoftwareProducerAuth.Configure(emptyAuth);
+        Assert.False(SoftwareProducerAuth.Matches(SoftwareProducerAuth.Login, CreateThrowawayPassword()));
+
+        var (blankAuth, _) = CreateConfigured("   ");
+        SoftwareProducerAuth.Configure(blankAuth);
+        Assert.False(SoftwareProducerAuth.Matches(SoftwareProducerAuth.Login, CreateThrowawayPassword()));
+        Assert.False(SoftwareProducerAuth.Matches(SoftwareProducerAuth.Login, null));
+        Assert.False(SoftwareProducerAuth.Matches(SoftwareProducerAuth.Login, string.Empty));
+    }
+
+    [Fact]
+    public void No_verifier_configured_refuses_and_logs_warning_once_per_process()
     {
         var logger = new CollectingLogger<SoftwareProducerPasswordVerifier>();
         var auth = new SoftwareProducerPasswordVerifier(
@@ -66,13 +95,21 @@ public sealed class SoftwareProducerAuthTests : IDisposable
             m.Level == LogLevel.Warning
             && m.Text.Contains("not configured", StringComparison.OrdinalIgnoreCase));
 
-        // Second attempt: still refuses, but only one warning.
+        Assert.False(auth.VerifyPassword(CreateThrowawayPassword()));
         Assert.False(auth.VerifyPassword(CreateThrowawayPassword()));
         Assert.Equal(1, logger.Messages.Count(m => m.Level == LogLevel.Warning));
+
+        // Second instance shares the once-per-process flag.
+        var logger2 = new CollectingLogger<SoftwareProducerPasswordVerifier>();
+        var auth2 = new SoftwareProducerPasswordVerifier(
+            new StaticOptionsMonitor(new SoftwareProducerOptions()),
+            logger2);
+        Assert.False(auth2.VerifyPassword(CreateThrowawayPassword()));
+        Assert.Empty(logger2.Messages);
     }
 
     [Fact]
-    public void Malformed_verifier_fails_without_match()
+    public void Malformed_verifier_fails_and_logs_warning_once_per_process()
     {
         var logger = new CollectingLogger<SoftwareProducerPasswordVerifier>();
         var auth = new SoftwareProducerPasswordVerifier(
@@ -80,17 +117,16 @@ public sealed class SoftwareProducerAuthTests : IDisposable
             logger);
 
         Assert.False(auth.VerifyPassword(CreateThrowawayPassword()));
-        Assert.Contains(logger.Messages, m => m.Level == LogLevel.Warning);
+        Assert.False(auth.VerifyPassword(CreateThrowawayPassword()));
+        Assert.False(auth.VerifyPassword(CreateThrowawayPassword()));
+        Assert.Equal(1, logger.Messages.Count(m => m.Level == LogLevel.Warning));
     }
 
     [Fact]
     public void Iterations_below_minimum_are_rejected()
     {
         var password = CreateThrowawayPassword();
-        // Build a structurally valid string with too-few iterations (bypass CreateVerifier guard).
-        var salt = Convert.ToBase64String(RandomNumberGenerator.GetBytes(16));
-        var hash = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
-        var lowIter = $"pbkdf2-sha256$1000${salt}${hash}";
+        var lowIter = BuildRawVerifier(password, iterations: 1000, saltBytes: 16, hashBytes: 32);
 
         Assert.False(SoftwareProducerPbkdf2.TryVerify(password, lowIter));
 
@@ -100,39 +136,48 @@ public sealed class SoftwareProducerAuthTests : IDisposable
     }
 
     [Fact]
-    public void Legacy_accepted_only_when_AcceptLegacy_is_true()
+    public void Iterations_above_maximum_are_rejected_without_deriving()
     {
         var password = CreateThrowawayPassword();
-        var legacy = LegacyPasswordHasherFormat.HashPassword(password);
+        var highIter = BuildRawVerifier(
+            password,
+            iterations: SoftwareProducerPbkdf2.MaximumIterations + 1,
+            saltBytes: 16,
+            hashBytes: 32);
 
-        var (enabled, _) = CreateConfigured(
-            verifier: string.Empty,
-            legacyVerifier: legacy,
-            acceptLegacy: true);
-        Assert.True(enabled.VerifyPassword(password));
+        var sw = Stopwatch.StartNew();
+        Assert.False(SoftwareProducerPbkdf2.TryVerify(password, highIter));
+        sw.Stop();
 
-        var (disabled, _) = CreateConfigured(
-            verifier: string.Empty,
-            legacyVerifier: legacy,
-            acceptLegacy: false);
-        Assert.False(disabled.VerifyPassword(password));
+        // Must not run PBKDF2 at 10M+1 iterations (would take seconds).
+        Assert.True(sw.ElapsedMilliseconds < 500, $"Expected fast reject, took {sw.ElapsedMilliseconds} ms");
+
+        var logger = new CollectingLogger<SoftwareProducerPasswordVerifier>();
+        var auth = new SoftwareProducerPasswordVerifier(
+            new StaticOptionsMonitor(new SoftwareProducerOptions { Verifier = highIter }),
+            logger);
+        Assert.False(auth.VerifyPassword(password));
+        Assert.Contains(logger.Messages, m =>
+            m.Level == LogLevel.Warning
+            && m.Text.Contains("maximum", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
-    public void Legacy_ignored_when_AcceptLegacy_is_false_even_if_legacy_string_set()
+    public void Salt_and_hash_size_minimums_are_enforced()
     {
         var password = CreateThrowawayPassword();
-        var pbkdf2 = SoftwareProducerPbkdf2.CreateVerifier(password);
-        var otherPassword = CreateThrowawayPassword();
-        var legacy = LegacyPasswordHasherFormat.HashPassword(otherPassword);
 
-        var (auth, _) = CreateConfigured(
-            verifier: pbkdf2,
-            legacyVerifier: legacy,
-            acceptLegacy: false);
+        var shortSalt = BuildRawVerifier(password, SoftwareProducerPbkdf2.DefaultIterations, saltBytes: 15, hashBytes: 32);
+        Assert.False(SoftwareProducerPbkdf2.TryVerify(password, shortSalt));
 
-        Assert.True(auth.VerifyPassword(password));
-        Assert.False(auth.VerifyPassword(otherPassword));
+        var shortHash = BuildRawVerifier(password, SoftwareProducerPbkdf2.DefaultIterations, saltBytes: 16, hashBytes: 31);
+        Assert.False(SoftwareProducerPbkdf2.TryVerify(password, shortHash));
+
+        var longHash = BuildRawVerifier(password, SoftwareProducerPbkdf2.DefaultIterations, saltBytes: 16, hashBytes: 33);
+        Assert.False(SoftwareProducerPbkdf2.TryVerify(password, longHash));
+
+        var exactMinimum = BuildRawVerifier(password, SoftwareProducerPbkdf2.DefaultIterations, saltBytes: 16, hashBytes: 32);
+        Assert.True(SoftwareProducerPbkdf2.TryVerify(password, exactMinimum));
     }
 
     [Fact]
@@ -152,7 +197,6 @@ public sealed class SoftwareProducerAuthTests : IDisposable
     [Fact]
     public void Tool_hashing_function_produces_verifier_auth_accepts()
     {
-        // Same API the CLI tool uses (SoftwareProducerPbkdf2.CreateVerifier).
         var password = CreateThrowawayPassword();
         var toolOutput = SoftwareProducerPbkdf2.CreateVerifier(password);
         var (auth, _) = CreateConfigured(toolOutput);
@@ -161,6 +205,19 @@ public sealed class SoftwareProducerAuthTests : IDisposable
         SoftwareProducerAuth.Configure(auth);
         Assert.False(SoftwareProducerAuth.Matches("other-user", password));
         Assert.True(SoftwareProducerAuth.Matches("LOGICPULSE", password));
+    }
+
+    [Fact]
+    public void Cli_rejects_redirected_input_with_clear_message()
+    {
+        using var error = new StringWriter();
+        var exit = SoftwareProducerVerifierCliRules.ExitCodeIfInputRedirected(isInputRedirected: true, error);
+        Assert.True(exit != 0);
+        Assert.Contains("interactive", error.ToString(), StringComparison.OrdinalIgnoreCase);
+
+        using var errorOk = new StringWriter();
+        Assert.Equal(0, SoftwareProducerVerifierCliRules.ExitCodeIfInputRedirected(isInputRedirected: false, errorOk));
+        Assert.Equal(string.Empty, errorOk.ToString());
     }
 
     [Fact]
@@ -178,19 +235,35 @@ public sealed class SoftwareProducerAuthTests : IDisposable
     private static string CreateThrowawayPassword() =>
         "test-" + Guid.NewGuid().ToString("N");
 
+    private static string BuildRawVerifier(string password, int iterations, int saltBytes, int hashBytes)
+    {
+        var salt = RandomNumberGenerator.GetBytes(saltBytes);
+        byte[] hash;
+        if (iterations > SoftwareProducerPbkdf2.MaximumIterations)
+        {
+            // Placeholder only — verify path must reject before deriving.
+            hash = RandomNumberGenerator.GetBytes(hashBytes);
+        }
+        else
+        {
+            hash = Rfc2898DeriveBytes.Pbkdf2(
+                Encoding.UTF8.GetBytes(password),
+                salt,
+                Math.Max(iterations, 1),
+                HashAlgorithmName.SHA256,
+                hashBytes);
+        }
+
+        return string.Create(
+            System.Globalization.CultureInfo.InvariantCulture,
+            $"pbkdf2-sha256${iterations}${Convert.ToBase64String(salt)}${Convert.ToBase64String(hash)}");
+    }
+
     private static (SoftwareProducerPasswordVerifier Auth, CollectingLogger<SoftwareProducerPasswordVerifier> Logger)
-        CreateConfigured(
-            string verifier,
-            string? legacyVerifier = null,
-            bool acceptLegacy = false)
+        CreateConfigured(string verifier)
     {
         var logger = new CollectingLogger<SoftwareProducerPasswordVerifier>();
-        var options = new SoftwareProducerOptions
-        {
-            Verifier = verifier,
-            LegacyVerifier = legacyVerifier,
-            AcceptLegacy = acceptLegacy
-        };
+        var options = new SoftwareProducerOptions { Verifier = verifier };
         var auth = new SoftwareProducerPasswordVerifier(new StaticOptionsMonitor(options), logger);
         return (auth, logger);
     }

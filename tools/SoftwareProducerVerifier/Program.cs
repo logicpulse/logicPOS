@@ -10,6 +10,12 @@ if (args.Length > 0)
     return 1;
 }
 
+var redirectedExit = SoftwareProducerVerifierCliRules.ExitCodeIfInputRedirected(
+    Console.IsInputRedirected,
+    Console.Error);
+if (redirectedExit != 0)
+    return redirectedExit;
+
 Console.Error.Write("Password: ");
 var password = ReadPasswordWithoutEcho();
 if (string.IsNullOrEmpty(password))

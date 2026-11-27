@@ -9,9 +9,10 @@ namespace LogicPOS.Application.Features.System.Users;
 /// </summary>
 public sealed class SoftwareProducerPasswordVerifier : ISoftwareProducerPasswordVerifier
 {
+    private static int _notConfiguredLogged;
+
     private readonly IOptionsMonitor<SoftwareProducerOptions> _options;
     private readonly ILogger<SoftwareProducerPasswordVerifier> _logger;
-    private int _notConfiguredLogged;
 
     public SoftwareProducerPasswordVerifier(
         IOptionsMonitor<SoftwareProducerOptions> options,
@@ -21,16 +22,17 @@ public sealed class SoftwareProducerPasswordVerifier : ISoftwareProducerPassword
         _logger = logger;
     }
 
+    /// <summary>Resets the once-per-process "not configured" warning flag (tests).</summary>
+    internal static void ResetNotConfiguredLogForTests() =>
+        Interlocked.Exchange(ref _notConfiguredLogged, 0);
+
     public bool VerifyPassword(string? password)
     {
         if (string.IsNullOrEmpty(password))
             return false;
 
         var options = _options.CurrentValue;
-        var hasVerifier = !string.IsNullOrWhiteSpace(options.Verifier);
-        var legacyEnabled = options.AcceptLegacy && !string.IsNullOrWhiteSpace(options.LegacyVerifier);
-
-        if (!hasVerifier && !legacyEnabled)
+        if (string.IsNullOrWhiteSpace(options.Verifier))
         {
             if (Interlocked.Exchange(ref _notConfiguredLogged, 1) == 0)
             {
@@ -40,17 +42,6 @@ public sealed class SoftwareProducerPasswordVerifier : ISoftwareProducerPassword
             return false;
         }
 
-        if (hasVerifier
-            && SoftwareProducerPbkdf2.TryVerify(password, options.Verifier, _logger))
-        {
-            return true;
-        }
-
-        if (legacyEnabled)
-        {
-            return LegacyPasswordHasherFormat.VerifyPassword(password, options.LegacyVerifier!);
-        }
-
-        return false;
+        return SoftwareProducerPbkdf2.TryVerify(password, options.Verifier, _logger);
     }
 }
