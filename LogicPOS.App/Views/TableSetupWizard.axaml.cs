@@ -17,6 +17,7 @@ public partial class TableSetupWizard : UserControl
     public TableSetupWizard()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         TouchFields.Attach(this);
         ListingNotice.BindToast(Notice, this);
     }

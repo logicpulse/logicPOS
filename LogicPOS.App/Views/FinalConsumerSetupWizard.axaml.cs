@@ -14,6 +14,7 @@ public partial class FinalConsumerSetupWizard : UserControl
     public FinalConsumerSetupWizard()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         TouchFields.Attach(this);
         ListingNotice.BindToast(Notice, this);
     }

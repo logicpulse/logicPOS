@@ -78,6 +78,7 @@ public partial class PaymentWindow : Window
         _shareLabel = shareLabel;
         _orderTotal = lines.Sum(line => line.Total);
         InitializeComponent();
+        EnglishUi.Apply(this);
         CustomerSuggest.PlacementTarget = CustomerName;
         if (ZipCode.Parent is Panel zipHost)
         {

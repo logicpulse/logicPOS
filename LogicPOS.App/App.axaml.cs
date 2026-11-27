@@ -52,6 +52,7 @@ public partial class App : global::Avalonia.Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+            EnglishUi.Install();
             Dispatcher.UIThread.UnhandledException += (_, args) =>
             {
                 WriteCrash("UIThread.UnhandledException", args.Exception);

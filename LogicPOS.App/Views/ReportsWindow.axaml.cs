@@ -30,6 +30,7 @@ public partial class ReportsWindow : UserControl
     public ReportsWindow()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         Period.ShowCaption = false;
         var month = DefaultPeriods.Month(DateTime.Today);
         Period.SetRange(month.Start, month.End);

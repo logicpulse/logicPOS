@@ -29,6 +29,7 @@ public partial class LoginWindow : UserControl
     public LoginWindow()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         // Spinner only on dark wallpaper — no full-area scrim.
         LoginBusy.UseLoginBusy();
         ListingNotice.BindToast(TerminalNotice, this);

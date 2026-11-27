@@ -27,6 +27,7 @@ public partial class FirstUserSetupWindow : Window
     {
         _wizard = wizard;
         InitializeComponent();
+        EnglishUi.Apply(this);
         TouchFields.Attach(this);
         PasswordReveal.Attach(TxtPin, TxtPinConfirm, TxtWebPassword, TxtWebPasswordConfirm);
         ListingNotice.BindToast(LblStatus, this);

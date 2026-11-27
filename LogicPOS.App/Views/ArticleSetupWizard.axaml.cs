@@ -17,6 +17,7 @@ public partial class ArticleSetupWizard : UserControl
     public ArticleSetupWizard()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         TouchFields.Attach(this);
         ListingNotice.BindToast(Notice, this);
     }

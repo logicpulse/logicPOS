@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using LogicPOS.Core;
 
 namespace LogicPOS.App;
 
@@ -35,6 +36,8 @@ internal static class Toast
         {
             return;
         }
+
+        title = UiCaption.Display(title);
 
         var host = ResolveHost(TopLevel.GetTopLevel(source));
         if (host is null)

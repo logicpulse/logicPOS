@@ -27,6 +27,7 @@ public partial class LogoLoader : UserControl
     public LogoLoader()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         _tiles = [Tile0, Tile1, Tile2, Tile3];
     }
 

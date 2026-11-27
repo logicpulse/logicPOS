@@ -57,6 +57,7 @@ public partial class CompanySetupWindow : Window
     {
         _service = service;
         InitializeComponent();
+        EnglishUi.Apply(this);
         ListingNotice.BindToast(Notice, this, skipProgress: true);
         // Banner lives on the owner shell (LoginShell / POS); avoid stacking a second strip.
         Opened += (_, _) => CoverOwner();

@@ -48,6 +48,7 @@ public partial class DocumentsListing : UserControl
     public DocumentsListing()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         // Closed ComboBox must show Label (Todos/All); without this the selection box stays blank.
         TypeBox.DisplayMemberBinding = new Avalonia.Data.Binding(nameof(ListingFilterChoice.Label));
         SendToAtButton.IsVisible = FiscalFeatures.ShowsAtCommunication(FiscalFeatures.Current);

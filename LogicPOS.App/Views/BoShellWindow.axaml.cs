@@ -12,6 +12,7 @@ public partial class BoShellWindow : Window
     public BoShellWindow(BackOfficeWindow office)
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         _office = office;
         Host.Children.Add(office);
         Opened += async (_, _) => await office.ActivateHostedAsync();

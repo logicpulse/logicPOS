@@ -24,6 +24,7 @@ public partial class ArticleDashboardView : UserControl
     public ArticleDashboardView()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         ListingNotice.BindToast(StockStatus, this);
         FillYears(_year);
     }

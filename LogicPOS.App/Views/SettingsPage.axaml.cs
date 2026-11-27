@@ -34,6 +34,7 @@ public partial class SettingsPage : UserControl
     public SettingsPage()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         ListingNotice.BindToast(Notice, this);
         SizeChanged += (_, _) => RelayoutCards();
     }

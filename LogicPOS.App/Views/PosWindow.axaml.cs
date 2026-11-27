@@ -169,6 +169,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _scanner = ScannerInputReader.FromConfiguration(configuration);
         _scanner.Captured += OnScannerCaptured;
         InitializeComponent();
+        EnglishUi.Apply(this);
         // FO dialog titlebars already show the page name; hide inner BO page titles in code.
         FoDialogChrome.ApplyHosted(DocumentsHost);
         FoDialogChrome.ApplyHosted(ReceiptHost);

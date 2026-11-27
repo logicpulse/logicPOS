@@ -33,6 +33,7 @@ public partial class FiscalYearWizard : UserControl
     public FiscalYearWizard()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         TouchFields.Attach(this);
         ListingNotice.BindToast(Notice, this);
         CreateSeries.IsCheckedChanged += (_, _) => SelectAllSeries();

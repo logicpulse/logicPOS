@@ -33,6 +33,7 @@ public partial class PeriodRangeField : UserControl
     public PeriodRangeField()
     {
         InitializeComponent();
+        EnglishUi.Apply(this);
         var year = DefaultPeriods.Year(DateTime.Today);
         _start = year.Start;
         _end = year.End;
