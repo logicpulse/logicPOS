@@ -740,7 +740,94 @@ public sealed class FirstEntryServiceTests
     }
 
     [Fact]
-    public async Task Resolved_mode_after_confirmation_falls_back_to_account_when_tenant_stored_is_invalid()
+    public async Task Resolved_mode_after_confirmation_keeps_tenant_when_account_store_fails_and_stays_default()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-failstore-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "default", CountryCode2 = "PT", FailStore = true };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            Assert.Equal("default", account.Mode);
+            Assert.Equal("restaurant", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_normalizes_stored_casing_when_account_is_neutral()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-casing-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "default", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            await using (var scope = AppComposition.Services!.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var row = await database.PreferenceParameters
+                    .SingleAsync(item => item.IsDeleted == false && item.Token == "SYSTEM_OPERATION_MODE");
+                row.Value = "Restaurant";
+                await database.SaveChangesAsync();
+            }
+
+            Assert.Equal("restaurant", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_invalid_stored_falls_back_to_neutral_account_default()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-invalid-stored-");
+        try
+        {
+            ConfigureApp(root, module: "default", useSeed: false);
+            var account = new FakeAccount { Mode = "default", CountryCode2 = "PT" };
+            var service = CloudService(root, account);
+            var (countryId, currencyId) = await PortugalAndEuroAsync(service);
+            Assert.Equal(
+                FirstEntryConfirmationResult.Confirmed,
+                await service.ConfirmAsync(Request("restaurant", countryId, currencyId)));
+
+            account.Mode = "default";
+
+            await using (var scope = AppComposition.Services!.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var row = await database.PreferenceParameters
+                    .SingleAsync(item => item.IsDeleted == false && item.Token == "SYSTEM_OPERATION_MODE");
+                row.Value = "not-a-real-mode";
+                await database.SaveChangesAsync();
+            }
+
+            Assert.Equal("default", await service.GetResolvedOperationModeAsync());
+        }
+        finally
+        {
+            Cleanup(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolved_mode_after_confirmation_explicit_account_mode_wins_regardless_of_stored()
     {
         var root = Directory.CreateTempSubdirectory("logicpos-firstentry-resolved-fallback-");
         try

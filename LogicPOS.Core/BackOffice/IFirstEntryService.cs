@@ -88,8 +88,9 @@ public interface IFirstEntryService
 
     /// <summary>
     /// Operation mode the next login should use, or null before the first entry is confirmed.
-    /// Cloud account: the account's current mode (it may have changed since the confirmation),
-    /// falling back to the confirmed one. Local: the confirmed mode.
+    /// Cloud account: an explicit non-neutral account mode wins when valid; the neutral
+    /// <c>default</c> token does not override the confirmed tenant mode.
+    /// Otherwise the confirmed tenant mode is used (normalized). Local: the confirmed mode.
     /// </summary>
     Task<string?> GetResolvedOperationModeAsync(CancellationToken cancellationToken = default);
 
