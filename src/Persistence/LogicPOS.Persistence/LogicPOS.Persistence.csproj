@@ -5,6 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LogicPOS.Core.Tests" />
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\LogicPOS.Application\LogicPOS.Application.csproj" />
