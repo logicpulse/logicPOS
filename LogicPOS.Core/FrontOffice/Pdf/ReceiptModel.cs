@@ -290,7 +290,10 @@ public class ReceiptModel : IDocument
                 tb.ColumnsDefinition(columns => { columns.RelativeColumn(); });
                 if (string.IsNullOrWhiteSpace(Data.Receipt!.QrCode) == false)
                 {
-                    tb.Cell().PaddingLeft(7).PaddingVertical(3).AlignRight().Image(GetQrCode(Data.Receipt.QrCode)).FitArea();
+                    tb.Cell().PaddingLeft(7).PaddingVertical(3).AlignRight()
+                        .Width(DocumentModel.PortugalAtQrSizeMillimetres, Unit.Millimetre)
+                        .Height(DocumentModel.PortugalAtQrSizeMillimetres, Unit.Millimetre)
+                        .Image(GetQrCode(Data.Receipt.QrCode));
                 }
             });
             if (!Data.Country.IsAngola)

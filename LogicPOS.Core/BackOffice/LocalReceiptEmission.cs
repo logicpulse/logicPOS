@@ -1,4 +1,5 @@
-﻿using LogicPOS.Application.Features.Finance.Documents;
+﻿using LogicPOS.Application.Features.Company;
+using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Core.Fiscal;
@@ -6,6 +7,8 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Domain.Repositories;
+using LogicPOS.Domain.Services;
+using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
@@ -234,6 +237,55 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             && string.IsNullOrWhiteSpace(series.ATDocCodeValidationSeries) == false)
         {
             receipt.Atcud = $"{series.ATDocCodeValidationSeries}-{series.NextNumber - 1}";
+        }
+
+        if (fiscal?.IsAvailable == true && _systemInformation.IsPortugal())
+        {
+            var hasher = scope.ServiceProvider.GetRequiredService<IDocumentHasher>();
+            var lastReceiptNumber = $"{series.Acronym}/{series.NextNumber - 1}";
+            receipt.Hash = await hasher.GenerateReceiptHashAsync(
+                lastReceiptNumber,
+                refNo,
+                receipt.Date,
+                receipt.SystemEntryDate,
+                receipt.Amount,
+                cancellationToken);
+            var hash4 = hasher.GenerateHash4Chars(receipt.Hash);
+            if (string.IsNullOrWhiteSpace(hash4))
+            {
+                hash4 = DocumentCertificationText.ExtractHash4Chars(receipt.Hash);
+            }
+
+            string? issuerFiscalNumber = null;
+            var companyInformation = scope.ServiceProvider.GetService<ICompanyInformationService>();
+            if (companyInformation is not null)
+            {
+                var company = await companyInformation.GetCompanyInformationAsync(cancellationToken);
+                issuerFiscalNumber = company.FiscalNumber;
+            }
+            else
+            {
+                issuerFiscalNumber = await database.PreferenceParameters.AsNoTracking()
+                    .Where(item => item.Token == "COMPANY_FISCALNUMBER")
+                    .Select(item => item.Value)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+
+            var customer = documents[0].Customer;
+            var totalNet = receipt.Amount - receipt.TaxPayable;
+            receipt.QrCode = DocumentAtQrPayload.Build(
+                PosDocumentRules.AtQrIssuerFiscalNumber(issuerFiscalNumber),
+                PosDocumentRules.AtQrCustomerFiscalNumber(customer.FiscalNumber),
+                customer.Country ?? "PT",
+                documentType,
+                receipt.Status,
+                receipt.Date,
+                refNo,
+                receipt.Atcud,
+                totalNet,
+                receipt.TaxPayable,
+                receipt.Amount,
+                hash4);
         }
 
         database.Receipts.Add(receipt);
