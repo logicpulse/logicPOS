@@ -55,6 +55,61 @@ public sealed class FiscalMarksPrintTests
         }
     }
 
+    [Theory]
+    [InlineData(false, "A:1*B:2*", false)]
+    [InlineData(true, "A:1*B:2*", true)]
+    [InlineData(true, null, false)]
+    [InlineData(true, "", false)]
+    public void ShouldPrintQrImage_only_gates_qr_image(bool printQr, string? payload, bool expected)
+    {
+        Assert.Equal(expected, ThermalFiscalPrintRules.ShouldPrintQrImage(printQr, payload));
+    }
+
+    [Fact]
+    public async Task Certified_fs_fiscal_text_remains_when_qr_printing_preference_is_off()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-fiscal-noqr-");
+        string? pdfPath = null;
+        try
+        {
+            var services = await ConfigureWithFiscalPluginAsync(root);
+
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var series = await database.DocumentSeries
+                    .Include(item => item.DocumentType)
+                    .FirstAsync(item => item.IsDeleted == false && item.DocumentType!.Acronym == "FS");
+                series.ATDocCodeValidationSeries = "TESTE005";
+                await database.SaveChangesAsync();
+            }
+
+            var issued = await IssueSimplifiedAsync(services);
+            Assert.Null(issued.Error);
+
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                var document = await database.Documents.AsNoTracking()
+                    .FirstAsync(item => item.Id == issued.DocumentId);
+                var atcud = AtcudFormat.OrFallback(document.ATCUD, "TESTE005", document.Number);
+                Assert.True(AtcudFormat.ShouldPrint(atcud));
+                Assert.False(string.IsNullOrWhiteSpace(document.ATQRCode));
+                Assert.False(ThermalFiscalPrintRules.ShouldPrintQrImage(printQrCodePreference: false, document.ATQRCode));
+            }
+
+            pdfPath = await services.GetRequiredService<IPosDocumentService>()
+                .CreateA4FileAsync(issued.DocumentId, CancellationToken.None);
+            var pdf = ReadPdfText(pdfPath);
+            Assert.Contains("ATCUD: TESTE005-", pdf, StringComparison.Ordinal);
+            Assert.Contains("MARK ", pdf, StringComparison.Ordinal);
+        }
+        finally
+        {
+            Cleanup(root, pdfPath);
+        }
+    }
+
     [Fact]
     public async Task Public_edition_fs_pdf_has_no_atcud_or_fiscal_marks()
     {
