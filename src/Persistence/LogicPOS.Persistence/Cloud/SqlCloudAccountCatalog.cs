@@ -5,45 +5,57 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using MySqlConnector;
 
 namespace LogicPOS.Persistence.Cloud;
 
 public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
 {
     private const string CacheKeyPrefix = "conn:tenant:";
-    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(10);
+    private static readonly TimeSpan SnapshotCacheDuration = TimeSpan.FromMinutes(10);
 
     /// <summary>
-    /// Whether <c>Accounts.AvailableDevices</c> can be selected for a given cloud catalog connection string.
-    /// Missing column is remembered so later calls skip it without a schema probe.
+    /// How long a missing <c>Accounts.AvailableDevices</c> omission is remembered per catalog
+    /// connection string before the next SELECT tries the column again (default 5 minutes).
     /// </summary>
-    private static readonly ConcurrentDictionary<string, bool> AvailableDevicesByConnection =
+    internal static readonly TimeSpan MissingColumnCacheTtl = TimeSpan.FromMinutes(5);
+
+    /// <summary>
+    /// UTC instant until which <c>AvailableDevices</c> is omitted for a given catalog connection string.
+    /// Absence means the next query includes the column.
+    /// </summary>
+    private static readonly ConcurrentDictionary<string, DateTimeOffset> OmitAvailableDevicesUntil =
         new(StringComparer.Ordinal);
 
     private readonly DatabaseSettings _settings;
     private readonly IMemoryCache _cache;
     private readonly ILogger<SqlCloudAccountCatalog> _logger;
     private readonly Func<string, DbConnection>? _connectionFactory;
+    private readonly Func<DateTimeOffset> _utcNow;
 
     public SqlCloudAccountCatalog(
         DatabaseSettings settings,
         IMemoryCache cache,
         ILogger<SqlCloudAccountCatalog> logger)
-        : this(settings, cache, logger, connectionFactory: null)
+        : this(settings, cache, logger, connectionFactory: null, utcNow: null)
     {
     }
 
-    /// <summary>Test hook: supply a non-SQL-Server connection (e.g. SQLite) without changing production DI.</summary>
+    /// <summary>
+    /// Test hook: non-SQL-Server connections (e.g. SQLite) and an injectable clock for omission TTL.
+    /// </summary>
     internal SqlCloudAccountCatalog(
         DatabaseSettings settings,
         IMemoryCache cache,
         ILogger<SqlCloudAccountCatalog> logger,
-        Func<string, DbConnection>? connectionFactory)
+        Func<string, DbConnection>? connectionFactory,
+        Func<DateTimeOffset>? utcNow = null)
     {
         _settings = settings;
         _cache = cache;
         _logger = logger;
         _connectionFactory = connectionFactory;
+        _utcNow = utcNow ?? (() => DateTimeOffset.UtcNow);
     }
 
     public CloudAccountSnapshot Find(string clientId)
@@ -56,7 +68,7 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
             return cached;
 
         var snapshot = Query(clientId.Trim());
-        _cache.Set(key, snapshot, CacheDuration);
+        _cache.Set(key, snapshot, SnapshotCacheDuration);
         return snapshot;
     }
 
@@ -110,13 +122,32 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
         return int.TryParse(value.ToString(), out var parsed) ? parsed : 0;
     }
 
+    private bool ShouldIncludeAvailableDevices(string connectionString)
+    {
+        if (!OmitAvailableDevicesUntil.TryGetValue(connectionString, out var untilUtc))
+            return true;
+
+        if (_utcNow() >= untilUtc)
+        {
+            OmitAvailableDevicesUntil.TryRemove(connectionString, out _);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void RememberMissingAvailableDevicesColumn(string connectionString)
+    {
+        OmitAvailableDevicesUntil[connectionString] = _utcNow() + MissingColumnCacheTtl;
+    }
+
     private CloudAccountSnapshot Query(string clientId)
     {
         if (string.IsNullOrWhiteSpace(_settings.CloudConnectionString))
             return CloudAccountSnapshot.NotFound;
 
         var connectionString = _settings.CloudConnectionString;
-        var includeAvailableDevices = AvailableDevicesByConnection.GetOrAdd(connectionString, _ => true);
+        var includeAvailableDevices = ShouldIncludeAvailableDevices(connectionString);
 
         try
         {
@@ -124,7 +155,7 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
         }
         catch (Exception ex) when (includeAvailableDevices && IsMissingAvailableDevicesColumn(ex))
         {
-            AvailableDevicesByConnection[connectionString] = false;
+            RememberMissingAvailableDevicesColumn(connectionString);
             _logger.LogInformation(
                 "Accounts.AvailableDevices is missing on the cloud catalog; loading accounts without it.");
             try
@@ -175,7 +206,11 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
 
         var availableDevices = 0;
         if (includeAvailableDevices)
+        {
             availableDevices = ReadDeviceCount(reader["AvailableDevices"]);
+            // Column is present — drop any omission so later calls keep using it.
+            OmitAvailableDevicesUntil.TryRemove(connectionString, out _);
+        }
 
         return new CloudAccountSnapshot
         {
@@ -242,8 +277,9 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
     }
 
     /// <summary>
-    /// Prefer provider error numbers: SQL Server 207 (invalid column name), SQLite error code 1 with
-    /// a missing-column message. Message text alone is not enough for SQL Server.
+    /// Strict missing-column detection: the error must name <c>AvailableDevices</c>.
+    /// SQL Server 207, SQLite error 1 with «no such column», MySQL 1054 («Unknown column»).
+    /// Another column's 207 / no such column / 1054 must not activate the omission path.
     /// </summary>
     internal static bool IsMissingAvailableDevicesColumn(Exception ex)
     {
@@ -252,13 +288,17 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
                 error.Message.Contains("AvailableDevices", StringComparison.OrdinalIgnoreCase));
 
         if (ex is SqliteException sqlite)
-            return sqlite.SqliteErrorCode == 1 &&
-                   (sqlite.Message.Contains("no such column", StringComparison.OrdinalIgnoreCase)
-                    || sqlite.Message.Contains("AvailableDevices", StringComparison.OrdinalIgnoreCase));
+            return sqlite.SqliteErrorCode == 1
+                && sqlite.Message.Contains("no such column", StringComparison.OrdinalIgnoreCase)
+                && sqlite.Message.Contains("AvailableDevices", StringComparison.OrdinalIgnoreCase);
+
+        if (ex is MySqlException mysql)
+            return mysql.Number == 1054
+                && mysql.Message.Contains("AvailableDevices", StringComparison.OrdinalIgnoreCase);
 
         return ex.InnerException is not null && IsMissingAvailableDevicesColumn(ex.InnerException);
     }
 
-    /// <summary>Clears the per-connection-string AvailableDevices cache (tests only).</summary>
-    internal static void ResetAvailableDevicesCacheForTests() => AvailableDevicesByConnection.Clear();
+    /// <summary>Clears the per-connection-string AvailableDevices omission cache (tests only).</summary>
+    internal static void ResetAvailableDevicesCacheForTests() => OmitAvailableDevicesUntil.Clear();
 }
