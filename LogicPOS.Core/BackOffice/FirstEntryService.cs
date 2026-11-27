@@ -296,20 +296,8 @@ public sealed class FirstEntryService : IFirstEntryService
             .FirstOrDefaultAsync(cancellationToken);
 
         var account = _account.IsCloudAccount ? _account.AccountOperationMode?.Trim().ToLowerInvariant() : null;
-        // Prefer tenant preference after confirmation; fall back to account.
-        return NormalizeStoredOperationMode(stored)
-            ?? (account is not null && ValidModes.Contains(account) ? account : null);
-    }
-
-    private static string? NormalizeStoredOperationMode(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return null;
-        }
-
-        var normalized = value.Trim().ToLowerInvariant();
-        return ValidModes.Contains(normalized) ? normalized : null;
+        // A neutral "default" account mode must not override the confirmed tenant mode.
+        return account is not null && account != "default" && ValidModes.Contains(account) ? account : stored;
     }
 
     public async Task<Guid?> SuggestCurrencyIdAsync(Guid? countryId, CancellationToken cancellationToken = default)

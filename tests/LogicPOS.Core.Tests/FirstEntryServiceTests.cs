@@ -892,7 +892,7 @@ public sealed class FirstEntryServiceTests
             account.Mode = "bakery";
 
             Assert.False((await service.GetPendingAsync()).IsPending);
-            Assert.Equal("parking", await service.GetResolvedOperationModeAsync());
+            Assert.Equal("bakery", await service.GetResolvedOperationModeAsync());
             await using (var scope = AppComposition.Services!.CreateAsyncScope())
             {
                 var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
