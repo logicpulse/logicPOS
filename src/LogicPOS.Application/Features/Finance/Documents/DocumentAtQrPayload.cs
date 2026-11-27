@@ -178,7 +178,7 @@ public static class DocumentAtQrPayload
     /// Prefer <see cref="Build(AtQrPayloadInput)"/>. Maps tax&gt;0 → PT/NOR, tax==0 and net&gt;0 → PT/ISE,
     /// both 0 → empty breakdown (<c>I1:0</c>). Does not fix INT/RED/PT-AC without line totals.
     /// </summary>
-    [Obsolete("Use DocumentAtQrPayload.Build(AtQrPayloadInput) with AtQrTaxBreakdown.FromLines or FromUndiscriminatedPayment.")]
+    [Obsolete("Use DocumentAtQrPayload.Build(AtQrPayloadInput). For RC/RG prefer AtQrReceiptBreakdown.FromSettledDocuments (or AtQrTaxBreakdown.FromLines / FromUndiscriminatedPayment).", error: false)]
     public static string Build(
         string? issuerFiscalNumber,
         string? customerFiscalNumber,
