@@ -1,4 +1,4 @@
-using LogicPOS.Application.Features.Finance.Documents;
+﻿using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
