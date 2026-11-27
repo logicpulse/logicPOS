@@ -284,7 +284,7 @@ internal static class FrontOfficePrinting
     }
 
     /// <summary>Records a successful A4/PDF spooler job (not used for save-to-file or e-mail).</summary>
-    public static async Task TryRegisterA4PrintAsync(Guid documentId)
+    public static async Task TryRegisterA4PrintAsync(Guid documentId, bool secondPrint = false)
     {
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null || documentId == Guid.Empty)
@@ -294,7 +294,19 @@ internal static class FrontOfficePrinting
 
         try
         {
-            await source.RegisterPrintAsync(documentId, isThermalPrint: false);
+            if (secondPrint)
+            {
+                await source.RegisterReprintAsync(
+                    documentId,
+                    1,
+                    "Segunda via",
+                    isThermalPrint: false,
+                    secondPrint: true);
+            }
+            else
+            {
+                await source.RegisterPrintAsync(documentId, isThermalPrint: false);
+            }
         }
         catch
         {

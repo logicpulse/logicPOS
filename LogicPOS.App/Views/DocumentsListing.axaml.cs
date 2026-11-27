@@ -1391,7 +1391,9 @@ public partial class DocumentsListing : UserControl
                     });
 
                     sent++;
-                    await FrontOfficePrinting.TryRegisterA4PrintAsync(row.Id);
+                    var printSource = AppComposition.Services?.GetService<IThermalPrintSource>();
+                    var wasPrinted = printSource is not null && await printSource.WasPrintedAsync(row.Id);
+                    await FrontOfficePrinting.TryRegisterA4PrintAsync(row.Id, secondPrint: wasPrinted);
                 }
                 catch (PrintCancelledException)
                 {

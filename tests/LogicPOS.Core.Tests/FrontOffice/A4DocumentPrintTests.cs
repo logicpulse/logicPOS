@@ -135,6 +135,53 @@ public sealed class A4DocumentPrintTests
         }
     }
 
+    [Fact]
+    public async Task Second_A4_registration_after_wasPrinted_uses_second_print_flag()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-second-flag-");
+        try
+        {
+            var services = await ConfigureReadyToIssueFtAsync(root);
+            var customer = await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync(CancellationToken.None);
+            Assert.NotNull(customer);
+            var catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync(CancellationToken.None);
+            var article = catalog.Articles.First();
+            var documents = services.GetRequiredService<IPosDocumentService>();
+            var issued = await documents.IssueDocumentAsync(
+                "FT",
+                customer.Id,
+                [new PosSaleLine(article.Id, 1, article.CatalogPrice, 0, article.VatRateId)],
+                new PosDocumentHeader { PaymentToken = "MONEY" },
+                cancellationToken: CancellationToken.None);
+
+            Assert.Null(issued.Error);
+            var printSource = services.GetRequiredService<IThermalPrintSource>();
+            await printSource.RegisterPrintAsync(issued.DocumentId, isThermalPrint: false);
+            Assert.True(await printSource.WasPrintedAsync(issued.DocumentId));
+            await printSource.RegisterReprintAsync(
+                issued.DocumentId,
+                1,
+                "Segunda via",
+                isThermalPrint: false,
+                secondPrint: true);
+
+            await using var scope = services.CreateAsyncScope();
+            var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+            var last = await database.DocumentPrints
+                .AsNoTracking()
+                .Where(item => item.IsDeleted == false && item.DocumentId == issued.DocumentId)
+                .OrderByDescending(item => item.CreatedAt)
+                .FirstAsync();
+
+            Assert.True(last.SecondPrint);
+            Assert.False(last.IsThermalPrint);
+        }
+        finally
+        {
+            Cleanup(root, null, null);
+        }
+    }
+
     private static async Task<IServiceProvider> ConfigureReadyToIssueFtAsync(DirectoryInfo root)
     {
         var databasePath = Path.Combine(root.FullName, "logicpos.db");

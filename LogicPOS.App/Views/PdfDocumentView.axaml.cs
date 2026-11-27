@@ -504,7 +504,9 @@ public partial class PdfDocumentView : UserControl
 
             if (_barcodeMode == false && _documentId is Guid documentId && documentId != Guid.Empty)
             {
-                await FrontOfficePrinting.TryRegisterA4PrintAsync(documentId);
+                var printSource = AppComposition.Services?.GetService<IThermalPrintSource>();
+                var wasPrinted = printSource is not null && await printSource.WasPrintedAsync(documentId);
+                await FrontOfficePrinting.TryRegisterA4PrintAsync(documentId, secondPrint: wasPrinted);
             }
 
             SetStatus(string.Empty);
