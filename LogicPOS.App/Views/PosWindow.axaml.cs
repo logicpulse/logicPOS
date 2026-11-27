@@ -179,7 +179,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         ListingNotice.BindToast(VoltaNotice, this);
         ListingNotice.BindToast(SessionNotice, this);
         DevEditionBanner.Apply(DevBanner);
-        NewDocumentHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
+        NewDocumentHost.PreviewRequested += async (path, title, documentId) =>
+            await ShowPdfAsync(path, title, documentId);
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.Closed += (_, _) => ReportsOverlay.IsVisible = false;
         StartupHost.Finished += OnStartupWizardFinished;
@@ -2276,7 +2277,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
         {
             if (string.IsNullOrEmpty(NewDocumentHost.CreatedPdfPath) == false)
             {
-                await ShowPdfAsync(NewDocumentHost.CreatedPdfPath, NewDocumentHost.CreatedPdfTitle);
+                await ShowPdfAsync(
+                    NewDocumentHost.CreatedPdfPath,
+                    NewDocumentHost.CreatedPdfTitle,
+                    NewDocumentHost.CreatedDocumentId);
             }
         }
     }

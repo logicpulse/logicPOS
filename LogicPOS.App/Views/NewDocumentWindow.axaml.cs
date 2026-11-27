@@ -84,7 +84,9 @@ public partial class NewDocumentWindow : UserControl
 
     public string? CreatedPdfTitle { get; private set; }
 
-    public event Func<string, string?, Task>? PreviewRequested;
+    public Guid? CreatedDocumentId { get; private set; }
+
+    public event Func<string, string?, Guid?, Task>? PreviewRequested;
 
     private Guid? _previewDraftId;
     private Guid? _seedDraftId;
@@ -195,6 +197,7 @@ public partial class NewDocumentWindow : UserControl
         RefreshTotal();
         CreatedPdfPath = null;
         CreatedPdfTitle = null;
+        CreatedDocumentId = null;
         _closed = new TaskCompletionSource<bool>();
         _ = LoadAsync();
         FocusArticleSearch();
@@ -3690,7 +3693,7 @@ public partial class NewDocumentWindow : UserControl
                     if (preview is not null && PreviewRequested is not null)
                     {
                         ClearDocumentError();
-                        await PreviewRequested(preview, "Pré-visualização");
+                        await PreviewRequested(preview, "Pré-visualização", null);
                     }
 
                     return;
@@ -3707,7 +3710,7 @@ public partial class NewDocumentWindow : UserControl
                 if (preview is not null && PreviewRequested is not null)
                 {
                     ClearDocumentError();
-                    await PreviewRequested(preview, "Pré-visualização");
+                    await PreviewRequested(preview, "Pré-visualização", null);
                     return;
                 }
             }
@@ -3743,6 +3746,7 @@ public partial class NewDocumentWindow : UserControl
         {
             CreatedPdfPath = path;
             CreatedPdfTitle = issued.Number;
+            CreatedDocumentId = issued.DocumentId;
             _closed?.TrySetResult(true);
             return;
         }
@@ -3750,7 +3754,7 @@ public partial class NewDocumentWindow : UserControl
         ClearDocumentError();
         if (path is not null && PreviewRequested is not null)
         {
-            await PreviewRequested(path, "Pré-visualização");
+            await PreviewRequested(path, "Pré-visualização", issued.DocumentId);
         }
     }
 

@@ -99,6 +99,42 @@ public sealed class A4DocumentPrintTests
         }
     }
 
+    [Fact]
+    public async Task WasPrinted_is_false_until_first_A4_registration()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-wasprinted-");
+        try
+        {
+            var services = await ConfigureReadyToIssueFtAsync(root);
+            var customer = await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync(CancellationToken.None);
+            Assert.NotNull(customer);
+            var catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync(CancellationToken.None);
+            var article = catalog.Articles.First();
+            var documents = services.GetRequiredService<IPosDocumentService>();
+            var issued = await documents.IssueDocumentAsync(
+                "FT",
+                customer.Id,
+                [new PosSaleLine(article.Id, 1, article.CatalogPrice, 0, article.VatRateId)],
+                new PosDocumentHeader { PaymentToken = "MONEY" },
+                cancellationToken: CancellationToken.None);
+
+            Assert.Null(issued.Error);
+            var printSource = services.GetRequiredService<IThermalPrintSource>();
+            Assert.False(await printSource.WasPrintedAsync(issued.DocumentId));
+            await printSource.RegisterPrintAsync(issued.DocumentId, isThermalPrint: false);
+            Assert.True(await printSource.WasPrintedAsync(issued.DocumentId));
+
+            var secondPdf = await documents.CreateA4FileAsync(issued.DocumentId, CancellationToken.None);
+            Assert.NotNull(secondPdf);
+            var secondText = ReadPdfText(secondPdf);
+            Assert.Contains("2ª Via", secondText, StringComparison.Ordinal);
+        }
+        finally
+        {
+            Cleanup(root, null, null);
+        }
+    }
+
     private static async Task<IServiceProvider> ConfigureReadyToIssueFtAsync(DirectoryInfo root)
     {
         var databasePath = Path.Combine(root.FullName, "logicpos.db");

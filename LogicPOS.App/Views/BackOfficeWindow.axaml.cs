@@ -61,7 +61,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         DocumentsHost.OpenRowOnEnter = true;
         DevEditionBanner.Apply(DevBanner);
         ArticleDashboardHost.OpenStockRequested += (_, _) => ShowPage("Gestão de Stocks");
-        NewDocumentHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
+        NewDocumentHost.PreviewRequested += async (path, title, documentId) =>
+            await ShowPdfAsync(path, title, documentId);
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.Closed += (_, _) => ReportsOverlay.IsVisible = false;
         MarkFlag(UiCulture.Read(null));
@@ -337,7 +338,10 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         {
             if (string.IsNullOrEmpty(NewDocumentHost.CreatedPdfPath) == false)
             {
-                await ShowPdfAsync(NewDocumentHost.CreatedPdfPath, NewDocumentHost.CreatedPdfTitle);
+                await ShowPdfAsync(
+                    NewDocumentHost.CreatedPdfPath,
+                    NewDocumentHost.CreatedPdfTitle,
+                    NewDocumentHost.CreatedDocumentId);
             }
         }
     }
