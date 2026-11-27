@@ -154,31 +154,42 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             .ToListAsync(cancellationToken);
         string? Value(string token) => parameters.FirstOrDefault(item => item.Token == token)?.Value;
 
-        var mark = FiscalMarks.Read(scope.ServiceProvider.GetService<IFiscalModule>(), new FiscalDocument
+        var storedCustomerFiscal = await database.Documents.AsNoTracking()
+            .Where(item => item.Id == documentId)
+            .Select(item => item.Customer.FiscalNumber)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var storedAtQr = document.AtQrCode;
+        FiscalQrOnPrint.ResolveForPrint(
+            storedAtQr,
+            scope.ServiceProvider.GetService<IFiscalModule>(),
+            new FiscalDocument
+            {
+                Type = document.Type,
+                Number = document.Number,
+                Hash = document.Hash,
+                Status = document.Status,
+                Atcud = document.Atcud,
+                QrPayload = storedAtQr,
+                TotalNet = document.TotalNet,
+                TotalTax = document.TotalTax,
+                TotalFinal = document.TotalFinal,
+                Date = document.Date,
+                CustomerFiscalNumber = PosDocumentRules.AtQrCustomerFiscalNumber(storedCustomerFiscal),
+                CustomerCountry = document.CustomerCountry,
+                IssuerFiscalNumber = PosDocumentRules.AtQrIssuerFiscalNumber(Value("COMPANY_FISCALNUMBER")),
+                CountryCode = document.CustomerCountry
+            },
+            out var fiscalCodeLine,
+            out var atQrForPrint);
+        if (string.IsNullOrWhiteSpace(fiscalCodeLine) == false)
         {
-            Type = document.Type,
-            Number = document.Number,
-            Hash = document.Hash,
-            Status = document.Status,
-            Atcud = document.Atcud,
-            QrPayload = document.AtQrCode,
-            TotalNet = document.TotalNet,
-            TotalTax = document.TotalTax,
-            TotalFinal = document.TotalFinal,
-            Date = document.Date,
-            CustomerFiscalNumber = document.CustomerFiscalNumber,
-            CustomerCountry = document.CustomerCountry,
-            IssuerFiscalNumber = Value("COMPANY_FISCALNUMBER"),
-            CountryCode = document.CustomerCountry
-        });
-        if (string.IsNullOrWhiteSpace(mark.CodeLine) == false)
-        {
-            document.FiscalCodeLine = mark.CodeLine;
+            document.FiscalCodeLine = fiscalCodeLine;
         }
 
-        if (string.IsNullOrWhiteSpace(mark.QrPayload) == false)
+        if (string.IsNullOrWhiteSpace(atQrForPrint) == false)
         {
-            document.AtQrCode = mark.QrPayload;
+            document.AtQrCode = atQrForPrint;
         }
 
         var openDrawer = PosDocumentRules.IsCreditNote(document.Type) == false

@@ -453,6 +453,17 @@ public static class PosDocumentRules
         return digits.Length > 0 && (digits[0] is '5' or '6');
     }
 
+    /// <summary>NIF do campo B do QR AT (dígitos; consumidor final usa 999999990).</summary>
+    public static string AtQrCustomerFiscalNumber(string? storedFiscalNumber)
+    {
+        var digits = NormalizeFiscalDigits(storedFiscalNumber);
+        return digits.Length == 0 ? FinalConsumerFiscalNumber : digits;
+    }
+
+    /// <summary>NIF do emitente no QR AT — apenas dígitos, sem espaços.</summary>
+    public static string AtQrIssuerFiscalNumber(string? issuerFiscalNumber)
+        => NormalizeFiscalDigits(issuerFiscalNumber);
+
     /// <summary>NIF impresso na face; vazio ou consumidor final genérico ficam fora do talão.</summary>
     public static string? ThermalCustomerFiscalNumber(string? storedFiscalNumber)
     {
@@ -1317,12 +1328,15 @@ public sealed class PosDocumentService : IPosDocumentService
             issuerFiscalNumber = company.FiscalNumber;
         }
 
-        var mark = FiscalMarks.Read(
-            services.GetService<IFiscalModule>(),
-            ToFiscalDocument(document, issuerFiscalNumber));
-        if (string.IsNullOrWhiteSpace(mark.QrPayload) == false)
+        if (string.IsNullOrWhiteSpace(document.ATQRCode))
         {
-            document.ATQRCode = mark.QrPayload;
+            var mark = FiscalMarks.Read(
+                services.GetService<IFiscalModule>(),
+                ToFiscalDocument(document, issuerFiscalNumber));
+            if (string.IsNullOrWhiteSpace(mark.QrPayload) == false)
+            {
+                document.ATQRCode = mark.QrPayload;
+            }
         }
     }
 
@@ -1339,9 +1353,9 @@ public sealed class PosDocumentService : IPosDocumentService
             TotalTax = document.TotalTax,
             TotalFinal = document.TotalFinal,
             Date = document.CreatedAt,
-            CustomerFiscalNumber = document.Customer?.FiscalNumber,
+            CustomerFiscalNumber = PosDocumentRules.AtQrCustomerFiscalNumber(document.Customer?.FiscalNumber),
             CustomerCountry = document.Customer?.Country,
-            IssuerFiscalNumber = issuerFiscalNumber
+            IssuerFiscalNumber = PosDocumentRules.AtQrIssuerFiscalNumber(issuerFiscalNumber)
         };
 
     private static async Task ApplyDocumentStockAsync(
@@ -2603,31 +2617,37 @@ public sealed class PosDocumentService : IPosDocumentService
             Document = document,
             SoftwareVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0"
         };
-        var mark = FiscalMarks.Read(scope.ServiceProvider.GetService<IFiscalModule>(), new FiscalDocument
+        var storedAtQr = document.AtQRCode;
+        FiscalQrOnPrint.ResolveForPrint(
+            storedAtQr,
+            scope.ServiceProvider.GetService<IFiscalModule>(),
+            new FiscalDocument
+            {
+                Type = document.Type,
+                Number = document.Number,
+                Hash = document.Hash,
+                QrPayload = storedAtQr,
+                Status = document.Status,
+                Atcud = document.Atcud,
+                TotalNet = document.TotalNet,
+                TotalTax = document.TotalTax,
+                TotalFinal = document.TotalFinal,
+                Date = document.CreatedAt,
+                CustomerFiscalNumber = PosDocumentRules.AtQrCustomerFiscalNumber(document.Customer?.FiscalNumber),
+                CustomerCountry = document.Customer?.Country,
+                IssuerFiscalNumber = PosDocumentRules.AtQrIssuerFiscalNumber(data.Company.FiscalNumber),
+                CountryCode = data.Company.CountryCode2
+            },
+            out var fiscalCodeLine,
+            out var atQrForPrint);
+        if (string.IsNullOrWhiteSpace(fiscalCodeLine) == false)
         {
-            Type = document.Type,
-            Number = document.Number,
-            Hash = document.Hash,
-            QrPayload = document.AtQRCode,
-            Status = document.Status,
-            Atcud = document.Atcud,
-            TotalNet = document.TotalNet,
-            TotalTax = document.TotalTax,
-            TotalFinal = document.TotalFinal,
-            Date = document.CreatedAt,
-            CustomerFiscalNumber = document.Customer?.FiscalNumber,
-            CustomerCountry = document.Customer?.Country,
-            IssuerFiscalNumber = data.Company.FiscalNumber,
-            CountryCode = data.Company.CountryCode2
-        });
-        if (string.IsNullOrWhiteSpace(mark.CodeLine) == false)
-        {
-            document.FiscalCodeLine = mark.CodeLine;
+            document.FiscalCodeLine = fiscalCodeLine;
         }
 
-        if (string.IsNullOrWhiteSpace(mark.QrPayload) == false)
+        if (string.IsNullOrWhiteSpace(atQrForPrint) == false)
         {
-            document.AtQRCode = mark.QrPayload;
+            document.AtQRCode = atQrForPrint;
         }
 
         document.Atcud = AtcudFormat.OrFallback(document.Atcud, document.AtDocCodeId, document.Number);
