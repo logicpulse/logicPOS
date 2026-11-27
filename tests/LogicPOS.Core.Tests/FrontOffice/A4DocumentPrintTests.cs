@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Core.Tests.Seeds;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -185,6 +186,11 @@ public sealed class A4DocumentPrintTests
     [Fact]
     public async Task A4_reprint_when_wasPrinted_uses_second_print_not_original_motive_toggle()
     {
+        var repoRoot = SeedTestPaths.FindRepoRoot();
+        var printingSource = File.ReadAllText(
+            Path.Combine(repoRoot, "LogicPOS.App", "Hardware", "FrontOfficePrinting.cs"));
+        AssertA4ReprintRegisterUsesWasPrintedAfterSpool(printingSource);
+
         var root = Directory.CreateTempSubdirectory("logicpos-wasprinted-reprint-");
         try
         {
@@ -204,15 +210,12 @@ public sealed class A4DocumentPrintTests
             Assert.Null(issued.Error);
             var printSource = services.GetRequiredService<IThermalPrintSource>();
             await printSource.RegisterPrintAsync(issued.DocumentId, isThermalPrint: false);
-            Assert.True(await printSource.WasPrintedAsync(issued.DocumentId));
-
-            var wasPrinted = await printSource.WasPrintedAsync(issued.DocumentId);
             await printSource.RegisterReprintAsync(
                 issued.DocumentId,
                 1,
                 "Motivo reimpressão original",
                 isThermalPrint: false,
-                secondPrint: wasPrinted);
+                secondPrint: true);
 
             await using var scope = services.CreateAsyncScope();
             var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
@@ -230,6 +233,73 @@ public sealed class A4DocumentPrintTests
             Cleanup(root, null, null);
         }
     }
+
+    private static void AssertA4ReprintRegisterUsesWasPrintedAfterSpool(string printingSource)
+    {
+        var tryStart = printingSource.IndexOf(
+            "TryReprintA4Async",
+            StringComparison.Ordinal);
+        Assert.True(tryStart >= 0, "TryReprintA4Async not found in FrontOfficePrinting.cs.");
+
+        var nextMethod = printingSource.IndexOf(
+            "public static async Task<bool> ShouldUseA4PrintAsync",
+            tryStart,
+            StringComparison.Ordinal);
+        Assert.True(nextMethod > tryStart, "ShouldUseA4PrintAsync not found after TryReprintA4Async.");
+
+        var methodChunk = Compact(printingSource[tryStart..nextMethod]);
+        var thermalA4Register = ExtractA4RegisterReprintCall(methodChunk);
+        Assert.False(string.IsNullOrWhiteSpace(thermalA4Register), "A4 RegisterReprintAsync call not found.");
+
+        var printPos = methodChunk.IndexOf("PdfWindowsPrint.PrintOrOpen", StringComparison.Ordinal);
+        var wasPrintedAssignPos = methodChunk.IndexOf(
+            "var wasPrinted = await source.WasPrintedAsync(documentId)",
+            StringComparison.Ordinal);
+        var registerPos = methodChunk.IndexOf("await source.RegisterReprintAsync(", StringComparison.Ordinal);
+
+        Assert.True(printPos >= 0, "PdfWindowsPrint.PrintOrOpen missing from TryReprintA4Async.");
+        Assert.True(wasPrintedAssignPos >= 0, "WasPrintedAsync(documentId) assignment missing before A4 register.");
+        Assert.True(registerPos >= 0, "RegisterReprintAsync missing from TryReprintA4Async.");
+        Assert.True(printPos < wasPrintedAssignPos, "Spooler call must precede WasPrintedAsync.");
+        Assert.True(wasPrintedAssignPos < registerPos, "WasPrintedAsync must precede RegisterReprintAsync.");
+
+        Assert.Contains("isThermalPrint: false", thermalA4Register, StringComparison.Ordinal);
+        Assert.Contains("secondPrint: wasPrinted", thermalA4Register, StringComparison.Ordinal);
+        Assert.DoesNotContain("secondPrint: isSecondCopy", thermalA4Register, StringComparison.Ordinal);
+    }
+
+    private static string ExtractA4RegisterReprintCall(string compactMethodChunk)
+    {
+        var searchFrom = 0;
+        while (true)
+        {
+            var registerStart = compactMethodChunk.IndexOf(
+                "await source.RegisterReprintAsync(",
+                searchFrom,
+                StringComparison.Ordinal);
+            if (registerStart < 0)
+            {
+                return string.Empty;
+            }
+
+            var slice = compactMethodChunk[registerStart..];
+            if (slice.Contains("isThermalPrint: false", StringComparison.Ordinal))
+            {
+                var close = slice.IndexOf(");", StringComparison.Ordinal);
+                if (close < 0)
+                {
+                    return string.Empty;
+                }
+
+                return slice[..(close + 2)];
+            }
+
+            searchFrom = registerStart + 1;
+        }
+    }
+
+    private static string Compact(string value)
+        => string.Join(' ', value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 
     [Fact]
     public async Task A4_reprint_registration_stores_copy_count_from_spooler()
