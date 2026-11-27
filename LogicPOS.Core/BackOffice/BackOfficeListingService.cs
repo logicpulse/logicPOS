@@ -673,6 +673,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 }
             }
 
+            if (entity is Customer customerFiscal)
+            {
+                var fiscalError = await ValidateCustomerFiscalNumberAsync(database, customerFiscal, cancellationToken);
+                if (fiscalError is not null)
+                {
+                    return ListingSaveResult.Fail(fiscalError);
+                }
+            }
+
             if (creating && entity is Customer customerToCreate)
             {
                 var customerConflict = await FindCustomerCreateConflictAsync(database, customerToCreate, cancellationToken);
@@ -2212,6 +2221,34 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         return (max + 1).ToString(CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Listing Save bypasses Domain <c>CustomerCreator</c>; apply the same Portuguese NIF
+    /// rules used on the Domain create/update path (U-12).
+    /// </summary>
+    private static async Task<string?> ValidateCustomerFiscalNumberAsync(
+        LogicPOSDbContext database,
+        Customer customer,
+        CancellationToken cancellationToken)
+    {
+        string? countryCode2 = null;
+        if (customer.CountryId != Guid.Empty)
+        {
+            countryCode2 = await database.Countries.AsNoTracking()
+                .Where(item => item.Id == customer.CountryId)
+                .Select(item => item.Code2)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        if (PortugueseNif.AppliesToCountry(countryCode2) == false)
+        {
+            return null;
+        }
+
+        return PortugueseNif.IsValid(customer.FiscalNumber)
+            ? null
+            : "Invalid Portuguese fiscal number (NIF).";
     }
 
     /// <summary>

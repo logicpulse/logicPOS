@@ -29,6 +29,10 @@ public partial class Result
 
     public static Result<TValue> InvalidOperation<TValue>(string message) =>
         Failure<TValue>(Error.InvalidOperation(message));
+
+    public static Result Validation(string message) => Failure(Error.Validation(message));
+
+    public static Result<TValue> Validation<TValue>(string message) => Failure<TValue>(Error.Validation(message));
     
     public static Result Unauthorized(string message) => Failure(Error.Unauthorized(message));
     public static Result<TValue> Unauthorized<TValue>(string message) => Failure<TValue>(Error.Unauthorized(message));

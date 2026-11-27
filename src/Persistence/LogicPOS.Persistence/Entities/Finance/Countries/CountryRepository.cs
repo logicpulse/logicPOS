@@ -29,6 +29,14 @@ public class CountryRepository : Repository.WithDesignation<Country>, ICountryRe
             cancellationToken);
     }
 
+    public Task<string?> GetCode2Async(Guid id, CancellationToken cancellationToken = default)
+    {
+        return Database.Countries!
+            .Where(x => x.Id == id)
+            .Select(x => (string?)x.Code2)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public override Task<bool> IsReferencedAsync(Guid id, CancellationToken ct = default)
     {
         return Task.FromResult(true);

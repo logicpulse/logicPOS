@@ -754,9 +754,10 @@ public sealed class FirstEntryServiceTests
             var service = CloudService(root, account);
             var (countryId, currencyId) = await PortugalAndEuroAsync(service);
 
+            // Fake but mod-11-valid NIFs (U-12 company save rejects invalid check digits).
             var results = await Task.WhenAll(
-                service.ConfirmAsync(Request("restaurant", countryId, currencyId, nif: "111111111", demo: true)),
-                service.ConfirmAsync(Request("parking", countryId, currencyId, nif: "222222222", demo: true)));
+                service.ConfirmAsync(Request("restaurant", countryId, currencyId, nif: "111111110", demo: true)),
+                service.ConfirmAsync(Request("parking", countryId, currencyId, nif: "222222220", demo: true)));
 
             Assert.Single(results, FirstEntryConfirmationResult.Confirmed);
             Assert.Single(results, FirstEntryConfirmationResult.AlreadyConfirmed);
@@ -765,7 +766,7 @@ public sealed class FirstEntryServiceTests
             var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
             Assert.Equal(winner, await TokenValueAsync(database, "SYSTEM_OPERATION_MODE"));
             Assert.Equal(
-                winner == "restaurant" ? "111111111" : "222222222",
+                winner == "restaurant" ? "111111110" : "222222220",
                 await TokenValueAsync(database, "COMPANY_FISCALNUMBER"));
             var seeds = Path.Combine(DatabaseStartup.ResolveSeedPath(root.FullName), "modules", winner);
             Assert.Equal(SeedItemCount(seeds, "tables.json"), await database.Tables.CountAsync());

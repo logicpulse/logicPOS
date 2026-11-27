@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using LogicPOS.Domain.ValueObjects;
 
 namespace LogicPOS.Core.BackOffice;
 
@@ -108,35 +109,13 @@ public static class GtkFormRules
 
         if (portugal)
         {
-            return Regex.IsMatch(text, FiscalPattern) && PortugueseCheckDigit(text)
+            // Consolidated with Domain PortugueseNif (U-12); keep the PT UI message.
+            return PortugueseNif.IsValid(text)
                 ? null
                 : "Indique um valor válido para o NIF.";
         }
 
         return Regex.IsMatch(text, ForeignFiscalPattern) ? null : "Indique um valor válido para o NIF.";
-    }
-
-    private static bool PortugueseCheckDigit(string value)
-    {
-        var digits = value.StartsWith("PT", StringComparison.OrdinalIgnoreCase) ? value[2..] : value;
-        if (digits.Length != 9 || digits.All(char.IsDigit) == false)
-        {
-            return false;
-        }
-
-        var sum = 0;
-        for (var index = 0; index < 8; index++)
-        {
-            sum += (digits[index] - '0') * (9 - index);
-        }
-
-        var check = 11 - (sum % 11);
-        if (check >= 10)
-        {
-            check = 0;
-        }
-
-        return check == digits[8] - '0';
     }
 
     private static string? RequiredLookup(IReadOnlyDictionary<string, string> fields, string key, string label)
