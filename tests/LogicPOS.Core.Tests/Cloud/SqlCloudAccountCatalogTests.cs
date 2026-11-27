@@ -134,6 +134,36 @@ public class SqlCloudAccountCatalogTests : IDisposable
     }
 
     [Fact]
+    public void Find_ExpiredOmission_RetainsRenewalFromInterleavedLookup()
+    {
+        CreateSchema(includeAvailableDevices: false);
+        InsertAccount(availableDevices: null);
+        var other = CreateCatalog();
+        Assert.True(other.Find("acme").Found);
+        other.Invalidate("acme");
+        _utcNow += SqlCloudAccountCatalog.MissingColumnCacheTtl;
+
+        var probes = 0;
+        var renewDuringExpiryCheck = true;
+        var catalog = CreateCatalog(_ =>
+        {
+            probes++;
+            return new SqliteConnection(_sharedConnectionString);
+        }, () =>
+        {
+            if (renewDuringExpiryCheck)
+            {
+                renewDuringExpiryCheck = false;
+                Assert.True(other.Find("acme").Found);
+            }
+            return _utcNow;
+        });
+
+        Assert.True(catalog.Find("acme").Found);
+        Assert.Equal(1, probes);
+    }
+
+    [Fact]
     public void Find_UnknownAccount_ReturnsNotFound()
     {
         CreateSchema(includeAvailableDevices: true);
@@ -176,6 +206,7 @@ public class SqlCloudAccountCatalogTests : IDisposable
     [InlineData("SQLite Error 1: 'no such column: a.AvailableDevices'.", true)]
     [InlineData("SQLite Error 1: 'no such column: AvailableDevices'.", true)]
     [InlineData("SQLite Error 1: 'no such column: a.PosOperationMode'.", false)]
+    [InlineData("SQLite Error 1: 'no such column: a.AvailableDevicesLegacy'.", false)]
     [InlineData("SQLite Error 1: 'no such table: Accounts'.", false)]
     public void Detector_Sqlite_RequiresNoSuchColumnAndAvailableDevices(string message, bool expected)
     {
@@ -186,6 +217,7 @@ public class SqlCloudAccountCatalogTests : IDisposable
     [Theory]
     [InlineData(207, "Invalid column name 'AvailableDevices'.", true)]
     [InlineData(207, "Invalid column name 'PosOperationMode'.", false)]
+    [InlineData(207, "Invalid column name 'AvailableDevicesLegacy'.", false)]
     [InlineData(208, "Invalid object name 'Accounts'.", false)]
     public void Detector_SqlServer_Requires207AndAvailableDevices(int number, string message, bool expected)
     {
@@ -197,6 +229,7 @@ public class SqlCloudAccountCatalogTests : IDisposable
     [InlineData(1054, "Unknown column 'AvailableDevices' in 'field list'", true)]
     [InlineData(1054, "Unknown column 'a.AvailableDevices' in 'field list'", true)]
     [InlineData(1054, "Unknown column 'PosOperationMode' in 'field list'", false)]
+    [InlineData(1054, "Unknown column 'a.AvailableDevicesLegacy' in 'field list'", false)]
     [InlineData(1146, "Table 'Accounts' doesn't exist", false)]
     public void Detector_MySql_Requires1054AndAvailableDevices(int number, string message, bool expected)
     {
@@ -228,7 +261,8 @@ public class SqlCloudAccountCatalogTests : IDisposable
         Assert.True(SqlCloudAccountCatalog.IsMissingAvailableDevicesColumn(ex));
     }
 
-    private SqlCloudAccountCatalog CreateCatalog(Func<string, DbConnection>? connectionFactory = null)
+    private SqlCloudAccountCatalog CreateCatalog(Func<string, DbConnection>? connectionFactory = null,
+        Func<DateTimeOffset>? utcNow = null)
     {
         return new SqlCloudAccountCatalog(
             new DatabaseSettings
@@ -239,7 +273,7 @@ public class SqlCloudAccountCatalogTests : IDisposable
             new MemoryCache(new MemoryCacheOptions()),
             NullLogger<SqlCloudAccountCatalog>.Instance,
             connectionFactory ?? (_ => new SqliteConnection(_sharedConnectionString)),
-            utcNow: () => _utcNow);
+            utcNow: utcNow ?? (() => _utcNow));
     }
 
     private void CreateSchema(bool includeAvailableDevices)

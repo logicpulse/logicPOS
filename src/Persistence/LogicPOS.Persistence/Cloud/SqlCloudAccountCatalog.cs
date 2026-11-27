@@ -129,8 +129,8 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
 
         if (_utcNow() >= untilUtc)
         {
-            OmitAvailableDevicesUntil.TryRemove(connectionString, out _);
-            return true;
+            return OmitAvailableDevicesUntil.TryRemove(new KeyValuePair<string, DateTimeOffset>(connectionString, untilUtc))
+                || !OmitAvailableDevicesUntil.ContainsKey(connectionString);
         }
 
         return false;
@@ -208,8 +208,6 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
         if (includeAvailableDevices)
         {
             availableDevices = ReadDeviceCount(reader["AvailableDevices"]);
-            // Column is present — drop any omission so later calls keep using it.
-            OmitAvailableDevicesUntil.TryRemove(connectionString, out _);
         }
 
         return new CloudAccountSnapshot
@@ -285,16 +283,17 @@ public sealed class SqlCloudAccountCatalog : ICloudAccountCatalog
     {
         if (ex is SqlException sql)
             return sql.Errors.Cast<SqlError>().Any(error => error.Number == 207 &&
-                error.Message.Contains("AvailableDevices", StringComparison.OrdinalIgnoreCase));
+                error.Message.Contains("'AvailableDevices'", StringComparison.OrdinalIgnoreCase));
 
         if (ex is SqliteException sqlite)
             return sqlite.SqliteErrorCode == 1
-                && sqlite.Message.Contains("no such column", StringComparison.OrdinalIgnoreCase)
-                && sqlite.Message.Contains("AvailableDevices", StringComparison.OrdinalIgnoreCase);
+                && (sqlite.Message.EndsWith("no such column: a.AvailableDevices'.", StringComparison.OrdinalIgnoreCase)
+                    || sqlite.Message.EndsWith("no such column: AvailableDevices'.", StringComparison.OrdinalIgnoreCase));
 
         if (ex is MySqlException mysql)
             return mysql.Number == 1054
-                && mysql.Message.Contains("AvailableDevices", StringComparison.OrdinalIgnoreCase);
+                && (mysql.Message.Contains("'AvailableDevices'", StringComparison.OrdinalIgnoreCase)
+                    || mysql.Message.Contains("'a.AvailableDevices'", StringComparison.OrdinalIgnoreCase));
 
         return ex.InnerException is not null && IsMissingAvailableDevicesColumn(ex.InnerException);
     }
