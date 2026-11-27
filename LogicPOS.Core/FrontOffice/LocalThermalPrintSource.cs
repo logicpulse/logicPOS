@@ -126,6 +126,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             .Where(item => item.Id == documentId)
             .Select(item => item.Series!.ATDocCodeValidationSeries)
             .FirstOrDefaultAsync(cancellationToken);
+        document.AtDocCodeId = seriesValidation;
         document.Atcud = AtcudFormat.OrFallback(document.Atcud, seriesValidation, document.Number);
         if (PosDocumentRules.IsCreditNote(document.Type))
         {
